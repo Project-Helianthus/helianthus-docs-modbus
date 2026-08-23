@@ -64,10 +64,11 @@ The candidate targets unit 0 and requires all of:
 - basic MEI identity; and
 - an extended-MEI self entry with device ID 0 and HEMS product type.
 
-R024 is admitted only at V100R024C00SPC100 or later within R024. R025 is
-admitted only at V100R025C00SPC102 or later within R025. Branches are never
-compared numerically across R values. Serial register 30015, model-register
-readability, a SmartHEMS prefix, or basic MEI alone is insufficient.
+This revision admits only exact firmware V100R024C00SPC100 or
+V100R025C00SPC102. It does not apply an `or later` comparison. Branches are
+never compared numerically across R values. Serial register 30015,
+model-register readability, a SmartHEMS prefix, or basic MEI alone is
+insufficient.
 
 ## Child inventory
 

@@ -55,16 +55,16 @@
       "growatt.protocol2.tl3x.readonly.v1"
     ],
     "pairs": [
-      ["fronius.sunspec.float.v1", "huawei.smartlogger.readonly.v1"],
-      ["fronius.sunspec.float.v1", "huawei.sdongle.readonly.v1"],
-      ["fronius.sunspec.float.v1", "huawei.emma.readonly.v1"],
-      ["fronius.sunspec.float.v1", "growatt.protocol2.tl3x.readonly.v1"],
-      ["huawei.smartlogger.readonly.v1", "huawei.sdongle.readonly.v1"],
-      ["huawei.smartlogger.readonly.v1", "huawei.emma.readonly.v1"],
-      ["huawei.smartlogger.readonly.v1", "growatt.protocol2.tl3x.readonly.v1"],
-      ["huawei.sdongle.readonly.v1", "huawei.emma.readonly.v1"],
-      ["huawei.sdongle.readonly.v1", "growatt.protocol2.tl3x.readonly.v1"],
-      ["huawei.emma.readonly.v1", "growatt.protocol2.tl3x.readonly.v1"]
+      {"fixture_ids": ["sunspec-fronius-float-v1.1-positive", "huawei-smartlogger-spc191-candidate"], "same_endpoint": true, "same_unit": true},
+      {"fixture_ids": ["sunspec-fronius-float-v1.1-positive", "huawei-sdongle-r025-candidate"], "same_endpoint": true, "same_unit": true},
+      {"fixture_ids": ["sunspec-fronius-float-v1.1-positive", "huawei-emma-r025-candidate"], "same_endpoint": true, "same_unit": true},
+      {"fixture_ids": ["sunspec-fronius-float-v1.1-positive", "growatt-protocol2-tl3x-candidate"], "same_endpoint": true, "same_unit": true},
+      {"fixture_ids": ["huawei-smartlogger-spc191-candidate", "huawei-sdongle-r025-candidate"], "same_endpoint": true, "same_unit": true},
+      {"fixture_ids": ["huawei-smartlogger-spc191-candidate", "huawei-emma-r025-candidate"], "same_endpoint": true, "same_unit": true},
+      {"fixture_ids": ["huawei-smartlogger-spc191-candidate", "growatt-protocol2-tl3x-candidate"], "same_endpoint": true, "same_unit": true},
+      {"fixture_ids": ["huawei-sdongle-r025-candidate", "huawei-emma-r025-candidate"], "same_endpoint": true, "same_unit": true},
+      {"fixture_ids": ["huawei-sdongle-r025-candidate", "growatt-protocol2-tl3x-candidate"], "same_endpoint": true, "same_unit": true},
+      {"fixture_ids": ["huawei-emma-r025-candidate", "growatt-protocol2-tl3x-candidate"], "same_endpoint": true, "same_unit": true}
     ],
     "expected": {"profile": null, "disposition": "insufficient_evidence", "send": false}
   }

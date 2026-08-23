@@ -17,11 +17,11 @@ documentation.
 
 | Profile | Exact applicability | Evidence class | Initial disposition |
 | --- | --- | --- | --- |
-| `sunspec.core.readonly.v1` | SunSpec model chains using the explicitly listed model identifiers and lengths | public interoperability standard facts | qualified offline |
+| `sunspec.core.readonly.v1` | SunSpec model chains using the explicitly listed model identifiers and lengths | public interoperability standard facts | specified offline; qualification is per fixture |
 | `fronius.sunspec.float.v1` | manufacturer `Fronius`, model `Symo GEN24 10.0`, version `1.41.11-1`, and the exact V1.1 chain | vendor-copyright-inspection-only plus sanitized interoperability fixtures | qualified offline flavor |
 | `huawei.smartlogger.readonly.v1` | SmartLogger with exact firmware `V300R024C10SPC191` or `V300R024C10SPC210` | vendor-copyright-inspection-only | offline candidate, default denied |
 | `huawei.sdongle.readonly.v1` | SDongleA-05, SDongleB-03, or SDongleB-06 with exact firmware `V200R025C00SPC120` and protocol D5.0 | vendor-copyright-inspection-only | offline candidate, default denied |
-| `huawei.emma.readonly.v1` | EMMA SmartHEMS R024 SPC100 or later, or R025 SPC102 or later, compared only within the matching branch | vendor-copyright-inspection-only | offline candidate, default denied |
+| `huawei.emma.readonly.v1` | EMMA SmartHEMS with exact firmware `V100R024C00SPC100` or `V100R025C00SPC102` | vendor-copyright-inspection-only | offline candidate, default denied |
 | `growatt.protocol2.tl3x.readonly.v1` | Growatt Protocol II v1.24 TL3-X class covering MAX, MID, and MAC register ranges | vendor-copyright-inspection-only | offline candidate, default denied |
 
 `Qualified offline` proves deterministic fixture decoding. It does not prove a
