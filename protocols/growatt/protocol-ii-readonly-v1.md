@@ -45,9 +45,10 @@ present in that schema remain opaque words. Sentinels, scale, signedness, word
 width, and units belong to the exact field definition and are never inferred
 from a similar Growatt family.
 
-The POC proves deterministic fixture decoding only. It does not register an
-automatic detector, enable an endpoint, or claim support for TL-X, TL-XH,
-TL-XH US, MAX 1500V, MAX-X LV, MOD TL3-XH, MIX, SPA, or SPH ranges.
+The downstream POC must prove deterministic fixture decoding. This
+specification does not register an automatic detector, enable an endpoint, or
+claim support for TL-X, TL-XH, TL-XH US, MAX 1500V, MAX-X LV, MOD TL3-XH, MIX,
+SPA, or SPH ranges.
 
 ## Failure and overlap
 
@@ -59,5 +60,5 @@ Malformed extents, inconsistent identity reads, unknown schema revision,
 unsupported register range, timeout, or exception produces no send and no
 partial publication. All live operations remain denied in this version.
 
-The synthetic identity input and expected default-denied result are in
-`conformance/multivendor-offline-v1.json`.
+Executable fixture decoding and negative-overlap proof belong to the consuming
+profile registry. This page creates no admission by itself.

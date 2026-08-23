@@ -2,14 +2,14 @@
 
 ## Scope
 
-This flavor qualifies one Fronius three-phase float SunSpec V1.1 chain. It consumes
+This flavor specifies one Fronius three-phase float SunSpec V1.1 chain. It consumes
 the standard SunSpec core and adds only manufacturer applicability and observed
 chain geometry. It does not redefine standard units, sentinels, fields, or
 capabilities.
 
 ## Exact chain geometry
 
-The offline fixture has this ordered model sequence:
+The V1.1 chain has this ordered model sequence:
 
 ```text
 1/65
@@ -25,8 +25,8 @@ ffff/0
 
 Each pair is `model-id/declared-length`. A different length selects a different
 schema revision or remains opaque. Optional models may be absent on another
-qualified Fronius product, but that product does not inherit this exact flavor
-without its own applicability fixture.
+Fronius product, but that product does not inherit this exact flavor without
+its own applicability fixture.
 
 ## Applicability
 
@@ -41,7 +41,7 @@ manufacturer tuple, is insufficient evidence.
 
 ## Read-only result
 
-Successful fixture decoding yields the standard fields that are valid in
+Decoding this exact geometry yields the standard fields that are valid in
 Models 1, 113, 120, 121, 122, 160, and 124. Unknown blocks and unknown fields
 retain raw extent and provenance.
 
@@ -49,5 +49,5 @@ This flavor creates no control operation. Model 121 and Model 124 values are
 observations only. Automatic activation, live endpoint qualification, and
 support publication require separate runtime evidence.
 
-The synthetic V1.1 input and its expected protocol classification are in
-`conformance/multivendor-offline-v1.json`.
+Executable fixture decoding and negative-overlap proof belong to the consuming
+profile registry. This page creates no profile admission by itself.

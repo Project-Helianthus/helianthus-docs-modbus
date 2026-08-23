@@ -16,7 +16,6 @@ multivendor_specs=(
 for multivendor_spec in "${multivendor_specs[@]}"; do
   test -f "$multivendor_spec"
 done
-python3 scripts/validate_multivendor.py
 
 required=(
   'Scope and non-goals' 'Terminology' 'Endpoint roles' 'Serial settings'

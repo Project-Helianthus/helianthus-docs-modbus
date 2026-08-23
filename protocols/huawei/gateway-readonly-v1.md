@@ -115,5 +115,6 @@ Growatt is also insufficient. Timeout, disconnect, unstable inventory, unknown
 version, malformed strings, or a non-optional Modbus exception produces no
 send and no partial profile.
 
-The exact candidate inputs and negative-overlap outcomes are in
-`conformance/multivendor-offline-v1.json`.
+Executable inventory parsing, candidate decoding, and pairwise overlap proof
+belong to the consuming profile registry. This page creates no admission by
+itself.

@@ -94,8 +94,5 @@ authority. Unknown versions, length mismatches, extent overruns, missing Common
 Model 1, a missing terminal block, or ambiguous chain base produce no profile
 match.
 
-The reproducible compact vectors are in
-`conformance/multivendor-offline-v1.json`. The `word-fill-v1` encoding expands
-each block to its declared number of data words, applies bounded word or ASCII
-overrides, and appends the terminal block. It is a synthetic protocol fixture,
-not a device capture.
+Executable decoder conformance belongs to the consuming profile registry. This
+page defines the protocol keys and rejection rules that those tests must use.
