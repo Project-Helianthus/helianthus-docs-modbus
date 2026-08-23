@@ -9,7 +9,7 @@ capabilities.
 
 ## Exact chain geometry
 
-The admitted offline fixture has this ordered model sequence:
+The V1.0 offline fixture has this ordered model sequence:
 
 ```text
 1/65
@@ -17,6 +17,20 @@ The admitted offline fixture has this ordered model sequence:
 120/26
 121/30
 122/44
+160/88
+124/24
+ffff/0
+```
+
+The compatible V1.1 fixture adds Model 123/24 between Model 122 and Model 160:
+
+```text
+1/65
+113/60
+120/26
+121/30
+122/44
+123/24
 160/88
 124/24
 ffff/0
@@ -48,3 +62,6 @@ retain raw extent and provenance.
 This flavor creates no control operation. Model 121 and Model 124 values are
 observations only. Automatic activation, live endpoint qualification, and
 support publication require separate runtime evidence.
+
+The synthetic V1.1 input and its expected protocol classification are in
+`conformance/multivendor-offline-v1.json`.

@@ -24,10 +24,12 @@ The candidate targets unit 0 and requires all of:
 - FC03 offset 65521, quantity 1, a stable U16 device-list change counter;
 - FC2B, MEI 0x0e, ReadDevId 0x03, object 0x87 inventory;
 - a self entry whose model identifies SmartLogger; and
-- a structured firmware tuple admitted inside one exact V300 branch.
+- one of the exact firmware tuples `V300R024C10SPC191` or
+  `V300R024C10SPC210`.
 
-SPC210 Issue 49 and SPC191 Issue 52 are parallel branches. They are not ordered
-by document number. Unknown V/R/C/SPC combinations remain insufficient.
+SPC210 and SPC191 are parallel branches. They are not ordered by document
+number and this revision does not apply an `or later` comparison to either.
+Unknown V/R/C/SPC combinations remain insufficient.
 Writable device name 65524, ESN 40713, basic MEI alone, and optional offering
 strings are not detectors.
 
@@ -43,10 +45,10 @@ The candidate targets logical unit 100 and requires all of:
   change sequence; and
 - FC03 offset 37429, quantity 1, for capacity reconciliation.
 
-Admitted documentary branches are V100R001C00SPC100 or later for the V100
-interface, V100R001C00SPC124 or later for A-05 TCP, V200R022C10 or later for
-A-05/B-06, and the separate V200R025 SPC120 branch for A-05/B-03/B-06.
-Protocol baseline D5.0 is an independent gate.
+The executable offline candidate in this revision is limited to
+V200R025C00SPC120 with model A-05, B-03, or B-06. Earlier V100 and V200R022
+branches remain documentary and default denied. Protocol baseline D5.0 is an
+independent decoded gate.
 
 Readability of unit 100, search status alone, or a serial number is
 insufficient. Extended child inventory remains offline-only until the exact TCP
@@ -111,3 +113,6 @@ If any two Huawei candidates match one endpoint/unit observation, the result is
 Growatt is also insufficient. Timeout, disconnect, unstable inventory, unknown
 version, malformed strings, or a non-optional Modbus exception produces no
 send and no partial profile.
+
+The exact candidate inputs and negative-overlap outcomes are in
+`conformance/multivendor-offline-v1.json`.

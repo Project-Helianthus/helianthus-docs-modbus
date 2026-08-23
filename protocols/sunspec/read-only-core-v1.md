@@ -38,6 +38,30 @@ Implementations must select a decoder by model identifier, exact model length,
 and schema revision. A known identifier with an unknown length is opaque, not a
 best-effort decode.
 
+The schema revision is `sunspec.models.v1`. Its exact decoder keys are:
+
+| Model | Admitted data-register length |
+| --- | --- |
+| 1 | 65 or 66 |
+| 101, 102, 103 | 50 |
+| 111, 112, 113 | 60 |
+| 120 | 26 |
+| 121 | 30 |
+| 122 | 44 |
+| 123, 124 | 24 |
+| 160 | `8 + 20*N`, where `N` is 0 through 3276 and equals the block count field |
+| 201, 202, 203, 204 | 105 |
+| 211, 212, 213, 214 | 124 |
+| 302 | `5*N`, where `N` is 1 through 13106 |
+| 303 | `N`, where `N` is 1 through 65533 |
+| 304 | `6*N`, where `N` is 1 through 10922 |
+| 305 | 36 |
+| 306 | 4 |
+| 307 | 11 |
+| 308 | 4 |
+
+No other `(model, length, schema-revision)` tuple is decoded by this revision.
+
 ## Value rules
 
 Register words are big-endian. Multi-register integer and float values use the
@@ -69,3 +93,9 @@ defined by control models are decoded as observed state and never create write
 authority. Unknown versions, length mismatches, extent overruns, missing Common
 Model 1, a missing terminal block, or ambiguous chain base produce no profile
 match.
+
+The reproducible compact vectors are in
+`conformance/multivendor-offline-v1.json`. The `word-fill-v1` encoding expands
+each block to its declared number of data words, applies bounded word or ASCII
+overrides, and appends the terminal block. It is a synthetic protocol fixture,
+not a device capture.

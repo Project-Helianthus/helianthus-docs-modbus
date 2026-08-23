@@ -1,0 +1,55 @@
+{
+  "schema": "helianthus-modbus-protocol-conformance/v1",
+  "schema_revision": "sunspec.models.v1",
+  "fixtures": [
+    {
+      "id": "sunspec-fronius-float-v1.1-positive",
+      "encoding": "word-fill-v1",
+      "input": {
+        "signature_words": [21365, 28243],
+        "blocks": [
+          {"model": 1, "length": 65, "fill": 0, "ascii_overrides": [{"offset": 0, "words": 16, "value": "Fronius"}, {"offset": 16, "words": 16, "value": "Symo GEN24"}, {"offset": 40, "words": 8, "value": "1.41"}]},
+          {"model": 113, "length": 60, "fill": 0},
+          {"model": 120, "length": 26, "fill": 0},
+          {"model": 121, "length": 30, "fill": 0},
+          {"model": 122, "length": 44, "fill": 0},
+          {"model": 123, "length": 24, "fill": 0},
+          {"model": 160, "length": 88, "fill": 0, "word_overrides": [{"offset": 6, "value": 4}]},
+          {"model": 124, "length": 24, "fill": 0},
+          {"model": 65535, "length": 0, "fill": 0}
+        ]
+      },
+      "expected": {"profile": "fronius.sunspec.float.v1", "disposition": "qualified_offline", "send": false}
+    },
+    {
+      "id": "huawei-smartlogger-spc191-candidate",
+      "input": {"unit": 0, "change_before": 7, "change_after": 7, "self_model": "SmartLogger", "software": "V300R024C10SPC191", "inventory_complete": true},
+      "expected": {"profile": "huawei.smartlogger.readonly.v1", "disposition": "offline_candidate", "send": false}
+    },
+    {
+      "id": "huawei-sdongle-r025-candidate",
+      "input": {"unit": 100, "model": "SDongleA-05", "software": "V200R025C00SPC120", "protocol": "D5.0", "search_state": 0, "sequence_stable": true},
+      "expected": {"profile": "huawei.sdongle.readonly.v1", "disposition": "offline_candidate", "send": false}
+    },
+    {
+      "id": "huawei-emma-r025-candidate",
+      "input": {"unit": 0, "offering": "EMMA", "model": "EMMA", "software": "V100R025C00SPC102", "self_device_id": 0, "product_type": "HEMS", "inventory_complete": true},
+      "expected": {"profile": "huawei.emma.readonly.v1", "disposition": "offline_candidate", "send": false}
+    },
+    {
+      "id": "growatt-protocol2-tl3x-candidate",
+      "input": {"unit": 1, "protocol_document": "II-v1.24", "family": "TL3-X", "device_type": 6, "firmware_words": [16706, 17220, 17734, 18248, 18762, 19276], "model_words": [21577, 16705], "protocol_version": 207},
+      "expected": {"profile": "growatt.protocol2.tl3x.readonly.v1", "disposition": "offline_candidate", "send": false}
+    },
+    {
+      "id": "collision-fronius-smartlogger",
+      "input": {"positive_profiles": ["fronius.sunspec.float.v1", "huawei.smartlogger.readonly.v1"], "same_endpoint": true, "same_unit": true},
+      "expected": {"profile": null, "disposition": "insufficient_evidence", "send": false}
+    },
+    {
+      "id": "collision-huawei-growatt",
+      "input": {"positive_profiles": ["huawei.emma.readonly.v1", "growatt.protocol2.tl3x.readonly.v1"], "same_endpoint": true, "same_unit": true},
+      "expected": {"profile": null, "disposition": "insufficient_evidence", "send": false}
+    }
+  ]
+}

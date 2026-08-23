@@ -58,3 +58,6 @@ name, unit number, or score must not pick a winner.
 Malformed extents, inconsistent identity reads, unknown schema revision,
 unsupported register range, timeout, or exception produces no send and no
 partial publication. All live operations remain denied in this version.
+
+The synthetic identity input and expected default-denied result are in
+`conformance/multivendor-offline-v1.json`.
