@@ -2,10 +2,13 @@
 
 ## Publication boundary
 
-The text in this repository is an independently authored interoperability
-specification published under CC0-1.0. It describes protocol facts needed to
-build compatible software. It does not redistribute vendor manuals, register
-tables, screenshots, firmware, or extracted prose.
+The protocol material in `protocols/`, including this independently authored
+interoperability specification, is published under CC0-1.0. It describes
+protocol facts needed to build compatible software. Repository policy,
+development guidance, CI tooling, and Helianthus-specific architecture remain
+under the separate license lane defined in `LICENSE`. This protocol material
+does not redistribute vendor manuals, register tables, screenshots, firmware,
+or extracted prose.
 
 The license of this specification does not change the copyright status of
 material inspected while establishing a protocol fact. In particular,
