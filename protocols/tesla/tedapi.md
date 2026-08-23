@@ -65,6 +65,11 @@ configuration and applicable passive compatibility and version gates. A valid
 frame, a matching node, or a readable response alone is insufficient to admit a
 vendor request.
 
+Tesla HSC codec selection is profile-scoped. The generic transport treats each
+private function code as a byte value and does not select a Tesla codec from
+that byte. A normal HSC payload is decoded only after the endpoint, node,
+profile, and operation selected this profile.
+
 ## Function 100
 
 FC100 carries one TEDAPI payload. Its first payload byte is the exact byte
@@ -80,6 +85,8 @@ without an echo.
 
 Outbound FC100 is denied unless the nested TEDAPI operation is explicitly
 allowlisted, proven read-only, version-compatible, and declared replay-safe.
+The Tesla profile alone owns FC100 interpretation; it does not create a global
+function-code handler.
 
 ## Functions 101 and 102
 
@@ -92,6 +99,8 @@ bytes.
 Live outbound FC101 and FC102 are denied in the initial profile, including MCP
 operations. Future typed support requires a compatible specification version,
 qualified capability, explicit admission policy, and conformance vectors.
+Their byte values remain Tesla profile details and do not reserve those values
+for another vendor profile at a different endpoint.
 
 ## Exception responses
 
