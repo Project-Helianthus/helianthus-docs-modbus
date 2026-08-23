@@ -1,0 +1,199 @@
+# Tesla Energy Device API over Modbus RTU
+
+## Scope and non-goals
+
+This specification defines the Tesla Home Site Controller (HSC) read-only
+interoperability profile carried in Modbus RTU-shaped frames. It defines frame
+validation, opaque vendor function handling, qualification gates, and safe
+runtime reporting.
+
+It does not define configuration, firmware update, pairing, trust management,
+contactor, inverter, battery, or other control operations. It does not define a
+Tesla Modbus/TCP service, arbitrary TEDAPI operation admission, or field
+semantics for FC101 or FC102.
+
+## Terminology
+
+An **initiator** sends a request. A **responder** returns a response. **HSC**
+denotes the Tesla flavor addressed by this profile. **TEDAPI payload** denotes a
+bounded opaque nanopb message. **Qualified** means admitted by explicit
+configuration and applicable capability and version gates. **Opaque** means
+bytes are retained without assigning fields, units, enums, or commands.
+
+## Endpoint roles
+
+The initiator owns local serialization, deadlines, retry policy, redaction, and
+operation admission. The responder accepts a configured node and vendor
+function. A capture or replay endpoint is receive-only or offline and must not
+open a live serial endpoint or transmit frames.
+
+## Serial settings
+
+The HSC profile uses 115200 baud, eight data bits, no parity, and one stop bit.
+A character is ten bit times. The configured receiver separation is 35 bit
+times, equivalent to 3.5 character times at this format.
+
+## Frame structure
+
+Each RTU frame is:
+
+```text
+node | function | payload | crc-low | crc-high
+```
+
+`node` and `function` are one byte each. Payload contains zero through 252
+bytes. The entire frame contains four through 256 bytes. No fragmentation,
+transaction identifier, or additional outer length field is defined.
+
+## Byte order and CRC
+
+CRC is CRC16-Modbus with initial value `0xffff` and reflected polynomial
+`0xa001`. It covers `node`, `function`, and every payload byte. CRC is appended
+low byte first.
+
+## Frame and payload limits
+
+An implementation must reject a frame shorter than four bytes or longer than
+256 bytes. It must reject a payload longer than 252 bytes. It must not truncate,
+split, concatenate, or retry a rejected frame.
+
+## Node addressing and configuration
+
+The usual HSC node is `0x10`. This value is a configurable profile default, not
+a universal detector. Enabling this flavor requires explicit local
+configuration and applicable passive compatibility and version gates. A valid
+frame, a matching node, or a readable response alone is insufficient to admit a
+vendor request.
+
+## Function 100
+
+FC100 carries one TEDAPI payload. Its first payload byte is the exact byte
+length of the remaining payload. The length prefix must equal the remaining
+payload length before transmission or acceptance.
+
+FC100 can produce an echoed request frame and a later result frame. The echo is
+an intermediate response, not proof of operation success. Implementations
+must classify intermediate and terminal frames inside one bounded single-flight
+transaction and must quarantine late, unrelated, malformed, or timed-out
+frames so they cannot satisfy a later request. A terminal response may arrive
+without an echo.
+
+Outbound FC100 is denied unless the nested TEDAPI operation is explicitly
+allowlisted, proven read-only, version-compatible, and declared replay-safe.
+
+## Functions 101 and 102
+
+FC101 and FC102 use the same one-byte exact-length payload envelope. Their
+request and response payloads are opaque in this version. Implementations may
+frame, validate, classify, retain, and replay them offline. They must not infer
+field names, enums, units, control meaning, or operation admission from their
+bytes.
+
+Live outbound FC101 and FC102 are denied in the initial profile, including MCP
+operations. Future typed support requires a compatible specification version,
+qualified capability, explicit admission policy, and conformance vectors.
+
+## Exception responses
+
+An exception response has `function | 0x80` and exactly one status byte before
+the CRC. An unknown function can return status `1`. FC101 or FC102 codec failure
+can return status `4`. Other status values remain opaque numeric values unless a
+later version defines them.
+
+## Timing, deadlines, and frame separation
+
+Frame separation is 3.5 character times. The initiator applies a bounded
+request deadline and a bounded post-timeout quarantine. Partial frames and
+trailing bytes are not carried into a subsequent transaction. An implementation
+must preserve an explicit timeout result rather than guessing a response.
+
+## Concurrency and arbitration
+
+This profile assumes one locally serialized initiator. It makes no
+multi-initiator arbitration, collision detection, carrier-sense, or
+listen-before-talk guarantee. An implementation must not use concurrent sends,
+probe by broadcast, or infer safe multi-initiator operation.
+
+## Request and response state machine
+
+```text
+idle -> locally_validated -> sent -> waiting
+waiting -> intermediate -> waiting
+waiting -> terminal -> idle
+waiting -> deadline -> quarantine -> idle
+locally_validated -> denied -> idle
+```
+
+Only an admitted, locally valid request can reach `sent`. A malformed or
+unrelated response reaches `quarantine`, never `terminal`.
+
+## Fail-closed validation rules
+
+Before sending, validate configuration, node, function, payload bound, length
+prefix, capability, version, read-only admission, and replay policy. Any failed
+validation produces no send. Vendor PDUs have zero retries by default. A retry
+is permitted only for an admitted replay-safe request and is bounded by an
+explicit policy.
+
+## Unknown payload and field retention
+
+Opaque payloads and unknown fields are retained as bounded byte sequences with
+their frame metadata. They are not converted to a value, enum, unit, capability,
+or command. Retention must preserve enough framing information for deterministic
+offline replay while enforcing size limits and redaction rules.
+
+## Runtime provenance
+
+Runtime records include contract version, flavor, configured node, function,
+frame length, CRC result, transaction state, capability disposition, timing
+outcome, and a redacted payload digest. Records must distinguish locally
+validated, sent, intermediate, terminal, timeout, exception, and quarantined
+outcomes. Records contain no raw sensitive payload by default.
+
+## Security, privacy, and redaction
+
+The initial profile is read-only and disabled by default. Raw payload bytes,
+serial numbers, device identifiers, account material, and private coordinates
+must not be published through logs, MCP, fixtures, or diagnostics. Public MCP
+results expose length, digest, function, timing, and redacted categorical
+metadata only. Offline fixtures use sanitized values.
+
+## Capability and version gates
+
+Framing support is not a capability claim. Detection performs no vendor
+transmission. A flavor is usable only when explicit configuration, passive
+compatibility evidence, capability profile, and version compatibility all pass.
+Unknown versions and missing capability information remain framing-only and
+deny outbound operations.
+
+## Conformance vectors and sanitized examples
+
+The following vectors validate frame construction and CRC byte order only:
+
+```text
+FC100: 10 64 00 5a c5
+FC101: 10 65 00 5b 55
+FC102: 10 66 00 5b a5
+FC100 exception status 1: 10 e4 01 fa c5
+```
+
+The `00` payload is an empty nested payload and does not admit a live request.
+
+## Interoperability levels
+
+1. **Framing only:** validate bounded RTU frames and preserve opaque bytes.
+2. **FC100 envelope:** validate FC100 length prefix and response phases.
+3. **Qualified read-only TEDAPI operations:** transmit only explicitly
+   allowlisted, version-compatible, replay-safe operations.
+4. **FC101/FC102 opaque:** validate and retain frames; no live transmission or
+   typed interpretation.
+5. **Future typed FC101/FC102:** requires a later compatible contract and
+   explicit qualification.
+
+## Compatibility and versioning
+
+This profile is versioned as a compatibility contract. A newer implementation
+must preserve the fail-closed behavior of this version for unknown fields,
+unknown status values, unsupported functions, and unqualified capabilities.
+Typed interpretations or new outbound operations require a new compatible
+contract version and corresponding conformance coverage.
