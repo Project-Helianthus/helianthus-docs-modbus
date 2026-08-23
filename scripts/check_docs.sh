@@ -3,6 +3,8 @@ set -euo pipefail
 
 spec='protocols/tesla/tedapi.md'
 test -f "$spec"
+private_spec='protocols/modbus/private-function-codes.md'
+test -f "$private_spec"
 
 required=(
   'Scope and non-goals' 'Terminology' 'Endpoint roles' 'Serial settings'
@@ -17,6 +19,16 @@ required=(
 )
 for heading in "${required[@]}"; do
   grep -Fqx "## $heading" "$spec"
+done
+
+private_required=(
+  'Scope and non-goals' 'Selection and ownership' 'Transport exchange'
+  'Function-code isolation' 'Ambiguity and no-send'
+  'Response correlation and exceptions' 'RTU serialization'
+  'Validation and compatibility'
+)
+for heading in "${private_required[@]}"; do
+  grep -Fqx "## $heading" "$private_spec"
 done
 
 forbidden='https?://|/[Uu]sers/|\.md`|sha-?[0-9a-f]{8,}|0x[0-9A-Fa-f]{6,}|reverse engineering|static-confirmed|conform sursei|am observat'

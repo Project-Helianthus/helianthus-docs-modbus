@@ -5,6 +5,7 @@ protocol contracts, device notes, and redacted interoperability material.
 
 Current protocol contracts:
 
+- [Generic private function-code transport](protocols/modbus/private-function-codes.md)
 - [Tesla TEDAPI over Modbus RTU](protocols/tesla/tedapi.md)
 
 Protocol pages are public contracts. They define bounded, fail-closed behavior
