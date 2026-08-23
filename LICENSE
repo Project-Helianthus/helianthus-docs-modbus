@@ -1,0 +1,26 @@
+Helianthus Modbus Documentation License Policy
+
+This repository uses two publication lanes.
+
+The SPDX identifiers and complete legal texts incorporated by reference are:
+
+- CC0-1.0: https://creativecommons.org/publicdomain/zero/1.0/legalcode
+- AGPL-3.0-only: https://www.gnu.org/licenses/agpl-3.0.txt
+
+1. Protocol knowledge
+
+Material under `protocols/`, `devices/`, `evidence/`, and `re-notes/` that
+defines public protocol behavior, wire formats, interoperability requirements,
+or redacted evidence is released under CC0-1.0.
+
+2. Helianthus implementation documentation
+
+Repository policy, development guidance, CI tooling, and Helianthus-specific
+architecture or API guidance are released under AGPL-3.0-only unless a more
+specific file notice applies.
+
+Inbound contribution rule:
+
+Contributors must submit only material that can be published under its
+applicable lane. Never submit credentials, account data, private addresses,
+full device fingerprints, or material that cannot be legally published.
