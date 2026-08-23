@@ -2,27 +2,14 @@
 
 ## Scope
 
-This flavor qualifies one Fronius three-phase float SunSpec chain. It consumes
+This flavor qualifies one Fronius three-phase float SunSpec V1.1 chain. It consumes
 the standard SunSpec core and adds only manufacturer applicability and observed
 chain geometry. It does not redefine standard units, sentinels, fields, or
 capabilities.
 
 ## Exact chain geometry
 
-The V1.0 offline fixture has this ordered model sequence:
-
-```text
-1/65
-113/60
-120/26
-121/30
-122/44
-160/88
-124/24
-ffff/0
-```
-
-The compatible V1.1 fixture adds Model 123/24 between Model 122 and Model 160:
+The offline fixture has this ordered model sequence:
 
 ```text
 1/65
@@ -43,10 +30,9 @@ without its own applicability fixture.
 
 ## Applicability
 
-Common Model 1 must identify the Fronius manufacturer family and provide a
-non-sensitive model and version tuple compatible with the selected flavor.
-Serial number is retained only as private provenance and is not a detector or a
-public fact.
+Common Model 1 must contain manufacturer `Fronius`, model `Symo GEN24 10.0`,
+and version `1.41.11-1`. Serial number is retained only as private provenance
+and is not a detector or a public fact. Any other tuple is outside this flavor.
 
 The chain must contain Model 113 with the exact admitted length. Model 103 is a
 standard equivalent encoding candidate, not evidence for this float flavor.

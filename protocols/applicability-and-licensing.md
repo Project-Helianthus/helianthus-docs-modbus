@@ -18,9 +18,9 @@ documentation.
 | Profile | Exact applicability | Evidence class | Initial disposition |
 | --- | --- | --- | --- |
 | `sunspec.core.readonly.v1` | SunSpec model chains using the explicitly listed model identifiers and lengths | public interoperability standard facts | qualified offline |
-| `fronius.sunspec.float.v1` | Fronius chain with Common Model 1 and three-phase float inverter Model 113, plus the listed optional standard models | vendor-copyright-inspection-only plus sanitized interoperability fixtures | qualified offline flavor |
-| `huawei.smartlogger.readonly.v1` | SmartLogger V300R024C10 and V300R025C10 branches that pass an exact structured firmware gate | vendor-copyright-inspection-only | offline candidate, default denied |
-| `huawei.sdongle.readonly.v1` | SDongleA-05, SDongleB-03, and SDongleB-06 only within an explicitly listed V100 or V200 branch | vendor-copyright-inspection-only | offline candidate, default denied |
+| `fronius.sunspec.float.v1` | manufacturer `Fronius`, model `Symo GEN24 10.0`, version `1.41.11-1`, and the exact V1.1 chain | vendor-copyright-inspection-only plus sanitized interoperability fixtures | qualified offline flavor |
+| `huawei.smartlogger.readonly.v1` | SmartLogger with exact firmware `V300R024C10SPC191` or `V300R024C10SPC210` | vendor-copyright-inspection-only | offline candidate, default denied |
+| `huawei.sdongle.readonly.v1` | SDongleA-05, SDongleB-03, or SDongleB-06 with exact firmware `V200R025C00SPC120` and protocol D5.0 | vendor-copyright-inspection-only | offline candidate, default denied |
 | `huawei.emma.readonly.v1` | EMMA SmartHEMS R024 SPC100 or later, or R025 SPC102 or later, compared only within the matching branch | vendor-copyright-inspection-only | offline candidate, default denied |
 | `growatt.protocol2.tl3x.readonly.v1` | Growatt Protocol II v1.24 TL3-X class covering MAX, MID, and MAC register ranges | vendor-copyright-inspection-only | offline candidate, default denied |
 
@@ -32,8 +32,9 @@ particular installation, firmware image, endpoint, or live support state.
 
 Profile admission requires an exact endpoint and unit observation, an exact
 family and version gate, a complete read-only fixture, and negative-overlap
-fixtures against every other candidate. A missing discriminator, unknown
-version, conflicting detector, malformed field, partial inventory, or
+fixtures against every other candidate. The conformance matrix contains every
+unordered pair among the five vendor profiles. A missing discriminator,
+unknown version, conflicting detector, malformed field, partial inventory, or
 unlicensed required fact produces `insufficient_evidence` and no send.
 
 Function-code readability, a vendor string, a writable name, a serial number,
