@@ -58,7 +58,7 @@ grep -Fqx '## EMMA candidate' 'protocols/huawei/gateway-readonly-v1.md'
 grep -Fqx '## Private function codes' 'protocols/huawei/gateway-readonly-v1.md'
 grep -Fqx '## Identity tuple' 'protocols/growatt/protocol-ii-readonly-v1.md'
 
-if grep -Ein 'https?://|/[Uu]sers/|sha-?[0-9a-f]{8,}|(source|vendor material) (is|are) public domain' "${multivendor_specs[@]}"; then
+if grep -Ein 'https?://|/[Uu]sers/|sha-?[0-9a-f]{8,}|(source|vendor material) (is|are) public domain|sunspec\.inverter\.|canonical facts' "${multivendor_specs[@]}"; then
   echo 'multivendor protocol specification contains a source locator, hash, or public-domain declaration' >&2
   exit 1
 fi

@@ -50,18 +50,17 @@ Scale-factor sentinels, integer not-implemented sentinels, IEEE NaN, infinity,
 and unsupported enum values produce unavailable or unknown facts. They are not
 converted into zero. Scale factors are applied only to their declared fields.
 
-## Capability profiles
+## Encoding equivalence
 
-Wire encoding and capability are separate. The capability
-`sunspec.inverter.three_phase.telemetry.v1` may be satisfied by Common Model 1
-plus Model 103 or by Common Model 1 plus Model 113 when the same required
-canonical facts are valid. Equivalence is fact-by-fact; the model identifier is
-not itself a capability.
+Common Model 1 plus Model 103 and Common Model 1 plus Model 113 can represent
+the same three-phase inverter measurements through different wire encodings.
+Equivalence is established field by field only when quantity, unit, phase,
+availability, and value agree after each model's declared decoding rules. A
+matching model identifier or a partially decoded block is not equivalence.
 
-Optional Models 120, 121, 122, 123, 124, and 160 enrich the observation without
-changing the minimum three-phase telemetry capability. Missing optional models
-remain absent. A malformed optional block invalidates that block and any chain
-extent that can no longer be established safely.
+Optional Models 120, 121, 122, 123, 124, and 160 add their own standard fields.
+Missing optional models remain absent. A malformed optional block invalidates
+that block and any chain extent that can no longer be established safely.
 
 ## Safety and disposition
 

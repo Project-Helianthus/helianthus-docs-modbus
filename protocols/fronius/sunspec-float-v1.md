@@ -41,10 +41,9 @@ manufacturer tuple, is insufficient evidence.
 
 ## Read-only result
 
-Successful fixture decoding may satisfy
-`sunspec.inverter.three_phase.telemetry.v1`. Models 120, 121, 122, 160, and 124
-add only valid fields decoded by their standard schema. Unknown blocks and
-unknown fields retain raw extent and provenance.
+Successful fixture decoding yields the standard fields that are valid in
+Models 1, 113, 120, 121, 122, 160, and 124. Unknown blocks and unknown fields
+retain raw extent and provenance.
 
 This flavor creates no control operation. Model 121 and Model 124 values are
 observations only. Automatic activation, live endpoint qualification, and
