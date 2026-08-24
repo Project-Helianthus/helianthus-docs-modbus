@@ -14,7 +14,14 @@ admit a runtime profile.
 Two independent, bounded basic Read Device Identification requests expired: one
 at three seconds and one at ten seconds. One separately authorized, bounded
 FC03 Device Search Status request also expired at five seconds. No subsequent
-Modbus request was sent.
+Modbus request was sent at that stage.
+
+One bounded retry matrix then alternated basic Read Device Identification and
+FC03 Device Search Status four times. The matrix order was basic Read Device
+Identification, FC03 Device Search Status, basic Read Device Identification,
+and FC03 Device Search Status. Each request had a five-second deadline and at
+least five seconds of idle time before the next request. All four requests
+expired. No subsequent Modbus request was sent.
 
 Those outcomes do not identify a family, establish a capability, prove device
 absence, establish MEI incompatibility, or describe inverter configuration.
