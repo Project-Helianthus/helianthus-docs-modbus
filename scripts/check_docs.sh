@@ -1,6 +1,25 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+check_sdongle_admission() {
+  local document="$1"
+  local forbidden='https?://|/[Uu]sers/|([0-9]{1,3}\.){3}[0-9]{1,3}|([[:alnum:]][[:alnum:].-]*[[:alpha:]][[:alnum:].-]*):[0-9]{1,5}|[Pp]ort[[:space:]]+[0-9]{1,5}|(^|[^[:xdigit:]])[[:xdigit:]]{40}([^[:xdigit:]]|$)|(^|[^[:xdigit:]])[[:xdigit:]]{64}([^[:xdigit:]]|$)'
+
+  if grep -Ein "$forbidden" "$document"; then
+    echo 'S-Dongle admission record contains private or provenance material' >&2
+    return 1
+  fi
+}
+
+if [[ $# -gt 0 ]]; then
+  if [[ $# -ne 2 || "$1" != '--check-sdongle-admission' ]]; then
+    echo 'usage: check_docs.sh [--check-sdongle-admission document]' >&2
+    exit 2
+  fi
+  check_sdongle_admission "$2"
+  exit 0
+fi
+
 spec='protocols/tesla/tedapi.md'
 test -f "$spec"
 private_spec='protocols/modbus/private-function-codes.md'
@@ -69,10 +88,7 @@ for heading in "${sdongle_admission_required[@]}"; do
   grep -Fqx "## $heading" "$sdongle_admission"
 done
 
-if grep -Ein 'https?://|/[Uu]sers/|([0-9]{1,3}\.){3}[0-9]{1,3}|:502|sha-?[0-9a-f]{8,}' "$sdongle_admission"; then
-  echo 'S-Dongle admission record contains private or provenance material' >&2
-  exit 1
-fi
+check_sdongle_admission "$sdongle_admission"
 
 if grep -Ein 'https?://|/[Uu]sers/|sha-?[0-9a-f]{8,}|(source|vendor material) (is|are) public domain|sunspec\.inverter\.|canonical facts' "${multivendor_specs[@]}"; then
   echo 'multivendor protocol specification contains a source locator, hash, or public-domain declaration' >&2
