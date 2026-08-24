@@ -90,6 +90,7 @@ done
 grep -Fq 'The matrix order was basic Read Device' "$sdongle_admission"
 grep -Fq 'and FC03 Device Search Status.' "$sdongle_admission"
 grep -Fq 'expired. No subsequent Modbus request was sent.' "$sdongle_admission"
+grep -Fq 'Each retry began after at least five seconds of idle time.' "$sdongle_admission"
 
 check_sdongle_admission "$sdongle_admission"
 

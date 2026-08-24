@@ -20,7 +20,8 @@ One bounded retry matrix then alternated basic Read Device Identification and
 FC03 Device Search Status four times. The matrix order was basic Read Device
 Identification, FC03 Device Search Status, basic Read Device Identification,
 and FC03 Device Search Status. Each request had a five-second deadline and at
-least five seconds of idle time before the next request. All four requests
+least five seconds of idle time before the next request.
+Each retry began after at least five seconds of idle time. All four requests
 expired. No subsequent Modbus request was sent.
 
 Those outcomes do not identify a family, establish a capability, prove device
