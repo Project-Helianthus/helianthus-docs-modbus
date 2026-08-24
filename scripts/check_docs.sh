@@ -11,12 +11,29 @@ check_sdongle_admission() {
   fi
 }
 
+check_public_protocol() {
+  local document="$1"
+  local forbidden='https?://|/[Uu]sers/|sha(-?256)?[-:]?[0-9a-f]{8,}|(source|vendor material) (is|are) public domain|sunspec\.inverter\.|canonical facts'
+
+  if grep -Ein "$forbidden" "$document"; then
+    echo 'public protocol specification contains a source locator, hash, or public-domain declaration' >&2
+    return 1
+  fi
+}
+
 if [[ $# -gt 0 ]]; then
-  if [[ $# -ne 2 || "$1" != '--check-sdongle-admission' ]]; then
-    echo 'usage: check_docs.sh [--check-sdongle-admission document]' >&2
+  if [[ $# -ne 2 ]]; then
+    echo 'usage: check_docs.sh [--check-sdongle-admission|--check-public-protocol document]' >&2
     exit 2
   fi
-  check_sdongle_admission "$2"
+  case "$1" in
+    --check-sdongle-admission) check_sdongle_admission "$2" ;;
+    --check-public-protocol) check_public_protocol "$2" ;;
+    *)
+      echo 'usage: check_docs.sh [--check-sdongle-admission|--check-public-protocol document]' >&2
+      exit 2
+      ;;
+  esac
   exit 0
 fi
 
@@ -91,6 +108,7 @@ grep -Fqx '## Identity and admission' 'protocols/growatt/shinewilan-x2-bridge-v1
 grep -Fqx '## Transparency limits' 'protocols/growatt/shinewilan-x2-bridge-v1.md'
 grep -Fq 'The bridge has no semantic registry profile of its own.' 'protocols/growatt/shinewilan-x2-bridge-v1.md'
 grep -Fq 'Unsupported or undocumented operations are' 'protocols/growatt/shinewilan-x2-bridge-v1.md'
+grep -Fq 'Unit Identifier 0 is RTU broadcast and is `NO_SEND`' 'protocols/growatt/shinewilan-x2-bridge-v1.md'
 
 sdongle_admission_required=(
   'Scope' 'Sanitized qualification boundary' 'Disposition' 'Requalification gate'
@@ -106,7 +124,6 @@ grep -Fq 'Each retry began after at least five seconds of idle time.' "$sdongle_
 
 check_sdongle_admission "$sdongle_admission"
 
-if grep -Ein 'https?://|/[Uu]sers/|sha-?[0-9a-f]{8,}|(source|vendor material) (is|are) public domain|sunspec\.inverter\.|canonical facts' "${multivendor_specs[@]}"; then
-  echo 'multivendor protocol specification contains a source locator, hash, or public-domain declaration' >&2
-  exit 1
-fi
+for multivendor_spec in "${multivendor_specs[@]}"; do
+  check_public_protocol "$multivendor_spec"
+done

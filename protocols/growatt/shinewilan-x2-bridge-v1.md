@@ -17,6 +17,11 @@ MBAP Unit Identifier as the downstream Modbus RTU unit address and forwards
 the request PDU without changing its function code, register offset, quantity,
 or payload.
 
+Only Unit Identifiers 1 through 247 are admitted for this response-bearing
+bridge contract. Unit Identifier 0 is RTU broadcast and is `NO_SEND`; values
+above 247 are reserved or outside the admitted unicast range and are also
+`NO_SEND`.
+
 The Transaction Identifier and Protocol Identifier belong to the Modbus TCP
 side and are not downstream register semantics. The downstream RTU frame adds
 the serial framing and integrity field required by Modbus RTU. The bridge must

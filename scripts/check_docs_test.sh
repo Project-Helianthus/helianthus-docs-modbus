@@ -7,6 +7,8 @@ trap 'rm -rf "$fixture_root"' EXIT
 
 source_document="$repo_root/architecture/sdongle-qualification-disposition-v1.md"
 fixture_document="$fixture_root/admission.md"
+x2_document="$repo_root/protocols/growatt/shinewilan-x2-bridge-v1.md"
+x2_fixture="$fixture_root/shinewilan-x2.md"
 
 cp "$source_document" "$fixture_document"
 "$repo_root/scripts/check_docs.sh" --check-sdongle-admission "$fixture_document"
@@ -25,6 +27,21 @@ for leak in \
   printf '\n%s\n' "$leak" >> "$fixture_document"
   if "$repo_root/scripts/check_docs.sh" --check-sdongle-admission "$fixture_document"; then
     echo "admission leak was accepted: $leak" >&2
+    exit 1
+  fi
+done
+
+cp "$x2_document" "$x2_fixture"
+"$repo_root/scripts/check_docs.sh" --check-public-protocol "$x2_fixture"
+
+for leak in \
+  'https://example.invalid/vendor-manual' \
+  '/Users/example/private-capture' \
+  'sha256-deadbeef01234567'; do
+  cp "$x2_document" "$x2_fixture"
+  printf '\n%s\n' "$leak" >> "$x2_fixture"
+  if "$repo_root/scripts/check_docs.sh" --check-public-protocol "$x2_fixture"; then
+    echo "X2 protocol leak was accepted: $leak" >&2
     exit 1
   fi
 done
