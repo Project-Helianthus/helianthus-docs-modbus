@@ -70,9 +70,10 @@ with this FC03 identity tuple:
 - FC03 offset 30222, quantity 20, EMMA-family model;
 - FC03 offset 30035, quantity 15, structured software version.
 
-The offering must be exactly `SmartHEMS`. After terminal NUL and space padding
-are removed, `EMMA-A01` and `EMMA-A02` are the only admitted exact model values.
-These comparisons are case-sensitive; there is no prefix match,
+The offering is a bounded, validated contextual field; it is not a family
+discriminator. After terminal NUL and space padding are removed, `EMMA-A01` and
+`EMMA-A02` are the only admitted exact model values. These comparisons are
+case-sensitive; there is no prefix match,
 wildcard, first-match rule, or implicit alias.
 
 The structured software version must be exactly one of these branch forms:
