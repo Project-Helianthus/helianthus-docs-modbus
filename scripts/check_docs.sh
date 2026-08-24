@@ -5,6 +5,8 @@ spec='protocols/tesla/tedapi.md'
 test -f "$spec"
 private_spec='protocols/modbus/private-function-codes.md'
 test -f "$private_spec"
+sdongle_admission='architecture/sdongle-qualification-disposition-v1.md'
+test -f "$sdongle_admission"
 
 multivendor_specs=(
   'protocols/applicability-and-licensing.md'
@@ -57,6 +59,19 @@ grep -Fqx '## S-Dongle candidate' 'protocols/huawei/gateway-readonly-v1.md'
 grep -Fqx '## EMMA candidate' 'protocols/huawei/gateway-readonly-v1.md'
 grep -Fqx '## Private function codes' 'protocols/huawei/gateway-readonly-v1.md'
 grep -Fqx '## Identity tuple' 'protocols/growatt/protocol-ii-readonly-v1.md'
+
+sdongle_admission_required=(
+  'Scope' 'Sanitized qualification boundary' 'Disposition' 'Requalification gate'
+  'Publication boundary'
+)
+for heading in "${sdongle_admission_required[@]}"; do
+  grep -Fqx "## $heading" "$sdongle_admission"
+done
+
+if grep -Ein 'https?://|/[Uu]sers/|([0-9]{1,3}\.){3}[0-9]{1,3}|:502|sha-?[0-9a-f]{8,}' "$sdongle_admission"; then
+  echo 'S-Dongle admission record contains private or provenance material' >&2
+  exit 1
+fi
 
 if grep -Ein 'https?://|/[Uu]sers/|sha-?[0-9a-f]{8,}|(source|vendor material) (is|are) public domain|sunspec\.inverter\.|canonical facts' "${multivendor_specs[@]}"; then
   echo 'multivendor protocol specification contains a source locator, hash, or public-domain declaration' >&2
