@@ -58,11 +58,12 @@ grep -Fqx '## SmartLogger candidate' 'protocols/huawei/gateway-readonly-v1.md'
 grep -Fqx '## S-Dongle candidate' 'protocols/huawei/gateway-readonly-v1.md'
 grep -Fqx '## EMMA candidate' 'protocols/huawei/gateway-readonly-v1.md'
 grep -Fqx '## Private function codes' 'protocols/huawei/gateway-readonly-v1.md'
+grep -Fq 'A gateway-unit timeout never authorizes a child-unit scan' 'protocols/huawei/gateway-readonly-v1.md'
 grep -Fqx '## Identity tuple' 'protocols/growatt/protocol-ii-readonly-v1.md'
 
 sdongle_admission_required=(
   'Scope' 'Sanitized qualification boundary' 'Disposition' 'Requalification gate'
-  'Publication boundary'
+  'Gateway-unit and child boundary' 'Publication boundary'
 )
 for heading in "${sdongle_admission_required[@]}"; do
   grep -Fqx "## $heading" "$sdongle_admission"

@@ -46,13 +46,20 @@ The candidate targets logical unit 100 and requires all of:
 - FC03 offset 37429, quantity 1, for capacity reconciliation.
 
 The executable offline candidate in this revision is limited to
-V200R025C00SPC120 with model A-05, B-03, or B-06. Earlier V100 and V200R022
-branches remain documentary and default denied. Protocol baseline D5.0 is an
-independent decoded gate.
+V200R025C00SPC120 with model A-05, B-03, or B-06. The distinct
+S-DongleA-05 / V200R022C10SPC312 tuple remains documentary and default denied;
+it must not be collapsed into the V200R025C00SPC120 gate. Protocol baseline D5.0
+is an independent decoded gate.
 
 Readability of unit 100, search status alone, or a serial number is
 insufficient. Extended child inventory remains offline-only until the exact TCP
 unit target is qualified.
+
+At logical unit 100, the documented candidate probes are basic MEI and the
+listed read-only FC03 gateway registers. Extended MEI inventory is not a
+gateway-unit probe: it applies only to a separately qualified child unit in the
+range 1 through 247. A gateway-unit timeout never authorizes a child-unit scan
+or an extended-MEI fallback.
 
 ## EMMA candidate
 
@@ -91,9 +98,10 @@ profile, routing address, model/product type, and source revision; it never uses
 ESN alone.
 
 Total enumeration is bounded to 15 seconds. SmartLogger and EMMA permit at most
-248 pages, 248 objects, and 65536 response bytes. The S-Dongle candidate permits
-at most 121 pages, 121 objects, and 32768 response bytes. Limit exhaustion is
-insufficient evidence, never partial success.
+248 pages, 248 objects, and 65536 response bytes. A separately qualified
+S-Dongle child unit permits at most 121 pages, 121 objects, and 32768 response
+bytes. These S-Dongle bounds never authorize extended MEI at logical unit 100.
+Limit exhaustion is insufficient evidence, never partial success.
 
 ## Private function codes
 

@@ -13,7 +13,8 @@ admit a runtime profile.
 
 TCP reachability was established. Two independent, bounded basic Read Device
 Identification requests expired: one at three seconds and one at ten seconds.
-No subsequent Modbus request was sent.
+One separately authorized, bounded FC03 Device Search Status request also
+expired at five seconds. No subsequent Modbus request was sent.
 
 Those outcomes do not identify a family, establish a capability, prove device
 absence, establish MEI incompatibility, or describe inverter configuration.
@@ -21,26 +22,39 @@ They leave identity and capability as insufficient evidence.
 
 ## Disposition
 
-The profile remains `PRE_LIVE_INSUFFICIENT_EVIDENCE`, default denied, and
-unregistered for runtime acquisition. The completed qualification is at a hard
-stop: it must not retry, fall back to another register read, or use a private
-function code.
+The target tuple `S-DongleA-05 / V200R022C10SPC312` remains
+`PRE_LIVE_INSUFFICIENT_EVIDENCE`, default denied, and unregistered for runtime
+acquisition. The tuple is qualification context, not Modbus identity proof.
+The completed qualification is at a hard stop: it must not retry, fall back to
+another register read, or use a private function code.
 
 FC0x41 and FC0x17 remain no-send. The boundary permits neither a write nor an
 allocation operation.
+
+## Gateway-unit and child boundary
+
+At the S-Dongle gateway unit, basic Read Device Identification and documented
+read-only FC03 gateway registers are the only candidate probes. Extended Read
+Device Identification inventory is not permitted at that unit.
+
+Extended inventory applies only to a separately qualified child unit in the
+range 1 through 247. A timeout at the gateway unit never authorizes a child-unit
+scan, inferred child address, or extended-MEI fallback.
 
 ## Requalification gate
 
 A future qualification requires a new bounded read-only run and evaluates the
 documented candidate in this order:
 
-1. basic Read Device Identification;
-2. FC03 protocol version and type/search/change-sequence reads;
-3. after an exact model gate, FC03 operating-system version and capacity reads;
-4. only after the exact model, firmware, and protocol tuple is satisfied, a
-   bounded extended Read Device Identification inventory; and
-5. a final type/search/change-sequence read that proves the inventory remained
-   stable.
+1. basic Read Device Identification and a separately authorized minimal FC03
+   gateway-status observation;
+2. only after those observations provide required discriminators, exact model,
+   firmware, and protocol gates using documented read-only gateway registers;
+3. a separately qualified child routing context before any extended inventory;
+4. only at that child unit, a bounded extended Read Device Identification
+   inventory; and
+5. a final read-only gateway-state observation that proves the documented guard
+   remained stable.
 
 Any timeout, malformed response, unavailable required discriminator, unstable
 inventory, conflicting candidate, or failed bound stops the run at insufficient
