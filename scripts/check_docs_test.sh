@@ -10,12 +10,14 @@ fixture_document="$fixture_root/admission.md"
 
 cp "$source_document" "$fixture_document"
 "$repo_root/scripts/check_docs.sh" --check-sdongle-admission "$fixture_document"
+grep -Fq 'Each retry began after at least five seconds of idle time.' "$source_document"
 
 for leak in \
   'gateway.example.internal:1502' \
   'a:1502' \
   'gateway.internal:modbus' \
   'port 1502' \
+  '192.0.2.1' \
   'TCP reachability was established' \
   '0123456789abcdef0123456789abcdef01234567' \
   '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef'; do
