@@ -17,6 +17,11 @@ MBAP Unit Identifier as the downstream Modbus RTU unit address and forwards
 the request PDU without changing its function code, register offset, quantity,
 or payload.
 
+The MBAP Protocol Identifier must be 0x0000. The MBAP Length must equal one
+byte for the Unit Identifier plus the exact request PDU. Any other protocol
+identifier, truncated frame, trailing data, or inconsistent length is rejected
+before a downstream request is emitted.
+
 Only Unit Identifiers 1 through 247 are admitted for this response-bearing
 bridge contract. Unit Identifier 0 is RTU broadcast and is `NO_SEND`; values
 above 247 are reserved or outside the admitted unicast range and are also
@@ -33,6 +38,9 @@ vendor name.
 A normal downstream response is returned to the requesting Modbus TCP
 transaction with the same Unit Identifier and the downstream response PDU.
 An exception response preserves the downstream exception function and code.
+The bridge copies the request Transaction Identifier, emits Protocol Identifier
+0x0000, and computes a new MBAP Length from the Unit Identifier and exact
+response PDU.
 
 A response with the wrong unit, an unrelated transaction, a malformed PDU, an
 invalid length, a timeout, or a disconnect is not correlated to the request.

@@ -21,16 +21,41 @@ check_public_protocol() {
   fi
 }
 
+check_x2_publication() {
+  local document="$1"
+  local bare_revision='(^|[^[:xdigit:]])[[:xdigit:]]{40}([^[:xdigit:]]|$)|(^|[^[:xdigit:]])[[:xdigit:]]{64}([^[:xdigit:]]|$)'
+
+  check_public_protocol "$document"
+  if grep -Ein "$bare_revision" "$document"; then
+    echo 'X2 protocol specification contains a bare source revision' >&2
+    return 1
+  fi
+}
+
+check_x2_contract() {
+  local document="$1"
+
+  grep -Fq 'without changing its function code, register offset, quantity,' "$document"
+  grep -Fq 'The MBAP Protocol Identifier must be 0x0000.' "$document"
+  grep -Fq 'The MBAP Length must equal one' "$document"
+  grep -Fq 'Only Unit Identifiers 1 through 247 are admitted' "$document"
+  grep -Fq 'not infer a unit, scan unit addresses' "$document"
+  grep -Fq 'The read-only candidate surface consists of FC03 holding-register reads and' "$document"
+  grep -Fq 'The bridge has no semantic registry profile of its own.' "$document"
+}
+
 if [[ $# -gt 0 ]]; then
   if [[ $# -ne 2 ]]; then
-    echo 'usage: check_docs.sh [--check-sdongle-admission|--check-public-protocol document]' >&2
+    echo 'usage: check_docs.sh [--check-sdongle-admission|--check-public-protocol|--check-x2-publication|--check-x2-contract document]' >&2
     exit 2
   fi
   case "$1" in
     --check-sdongle-admission) check_sdongle_admission "$2" ;;
     --check-public-protocol) check_public_protocol "$2" ;;
+    --check-x2-publication) check_x2_publication "$2" ;;
+    --check-x2-contract) check_x2_contract "$2" ;;
     *)
-      echo 'usage: check_docs.sh [--check-sdongle-admission|--check-public-protocol document]' >&2
+      echo 'usage: check_docs.sh [--check-sdongle-admission|--check-public-protocol|--check-x2-publication|--check-x2-contract document]' >&2
       exit 2
       ;;
   esac
@@ -109,6 +134,8 @@ grep -Fqx '## Transparency limits' 'protocols/growatt/shinewilan-x2-bridge-v1.md
 grep -Fq 'The bridge has no semantic registry profile of its own.' 'protocols/growatt/shinewilan-x2-bridge-v1.md'
 grep -Fq 'Unsupported or undocumented operations are' 'protocols/growatt/shinewilan-x2-bridge-v1.md'
 grep -Fq 'Unit Identifier 0 is RTU broadcast and is `NO_SEND`' 'protocols/growatt/shinewilan-x2-bridge-v1.md'
+check_x2_contract 'protocols/growatt/shinewilan-x2-bridge-v1.md'
+check_x2_publication 'protocols/growatt/shinewilan-x2-bridge-v1.md'
 
 sdongle_admission_required=(
   'Scope' 'Sanitized qualification boundary' 'Disposition' 'Requalification gate'
