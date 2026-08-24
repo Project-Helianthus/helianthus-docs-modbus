@@ -63,19 +63,36 @@ or an extended-MEI fallback.
 
 ## EMMA candidate
 
-The candidate targets unit 0 and requires all of:
+The canonical family class is `EMMA`. The candidate targets unit 0 and begins
+with this FC03 identity tuple:
 
 - FC03 offset 30000, quantity 15, offering name;
 - FC03 offset 30222, quantity 20, EMMA-family model;
-- FC03 offset 30035, quantity 15, structured software version;
-- basic MEI identity; and
-- an extended-MEI self entry with device ID 0 and HEMS product type.
+- FC03 offset 30035, quantity 15, structured software version.
 
-This revision admits only exact firmware V100R024C00SPC100 or
-V100R025C00SPC102. It does not apply an `or later` comparison. Branches are
-never compared numerically across R values. Serial register 30015,
-model-register readability, a SmartHEMS prefix, or basic MEI alone is
-insufficient.
+The offering is a bounded, validated contextual field; it is not a family
+discriminator. After terminal NUL and space padding are removed, `EMMA-A01` and
+`EMMA-A02` are the only admitted exact model values. These comparisons are
+case-sensitive; there is no prefix match,
+wildcard, first-match rule, or implicit alias.
+
+The structured software version must be exactly one of these branch forms:
+
+- `SmartHEMS V100R024C00SPCnnn`, where decimal `nnn` is at least 100; or
+- `SmartHEMS V100R025C00SPCnnn`, where decimal `nnn` is at least 102.
+
+The numeric comparison is only within the exact R/C branch. R024 and R025 are
+not ordered against one another, and an unrecognized branch or suffix is
+insufficient evidence.
+
+`EMMA-A01` and `EMMA-A02` are distinct capability variants. EMMA-A01 never inherits an EMMA-A02-only capability. The base read-only profile projects no
+optional smart-load, charger, or control capability from either model token;
+each such capability requires its own documented, model-specific gate.
+
+Basic and extended MEI are optional enrichment, never initial EMMA identification. An optional-MEI failure does not negate an already validated
+FC03 identity tuple, and optional-MEI success alone is insufficient to identify
+the gateway. Serial register 30015, a model-register read without the complete
+tuple, or a SmartHEMS prefix without an admitted model are insufficient.
 
 ## Child inventory
 
