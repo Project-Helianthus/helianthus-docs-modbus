@@ -1,10 +1,31 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+check_sdongle_admission() {
+  local document="$1"
+  local forbidden='https?://|/[Uu]sers/|([0-9]{1,3}\.){3}[0-9]{1,3}|([[:alnum:]][[:alnum:].-]*):([0-9]{1,5}|[[:alpha:]][[:alnum:].-]*)|[Pp]ort[[:space:]]+[0-9]{1,5}|(^|[^[:xdigit:]])[[:xdigit:]]{40}([^[:xdigit:]]|$)|(^|[^[:xdigit:]])[[:xdigit:]]{64}([^[:xdigit:]]|$)|TCP reachability was established'
+
+  if grep -Ein "$forbidden" "$document"; then
+    echo 'S-Dongle admission record contains private or provenance material' >&2
+    return 1
+  fi
+}
+
+if [[ $# -gt 0 ]]; then
+  if [[ $# -ne 2 || "$1" != '--check-sdongle-admission' ]]; then
+    echo 'usage: check_docs.sh [--check-sdongle-admission document]' >&2
+    exit 2
+  fi
+  check_sdongle_admission "$2"
+  exit 0
+fi
+
 spec='protocols/tesla/tedapi.md'
 test -f "$spec"
 private_spec='protocols/modbus/private-function-codes.md'
 test -f "$private_spec"
+sdongle_admission='architecture/sdongle-qualification-disposition-v1.md'
+test -f "$sdongle_admission"
 
 multivendor_specs=(
   'protocols/applicability-and-licensing.md'
@@ -56,7 +77,22 @@ grep -Fqx '## SmartLogger candidate' 'protocols/huawei/gateway-readonly-v1.md'
 grep -Fqx '## S-Dongle candidate' 'protocols/huawei/gateway-readonly-v1.md'
 grep -Fqx '## EMMA candidate' 'protocols/huawei/gateway-readonly-v1.md'
 grep -Fqx '## Private function codes' 'protocols/huawei/gateway-readonly-v1.md'
+grep -Fq 'A gateway-unit timeout never authorizes a child-unit scan' 'protocols/huawei/gateway-readonly-v1.md'
 grep -Fqx '## Identity tuple' 'protocols/growatt/protocol-ii-readonly-v1.md'
+
+sdongle_admission_required=(
+  'Scope' 'Sanitized qualification boundary' 'Disposition' 'Requalification gate'
+  'Gateway-unit and child boundary' 'Publication boundary'
+)
+for heading in "${sdongle_admission_required[@]}"; do
+  grep -Fqx "## $heading" "$sdongle_admission"
+done
+grep -Fq 'The matrix order was basic Read Device' "$sdongle_admission"
+grep -Fq 'and FC03 Device Search Status.' "$sdongle_admission"
+grep -Fq 'expired. No subsequent Modbus request was sent.' "$sdongle_admission"
+grep -Fq 'Each retry began after at least five seconds of idle time.' "$sdongle_admission"
+
+check_sdongle_admission "$sdongle_admission"
 
 if grep -Ein 'https?://|/[Uu]sers/|sha-?[0-9a-f]{8,}|(source|vendor material) (is|are) public domain|sunspec\.inverter\.|canonical facts' "${multivendor_specs[@]}"; then
   echo 'multivendor protocol specification contains a source locator, hash, or public-domain declaration' >&2

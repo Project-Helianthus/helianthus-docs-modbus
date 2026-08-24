@@ -15,3 +15,7 @@ Current protocol contracts:
 
 Protocol pages are public contracts. They define bounded, fail-closed behavior
 and do not expose private device identity or unsafe control procedures.
+
+Architecture and admission records:
+
+- [S-Dongle qualification disposition](architecture/sdongle-qualification-disposition-v1.md)
