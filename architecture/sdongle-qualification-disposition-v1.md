@@ -11,10 +11,10 @@ admit a runtime profile.
 
 ## Sanitized qualification boundary
 
-TCP reachability was established. Two independent, bounded basic Read Device
-Identification requests expired: one at three seconds and one at ten seconds.
-One separately authorized, bounded FC03 Device Search Status request also
-expired at five seconds. No subsequent Modbus request was sent.
+Two independent, bounded basic Read Device Identification requests expired: one
+at three seconds and one at ten seconds. One separately authorized, bounded
+FC03 Device Search Status request also expired at five seconds. No subsequent
+Modbus request was sent.
 
 Those outcomes do not identify a family, establish a capability, prove device
 absence, establish MEI incompatibility, or describe inverter configuration.
