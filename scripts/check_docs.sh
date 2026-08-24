@@ -33,6 +33,7 @@ multivendor_specs=(
   'protocols/fronius/sunspec-float-v1.md'
   'protocols/huawei/gateway-readonly-v1.md'
   'protocols/growatt/protocol-ii-readonly-v1.md'
+  'protocols/growatt/shinewilan-x2-bridge-v1.md'
 )
 for multivendor_spec in "${multivendor_specs[@]}"; do
   test -f "$multivendor_spec"
@@ -83,6 +84,13 @@ grep -Fq '`EMMA-A02` are the only admitted exact model values.' 'protocols/huawe
 grep -Fq 'EMMA-A01 never inherits an EMMA-A02-only capability.' 'protocols/huawei/gateway-readonly-v1.md'
 grep -Fq 'Basic and extended MEI are optional enrichment, never initial EMMA identification.' 'protocols/huawei/gateway-readonly-v1.md'
 grep -Fqx '## Identity tuple' 'protocols/growatt/protocol-ii-readonly-v1.md'
+grep -Fqx '## Request mapping' 'protocols/growatt/shinewilan-x2-bridge-v1.md'
+grep -Fqx '## Response mapping' 'protocols/growatt/shinewilan-x2-bridge-v1.md'
+grep -Fqx '## Read-only boundary' 'protocols/growatt/shinewilan-x2-bridge-v1.md'
+grep -Fqx '## Identity and admission' 'protocols/growatt/shinewilan-x2-bridge-v1.md'
+grep -Fqx '## Transparency limits' 'protocols/growatt/shinewilan-x2-bridge-v1.md'
+grep -Fq 'The bridge has no semantic registry profile of its own.' 'protocols/growatt/shinewilan-x2-bridge-v1.md'
+grep -Fq 'Unsupported or undocumented operations are' 'protocols/growatt/shinewilan-x2-bridge-v1.md'
 
 sdongle_admission_required=(
   'Scope' 'Sanitized qualification boundary' 'Disposition' 'Requalification gate'
