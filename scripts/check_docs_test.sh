@@ -14,7 +14,9 @@ cp "$source_document" "$fixture_document"
 for leak in \
   'gateway.example.internal:1502' \
   'a:1502' \
+  'gateway.internal:modbus' \
   'port 1502' \
+  'TCP reachability was established' \
   '0123456789abcdef0123456789abcdef01234567' \
   '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef'; do
   cp "$source_document" "$fixture_document"
