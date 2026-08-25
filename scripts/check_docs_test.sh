@@ -48,6 +48,19 @@ for mutation in \
   fi
 done
 
+for mutation in \
+  's/It must not discover endpoints, select a vendor profile, infer a/It may discover endpoints, select a vendor profile, infer a/' \
+  's/makes transport available; it does not make any vendor/makes transport available and makes every vendor/' \
+  's/a raw external-operation bypass/a raw external-operation entry point/' \
+  's/must quarantine and recover before it accepts a successor request/may continue before it accepts a successor request/' \
+  's/classifying itself as a failed exchange/classifying itself as a normal operation/'; do
+  sed "$mutation" "$private_function_document" > "$private_function_fixture"
+  if "$repo_root/scripts/check_docs.sh" --check-private-function-contract "$private_function_fixture"; then
+    echo "configured serial boundary mutation was accepted: $mutation" >&2
+    exit 1
+  fi
+done
+
 "$repo_root/scripts/check_docs.sh" --check-sunspec-v1-model-families-contract "$sunspec_v1_families_document"
 for mutation in \
   's/29 exact decoder tuples/30 exact decoder tuples/' \

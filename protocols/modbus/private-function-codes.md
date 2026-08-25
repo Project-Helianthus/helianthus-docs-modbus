@@ -107,10 +107,12 @@ operation eligible to be sent. Profile selection and operation admission remain
 preconditions at the registry boundary. A serial stream must not be exposed as
 a raw external-operation bypass.
 
-Opening, configuration failure, cancellation, short write, read failure, and
-close are transport failures. They must preserve the in-flight exchange
-boundary: after an uncertain transmission, the endpoint must quarantine and
-recover before it accepts a successor request.
+Opening or configuration failure, cancellation, short write, read failure, and
+unexpected endpoint loss are transport failures. They must preserve the
+in-flight exchange boundary: after an uncertain transmission, the endpoint
+must quarantine and recover before it accepts a successor request. A normal
+lifecycle close ends the local stream without creating a successor request or
+classifying itself as a failed exchange.
 
 ## Validation and compatibility
 

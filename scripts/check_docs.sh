@@ -34,6 +34,7 @@ check_private_function_contract() {
     'Ambiguity and no-send' \
     'Response correlation and exceptions' \
     'RTU serialization' \
+		'Configured serial boundary' \
     'Validation and compatibility'; do
     grep -Fqx "## $heading" "$document"
   done
@@ -43,6 +44,14 @@ check_private_function_contract() {
   grep -Fq 'FC23 is a standard Modbus function code, not a private-function operation.' "$document"
   grep -Fq 'A vendor-specific allocation interpretation for FC23 requires a separately admitted standard-function operation and a typed standard-function codec.' "$document"
   grep -Fq 'This contract makes no claim about the meaning, sendability, or allocation workflow of such an operation.' "$document"
+	grep -Fq 'It must not discover endpoints, select a vendor profile, infer a' "$document"
+	grep -Fq 'Opening a serial stream makes transport available; it does not make any vendor' "$document"
+	grep -Fq 'preconditions at the registry boundary. A serial stream must not be exposed as' "$document"
+	grep -Fq 'a raw external-operation bypass.' "$document"
+	grep -Fq 'in-flight exchange boundary: after an uncertain transmission, the endpoint' "$document"
+	grep -Fq 'must quarantine and recover before it accepts a successor request.' "$document"
+	grep -Fq 'lifecycle close ends the local stream without creating a successor request or' "$document"
+	grep -Fq 'classifying itself as a failed exchange.' "$document"
 }
 
 check_sunspec_v2_contract() {
