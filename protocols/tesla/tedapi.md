@@ -121,6 +121,36 @@ Semantic read-only classification does not claim that the responder has no
 ephemeral transport-side effects. It grants no configuration, control, pairing,
 trust, firmware, or other persistent authority.
 
+### Qualified WC lifetime operation
+
+This version defines a qualified WC lifetime operation:
+`tesla.hsc.fc100.wc_lifetime.v1`. It is a semantic read-only snapshot operation
+and is not a configuration, control, or discovery operation. It is compatible
+only with the explicit `tesla_hsc_modbus_v1` profile and the `wc3_24_44_3`
+operation version. Any other operation version, missing capability,
+unqualified endpoint or node, missing replay-safe declaration, or unknown
+response shape must cause no send.
+
+The nested request message is exactly `32 02 1a 00`; therefore its FC100 PDU is
+exactly `04 32 02 1a 00`. The outer message selects WC messages, the nested
+message selects the empty lifetime request, and no caller-supplied request
+fields are permitted. This byte sequence is an operation descriptor, not an
+endpoint probe or a transmission instruction.
+
+An echoed PDU exactly equal to this request PDU is an optional FC100 intermediate and may occur no more than once. A duplicate echo, a second terminal, or any response after a terminal must be quarantined and fail this operation. A successful terminal PDU is an FC100 normal response whose nested envelope contains WC family `6` and one response tag `4`. The tag-`4` body is a bounded opaque terminal body. This version defines no member,
+field number, wire type, scalar, enum, repeated value, unit, scale, range, or
+field-presence contract within that body. Its values, field names, units,
+identifiers, and raw bytes are not projected by this version; a decoder may
+retain only terminal-tag presence, terminal-body length, digest, and structural
+replay metadata. An omitted inner value must not be interpreted as a scalar
+zero, an empty repeated value, or an empty nested member. A normal terminal PDU
+that does not match this success shape is not a lifetime result and must fail
+closed as a redacted operation failure. A lifetime operation application failure is an FC100 normal response whose nested envelope contains Common family `4` and error tag `1`; the generic exception-response rules remain separate.
+
+Semantic read-only classification does not claim that the responder has no
+ephemeral transport-side effects. It grants no configuration, control, pairing,
+trust, firmware, or other persistent authority.
+
 ### Qualified Common system-information operation
 
 This version defines a qualified Common system-information operation:
@@ -308,6 +338,8 @@ FC100 exception status 1: 10 e4 01 fa c5
 FC101 exception status 4: 10 e5 04 3b 56
 FC102 exception status 4: 10 e6 04 3b a6
 FC100 qualified terminal with synthetic opaque body: 10 64 06 32 04 12 02 08 01 31 81
+FC100 qualified WC lifetime request: 10 64 04 32 02 1a 00 57 3d
+FC100 qualified WC lifetime terminal with synthetic opaque body: 10 64 06 32 04 22 02 08 01 3e 81
 FC100 qualified Common system-information request: 10 64 04 22 02 12 00 54 3d
 FC100 qualified Common terminal with synthetic opaque body: 10 64 06 22 04 1a 02 08 01 31 71
 

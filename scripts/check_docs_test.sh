@@ -99,6 +99,23 @@ for mutation in \
   fi
 done
 
+for mutation in \
+  's/qualified WC lifetime operation/unqualified WC lifetime operation/' \
+  's/`tesla.hsc.fc100.wc_lifetime.v1`/`tesla.hsc.fc100.any_wc_operation.v1`/' \
+  's/exactly `04 32 02 1a 00`/any FC100 PDU/' \
+  's/may occur no more than once/may occur without bound/' \
+  's/must be quarantined and fail this operation/may remain in flight/' \
+  's/WC family `6` and one response tag `4`/WC family `4` and one response tag `4`/' \
+  's/tag-`4` body is a bounded opaque terminal body/contains a required inner member/' \
+  's/Common family `4` and error tag `1`/Common family `6` and error tag `4`/' \
+  's/unknown response shape must cause no send/unknown response shape may send/'; do
+  sed "$mutation" "$tesla_document" > "$tesla_fixture"
+  if "$repo_root/scripts/check_docs.sh" --check-tesla-tedapi-contract "$tesla_fixture"; then
+    echo "Tesla WC lifetime mutation was accepted: $mutation" >&2
+    exit 1
+  fi
+done
+
 "$repo_root/scripts/check_docs.sh" --check-private-function-contract "$private_function_document"
 for mutation in \
   's/FC100, FC101, and FC102 may be reused/FC100, FC101, and FC102 are globally reserved/' \
