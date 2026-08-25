@@ -19,6 +19,8 @@ sunspec_v2_licensing_document="$repo_root/protocols/applicability-and-licensing.
 sunspec_v2_licensing_fixture="$fixture_root/sunspec-v2-licensing.md"
 sunspec_v1_families_document="$repo_root/protocols/sunspec/read-only-core-v1-model-families.md"
 sunspec_v1_families_fixture="$fixture_root/sunspec-read-only-core-v1-model-families.md"
+nested_layout_document="$repo_root/protocols/sunspec/nested-layout-contract-v1.md"
+nested_layout_fixture="$fixture_root/sunspec-nested-layout-contract-v1.md"
 private_function_document="$repo_root/protocols/modbus/private-function-codes.md"
 private_function_fixture="$fixture_root/private-function-codes.md"
 
@@ -63,6 +65,25 @@ for contradiction in \
   printf '\n%s\n' "$contradiction" >> "$sunspec_v1_families_fixture"
   if "$repo_root/scripts/check_docs.sh" --check-sunspec-v1-model-families-contract "$sunspec_v1_families_fixture"; then
     echo "SunSpec V1 model-families contradiction was accepted: $contradiction" >&2
+    exit 1
+  fi
+done
+
+"$repo_root/scripts/check_docs.sh" --check-sunspec-nested-layout-contract "$nested_layout_document"
+for mutation in \
+  's/only by the exact schema revision and model identifier/by model identifier and declared length/' \
+  's/A declared length never selects a template and is never an expanded-layout cache key/A declared length selects the expanded-layout cache/' \
+  's/after every documented count and its declared length validate together/from the declared length alone/' \
+  's/must not infer counts/may infer counts/' \
+  's/`Crv\[2\]\.MustTrip\.Pt\[5\]\.Hz` is a hierarchical path, not a flattened repeat index/`Crv[2].MustTrip.Pt[5].Hz` is a flattened repeat index/' \
+  's/map each decoded point to exact source spans/map each decoded point to one synthetic span/' \
+  's/Checked arithmetic applies before every extent, aggregate, fact-count, or/Unchecked arithmetic applies before every extent, aggregate, fact-count, or/' \
+  's/Invalid geometry remains raw-only with zero typed facts/Invalid geometry emits partial typed facts/' \
+  's/V1 templates, caches, and outputs remain isolated and unchanged/V1 templates and V2 caches are shared/' \
+  's/Models 707, 708, and 709 are bounded examples only and do not define Model 710 or any other model/Models 707, 708, and 709 define Model 710/'; do
+  sed "$mutation" "$nested_layout_document" > "$nested_layout_fixture"
+  if "$repo_root/scripts/check_docs.sh" --check-sunspec-nested-layout-contract "$nested_layout_fixture"; then
+    echo "SunSpec nested-layout mutation was accepted: $mutation" >&2
     exit 1
   fi
 done
