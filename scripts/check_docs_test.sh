@@ -61,6 +61,9 @@ for mutation in \
   's/missing replay-safe declaration, or unknown response shape must cause no send/missing replay-safe declaration may send/' \
   's/exactly `04 32 02 0a 00`/any FC100 PDU/' \
   's/is an FC100 intermediate/is a successful terminal/' \
+  's/tag-`2` body is a bounded opaque terminal body/contains a required inner member/' \
+  's/This version defines no member,/This version defines a member,/' \
+  's/zero, an empty repeated value, or an empty nested member./zero is always available./' \
   's/identifiers, and raw bytes are not projected/identifiers and raw bytes are projected/' \
   's/must fail closed as a redacted operation failure/may be decoded as vitals/' \
   's/does not claim that the responder has no/claims that the responder has no/' \
