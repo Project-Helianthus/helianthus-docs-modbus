@@ -103,7 +103,7 @@ check_sunspec_v2_contract() {
 check_sunspec_v2_licensing() {
   local document="$1"
 
-	grep -Fq '| `sunspec.der.readonly.v2` | Common 1/66 plus Models 701/153, 702/50, 703/17, 713/7, 714 variable geometry, and 715/7 at the exact pinned V2 schema revision | public Apache-2.0 model catalogue and independently stated interoperability facts | offline decoder contract; runtime, vendor, and catalog admission default denied |' "$document"
+  grep -Fq '| `sunspec.der.readonly.v2` | Common 1/66 plus Models 701/153, 702/50, 703/17, 713/7, 714 variable geometry, and 715/7 at the exact pinned V2 schema revision | public Apache-2.0 model catalogue and independently stated interoperability facts | offline decoder contract; runtime, vendor, and catalog admission default denied |' "$document"
   grep -Fq '`90b4a331dcca1d6eac69c1bead952fddcc5852e0`' "$document"
   grep -Fq 'That upstream license applies to' "$document"
   grep -Fq 'the catalogue input.' "$document"
