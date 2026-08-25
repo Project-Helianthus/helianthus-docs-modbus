@@ -45,6 +45,12 @@ check_tesla_tedapi_contract() {
   grep -Fq 'Raw nested bytes, protobuf field names, values,' "$document"
   grep -Fq 'operation identity, capability, and send authority are not projected.' "$document"
   grep -Fq 'Invalid, truncated, overflowed, or out-of-range keys are rejected.' "$document"
+  grep -Fq 'A complete offline wire summary may retain the total FC100 envelope length,' "$document"
+  grep -Fq 'of at most 64 entries. Each entry contains only its numeric field number and' "$document"
+  grep -Fq 'Values are consumed only to validate wire boundaries and' "$document"
+  grep -Fq 'are never retained or projected.' "$document"
+  grep -Fq 'group boundaries with the same field number.' "$document"
+  grep -Fq 'oversized, unpaired, or over-count summary is rejected.' "$document"
   if grep -Ein "$forbidden" "$document"; then
     echo 'normative Tesla specification contains forbidden provenance material' >&2
     return 1

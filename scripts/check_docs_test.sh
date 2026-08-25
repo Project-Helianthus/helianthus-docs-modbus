@@ -42,7 +42,13 @@ for mutation in \
   's/wire type is 0 through 5/wire type is 0 through 6/' \
   's/Raw nested bytes, protobuf field names, values,/Raw nested bytes and protobuf field names are projected,/' \
   's/operation identity, capability, and send authority are not projected/operation identity and send authority are projected/' \
-  's/Invalid, truncated, overflowed, or out-of-range keys are rejected/Invalid keys are retained/'; do
+  's/Invalid, truncated, overflowed, or out-of-range keys are rejected/Invalid keys are retained/' \
+  's/at most 64 entries/at most 65 entries/' \
+  's/total FC100 envelope length/total FC100 envelope bytes and values/' \
+  's/Values are consumed only to validate wire boundaries and/Values are retained while validating wire boundaries and/' \
+  's/are never retained or projected/are projected as operation semantics/' \
+  's/group boundaries with the same field number/group boundaries without matching field numbers/' \
+  's/oversized, unpaired, or over-count summary is rejected/oversized summaries are retained/'; do
   sed "$mutation" "$tesla_document" > "$tesla_fixture"
   if "$repo_root/scripts/check_docs.sh" --check-tesla-tedapi-contract "$tesla_fixture"; then
     echo "Tesla replay metadata mutation was accepted: $mutation" >&2

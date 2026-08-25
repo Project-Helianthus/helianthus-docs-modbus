@@ -104,6 +104,14 @@ wire type is 0 through 5. Raw nested bytes, protobuf field names, values,
 operation identity, capability, and send authority are not projected.
 Invalid, truncated, overflowed, or out-of-range keys are rejected.
 
+A complete offline wire summary may retain the total FC100 envelope length,
+nested-message length, deterministic digest, entry count, and an ordered list
+of at most 64 entries. Each entry contains only its numeric field number and
+numeric wire type. Values are consumed only to validate wire boundaries and
+are never retained or projected. Wire types 3 and 4 are valid only as paired
+group boundaries with the same field number. A malformed, truncated,
+oversized, unpaired, or over-count summary is rejected.
+
 ## Functions 101 and 102
 
 An FC101 or FC102 request PDU is `length:u8 | request[length]`. The request
