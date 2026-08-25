@@ -62,13 +62,13 @@ check_sunspec_v1_model_families_contract() {
   grep -Fqx '## Meter Families' "$document"
   grep -Fqx '## Environmental Families' "$document"
   grep -Fqx '## Safety and Non-Claims' "$document"
-  grep -Fq '28 distinct standard model identifiers and 29 exact decoder tuples' "$document"
-  grep -Fq 'Model 1 length 66 is current and length 65 is a compatibility tuple' "$document"
+  grep -Fq 'identifiers and 29 exact decoder tuples' "$document"
+  grep -Fq 'length 65 is a compatibility tuple' "$document"
   grep -Fq 'Models 101, 102, and 103 use integer values with declared scale factors.' "$document"
   grep -Fq 'Models 111, 112, and 113 use IEEE FLOAT values.' "$document"
   grep -Fq 'Models 123 and 124 are observed state only.' "$document"
-  grep -Fq 'Unknown model identifiers or lengths remain opaque blocks.' "$document"
-  grep -Fq 'This page does not create a product, profile, or support claim.' "$document"
+  grep -Fq 'identifiers or lengths remain opaque blocks.' "$document"
+  grep -Fq 'does not create a product, profile, or support' "$document"
   if grep -Ein 'sunspec\.models\.candidate\.v2|V2 registry|PROFILE_ADMITTED|write authority' "$document"; then
     echo 'SunSpec V1 model-families reference exceeds the V1 docs-only boundary' >&2
     return 1

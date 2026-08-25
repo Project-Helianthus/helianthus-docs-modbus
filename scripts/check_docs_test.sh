@@ -15,10 +15,39 @@ wit_document="$repo_root/protocols/growatt/wit-family-protocol-matrix-v1.md"
 wit_fixture="$fixture_root/wit-family-matrix.md"
 sunspec_v2_document="$repo_root/protocols/sunspec/read-only-core-v2.md"
 sunspec_v2_fixture="$fixture_root/sunspec-read-only-core-v2.md"
+sunspec_v1_families_document="$repo_root/protocols/sunspec/read-only-core-v1-model-families.md"
+sunspec_v1_families_fixture="$fixture_root/sunspec-read-only-core-v1-model-families.md"
 
 cp "$source_document" "$fixture_document"
 "$repo_root/scripts/check_docs.sh" --check-sdongle-admission "$fixture_document"
 grep -Fq 'Each retry began after at least five seconds of idle time.' "$source_document"
+
+"$repo_root/scripts/check_docs.sh" --check-sunspec-v1-model-families-contract "$sunspec_v1_families_document"
+for mutation in \
+  's/29 exact decoder tuples/30 exact decoder tuples/' \
+  's/length 65 is a compatibility tuple/length 65 is a current product tuple/' \
+  's/Models 101, 102, and 103/Models 101, 102, and 104/' \
+  's/Models 111, 112, and 113 use IEEE FLOAT values/Models 111, 112, and 113 use integer values/' \
+  's/Models 123 and 124 are observed state only/Models 123 and 124 are writable operations/' \
+  's/identifiers or lengths remain opaque blocks/identifiers or lengths are decoded best-effort/' \
+  's/does not create a product, profile, or support/creates a product, profile, and support/'; do
+  sed "$mutation" "$sunspec_v1_families_document" > "$sunspec_v1_families_fixture"
+  if "$repo_root/scripts/check_docs.sh" --check-sunspec-v1-model-families-contract "$sunspec_v1_families_fixture"; then
+    echo "SunSpec V1 model-families mutation was accepted: $mutation" >&2
+    exit 1
+  fi
+done
+
+for contradiction in \
+  'sunspec.models.candidate.v2' \
+  'Model 123 creates write authority.'; do
+  cp "$sunspec_v1_families_document" "$sunspec_v1_families_fixture"
+  printf '\n%s\n' "$contradiction" >> "$sunspec_v1_families_fixture"
+  if "$repo_root/scripts/check_docs.sh" --check-sunspec-v1-model-families-contract "$sunspec_v1_families_fixture"; then
+    echo "SunSpec V1 model-families contradiction was accepted: $contradiction" >&2
+    exit 1
+  fi
+done
 
 "$repo_root/scripts/check_docs.sh" --check-sunspec-v2-contract "$sunspec_v2_document"
 for mutation in \
