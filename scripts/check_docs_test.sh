@@ -356,7 +356,8 @@ for mutation in \
   's/are not read/are read when needed/' \
   's/FC10 Preset Multiple Registers/FC10 Read Multiple Registers/' \
   's/W or WR are unconditional `NO_SEND`/W or WR require operator approval/' \
-  's/Registry implementation is `NO_GO`/Registry implementation is `GO`/' \
+  's/A bounded offline decoder is permitted only/A bounded offline decoder is permitted without/' \
+  's/No bounded decoder creates catalog registration/Bounded decoder creates catalog registration/' \
   's/A synthetic identity assembled from the document is not a substitute/A synthetic identity assembled from the document is sufficient/'; do
   sed "$mutation" "$bms_document" > "$bms_fixture"
   if "$repo_root/scripts/check_docs.sh" --check-bms-contract "$bms_fixture"; then
@@ -369,7 +370,6 @@ for mutation in \
   's/does not automatically apply the contract/automatically applies the contract/' \
   's/are forbidden identity inputs/are permitted identity inputs/' \
   's/negative-overlap records/optional overlap records/' \
-  's/Without that fixture/Without that document/' \
   's/is ambiguous and produces no match/is ranked and selects the first match/' \
   's/no partial/partial/'; do
   sed "$mutation" "$bms_document" > "$bms_fixture"

@@ -6,7 +6,11 @@ This contract defines a default-denied, offline read-only candidate for the
 Growatt 1xSxxP ESS battery protocol over Modbus RTU. It is a battery-to-inverter
 interoperability protocol, not Growatt inverter Protocol II and not SunSpec.
 
-This page creates no decoder, catalog entry, automatic detector, runtime
+This page permits a bounded offline decoder for an externally supplied,
+revision-declared observation. A decoder may retain only fields with an exact,
+versioned definition and must retain every other admitted word as opaque.
+
+This page creates no catalog entry, executable detector, automatic runtime
 acquisition, telemetry publication, or support claim.
 
 ## Exact applicability and revision
@@ -57,9 +61,9 @@ bounded slices:
 - offset 0x010D, quantity 2, for the final read-only extension values before
   the writable calibration range.
 
-The two extension slices remain opaque words until an exact clean-room fixture
-proves their distinct byte and word encoding. Reserved or unknown fields inside
-an admitted slice stay opaque and retain their position.
+The two extension slices remain opaque words until an exact, versioned field
+definition establishes their distinct byte and word encoding. Reserved or
+unknown fields inside an admitted slice stay opaque and retain their position.
 
 Offsets 0x0009 through 0x000C contain barcode material and are not read,
 retained, or used for identity. A larger coalesced read that includes those
@@ -119,23 +123,20 @@ plan because they contain control or writable calibration authority. FC05,
 FC06, FC0F, FC10, FC17, private functions, and broadcast are not fallback
 operations.
 
-## Fixture and admission gate
+## Decoder and runtime boundary
 
-Registry implementation is `NO_GO` until an exact, permitted, sanitized
-clean-room fixture provides:
+A bounded offline decoder is permitted only for an externally declared
+revision tuple, one explicitly selected unicast unit, and the exact FC03 slices
+listed above. It must retain raw words with barcode, serial, endpoint, and
+installation identity absent. Every decoded field needs an exact versioned
+byte-order, word-order, signedness, and scaling definition; otherwise it stays
+opaque. Repeated-pack data requires an exact extent and explicit pack identity;
+without those, no repeated fact is emitted.
 
-- the complete revision tuple and a CC0-compatible fixture license;
-- one admitted unicast unit and exact FC03 request slices;
-- raw words with barcode, serial, endpoint, and installation identity absent;
-- declared byte and word order for every decoded field;
-- coherent company, generation, firmware, topology, and cell-series facts;
-- repeated-pack geometry or an explicit single-pack bound; and
-- negative-overlap records against Growatt Protocol II, SunSpec/Fronius, and
-  native Huawei profiles.
-
-Without that fixture, catalog registration, executable detection, automatic
-runtime admission, telemetry publication, and a support claim remain disabled.
-A synthetic identity assembled from the document is not a substitute.
+No bounded decoder creates catalog registration, executable detection,
+automatic runtime admission, telemetry publication, or a support claim. A
+synthetic identity assembled from the document is not a substitute for a
+separately qualified identity decision.
 
 ## Collision and failure behavior
 
