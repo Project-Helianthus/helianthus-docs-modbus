@@ -428,6 +428,24 @@ done
 
 test -f "$repo_root/protocols/outback/axs-port-sunspec-readonly-v1.md"
 
+outback_document="$repo_root/protocols/outback/axs-port-sunspec-readonly-v1.md"
+outback_fixture="$tmpdir/outback-axs.md"
+"$repo_root/scripts/check_docs.sh" --check-outback-axs-contract "$outback_document"
+
+for mutation in \
+  's/declared length 282/declared length 281/' \
+  's/length 23\./length 24./' \
+  's/does not convert an OutBack device into a generic inverter profile./converts an OutBack device into a generic inverter profile./' \
+  's/all read\/write or write-only fields are excluded from output. They are `NO_SEND`./read\/write fields are permitted./' \
+  's/No function in this contract writes a register/A function in this contract writes a register/' \
+  's/does not identify a network endpoint, unit identifier, installation,/identifies a network endpoint, unit identifier, installation,/'; do
+  sed "$mutation" "$outback_document" > "$outback_fixture"
+  if "$repo_root/scripts/check_docs.sh" --check-outback-axs-contract "$outback_fixture"; then
+    echo "OutBack AXS mutation was accepted: $mutation" >&2
+    exit 1
+  fi
+done
+
 for mutation in \
   's/downstream Modbus RTU unit address/downstream default Modbus RTU unit address/' \
   's/Protocol Identifier must be 0x0000/Protocol Identifier may be nonzero/' \
