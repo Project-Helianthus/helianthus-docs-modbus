@@ -8,7 +8,7 @@ flavor, runtime catalog registration, or control interface. Existing SunSpec
 V1 behavior remains unchanged.
 
 The contract covers the `SunS` signature, Common Model 1, Models 701, 702, 703,
-713, 714, 715, 802, 803, 804, 805, 806, and 807, and the terminal block. It does not make a proprietary
+707, 708, 713, 714, 715, 802, 803, 804, 805, 806, 807, 808, and 809, and the terminal block. It does not make a proprietary
 Huawei or Growatt register map SunSpec.
 
 ## Schema revision
