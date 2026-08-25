@@ -51,12 +51,16 @@ done
 "$repo_root/scripts/check_docs.sh" --check-x2-contract "$x2_document"
 
 for mutation in \
+  's/downstream Modbus RTU unit address/downstream default Modbus RTU unit address/' \
   's/Protocol Identifier must be 0x0000/Protocol Identifier may be nonzero/' \
   's/Length must equal one/Length may differ by one/' \
   's/Unit Identifiers 1 through 247/Unit Identifiers 1 through 246/' \
+  's/Unit Identifier 0 is RTU broadcast/Unit Identifier 0 is downstream unicast/' \
   's/scan unit addresses/scan a bounded unit range/' \
   's/without changing its function code/after changing its function code/' \
+  's/or payload\./or transformed payload./' \
   's/FC03 holding-register reads/FC06 holding-register writes/' \
+  's/FC04 input-register reads/FC06 holding-register writes/' \
   's/no semantic registry profile of its own/a semantic registry profile of its own/'; do
   sed "$mutation" "$x2_document" > "$x2_fixture"
   if "$repo_root/scripts/check_docs.sh" --check-x2-contract "$x2_fixture"; then

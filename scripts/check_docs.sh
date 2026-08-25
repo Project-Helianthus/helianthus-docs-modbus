@@ -35,12 +35,16 @@ check_x2_publication() {
 check_x2_contract() {
   local document="$1"
 
+  grep -Fq 'MBAP Unit Identifier as the downstream Modbus RTU unit address and forwards' "$document"
   grep -Fq 'without changing its function code, register offset, quantity,' "$document"
+  grep -Fq 'or payload.' "$document"
   grep -Fq 'The MBAP Protocol Identifier must be 0x0000.' "$document"
   grep -Fq 'The MBAP Length must equal one' "$document"
   grep -Fq 'Only Unit Identifiers 1 through 247 are admitted' "$document"
+  grep -Fq 'Unit Identifier 0 is RTU broadcast and is `NO_SEND`' "$document"
   grep -Fq 'not infer a unit, scan unit addresses' "$document"
   grep -Fq 'The read-only candidate surface consists of FC03 holding-register reads and' "$document"
+  grep -Fq 'FC04 input-register reads.' "$document"
   grep -Fq 'The bridge has no semantic registry profile of its own.' "$document"
 }
 
