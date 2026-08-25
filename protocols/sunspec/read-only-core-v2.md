@@ -8,7 +8,7 @@ flavor, runtime catalog registration, or control interface. Existing SunSpec
 V1 behavior remains unchanged.
 
 The contract covers the `SunS` signature, Common Model 1, Models 701, 702, 703,
-713, 714, 715, 802, 803, 804, 805, and 806, and the terminal block. It does not make a proprietary
+713, 714, 715, 802, 803, 804, 805, 806, and 807, and the terminal block. It does not make a proprietary
 Huawei or Growatt register map SunSpec.
 
 ## Schema revision
@@ -38,7 +38,7 @@ zero.
 ## Model scope
 
 The bounded V2 scope contains Common Model 1 and Models 701, 702, 703, 713, 714,
-715, 802, 803, 804, 805, and 806.
+715, 802, 803, 804, 805, 806, and 807.
 
 | Model | V2 data-register length | Read-only role |
 | --- | --- | --- |
@@ -54,11 +54,12 @@ The bounded V2 scope contains Common Model 1 and Models 701, 702, 703, 713, 714,
 | 804 | `46 + 16*NMod` | BESS string observed state with repeated modules |
 | 805 | 42 | BESS module observed state |
 | 806 | 1 | Flow battery structural observed state |
+| 807 | 34 | Flow battery string observed state |
 
 A V2 offline decoder selects only by model identifier, exact declared length,
 and `sunspec.models@90b4a331-v2`. A known identifier with another length
 remains opaque. No fixed ordering is inferred among Models 701, 702, 703, 713,
-714, 715, 802, 803, 804, 805, and 806.
+714, 715, 802, 803, 804, 805, 806, and 807.
 
 ## Control-observability boundary
 
@@ -80,7 +81,7 @@ Every Model 802 field is observed state only and is `NO_SEND`.
 No Model 802 field creates a write method, operation dispatch, control behavior,
 runtime activation, vendor activation, catalog activation, transport behavior,
 gateway behavior, or live I/O. Model 801 remains excluded as deprecated.
-Models 807 through 809 remain excluded pending separate family and substructure decisions.
+Models 808 through 809 remain excluded pending separate family and substructure decisions.
 
 ## BESS bank and string geometry
 
@@ -135,6 +136,15 @@ No Model 806 field creates a write method, send authority, operation admission,
 dispatch, retry, control behavior, runtime activation, vendor activation,
 catalog activation, transport behavior, gateway behavior, or live I/O.
 
+## Flow battery string boundary
+
+Model 807 has fixed data-register length 34 and no effective repeated group.
+`Idx` and `NMod` remain observed structural fields only. Model 807 does not infer a relationship to Models 806, 808, or 809. Every Model 807 field, including control-adjacent zero-count group names, is observed state only and is `NO_SEND`.
+
+No Model 807 field creates a write method, send authority, operation admission,
+dispatch, retry, control behavior, runtime activation, vendor activation,
+catalog activation, transport behavior, gateway behavior, or live I/O.
+
 ## Model 714 geometry
 
 Model 714 has data-register length `18 + 25*NPrt`. The fixed extent is 18 data
@@ -181,7 +191,7 @@ The fixture set must cover Common with 701 and 702; Common with fixed 703 and
 with 701, 702, 713, and a repeated-port 714; 714 count and length mismatch;
 Common with Model 803 strings, Common with Model 804 modules, and Common with
 fixed Model 805 observed-state words; Common with fixed Model 806 structural
-observed-state words; zero and nonzero count geometry; count
+observed-state words; Common with fixed Model 807 observed-state words; zero and nonzero count geometry; count
 and length mismatch; zero and all-one `uint64`;
 invalid or missing scale factors; invalid string
 encoding; preserved spaces; unknown enum and bit-mask values; repeated
