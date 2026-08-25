@@ -95,6 +95,34 @@ explicit non-mutating per-operation contract, version qualification, read-only
 admission, and replay-safe declaration. The Tesla profile alone owns FC100
 interpretation; it does not create a global function-code handler.
 
+### Qualified WC vitals operation
+
+This version defines one qualified operation: `tesla.hsc.fc100.wc_vitals.v1`.
+It is a semantic read-only snapshot operation and is not a configuration,
+control, or discovery operation. It is compatible only with the explicit
+`tesla_hsc_modbus_v1` profile and the `wc3_24_44_3` operation version. Any
+other operation version, missing capability, unqualified endpoint or node,
+missing replay-safe declaration, or unknown response shape must cause no send.
+
+The nested request message is exactly `32 02 0a 00`; therefore its FC100 PDU is
+exactly `04 32 02 0a 00`. The outer message selects WC messages, the nested
+message selects the empty vitals request, and no caller-supplied request fields
+are permitted. This byte sequence is an operation descriptor, not an endpoint
+probe or a transmission instruction.
+
+An echoed PDU exactly equal to this request PDU is an FC100 intermediate. A
+successful terminal PDU has one bounded nested message with the WC-message
+response selection and one bounded vitals snapshot member. Its values, field
+names, units, identifiers, and raw bytes are not projected by this version; a
+decoder may retain only its bounded length, digest, and structural replay
+metadata. A normal terminal PDU that does not match this success shape is not a
+vitals result and must fail closed as a redacted operation failure. The generic
+exception-response rules remain separate.
+
+Semantic read-only classification does not claim that the responder has no
+ephemeral transport-side effects. It grants no configuration, control, pairing,
+trust, firmware, or other persistent authority.
+
 ### Read-only replay metadata
 
 An offline FC100 decoder may retain the nested-message length, the numeric
