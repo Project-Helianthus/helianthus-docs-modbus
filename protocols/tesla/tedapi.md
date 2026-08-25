@@ -147,9 +147,7 @@ may retain only terminal-tag presence, terminal-body length, digest, and
 structural replay metadata. An omitted inner value must not be interpreted as a
 scalar zero, an empty repeated value, or an empty nested member. A normal
 terminal PDU that does not match this success shape is not a system-information
-result and must fail closed as a redacted operation failure. A normal Common
-error body is a terminal application failure; the generic exception-response
-rules remain separate.
+result and must fail closed as a redacted operation failure. A normal Common error body is a terminal application failure; the generic exception-response rules remain separate.
 
 Semantic read-only classification does not claim that the responder has no
 ephemeral transport-side effects. It grants no configuration, control, pairing,
