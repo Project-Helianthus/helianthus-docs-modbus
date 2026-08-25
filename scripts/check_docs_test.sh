@@ -56,7 +56,7 @@ for mutation in \
   's/`outbound_allowed` value is always `false`/`outbound_allowed` value may be `true`/' \
   's/an unavailable result with no summary data/a successful summary result/' \
   's/exposes raw bytes, values, field names/exposes raw bytes and values/' \
-  's/one qualified operation/two qualified operations/' \
+  's/a qualified operation/an unqualified operation/' \
   's/`wc3_24_44_3` operation version/any operation version/' \
   's/missing replay-safe declaration, or unknown response shape must cause no send/missing replay-safe declaration may send/' \
   's/exactly `04 32 02 0a 00`/any FC100 PDU/' \
@@ -73,10 +73,28 @@ for mutation in \
   's/produces no data/produces successful data/' \
   's/invokes a generic/invokes a live/' \
   's/falls back to FC101 or FC102/falls back to FC100/' \
-  's/It exposes no raw bytes,/It exposes no values,/'; do
+  's/It exposes no raw bytes,/It exposes no values,/' \
+  's/This version defines a qualified operation/This version defines no qualified operation/' \
+  's/terminal body. This version defines no member/terminal body. This version defines an inner member/' \
+  's/unknown response shape must cause no send/unknown response shape may send/' \
+  's/An echoed PDU exactly equal to this request PDU is an FC100 intermediate/An echoed PDU exactly equal to this request PDU is a terminal result/' \
+  's/field-presence contract within that body/field-presence contract is defined within that body/'; do
   sed "$mutation" "$tesla_document" > "$tesla_fixture"
   if "$repo_root/scripts/check_docs.sh" --check-tesla-tedapi-contract "$tesla_fixture"; then
     echo "Tesla replay metadata mutation was accepted: $mutation" >&2
+    exit 1
+  fi
+done
+
+for mutation in \
+  's/qualified Common system-information operation/unqualified Common system-information operation/' \
+  's/`tesla.hsc.fc100.common_system_info.v1`/`tesla.hsc.fc100.any_common_operation.v1`/' \
+  's/exactly `04 22 02 12 00`/any FC100 PDU/' \
+  's/tag-`3` body is a bounded opaque terminal body/contains a required inner member/' \
+  's/unknown response shape must cause no send/unknown response shape may send/'; do
+  sed "$mutation" "$tesla_document" > "$tesla_fixture"
+  if "$repo_root/scripts/check_docs.sh" --check-tesla-tedapi-contract "$tesla_fixture"; then
+    echo "Tesla common system-information mutation was accepted: $mutation" >&2
     exit 1
   fi
 done
