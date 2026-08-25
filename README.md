@@ -10,7 +10,7 @@ Current protocol contracts:
 - [Protocol applicability and licensing](protocols/applicability-and-licensing.md)
 - [SunSpec read-only core V1](protocols/sunspec/read-only-core-v1.md)
 - [SunSpec read-only core V1 model families](protocols/sunspec/read-only-core-v1-model-families.md)
-- [SunSpec DER read-only candidate V2](protocols/sunspec/read-only-core-v2.md)
+- [SunSpec DER read-only contract V2](protocols/sunspec/read-only-core-v2.md)
 - [Fronius SunSpec float flavor](protocols/fronius/sunspec-float-v1.md)
 - [Huawei gateway read-only candidates](protocols/huawei/gateway-readonly-v1.md)
 - [Growatt Protocol II read-only candidate](protocols/growatt/protocol-ii-readonly-v1.md)

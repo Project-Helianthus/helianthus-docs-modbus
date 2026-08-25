@@ -15,6 +15,8 @@ wit_document="$repo_root/protocols/growatt/wit-family-protocol-matrix-v1.md"
 wit_fixture="$fixture_root/wit-family-matrix.md"
 sunspec_v2_document="$repo_root/protocols/sunspec/read-only-core-v2.md"
 sunspec_v2_fixture="$fixture_root/sunspec-read-only-core-v2.md"
+sunspec_v2_licensing_document="$repo_root/protocols/applicability-and-licensing.md"
+sunspec_v2_licensing_fixture="$fixture_root/sunspec-v2-licensing.md"
 sunspec_v1_families_document="$repo_root/protocols/sunspec/read-only-core-v1-model-families.md"
 sunspec_v1_families_fixture="$fixture_root/sunspec-read-only-core-v1-model-families.md"
 private_function_document="$repo_root/protocols/modbus/private-function-codes.md"
@@ -66,14 +68,18 @@ for contradiction in \
 done
 
 "$repo_root/scripts/check_docs.sh" --check-sunspec-v2-contract "$sunspec_v2_document"
+"$repo_root/scripts/check_docs.sh" --check-sunspec-v2-licensing "$sunspec_v2_licensing_document"
 for mutation in \
   's/| 701 | 153 |/| 701 | 152 |/' \
   's/18 + 25\*NPrt/18 + 24*NPrt/g' \
   's/0 through 2620/0 through 2621/' \
   's/zero is a valid value/zero means not implemented/' \
+  's/truncate, or round/round to a float/' \
   's/are data and are not trimmed/are padding and are trimmed/' \
-  's/remains pending independent contract validation/is approved and implemented/' \
-  's/the candidate is default denied/the candidate is automatically admitted/'; do
+  's/V1 outputs remain unchanged/V1 outputs are revised/' \
+  's/catalog registration, vendor admission/catalog admission, vendor admission/' \
+  's/raw-only opaque block/decoded best-effort/' \
+  's/all-zero string extent is unavailable/all-zero string extent is empty/'; do
   sed "$mutation" "$sunspec_v2_document" > "$sunspec_v2_fixture"
   if "$repo_root/scripts/check_docs.sh" --check-sunspec-v2-contract "$sunspec_v2_fixture"; then
     echo "SunSpec V2 mutation was accepted: $mutation" >&2
@@ -81,10 +87,23 @@ for mutation in \
   fi
 done
 
+for mutation in \
+  's/sunspec\.der\.readonly\.v2/sunspec.der.readonly.v2-candidate/' \
+  's/Common 1\/66 plus Models 701\/153/Common 1\/65 plus Models 701\/153/' \
+  's/offline decoder contract; runtime, vendor, and catalog admission default denied/runtime catalog approved/' \
+  's/90b4a331dcca1d6eac69c1bead952fddcc5852e0/0000000000000000000000000000000000000000/'; do
+  sed "$mutation" "$sunspec_v2_licensing_document" > "$sunspec_v2_licensing_fixture"
+  if "$repo_root/scripts/check_docs.sh" --check-sunspec-v2-licensing "$sunspec_v2_licensing_fixture"; then
+    echo "SunSpec V2 licensing mutation was accepted: $mutation" >&2
+    exit 1
+  fi
+done
+
 for contradiction in \
-  'V2 registry/runtime admission is approved.' \
-  'V2 registry admission is enabled.' \
-  'V2 runtime admission is implemented.'; do
+  'sunspec.models.candidate.v2' \
+  'Common 1/65 is accepted by the V2 decoder.' \
+  'V2 runtime catalog registration is enabled.' \
+  'V2 automatic acquisition is enabled.'; do
   cp "$sunspec_v2_document" "$sunspec_v2_fixture"
   printf '\n%s\n' "$contradiction" >> "$sunspec_v2_fixture"
   if "$repo_root/scripts/check_docs.sh" --check-sunspec-v2-contract "$sunspec_v2_fixture"; then

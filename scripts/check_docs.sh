@@ -47,16 +47,19 @@ check_private_function_contract() {
 
 check_sunspec_v2_contract() {
   local document="$1"
-  local contradiction='V2[[:space:]]+(registry|runtime|registry([[:space:]]+(and|or)|/)[[:space:]]*runtime)[[:space:]]+admission[[:space:]]+(is|are)[[:space:]]+(approved|enabled|implemented)|sunspec\.models\.candidate\.v2[^.]*executable decoder|trailing spaces[^.]*trimmed'
+  local contradiction='sunspec\.models\.candidate\.v2|Common[[:space:]]+1/65[^.]*V2 decoder|V2 runtime catalog registration is enabled|V2 automatic acquisition is enabled|trailing spaces[^.]*trimmed'
 
   check_public_protocol "$document"
-  grep -Fqx '## Candidate catalog revision' "$document"
-  grep -Fqx '## Candidate model boundary' "$document"
+  grep -Fqx '## Schema revision' "$document"
+  grep -Fqx '## Model scope' "$document"
   grep -Fqx '## Model 714 geometry' "$document"
   grep -Fqx '## Value interpretation boundary' "$document"
-  grep -Fqx '## Registry and runtime gate' "$document"
-  grep -Fq '`sunspec.models.candidate.v2`' "$document"
-  grep -Fq '`90b4a331dcca1d6eac69c1bead952fddcc5852e0`' "$document"
+  grep -Fqx '## Offline implementation boundary' "$document"
+  grep -Fq '`sunspec.models@90b4a331-v2`' "$document"
+  grep -Fq 'Common Model 1 with declared length 66 is the' "$document"
+  grep -Fq 'only V2 Common tuple.' "$document"
+  grep -Fq 'Common Model 1 length 65 is a V1 compatibility tuple and' "$document"
+  grep -Fq 'remains opaque under V2.' "$document"
   grep -Fq 'Models 701, 702, 713, and 714' "$document"
   grep -Fq '| 1 | 66 | Common device information |' "$document"
   grep -Fq '| 701 | 153 | DER AC measurement |' "$document"
@@ -65,14 +68,39 @@ check_sunspec_v2_contract() {
   grep -Fq '| 714 | `18 + 25*NPrt` | DER DC measurement with repeated ports |' "$document"
   grep -Fq 'Model 714 has data-register length `18 + 25*NPrt`' "$document"
   grep -Fq 'bounded from 0 through 2620' "$document"
-  grep -Fq 'zero is a valid value and all one-bits means not implemented' "$document"
-  grep -Fq 'spaces before the terminator are data and are not trimmed' "$document"
-  grep -Fq 'V2 registry and runtime admission remains pending independent contract validation.' "$document"
-  grep -Fq 'the candidate is default denied' "$document"
+  grep -Fq 'unavailable, an unavailable sentinel, overflows, or does not match' "$document"
+  grep -Fq 'the declared length, Model 714 is a raw-only opaque block.' "$document"
+  grep -Fq 'raw-only opaque block' "$document"
+  grep -Fq 'four big-endian words' "$document"
+  grep -Fq 'uses four big-endian words; zero is a valid value and all one-bits means not' "$document"
+  grep -Fq 'implemented. Exact unsigned scaling must not pass through an `int64` or' "$document"
+  grep -Fq 'Exact unsigned scaling must not pass through an `int64` or' "$document"
+  grep -Fq 'floating-point representation, truncate, or round.' "$document"
+  grep -Fq 'with word `0x0080` followed only by zero padding is a valid empty string.' "$document"
+  grep -Fq 'all-zero string extent is unavailable. Otherwise, the first NUL requires a' "$document"
+  grep -Fq 'zero-only tail.' "$document"
+  grep -Fq 'Spaces before the terminator are data and are not trimmed' "$document"
+  grep -Fq 'This key is separate from `sunspec.models@7abdf898-v1`. V1 and V2 decoder' "$document"
+  grep -Fq 'definitions and caches are revision-isolated.' "$document"
+  grep -Fq 'V1 outputs remain unchanged.' "$document"
+  grep -Fq 'synthetic, non-vendor fixtures' "$document"
+  grep -Fq 'This contract permits a separate offline registry implementation to use the V2' "$document"
+  grep -Fq 'No standard profile admission, runtime' "$document"
+  grep -Fq 'catalog registration, vendor admission, automatic acquisition, telemetry' "$document"
+  grep -Fq 'publication, capability admission, or consumer exposure may be derived from' "$document"
   if grep -Ein "$contradiction" "$document"; then
-    echo 'SunSpec V2 candidate contradicts its pending/default-denied boundary' >&2
+    echo 'SunSpec V2 contract contradicts its offline-only boundary' >&2
     return 1
   fi
+}
+
+check_sunspec_v2_licensing() {
+  local document="$1"
+
+  grep -Fq '| `sunspec.der.readonly.v2` | Common 1/66 plus Models 701/153, 702/50, 713/7, and 714 at the exact pinned V2 schema revision | public Apache-2.0 model catalogue and independently stated interoperability facts | offline decoder contract; runtime, vendor, and catalog admission default denied |' "$document"
+  grep -Fq '`90b4a331dcca1d6eac69c1bead952fddcc5852e0`' "$document"
+  grep -Fq 'That upstream license applies to' "$document"
+  grep -Fq 'the catalogue input.' "$document"
 }
 
 check_sunspec_v1_model_families_contract() {
@@ -222,7 +250,7 @@ check_wit_matrix_contract() {
 
 if [[ $# -gt 0 ]]; then
   if [[ $# -ne 2 ]]; then
-    echo 'usage: check_docs.sh [--check-sdongle-admission|--check-public-protocol|--check-private-function-contract|--check-sunspec-v1-model-families-contract|--check-sunspec-v2-contract|--check-x2-publication|--check-x2-contract|--check-bms-contract|--check-wit-matrix-contract document]' >&2
+    echo 'usage: check_docs.sh [--check-sdongle-admission|--check-public-protocol|--check-private-function-contract|--check-sunspec-v1-model-families-contract|--check-sunspec-v2-contract|--check-sunspec-v2-licensing|--check-x2-publication|--check-x2-contract|--check-bms-contract|--check-wit-matrix-contract document]' >&2
     exit 2
   fi
   case "$1" in
@@ -231,12 +259,13 @@ if [[ $# -gt 0 ]]; then
     --check-private-function-contract) check_private_function_contract "$2" ;;
     --check-sunspec-v1-model-families-contract) check_sunspec_v1_model_families_contract "$2" ;;
     --check-sunspec-v2-contract) check_sunspec_v2_contract "$2" ;;
+    --check-sunspec-v2-licensing) check_sunspec_v2_licensing "$2" ;;
     --check-x2-publication) check_x2_publication "$2" ;;
     --check-x2-contract) check_x2_contract "$2" ;;
     --check-bms-contract) check_bms_contract "$2" ;;
     --check-wit-matrix-contract) check_wit_matrix_contract "$2" ;;
     *)
-      echo 'usage: check_docs.sh [--check-sdongle-admission|--check-public-protocol|--check-private-function-contract|--check-sunspec-v1-model-families-contract|--check-sunspec-v2-contract|--check-x2-publication|--check-x2-contract|--check-bms-contract|--check-wit-matrix-contract document]' >&2
+      echo 'usage: check_docs.sh [--check-sdongle-admission|--check-public-protocol|--check-private-function-contract|--check-sunspec-v1-model-families-contract|--check-sunspec-v2-contract|--check-sunspec-v2-licensing|--check-x2-publication|--check-x2-contract|--check-bms-contract|--check-wit-matrix-contract document]' >&2
       exit 2
       ;;
   esac
@@ -294,6 +323,7 @@ grep -Fqx '## Admission rules' 'protocols/applicability-and-licensing.md'
 grep -Fqx '## Initial model catalog' 'protocols/sunspec/read-only-core-v1.md'
 check_sunspec_v1_model_families_contract 'protocols/sunspec/read-only-core-v1-model-families.md'
 check_sunspec_v2_contract 'protocols/sunspec/read-only-core-v2.md'
+check_sunspec_v2_licensing 'protocols/applicability-and-licensing.md'
 grep -Fqx '## Exact chain geometry' 'protocols/fronius/sunspec-float-v1.md'
 grep -Fqx '## SmartLogger candidate' 'protocols/huawei/gateway-readonly-v1.md'
 grep -Fqx '## S-Dongle candidate' 'protocols/huawei/gateway-readonly-v1.md'
