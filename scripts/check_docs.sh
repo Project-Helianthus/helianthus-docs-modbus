@@ -21,6 +21,36 @@ check_public_protocol() {
   fi
 }
 
+check_tesla_tedapi_contract() {
+  local document="$1"
+  local forbidden='https?://|/[Uu]sers/|\.md`|sha-?[0-9a-f]{8,}|0x[0-9A-Fa-f]{6,}|reverse engineering|static-confirmed|conform sursei|am observat'
+  local required=(
+    'Scope and non-goals' 'Terminology' 'Endpoint roles' 'Serial settings'
+    'Frame structure' 'Byte order and CRC' 'Frame and payload limits'
+    'Node addressing and configuration' 'Function 100' 'Functions 101 and 102'
+    'Exception responses' 'Timing, deadlines, and frame separation'
+    'Concurrency and arbitration' 'Request and response state machine'
+    'Fail-closed validation rules' 'Unknown payload and field retention'
+    'Runtime provenance' 'Security, privacy, and redaction'
+    'Capability and version gates' 'Conformance vectors and sanitized examples'
+    'Interoperability levels' 'Compatibility and versioning'
+  )
+
+  for heading in "${required[@]}"; do
+    grep -Fqx "## $heading" "$document"
+  done
+  grep -Fqx '### Read-only replay metadata' "$document"
+  grep -Fq 'The field number is 1 through 536870911 and the' "$document"
+  grep -Fq 'wire type is 0 through 5.' "$document"
+  grep -Fq 'Raw nested bytes, protobuf field names, values,' "$document"
+  grep -Fq 'operation identity, capability, and send authority are not projected.' "$document"
+  grep -Fq 'Invalid, truncated, overflowed, or out-of-range keys are rejected.' "$document"
+  if grep -Ein "$forbidden" "$document"; then
+    echo 'normative Tesla specification contains forbidden provenance material' >&2
+    return 1
+  fi
+}
+
 check_private_function_contract() {
   local document="$1"
 
@@ -543,12 +573,13 @@ check_outback_axs_contract() {
 
 if [[ $# -gt 0 ]]; then
   if [[ $# -ne 2 ]]; then
-    echo 'usage: check_docs.sh [--check-sdongle-admission|--check-public-protocol|--check-private-function-contract|--check-sunspec-v1-model-families-contract|--check-sunspec-nested-layout-contract|--check-sunspec-der-trip-lv-template-v2|--check-sunspec-der-trip-lv-typed-fact-projection-v2|--check-sunspec-dynamic-structural-selection-v2|--check-sunspec-v2-contract|--check-sunspec-v2-licensing|--check-x2-publication|--check-x2-contract|--check-bms-contract|--check-wit-matrix-contract document]' >&2
+    echo 'usage: check_docs.sh [--check-sdongle-admission|--check-public-protocol|--check-tesla-tedapi-contract|--check-private-function-contract|--check-sunspec-v1-model-families-contract|--check-sunspec-nested-layout-contract|--check-sunspec-der-trip-lv-template-v2|--check-sunspec-der-trip-lv-typed-fact-projection-v2|--check-sunspec-dynamic-structural-selection-v2|--check-sunspec-v2-contract|--check-sunspec-v2-licensing|--check-x2-publication|--check-x2-contract|--check-bms-contract|--check-wit-matrix-contract document]' >&2
     exit 2
   fi
   case "$1" in
     --check-sdongle-admission) check_sdongle_admission "$2" ;;
     --check-public-protocol) check_public_protocol "$2" ;;
+    --check-tesla-tedapi-contract) check_tesla_tedapi_contract "$2" ;;
     --check-private-function-contract) check_private_function_contract "$2" ;;
     --check-sunspec-v1-model-families-contract) check_sunspec_v1_model_families_contract "$2" ;;
     --check-sunspec-nested-layout-contract) check_sunspec_nested_layout_contract "$2" ;;
@@ -563,7 +594,7 @@ if [[ $# -gt 0 ]]; then
     --check-wit-matrix-contract) check_wit_matrix_contract "$2" ;;
     --check-outback-axs-contract) check_outback_axs_contract "$2" ;;
     *)
-    echo 'usage: check_docs.sh [--check-sdongle-admission|--check-public-protocol|--check-private-function-contract|--check-sunspec-v1-model-families-contract|--check-sunspec-nested-layout-contract|--check-sunspec-der-trip-lv-template-v2|--check-sunspec-der-trip-lv-typed-fact-projection-v2|--check-sunspec-dynamic-structural-selection-v2|--check-sunspec-v2-contract|--check-sunspec-v2-licensing|--check-x2-publication|--check-x2-contract|--check-bms-contract|--check-wit-matrix-contract document]' >&2
+    echo 'usage: check_docs.sh [--check-sdongle-admission|--check-public-protocol|--check-tesla-tedapi-contract|--check-private-function-contract|--check-sunspec-v1-model-families-contract|--check-sunspec-nested-layout-contract|--check-sunspec-der-trip-lv-template-v2|--check-sunspec-der-trip-lv-typed-fact-projection-v2|--check-sunspec-dynamic-structural-selection-v2|--check-sunspec-v2-contract|--check-sunspec-v2-licensing|--check-x2-publication|--check-x2-contract|--check-bms-contract|--check-wit-matrix-contract document]' >&2
       exit 2
       ;;
   esac
@@ -603,28 +634,9 @@ for multivendor_spec in "${multivendor_specs[@]}"; do
   test -f "$multivendor_spec"
 done
 
-required=(
-  'Scope and non-goals' 'Terminology' 'Endpoint roles' 'Serial settings'
-  'Frame structure' 'Byte order and CRC' 'Frame and payload limits'
-  'Node addressing and configuration' 'Function 100' 'Functions 101 and 102'
-  'Exception responses' 'Timing, deadlines, and frame separation'
-  'Concurrency and arbitration' 'Request and response state machine'
-  'Fail-closed validation rules' 'Unknown payload and field retention'
-  'Runtime provenance' 'Security, privacy, and redaction'
-  'Capability and version gates' 'Conformance vectors and sanitized examples'
-  'Interoperability levels' 'Compatibility and versioning'
-)
-for heading in "${required[@]}"; do
-  grep -Fqx "## $heading" "$spec"
-done
+check_tesla_tedapi_contract "$spec"
 
 check_private_function_contract "$private_spec"
-
-forbidden='https?://|/[Uu]sers/|\.md`|sha-?[0-9a-f]{8,}|0x[0-9A-Fa-f]{6,}|reverse engineering|static-confirmed|conform sursei|am observat'
-if grep -Ein "$forbidden" "$spec"; then
-  echo 'normative Tesla specification contains forbidden provenance material' >&2
-  exit 1
-fi
 
 grep -Fqx '## Publication boundary' 'protocols/applicability-and-licensing.md'
 grep -Fqx '## Admission rules' 'protocols/applicability-and-licensing.md'

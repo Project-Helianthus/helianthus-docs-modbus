@@ -34,6 +34,21 @@ cp "$source_document" "$fixture_document"
 "$repo_root/scripts/check_docs.sh" --check-sdongle-admission "$fixture_document"
 grep -Fq 'Each retry began after at least five seconds of idle time.' "$source_document"
 
+tesla_document="$repo_root/protocols/tesla/tedapi.md"
+tesla_fixture="$fixture_root/tesla-tedapi.md"
+for mutation in \
+  's/1 through 536870911/1 through 536870912/' \
+  's/wire type is 0 through 5/wire type is 0 through 6/' \
+  's/Raw nested bytes, protobuf field names, values,/Raw nested bytes and protobuf field names are projected,/' \
+  's/operation identity, capability, and send authority are not projected/operation identity and send authority are projected/' \
+  's/Invalid, truncated, overflowed, or out-of-range keys are rejected/Invalid keys are retained/'; do
+  sed "$mutation" "$tesla_document" > "$tesla_fixture"
+  if "$repo_root/scripts/check_docs.sh" --check-tesla-tedapi-contract "$tesla_fixture"; then
+    echo "Tesla replay metadata mutation was accepted: $mutation" >&2
+    exit 1
+  fi
+done
+
 "$repo_root/scripts/check_docs.sh" --check-private-function-contract "$private_function_document"
 for mutation in \
   's/FC100, FC101, and FC102 may be reused/FC100, FC101, and FC102 are globally reserved/' \
