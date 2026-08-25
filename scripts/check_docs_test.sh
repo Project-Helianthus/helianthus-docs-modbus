@@ -72,14 +72,20 @@ done
 for mutation in \
   's/| 701 | 153 |/| 701 | 152 |/' \
   's/| 703 | 17 |/| 703 | 18 |/' \
-  's/| 715 | 7 |/| 715 | 8 |/' \
+	's/| 715 | 7 |/| 715 | 8 |/' \
 	's/| 802 | 62 |/| 802 | 61 |/' \
-  's/18 + 25\*NPrt/18 + 24*NPrt/g' \
+	's/| 803 | `26 + 32\*NStr` |/| 803 | `26 + 31*NStr` |/' \
+	's/| 804 | `46 + 16\*NMod` |/| 804 | `46 + 15*NMod` |/' \
+	's/18 + 25\*NPrt/18 + 24*NPrt/g' \
   's/Models 703 and 715 are control-observability only/Models 703 and 715 create operations/' \
   's/Models 704 through 712 remain outside this V2 wave and remain opaque/Models 704 through 712 are decoded/' \
 	's/Every Model 802 field is observed state only and is `NO_SEND`/Model 802 fields permit sends/' \
 	's/Model 801 remains excluded as deprecated/Model 801 is admitted/' \
-	's/Models 803 through 809 remain excluded pending separate family and substructure decisions/Models 803 through 809 are admitted/' \
+	's/Models 805 through 809 remain excluded pending separate family and substructure decisions/Models 805 through 809 are admitted/' \
+	's/payload-register offset 0/payload-register offset 1/' \
+	's/bounded from 0 through 2047/bounded from 0 through 2048/' \
+	's/Model 803 does not infer Model 804 child occurrences/Model 803 infers Model 804 child occurrences/' \
+	's/zero decoded facts/decoded best-effort facts/' \
   's/0 through 2620/0 through 2621/' \
   's/zero is a valid value/zero means not implemented/' \
   's/truncate, or round/round to a float/' \
@@ -98,8 +104,10 @@ done
 for mutation in \
   's/sunspec\.der\.readonly\.v2/sunspec.der.readonly.v2-candidate/' \
   's/Common 1\/66 plus Models 701\/153/Common 1\/65 plus Models 701\/153/' \
-  's/703\/17/703\/18/' \
+	's/703\/17/703\/18/' \
 	's/802\/62/802\/61/' \
+	's/803 variable geometry/803 fixed geometry/' \
+	's/804 variable geometry/804 fixed geometry/' \
   's/offline decoder contract; runtime, vendor, and catalog admission default denied/runtime catalog approved/' \
   's/90b4a331dcca1d6eac69c1bead952fddcc5852e0/0000000000000000000000000000000000000000/'; do
   sed "$mutation" "$sunspec_v2_licensing_document" > "$sunspec_v2_licensing_fixture"
