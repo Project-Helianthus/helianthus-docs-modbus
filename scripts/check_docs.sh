@@ -85,7 +85,7 @@ check_sunspec_v2_contract() {
 	grep -Fq '`NCrvSet` is at payload-register offset 4 and absolute model word 6.' "$document"
 	grep -Fq 'It is bounded from 0 through 65526.' "$document"
 	grep -Fq 'Each repeated `Crv` observation consumes exactly 1 data register.' "$document"
-	grep -Fq 'an unavailable sentinel, missing count, overflow, declared length mismatch, or partial repeated group makes Model 707 raw-only opaque with zero decoded facts.' "$document"
+	grep -Fq 'An unavailable sentinel, missing count, overflow, declared length mismatch, or partial repeated group makes Model 707 raw-only opaque with zero decoded facts.' "$document"
 	grep -Fq 'Model 707 does not infer a relationship to Models 708 through 710.' "$document"
 	grep -Fq 'Every Model 707 field, including `Ena`, `AdptCrvReq`, and repeated `Crv.ReadOnly`, is observed state only and is `NO_SEND`.' "$document"
 	grep -Fq 'No Model 707 field creates a write method, send authority, operation admission,' "$document"
