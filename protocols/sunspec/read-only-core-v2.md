@@ -38,7 +38,7 @@ zero.
 ## Model scope
 
 The bounded V2 scope contains Common Model 1 and Models 701, 702, 703, 713, 714,
-715, 802, 803, 804, 805, 806, and 807.
+715, 802, 803, 804, 805, 806, 807, and 808.
 
 | Model | V2 data-register length | Read-only role |
 | --- | --- | --- |
@@ -55,11 +55,12 @@ The bounded V2 scope contains Common Model 1 and Models 701, 702, 703, 713, 714,
 | 805 | 42 | BESS module observed state |
 | 806 | 1 | Flow battery structural observed state |
 | 807 | 34 | Flow battery string observed state |
+| 808 | 1 | Flow battery module structural observed state |
 
 A V2 offline decoder selects only by model identifier, exact declared length,
 and `sunspec.models@90b4a331-v2`. A known identifier with another length
 remains opaque. No fixed ordering is inferred among Models 701, 702, 703, 713,
-714, 715, 802, 803, 804, 805, 806, and 807.
+714, 715, 802, 803, 804, 805, 806, 807, and 808.
 
 ## Control-observability boundary
 
@@ -81,7 +82,7 @@ Every Model 802 field is observed state only and is `NO_SEND`.
 No Model 802 field creates a write method, operation dispatch, control behavior,
 runtime activation, vendor activation, catalog activation, transport behavior,
 gateway behavior, or live I/O. Model 801 remains excluded as deprecated.
-Models 808 through 809 remain excluded pending separate family and substructure decisions.
+Model 809 remains excluded pending a separate family and substructure decision.
 
 ## BESS bank and string geometry
 
@@ -142,6 +143,15 @@ Model 807 has fixed data-register length 34 and no effective repeated group.
 `Idx` and `NMod` remain observed structural fields only. Model 807 does not infer a relationship to Models 806, 808, or 809. Every Model 807 field, including control-adjacent zero-count group names, is observed state only and is `NO_SEND`.
 
 No Model 807 field creates a write method, send authority, operation admission,
+dispatch, retry, control behavior, runtime activation, vendor activation,
+catalog activation, transport behavior, gateway behavior, or live I/O.
+
+## Flow battery module boundary
+
+Model 808 has fixed data-register length 1 and no effective repeated group.
+`ModuleTBD` remains uninterpreted structural observed state. The declared stack group has count zero and is not materialized. Model 808 does not infer a relationship to Models 803 through 807 or 809. Every Model 808 field, including the zero-count `StackTBD` group name, is observed state only and is `NO_SEND`.
+
+No Model 808 field creates a write method, send authority, operation admission,
 dispatch, retry, control behavior, runtime activation, vendor activation,
 catalog activation, transport behavior, gateway behavior, or live I/O.
 

@@ -79,12 +79,13 @@ for mutation in \
 	's/| 805 | 42 |/| 805 | 41 |/' \
 	's/| 806 | 1 |/| 806 | 2 |/' \
 	's/| 807 | 34 |/| 807 | 33 |/' \
+	's/| 808 | 1 |/| 808 | 2 |/' \
 	's/18 + 25\*NPrt/18 + 24*NPrt/g' \
   's/Models 703 and 715 are control-observability only/Models 703 and 715 create operations/' \
   's/Models 704 through 712 remain outside this V2 wave and remain opaque/Models 704 through 712 are decoded/' \
 	's/Every Model 802 field is observed state only and is `NO_SEND`/Model 802 fields permit sends/' \
 	's/Model 801 remains excluded as deprecated/Model 801 is admitted/' \
-	's/Models 808 through 809 remain excluded pending separate family and substructure decisions/Models 808 through 809 are admitted/' \
+	's/Model 809 remains excluded pending a separate family and substructure decision/Model 809 is admitted/' \
 	's/offset 0\. It is bounded/offset 1. It is bounded/' \
 	's/bounded from 0 through 2047/bounded from 0 through 2048/' \
 	's/Model 803 does not infer Model 804 child occurrences/Model 803 infers Model 804 child occurrences/' \
@@ -105,6 +106,12 @@ for mutation in \
 	's/Model 807 does not infer a relationship to Models 806, 808, or 809/Model 807 infers a relationship to Model 808/' \
 	's/Every Model 807 field, including control-adjacent zero-count group names, is observed state only and is `NO_SEND`/Model 807 control-adjacent fields permit sends/' \
 	's/No Model 807 field creates a write method, send authority, operation admission,/Model 807 creates an operation admission,/' \
+	's/Model 808 has fixed data-register length 1 and no effective repeated group/Model 808 has a repeated group/' \
+	's/`ModuleTBD` remains uninterpreted structural observed state/`ModuleTBD` is a semantic telemetry value/' \
+	's/The declared stack group has count zero and is not materialized/The stack group is materialized/' \
+	's/Model 808 does not infer a relationship to Models 803 through 807 or 809/Model 808 infers a relationship to Model 809/' \
+	's/Every Model 808 field, including the zero-count `StackTBD` group name, is observed state only and is `NO_SEND`/Model 808 fields permit sends/' \
+	's/No Model 808 field creates a write method, send authority, operation admission,/Model 808 creates an operation admission,/' \
 	's/zero decoded facts/decoded best-effort facts/' \
   's/0 through 2620/0 through 2621/' \
   's/zero is a valid value/zero means not implemented/' \
