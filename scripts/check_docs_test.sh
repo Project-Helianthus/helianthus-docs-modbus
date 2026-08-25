@@ -435,6 +435,7 @@ outback_fixture="$fixture_root/outback-axs.md"
 for mutation in \
   's/declared length 282/declared length 281/' \
   's/length 23\./length 24./' \
+  's/vendor-scoped observed state/standard observed state/' \
   's/does not convert an OutBack device into a generic inverter profile./converts an OutBack device into a generic inverter profile./' \
   's/all read\/write or write-only fields are excluded from output. They are `NO_SEND`./read\/write fields are permitted./' \
   's/No function in this contract writes a register/A function in this contract writes a register/' \

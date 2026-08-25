@@ -29,10 +29,10 @@ status words at offsets 278 through 282. Values retain their exact raw word
 spans. Signed temperature values use the declared scale word only when that
 scale is available and valid; otherwise the raw words remain unscaled.
 
-The chain may also contain standard charge-controller Model 64111 with declared
-length 23. Its values remain standard observed state under the generic SunSpec
-rules. The presence of Model 64111 does not infer a relationship with any other
-model occurrence, port, controller, or physical device.
+The chain may also contain OutBack charge-controller Model 64111 with declared
+length 23. Its values remain vendor-scoped observed state under this contract.
+The presence of Model 64111 does not infer a relationship with any other model
+occurrence, port, controller, or physical device.
 
 All other Model 64110 words, all unknown models, and every wrong-length model
 remain opaque. Unknown status or error bits retain raw numeric provenance; this

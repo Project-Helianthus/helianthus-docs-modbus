@@ -526,8 +526,9 @@ check_outback_axs_contract() {
     grep -Fqx "## $heading" "$document"
   done
   grep -Fq 'vendor Model 64110 with declared length 282' "$document"
-  grep -Fq 'charge-controller Model 64111 with declared' "$document"
+  grep -Fq 'OutBack charge-controller Model 64111 with declared' "$document"
   grep -Fq 'length 23.' "$document"
+  grep -Fq 'Its values remain vendor-scoped observed state under this contract.' "$document"
   grep -Fq 'does not convert an OutBack device into a generic inverter profile.' "$document"
   grep -Fq 'All other Model 64110 words, all unknown models, and every wrong-length model' "$document"
   grep -Fq 'all read/write or write-only fields are excluded from output. They are `NO_SEND`.' "$document"
