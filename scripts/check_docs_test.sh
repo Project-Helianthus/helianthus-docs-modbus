@@ -82,7 +82,7 @@ for mutation in \
 	's/Every Model 802 field is observed state only and is `NO_SEND`/Model 802 fields permit sends/' \
 	's/Model 801 remains excluded as deprecated/Model 801 is admitted/' \
 	's/Models 805 through 809 remain excluded pending separate family and substructure decisions/Models 805 through 809 are admitted/' \
-	's/payload-register offset 0/payload-register offset 1/' \
+	's/offset 0\. It is bounded/offset 1. It is bounded/' \
 	's/bounded from 0 through 2047/bounded from 0 through 2048/' \
 	's/Model 803 does not infer Model 804 child occurrences/Model 803 infers Model 804 child occurrences/' \
 	's/zero decoded facts/decoded best-effort facts/' \

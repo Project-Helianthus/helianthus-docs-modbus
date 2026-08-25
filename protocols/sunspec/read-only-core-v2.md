@@ -8,7 +8,7 @@ flavor, runtime catalog registration, or control interface. Existing SunSpec
 V1 behavior remains unchanged.
 
 The contract covers the `SunS` signature, Common Model 1, Models 701, 702, 703,
-713, 714, 715, and 802, and the terminal block. It does not make a proprietary
+713, 714, 715, 802, 803, and 804, and the terminal block. It does not make a proprietary
 Huawei or Growatt register map SunSpec.
 
 ## Schema revision
@@ -38,7 +38,7 @@ zero.
 ## Model scope
 
 The bounded V2 scope contains Common Model 1 and Models 701, 702, 703, 713, 714,
-715, and 802.
+715, 802, 803, and 804.
 
 | Model | V2 data-register length | Read-only role |
 | --- | --- | --- |
@@ -50,11 +50,13 @@ The bounded V2 scope contains Common Model 1 and Models 701, 702, 703, 713, 714,
 | 714 | `18 + 25*NPrt` | DER DC measurement with repeated ports |
 | 715 | 7 | DER controller observed state |
 | 802 | 62 | BESS base observed state |
+| 803 | `26 + 32*NStr` | BESS bank observed state with repeated strings |
+| 804 | `46 + 16*NMod` | BESS string observed state with repeated modules |
 
 A V2 offline decoder selects only by model identifier, exact declared length,
 and `sunspec.models@90b4a331-v2`. A known identifier with another length
 remains opaque. No fixed ordering is inferred among Models 701, 702, 703, 713,
-714, 715, and 802.
+714, 715, 802, 803, and 804.
 
 ## Control-observability boundary
 
@@ -76,7 +78,36 @@ Every Model 802 field is observed state only and is `NO_SEND`.
 No Model 802 field creates a write method, operation dispatch, control behavior,
 runtime activation, vendor activation, catalog activation, transport behavior,
 gateway behavior, or live I/O. Model 801 remains excluded as deprecated.
-Models 803 through 809 remain excluded pending separate family and substructure decisions.
+Models 805 through 809 remain excluded pending separate family and substructure decisions.
+
+## BESS bank and string geometry
+
+Model 803 has data-register length `26 + 32*NStr`. `NStr` is at payload-register
+offset 0. It is bounded from 0 through 2047 so the computed length remains
+representable by the 16-bit model-length field. Each repeated string consumes
+exactly 32 data registers.
+
+Model 804 has data-register length `46 + 16*NMod`. `NMod` is at payload-register
+offset 1. It is bounded from 0 through 4093 so the computed length remains
+representable by the 16-bit model-length field. Each repeated module consumes
+exactly 16 data registers.
+
+For either model, an unavailable sentinel, missing count, overflow, declared
+length mismatch, partial repeated group, or source-span extent overrun makes the
+block raw-only opaque with zero decoded facts. No count is inferred from trailing
+words. A repeated group retains a model-local stable index and its exact raw
+source span; repeated Model 803 and Model 804 occurrences remain distinct.
+
+Model 803 does not infer Model 804 child occurrences from ordering, `Idx`,
+`NStr`, or any other field. Model 804 does not infer a Model 803 parent from
+ordering, `Idx`, `NMod`, or any other field. Every field in both models,
+including `SetEna`, `SetCon`, and any upstream read/write field, is observed
+state only and is `NO_SEND`.
+
+No Model 803 or Model 804 field creates a write method, send authority,
+operation admission, dispatch, retry, control behavior, runtime activation,
+vendor activation, catalog activation, transport behavior, gateway behavior, or
+live I/O.
 
 ## Model 714 geometry
 
@@ -122,7 +153,9 @@ identity, endpoint, serial number, live capture, or support claim.
 The fixture set must cover Common with 701 and 702; Common with fixed 703 and
 715 observed-state blocks; Common with fixed 802 observed-state words; Common
 with 701, 702, 713, and a repeated-port 714; 714 count and length mismatch;
-zero and all-one `uint64`; invalid or missing scale factors; invalid string
+Common with Model 803 strings and Common with Model 804 modules; zero and
+nonzero count geometry; count and length mismatch; zero and all-one `uint64`;
+invalid or missing scale factors; invalid string
 encoding; preserved spaces; unknown enum and bit-mask values; repeated
 occurrences; and an unsupported model length retained as opaque.
 
