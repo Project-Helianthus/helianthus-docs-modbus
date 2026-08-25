@@ -429,7 +429,7 @@ done
 test -f "$repo_root/protocols/outback/axs-port-sunspec-readonly-v1.md"
 
 outback_document="$repo_root/protocols/outback/axs-port-sunspec-readonly-v1.md"
-outback_fixture="$tmpdir/outback-axs.md"
+outback_fixture="$fixture_root/outback-axs.md"
 "$repo_root/scripts/check_docs.sh" --check-outback-axs-contract "$outback_document"
 
 for mutation in \
