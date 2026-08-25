@@ -71,7 +71,8 @@ No other `(model, length, schema-revision)` tuple is decoded by this revision.
 
 Register words are big-endian. Multi-register integer and float values use the
 word order declared by the selected schema. Strings retain their exact word
-extent and remove only terminal NUL or space padding. Enum, bitfield,
+extent. The first NUL terminates text and every remaining byte must also be
+NUL; trailing spaces before the terminator remain data. Enum, bitfield,
 accumulator, signed and unsigned integer, float, and string fields retain their
 wire type.
 
