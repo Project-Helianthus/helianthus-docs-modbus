@@ -69,6 +69,13 @@ check_tesla_tedapi_contract() {
   grep -Fq 'names, units, identifiers, and raw bytes are not projected by this version;' "$document"
   grep -Fq 'vitals result and must fail closed as a redacted operation failure.' "$document"
   grep -Fq 'Semantic read-only classification does not claim that the responder has no' "$document"
+  grep -Fqx '### MCP qualified WC vitals replay' "$document"
+  grep -Fq 'already selected `tesla.hsc.fc100.wc_vitals.v1`, `tesla_hsc_modbus_v1`, and' "$document"
+  grep -Fq '`wc3_24_44_3`. It exposes only the operation and version qualification, replay' "$document"
+  grep -Fq 'always `false`. An unavailable or invalid provider result produces no data.' "$document"
+  grep -Fq 'opens a serial endpoint, invokes a generic' "$document"
+  grep -Fq 'transport exchange, or falls back to FC101 or FC102.' "$document"
+  grep -Fq 'no raw bytes, snapshot values, field names, identifiers, control meaning, or runtime' "$document"
   if grep -Ein "$forbidden" "$document"; then
     echo 'normative Tesla specification contains forbidden provenance material' >&2
     return 1

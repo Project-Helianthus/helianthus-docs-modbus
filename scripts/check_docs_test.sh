@@ -63,7 +63,13 @@ for mutation in \
   's/is an FC100 intermediate/is a successful terminal/' \
   's/identifiers, and raw bytes are not projected/identifiers and raw bytes are projected/' \
   's/must fail closed as a redacted operation failure/may be decoded as vitals/' \
-  's/does not claim that the responder has no/claims that the responder has no/'; do
+  's/does not claim that the responder has no/claims that the responder has no/' \
+  's/`wc3_24_44_3`\. It exposes only the operation/any operation version. It exposes only the operation/' \
+  's/always `false`/may be `true`/' \
+  's/produces no data/produces successful data/' \
+  's/invokes a generic/invokes a live/' \
+  's/falls back to FC101 or FC102/falls back to FC100/' \
+  's/no raw bytes, snapshot values/no raw bytes but snapshot values/'; do
   sed "$mutation" "$tesla_document" > "$tesla_fixture"
   if "$repo_root/scripts/check_docs.sh" --check-tesla-tedapi-contract "$tesla_fixture"; then
     echo "Tesla replay metadata mutation was accepted: $mutation" >&2

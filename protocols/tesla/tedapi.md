@@ -123,6 +123,18 @@ Semantic read-only classification does not claim that the responder has no
 ephemeral transport-side effects. It grants no configuration, control, pairing,
 trust, firmware, or other persistent authority.
 
+### MCP qualified WC vitals replay
+
+An MCP WC vitals replay view may be emitted only by an injected provider that
+already selected `tesla.hsc.fc100.wc_vitals.v1`, `tesla_hsc_modbus_v1`, and
+`wc3_24_44_3`. It exposes only the operation and version qualification, replay
+kind, snapshot length, and snapshot digest. Its `outbound_allowed` value is
+always `false`. An unavailable or invalid provider result produces no data.
+The view never creates a request, opens a serial endpoint, invokes a generic
+transport exchange, or falls back to FC101 or FC102. It exposes no raw bytes,
+snapshot values, field names, identifiers, control meaning, or runtime
+activation state.
+
 ### Read-only replay metadata
 
 An offline FC100 decoder may retain the nested-message length, the numeric
