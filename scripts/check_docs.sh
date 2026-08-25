@@ -51,7 +51,13 @@ check_x2_contract() {
 
 check_bms_contract() {
   local document="$1"
+  local private_material='(^|[^[:xdigit:]])[[:xdigit:]]{40}([^[:xdigit:]]|$)|(^|[^[:xdigit:]])[[:xdigit:]]{64}([^[:xdigit:]]|$)|([0-9]{1,3}\.){3}[0-9]{1,3}|([[:alnum:]][[:alnum:].-]*):([0-9]{1,5}|[[:alpha:]][[:alnum:].-]*)|[Pp]ort[[:space:]]+[0-9]{1,5}'
 
+  check_public_protocol "$document"
+  if grep -Ein "$private_material" "$document"; then
+    echo 'BMS protocol specification contains private endpoint or source revision material' >&2
+    return 1
+  fi
   grep -Fq 'protocol family label `1xSxxP ESS`' "$document"
   grep -Fq 'file revision family `Rev2.01`' "$document"
   grep -Fq 'document header version `V2.0`' "$document"
@@ -69,6 +75,12 @@ check_bms_contract() {
   grep -Fq 'W or WR are unconditional `NO_SEND`.' "$document"
   grep -Fq 'Registry implementation is `NO_GO` until an exact, permitted, sanitized' "$document"
   grep -Fq 'A synthetic identity assembled from the document is not a substitute.' "$document"
+  grep -Fq 'does not automatically apply the contract to any commercial battery' "$document"
+  grep -Fq 'are forbidden identity inputs.' "$document"
+  grep -Fq 'negative-overlap records against Growatt Protocol II, SunSpec/Fronius, and' "$document"
+  grep -Fq 'Without that fixture, catalog registration' "$document"
+  grep -Fq 'is ambiguous and produces no match.' "$document"
+  grep -Fq 'produces `insufficient_evidence`, no send, and no partial' "$document"
 }
 
 if [[ $# -gt 0 ]]; then

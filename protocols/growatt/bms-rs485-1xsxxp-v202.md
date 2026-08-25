@@ -23,8 +23,9 @@ version aliases and do not establish an ordering against another Growatt
 protocol. No wire register in the admitted read set proves this document
 revision.
 
-The `1xSxxP` label describes this protocol topology. It does not automatically
-apply the contract to any commercial battery, inverter, logger, or later
+The `1xSxxP` label describes this protocol topology.
+It does not automatically apply the contract to any commercial battery,
+inverter, logger, or later
 product merely because that product is branded Growatt, uses RS485, or exposes
 FC03.
 

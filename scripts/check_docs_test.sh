@@ -59,6 +59,34 @@ for mutation in \
   fi
 done
 
+for mutation in \
+  's/does not automatically apply the contract/automatically applies the contract/' \
+  's/are forbidden identity inputs/are permitted identity inputs/' \
+  's/negative-overlap records/optional overlap records/' \
+  's/Without that fixture/Without that document/' \
+  's/is ambiguous and produces no match/is ranked and selects the first match/' \
+  's/no partial/partial/'; do
+  sed "$mutation" "$bms_document" > "$bms_fixture"
+  if "$repo_root/scripts/check_docs.sh" --check-bms-contract "$bms_fixture"; then
+    echo "BMS admission mutation was accepted: $mutation" >&2
+    exit 1
+  fi
+done
+
+for leak in \
+  'gateway.example.internal:1502' \
+  '192.0.2.1' \
+  'port 1502' \
+  '0123456789abcdef0123456789abcdef01234567' \
+  '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef'; do
+  cp "$bms_document" "$bms_fixture"
+  printf '\n%s\n' "$leak" >> "$bms_fixture"
+  if "$repo_root/scripts/check_docs.sh" --check-bms-contract "$bms_fixture"; then
+    echo "BMS private material was accepted: $leak" >&2
+    exit 1
+  fi
+done
+
 cp "$x2_document" "$x2_fixture"
 "$repo_root/scripts/check_docs.sh" --check-x2-publication "$x2_fixture"
 
