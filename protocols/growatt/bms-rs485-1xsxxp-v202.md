@@ -61,9 +61,10 @@ bounded slices:
 - offset 0x010D, quantity 2, for the final read-only extension values before
   the writable calibration range.
 
-The two extension slices remain opaque words until an exact, versioned field
-definition establishes their distinct byte and word encoding. Reserved or
-unknown fields inside an admitted slice stay opaque and retain their position.
+Only the typed extension words listed below are decoded. Every other extension
+word remains opaque until an exact, versioned field definition establishes its
+distinct byte and word encoding. Reserved or unknown fields inside an admitted
+slice stay opaque and retain their position.
 
 Offsets 0x0009 through 0x000C contain barcode material and are not read,
 retained, or used for identity. A larger coalesced read that includes those
@@ -110,6 +111,38 @@ Growatt Protocol II, another BMS protocol, or a nearby address.
 Malformed extents, impossible counts, invalid enum or bitfield values, unknown
 scales, and unsupported extension fields are retained as bounded opaque words
 or reject the candidate. They never become guessed telemetry.
+
+## Typed read-only fields
+
+The typed subset is limited to the fields listed below. It is decoded only
+after the complete four-slice observation and exact revision tuple pass their
+existing validation; no individual slice produces a partial typed result.
+
+- `0x0001` and `0x0002` are version byte pairs: the high byte precedes the low
+  byte for the MCU and gauge versions, respectively.
+- `0x000D` and `0x000E` hold the BMS and battery-pack identity components.
+  Company and generation occupy the low and high bytes, respectively, and are
+  numeric protocol values rather than a global vendor detector.
+- At `0x0013`, the high byte must be zero. Its low two bits are the observed
+  operating state: soft-starting, standby, charging, or discharging. Any other
+  state encoding rejects the typed result.
+- SOC is the low byte at `0x0015` and must be in the inclusive range 0 through
+  100. Its high byte must be zero. Voltage at `0x0016` is unsigned in 10 mV
+  units. Current at `0x0017` is signed two's-complement and uses 10 mA units.
+  Temperature at `0x0018` is signed degrees Celsius and must be between -127
+  and 127.
+- Remaining and full-charge capacity at `0x001A` and `0x001B` are unsigned in
+  10 mAh units. Cycle count at `0x001E` is an unsigned 16-bit count.
+- Only `0x0100`, `0x0101`, `0x0102`, `0x0104`, `0x0105`, and `0x0106` have typed
+  extension meanings: charge time in seconds; current-cycle charge capacity in
+  0.1 Ah; average cell voltage in mV; floating pack voltage in 0.1 V; and
+  cumulative charge and discharge capacity in 0.1 Ah. `0x0103`, `0x0107`
+  through `0x010B`, and both `0x010D` slice words remain opaque.
+
+Warnings, errors, company-specific status interpretation, calibration, and
+every control-adjacent value remain opaque. Decoding any field is observation
+only and cannot authorize a request or control action.
+
 
 ## Writes and controls
 
