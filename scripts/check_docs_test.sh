@@ -9,6 +9,8 @@ source_document="$repo_root/architecture/sdongle-qualification-disposition-v1.md
 fixture_document="$fixture_root/admission.md"
 x2_document="$repo_root/protocols/growatt/shinewilan-x2-bridge-v1.md"
 x2_fixture="$fixture_root/shinewilan-x2.md"
+bms_document="$repo_root/protocols/growatt/bms-rs485-1xsxxp-v202.md"
+bms_fixture="$fixture_root/bms-rs485.md"
 
 cp "$source_document" "$fixture_document"
 "$repo_root/scripts/check_docs.sh" --check-sdongle-admission "$fixture_document"
@@ -27,6 +29,25 @@ for leak in \
   printf '\n%s\n' "$leak" >> "$fixture_document"
   if "$repo_root/scripts/check_docs.sh" --check-sdongle-admission "$fixture_document"; then
     echo "admission leak was accepted: $leak" >&2
+    exit 1
+  fi
+done
+
+"$repo_root/scripts/check_docs.sh" --check-bms-contract "$bms_document"
+
+for mutation in \
+  's/1xSxxP ESS/any Growatt battery/' \
+  's/Rev2\.01/Rev2.xx/' \
+  's/revision `2\.02`/revision `2.03`/' \
+  's/function is FC03/function is FC10/' \
+  's/are not read/are read when needed/' \
+  's/FC10 Preset Multiple Registers/FC10 Read Multiple Registers/' \
+  's/W or WR are unconditional `NO_SEND`/W or WR require operator approval/' \
+  's/Registry implementation is `NO_GO`/Registry implementation is `GO`/' \
+  's/A synthetic identity assembled from the document is not a substitute/A synthetic identity assembled from the document is sufficient/'; do
+  sed "$mutation" "$bms_document" > "$bms_fixture"
+  if "$repo_root/scripts/check_docs.sh" --check-bms-contract "$bms_fixture"; then
+    echo "BMS contract mutation was accepted: $mutation" >&2
     exit 1
   fi
 done

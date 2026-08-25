@@ -49,9 +49,24 @@ check_x2_contract() {
   grep -Fq 'The bridge has no semantic registry profile of its own.' "$document"
 }
 
+check_bms_contract() {
+  local document="$1"
+
+  grep -Fq 'protocol family label `1xSxxP ESS`' "$document"
+  grep -Fq 'file revision family `Rev2.01`' "$document"
+  grep -Fq 'cumulative change record through revision `2.02`' "$document"
+  grep -Fq 'function is FC03 Read Holding Registers.' "$document"
+  grep -Fq 'Offsets 0x0009 through 0x000C contain barcode material and are not read' "$document"
+  grep -Fq 'FC10 Preset Multiple Registers, address allocation' "$document"
+  grep -Fq 'every field marked' "$document"
+  grep -Fq 'W or WR are unconditional `NO_SEND`.' "$document"
+  grep -Fq 'Registry implementation is `NO_GO` until an exact, permitted, sanitized' "$document"
+  grep -Fq 'A synthetic identity assembled from the document is not a substitute.' "$document"
+}
+
 if [[ $# -gt 0 ]]; then
   if [[ $# -ne 2 ]]; then
-    echo 'usage: check_docs.sh [--check-sdongle-admission|--check-public-protocol|--check-x2-publication|--check-x2-contract document]' >&2
+    echo 'usage: check_docs.sh [--check-sdongle-admission|--check-public-protocol|--check-x2-publication|--check-x2-contract|--check-bms-contract document]' >&2
     exit 2
   fi
   case "$1" in
@@ -59,8 +74,9 @@ if [[ $# -gt 0 ]]; then
     --check-public-protocol) check_public_protocol "$2" ;;
     --check-x2-publication) check_x2_publication "$2" ;;
     --check-x2-contract) check_x2_contract "$2" ;;
+    --check-bms-contract) check_bms_contract "$2" ;;
     *)
-      echo 'usage: check_docs.sh [--check-sdongle-admission|--check-public-protocol|--check-x2-publication|--check-x2-contract document]' >&2
+      echo 'usage: check_docs.sh [--check-sdongle-admission|--check-public-protocol|--check-x2-publication|--check-x2-contract|--check-bms-contract document]' >&2
       exit 2
       ;;
   esac
@@ -81,6 +97,7 @@ multivendor_specs=(
   'protocols/huawei/gateway-readonly-v1.md'
   'protocols/growatt/protocol-ii-readonly-v1.md'
   'protocols/growatt/shinewilan-x2-bridge-v1.md'
+  'protocols/growatt/bms-rs485-1xsxxp-v202.md'
 )
 for multivendor_spec in "${multivendor_specs[@]}"; do
   test -f "$multivendor_spec"
@@ -141,6 +158,11 @@ grep -Fq 'Unsupported or undocumented operations are' 'protocols/growatt/shinewi
 grep -Fq 'Unit Identifier 0 is RTU broadcast and is `NO_SEND`' 'protocols/growatt/shinewilan-x2-bridge-v1.md'
 check_x2_contract 'protocols/growatt/shinewilan-x2-bridge-v1.md'
 check_x2_publication 'protocols/growatt/shinewilan-x2-bridge-v1.md'
+grep -Fqx '## Exact applicability and revision' 'protocols/growatt/bms-rs485-1xsxxp-v202.md'
+grep -Fqx '## FC03 read-only boundary' 'protocols/growatt/bms-rs485-1xsxxp-v202.md'
+grep -Fqx '## Writes and controls' 'protocols/growatt/bms-rs485-1xsxxp-v202.md'
+grep -Fqx '## Fixture and admission gate' 'protocols/growatt/bms-rs485-1xsxxp-v202.md'
+check_bms_contract 'protocols/growatt/bms-rs485-1xsxxp-v202.md'
 
 sdongle_admission_required=(
   'Scope' 'Sanitized qualification boundary' 'Disposition' 'Requalification gate'
