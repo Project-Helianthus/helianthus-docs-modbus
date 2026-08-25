@@ -333,6 +333,43 @@ check_sunspec_der_trip_lv_typed_fact_projection_v2() {
   fi
 }
 
+check_sunspec_dynamic_structural_selection_v2() {
+  local document="$1"
+  local contradiction='candidate creates a decoder key|candidate is admitted|candidate emits a typed fact|candidate causes a new request|candidate terminates a chain|Model 708[^.]*candidate|Model 709[^.]*candidate'
+
+  check_public_protocol "$document"
+  for heading in \
+    'Scope and classification' \
+    'Post-payload candidate rule' \
+    'Failure and raw retention' \
+    'Acquisition and terminal boundary' \
+    'Isolation and no activation'; do
+    grep -Fqx "## $heading" "$document"
+  done
+  grep -Fq 'A `structural_candidate` is a' "$document"
+  grep -Fq 'post-payload observation state.' "$document"
+  grep -Fq 'It is not `admitted`, has no decoder key,' "$document"
+  grep -Fq 'A `structural_candidate` is considered only after the complete occurrence' "$document"
+  grep -Fq 'It must never be selected' "$document"
+  grep -Fq '`P` from occurrence-word offset 5 and `C` from occurrence-word offset 6;' "$document"
+  grep -Fq '`P` and `C` each in the inclusive range 0 through 65534, excluding' "$document"
+  grep -Fq 'checked `L = 7 + C*(4 + 9*P)`' "$document"
+  grep -Fq 'The candidate rule does not enumerate Model' "$document"
+  grep -Fq 'and does not create decoder keys for those lengths.' "$document"
+  grep -Fq 'The complete occurrence remains raw-only with its' "$document"
+  grep -Fq 'A `structural_candidate` does not cause a' "$document"
+  grep -Fq 'A candidate does not terminate a chain.' "$document"
+  grep -Fq 'V1 selection, keys, raw outputs, and behavior remain unchanged.' "$document"
+  grep -Fq 'Models 708 and' "$document"
+  grep -Fq '709 remain outside this contract' "$document"
+  grep -Fq 'do not become candidates through Model' "$document"
+  grep -Fq 'This contract creates no operation, write, send authority,' "$document"
+  if grep -Ein "$contradiction" "$document"; then
+    echo 'SunSpec dynamic structural selection contract exceeds its docs-only boundary' >&2
+    return 1
+  fi
+}
+
 check_x2_publication() {
   local document="$1"
   local bare_revision='(^|[^[:xdigit:]])[[:xdigit:]]{40}([^[:xdigit:]]|$)|(^|[^[:xdigit:]])[[:xdigit:]]{64}([^[:xdigit:]]|$)'
@@ -456,7 +493,7 @@ check_wit_matrix_contract() {
 
 if [[ $# -gt 0 ]]; then
   if [[ $# -ne 2 ]]; then
-    echo 'usage: check_docs.sh [--check-sdongle-admission|--check-public-protocol|--check-private-function-contract|--check-sunspec-v1-model-families-contract|--check-sunspec-nested-layout-contract|--check-sunspec-der-trip-lv-template-v2|--check-sunspec-der-trip-lv-typed-fact-projection-v2|--check-sunspec-v2-contract|--check-sunspec-v2-licensing|--check-x2-publication|--check-x2-contract|--check-bms-contract|--check-wit-matrix-contract document]' >&2
+    echo 'usage: check_docs.sh [--check-sdongle-admission|--check-public-protocol|--check-private-function-contract|--check-sunspec-v1-model-families-contract|--check-sunspec-nested-layout-contract|--check-sunspec-der-trip-lv-template-v2|--check-sunspec-der-trip-lv-typed-fact-projection-v2|--check-sunspec-dynamic-structural-selection-v2|--check-sunspec-v2-contract|--check-sunspec-v2-licensing|--check-x2-publication|--check-x2-contract|--check-bms-contract|--check-wit-matrix-contract document]' >&2
     exit 2
   fi
   case "$1" in
@@ -467,6 +504,7 @@ if [[ $# -gt 0 ]]; then
     --check-sunspec-nested-layout-contract) check_sunspec_nested_layout_contract "$2" ;;
     --check-sunspec-der-trip-lv-template-v2) check_sunspec_der_trip_lv_template_v2 "$2" ;;
     --check-sunspec-der-trip-lv-typed-fact-projection-v2) check_sunspec_der_trip_lv_typed_fact_projection_v2 "$2" ;;
+    --check-sunspec-dynamic-structural-selection-v2) check_sunspec_dynamic_structural_selection_v2 "$2" ;;
     --check-sunspec-v2-contract) check_sunspec_v2_contract "$2" ;;
     --check-sunspec-v2-licensing) check_sunspec_v2_licensing "$2" ;;
     --check-x2-publication) check_x2_publication "$2" ;;
@@ -474,7 +512,7 @@ if [[ $# -gt 0 ]]; then
     --check-bms-contract) check_bms_contract "$2" ;;
     --check-wit-matrix-contract) check_wit_matrix_contract "$2" ;;
     *)
-    echo 'usage: check_docs.sh [--check-sdongle-admission|--check-public-protocol|--check-private-function-contract|--check-sunspec-v1-model-families-contract|--check-sunspec-nested-layout-contract|--check-sunspec-der-trip-lv-template-v2|--check-sunspec-der-trip-lv-typed-fact-projection-v2|--check-sunspec-v2-contract|--check-sunspec-v2-licensing|--check-x2-publication|--check-x2-contract|--check-bms-contract|--check-wit-matrix-contract document]' >&2
+    echo 'usage: check_docs.sh [--check-sdongle-admission|--check-public-protocol|--check-private-function-contract|--check-sunspec-v1-model-families-contract|--check-sunspec-nested-layout-contract|--check-sunspec-der-trip-lv-template-v2|--check-sunspec-der-trip-lv-typed-fact-projection-v2|--check-sunspec-dynamic-structural-selection-v2|--check-sunspec-v2-contract|--check-sunspec-v2-licensing|--check-x2-publication|--check-x2-contract|--check-bms-contract|--check-wit-matrix-contract document]' >&2
       exit 2
       ;;
   esac
@@ -489,6 +527,8 @@ der_trip_lv_template_spec='protocols/sunspec/der-trip-lv-template-v2.md'
 test -f "$der_trip_lv_template_spec"
 der_trip_lv_projection_spec='protocols/sunspec/der-trip-lv-typed-fact-projection-v2.md'
 test -f "$der_trip_lv_projection_spec"
+dynamic_structural_selection_spec='protocols/sunspec/dynamic-structural-selection-v2.md'
+test -f "$dynamic_structural_selection_spec"
 private_spec='protocols/modbus/private-function-codes.md'
 test -f "$private_spec"
 sdongle_admission='architecture/sdongle-qualification-disposition-v1.md'
