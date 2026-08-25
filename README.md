@@ -21,6 +21,7 @@ Current protocol contracts:
 - [ShineWiLan-X2 transparent Modbus bridge](protocols/growatt/shinewilan-x2-bridge-v1.md)
 - [Growatt 1xSxxP ESS BMS RS485 read-only candidate](protocols/growatt/bms-rs485-1xsxxp-v202.md)
 - [Growatt WIT family and protocol qualification matrix](protocols/growatt/wit-family-protocol-matrix-v1.md)
+- [OutBack AXS Port SunSpec read-only boundary](protocols/outback/axs-port-sunspec-readonly-v1.md)
 
 Protocol pages are public contracts. They define bounded, fail-closed behavior
 and do not expose private device identity or unsafe control procedures.

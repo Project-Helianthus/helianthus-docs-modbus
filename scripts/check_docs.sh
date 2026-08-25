@@ -518,6 +518,28 @@ check_wit_matrix_contract() {
   grep -Fq 'Missing or conflicting evidence produces `INSUFFICIENT_EVIDENCE`, no match, and no send.' "$document"
 }
 
+check_outback_axs_contract() {
+  local document="$1"
+
+  check_public_protocol "$document"
+  for heading in 'Scope' 'Chain selection' 'Observed state' 'Excluded fields and operations' 'Failure and ambiguity'; do
+    grep -Fqx "## $heading" "$document"
+  done
+  grep -Fq 'vendor Model 64110 with declared length 282' "$document"
+  grep -Fq 'OutBack charge-controller Model 64111 with declared' "$document"
+  grep -Fq 'length 23.' "$document"
+  grep -Fq 'Its values remain vendor-scoped observed state under this contract.' "$document"
+  grep -Fq 'does not convert an OutBack device into a generic inverter profile.' "$document"
+  grep -Fq 'All other Model 64110 words, all unknown models, and every wrong-length model' "$document"
+  grep -Fq 'all read/write or write-only fields are excluded from output. They are `NO_SEND`.' "$document"
+  grep -Fq 'No function in this contract writes a register' "$document"
+  grep -Fq 'does not identify a network endpoint, unit identifier, installation,' "$document"
+  if grep -Ein 'write method is enabled|automatic acquisition is enabled|runtime activation is enabled|converts an OutBack device into a generic inverter profile|control capability is derived' "$document"; then
+    echo 'OutBack AXS protocol specification exceeds the read-only boundary' >&2
+    return 1
+  fi
+}
+
 if [[ $# -gt 0 ]]; then
   if [[ $# -ne 2 ]]; then
     echo 'usage: check_docs.sh [--check-sdongle-admission|--check-public-protocol|--check-private-function-contract|--check-sunspec-v1-model-families-contract|--check-sunspec-nested-layout-contract|--check-sunspec-der-trip-lv-template-v2|--check-sunspec-der-trip-lv-typed-fact-projection-v2|--check-sunspec-dynamic-structural-selection-v2|--check-sunspec-v2-contract|--check-sunspec-v2-licensing|--check-x2-publication|--check-x2-contract|--check-bms-contract|--check-wit-matrix-contract document]' >&2
@@ -538,6 +560,7 @@ if [[ $# -gt 0 ]]; then
     --check-x2-contract) check_x2_contract "$2" ;;
     --check-bms-contract) check_bms_contract "$2" ;;
     --check-wit-matrix-contract) check_wit_matrix_contract "$2" ;;
+    --check-outback-axs-contract) check_outback_axs_contract "$2" ;;
     *)
     echo 'usage: check_docs.sh [--check-sdongle-admission|--check-public-protocol|--check-private-function-contract|--check-sunspec-v1-model-families-contract|--check-sunspec-nested-layout-contract|--check-sunspec-der-trip-lv-template-v2|--check-sunspec-der-trip-lv-typed-fact-projection-v2|--check-sunspec-dynamic-structural-selection-v2|--check-sunspec-v2-contract|--check-sunspec-v2-licensing|--check-x2-publication|--check-x2-contract|--check-bms-contract|--check-wit-matrix-contract document]' >&2
       exit 2
@@ -573,6 +596,7 @@ multivendor_specs=(
   'protocols/growatt/shinewilan-x2-bridge-v1.md'
   'protocols/growatt/bms-rs485-1xsxxp-v202.md'
   'protocols/growatt/wit-family-protocol-matrix-v1.md'
+  'protocols/outback/axs-port-sunspec-readonly-v1.md'
 )
 for multivendor_spec in "${multivendor_specs[@]}"; do
   test -f "$multivendor_spec"
@@ -636,6 +660,7 @@ grep -Fqx '## Writes and controls' 'protocols/growatt/bms-rs485-1xsxxp-v202.md'
 grep -Fqx '## Fixture and admission gate' 'protocols/growatt/bms-rs485-1xsxxp-v202.md'
 check_bms_contract 'protocols/growatt/bms-rs485-1xsxxp-v202.md'
 check_wit_matrix_contract 'protocols/growatt/wit-family-protocol-matrix-v1.md'
+check_outback_axs_contract 'protocols/outback/axs-port-sunspec-readonly-v1.md'
 
 sdongle_admission_required=(
   'Scope' 'Sanitized qualification boundary' 'Disposition' 'Requalification gate'
