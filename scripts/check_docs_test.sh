@@ -36,6 +36,7 @@ grep -Fq 'Each retry began after at least five seconds of idle time.' "$source_d
 
 tesla_document="$repo_root/protocols/tesla/tedapi.md"
 tesla_fixture="$fixture_root/tesla-tedapi.md"
+"$repo_root/scripts/check_docs.sh" --check-tesla-tedapi-contract "$tesla_document"
 for mutation in \
   's/1 through 536870911/1 through 536870912/' \
   's/wire type is 0 through 5/wire type is 0 through 6/' \

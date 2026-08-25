@@ -101,8 +101,8 @@ An offline FC100 decoder may retain the nested-message length, the numeric
 first protobuf key field number, its numeric wire type, and a deterministic
 digest of the nested message. The field number is 1 through 536870911 and the
 wire type is 0 through 5. Raw nested bytes, protobuf field names, values,
-operation identity, capability, and send authority are not projected. Invalid,
-truncated, overflowed, or out-of-range keys are rejected.
+operation identity, capability, and send authority are not projected.
+Invalid, truncated, overflowed, or out-of-range keys are rejected.
 
 ## Functions 101 and 102
 

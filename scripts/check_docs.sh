@@ -49,6 +49,7 @@ check_tesla_tedapi_contract() {
     echo 'normative Tesla specification contains forbidden provenance material' >&2
     return 1
   fi
+  return 0
 }
 
 check_private_function_contract() {
