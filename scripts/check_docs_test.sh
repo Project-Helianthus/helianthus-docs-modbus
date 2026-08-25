@@ -25,6 +25,8 @@ der_trip_lv_template_document="$repo_root/protocols/sunspec/der-trip-lv-template
 der_trip_lv_template_fixture="$fixture_root/sunspec-der-trip-lv-template-v2.md"
 der_trip_lv_projection_document="$repo_root/protocols/sunspec/der-trip-lv-typed-fact-projection-v2.md"
 der_trip_lv_projection_fixture="$fixture_root/sunspec-der-trip-lv-typed-fact-projection-v2.md"
+dynamic_structural_selection_document="$repo_root/protocols/sunspec/dynamic-structural-selection-v2.md"
+dynamic_structural_selection_fixture="$fixture_root/sunspec-dynamic-structural-selection-v2.md"
 private_function_document="$repo_root/protocols/modbus/private-function-codes.md"
 private_function_fixture="$fixture_root/private-function-codes.md"
 
@@ -122,6 +124,26 @@ for mutation in \
   sed "$mutation" "$der_trip_lv_projection_document" > "$der_trip_lv_projection_fixture"
   if "$repo_root/scripts/check_docs.sh" --check-sunspec-der-trip-lv-typed-fact-projection-v2 "$der_trip_lv_projection_fixture"; then
     echo "SunSpec Model 707 typed-fact projection mutation was accepted: $mutation" >&2
+    exit 1
+  fi
+done
+
+"$repo_root/scripts/check_docs.sh" --check-sunspec-dynamic-structural-selection-v2 "$dynamic_structural_selection_document"
+for mutation in \
+  's/post-payload observation state/header observation state/' \
+  's/It is not `admitted`, has no decoder key/It is `admitted` and has a decoder key/' \
+  's/offset 5 and `C` from occurrence-word offset 6/offset 4 and `C` from occurrence-word offset 5/' \
+  's/7 + C\*(4 + 9\*P)/7 + C*(4 + 8*P)/' \
+  's/does not enumerate Model/uses a Model/' \
+  's/complete occurrence remains raw-only/complete occurrence is admitted/' \
+  's/A `structural_candidate` does not cause a/A `structural_candidate` causes a/' \
+  's/does not terminate a chain/terminates a chain/' \
+  's/V1 selection, keys, raw outputs, and behavior remain unchanged/V1 selection shares V2 behavior/' \
+  's/do not become candidates/become candidates/' \
+  's/This contract creates no operation, write, send authority/This contract creates write authority/'; do
+  sed "$mutation" "$dynamic_structural_selection_document" > "$dynamic_structural_selection_fixture"
+  if "$repo_root/scripts/check_docs.sh" --check-sunspec-dynamic-structural-selection-v2 "$dynamic_structural_selection_fixture"; then
+    echo "SunSpec dynamic structural selection mutation was accepted: $mutation" >&2
     exit 1
   fi
 done
