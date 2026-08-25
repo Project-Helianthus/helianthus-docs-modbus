@@ -88,10 +88,12 @@ transaction and must quarantine late, unrelated, malformed, or timed-out
 frames so they cannot satisfy a later request. A terminal response may arrive
 without an echo.
 
-Outbound FC100 is denied unless the nested TEDAPI operation is explicitly
-allowlisted, proven read-only, version-compatible, and declared replay-safe.
-The Tesla profile alone owns FC100 interpretation; it does not create a global
-function-code handler.
+FC100 is not a general TEDAPI admission mechanism. This profile admits no
+outbound FC100 operation, including a request with a locally valid envelope. A
+later compatible profile may admit one particular operation only with an
+explicit non-mutating per-operation contract, version qualification, read-only
+admission, and replay-safe declaration. The Tesla profile alone owns FC100
+interpretation; it does not create a global function-code handler.
 
 ## Functions 101 and 102
 
