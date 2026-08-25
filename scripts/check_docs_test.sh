@@ -73,6 +73,17 @@ for mutation in \
   fi
 done
 
+awk '
+  /^The two extension slices remain/ {
+    print "- offset 0x0200, quantity 1, for an unqualified extra slice;"
+  }
+  { print }
+' "$bms_document" > "$bms_fixture"
+if "$repo_root/scripts/check_docs.sh" --check-bms-contract "$bms_fixture"; then
+  echo 'BMS additive FC03 slice was accepted' >&2
+  exit 1
+fi
+
 for leak in \
   'gateway.example.internal:1502' \
   '192.0.2.1' \

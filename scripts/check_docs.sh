@@ -52,6 +52,20 @@ check_x2_contract() {
 check_bms_contract() {
   local document="$1"
   local private_material='(^|[^[:xdigit:]])[[:xdigit:]]{40}([^[:xdigit:]]|$)|(^|[^[:xdigit:]])[[:xdigit:]]{64}([^[:xdigit:]]|$)|([0-9]{1,3}\.){3}[0-9]{1,3}|([[:alnum:]][[:alnum:].-]*):([0-9]{1,5}|[[:alpha:]][[:alnum:].-]*)|[Pp]ort[[:space:]]+[0-9]{1,5}'
+  local expected_slices actual_slices
+
+  expected_slices=$(printf '%s\n' \
+    'offset 0x0001, quantity 7' \
+    'offset 0x000D, quantity 29' \
+    'offset 0x0100, quantity 12' \
+    'offset 0x010D, quantity 2')
+  actual_slices=$(sed -n \
+    '/An offline fixture may contain these/,/The two extension slices remain/p' \
+    "$document" | sed -nE 's/^- (offset 0x[[:xdigit:]]+, quantity [0-9]+).*/\1/p')
+  if [[ "$actual_slices" != "$expected_slices" ]]; then
+    echo 'BMS FC03 slice allowlist is not exact' >&2
+    return 1
+  fi
 
   check_public_protocol "$document"
   if grep -Ein "$private_material" "$document"; then
