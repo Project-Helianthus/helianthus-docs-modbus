@@ -11,12 +11,59 @@ check_sdongle_admission() {
   fi
 }
 
+check_public_protocol() {
+  local document="$1"
+  local forbidden='https?://|/[Uu]sers/|sha(-?256)?[-:]?[0-9a-f]{8,}|(source|vendor material) (is|are) public domain|sunspec\.inverter\.|canonical facts'
+
+  if grep -Ein "$forbidden" "$document"; then
+    echo 'public protocol specification contains a source locator, hash, or public-domain declaration' >&2
+    return 1
+  fi
+}
+
+check_x2_publication() {
+  local document="$1"
+  local bare_revision='(^|[^[:xdigit:]])[[:xdigit:]]{40}([^[:xdigit:]]|$)|(^|[^[:xdigit:]])[[:xdigit:]]{64}([^[:xdigit:]]|$)'
+  local private_endpoint='([0-9]{1,3}\.){3}[0-9]{1,3}|([[:alnum:]][[:alnum:].-]*):([0-9]{1,5}|[[:alpha:]][[:alnum:].-]*)|[Pp]ort[[:space:]]+[0-9]{1,5}'
+
+  check_public_protocol "$document"
+  if grep -Ein "$bare_revision|$private_endpoint" "$document"; then
+    echo 'X2 protocol specification contains a bare revision or private endpoint' >&2
+    return 1
+  fi
+}
+
+check_x2_contract() {
+  local document="$1"
+
+  grep -Fq 'MBAP Unit Identifier as the downstream Modbus RTU unit address and forwards' "$document"
+  grep -Fq 'without changing its function code, register offset, quantity,' "$document"
+  grep -Fq 'or payload.' "$document"
+  grep -Fq 'The MBAP Protocol Identifier must be 0x0000.' "$document"
+  grep -Fq 'The MBAP Length must equal one' "$document"
+  grep -Fq 'Only Unit Identifiers 1 through 247 are admitted' "$document"
+  grep -Fq 'Unit Identifier 0 is RTU broadcast and is `NO_SEND`' "$document"
+  grep -Fq 'not infer a unit, scan unit addresses' "$document"
+  grep -Fq 'The read-only candidate surface consists of FC03 holding-register reads and' "$document"
+  grep -Fq 'FC04 input-register reads.' "$document"
+  grep -Fq 'The bridge has no semantic registry profile of its own.' "$document"
+}
+
 if [[ $# -gt 0 ]]; then
-  if [[ $# -ne 2 || "$1" != '--check-sdongle-admission' ]]; then
-    echo 'usage: check_docs.sh [--check-sdongle-admission document]' >&2
+  if [[ $# -ne 2 ]]; then
+    echo 'usage: check_docs.sh [--check-sdongle-admission|--check-public-protocol|--check-x2-publication|--check-x2-contract document]' >&2
     exit 2
   fi
-  check_sdongle_admission "$2"
+  case "$1" in
+    --check-sdongle-admission) check_sdongle_admission "$2" ;;
+    --check-public-protocol) check_public_protocol "$2" ;;
+    --check-x2-publication) check_x2_publication "$2" ;;
+    --check-x2-contract) check_x2_contract "$2" ;;
+    *)
+      echo 'usage: check_docs.sh [--check-sdongle-admission|--check-public-protocol|--check-x2-publication|--check-x2-contract document]' >&2
+      exit 2
+      ;;
+  esac
   exit 0
 fi
 
@@ -33,6 +80,7 @@ multivendor_specs=(
   'protocols/fronius/sunspec-float-v1.md'
   'protocols/huawei/gateway-readonly-v1.md'
   'protocols/growatt/protocol-ii-readonly-v1.md'
+  'protocols/growatt/shinewilan-x2-bridge-v1.md'
 )
 for multivendor_spec in "${multivendor_specs[@]}"; do
   test -f "$multivendor_spec"
@@ -83,6 +131,16 @@ grep -Fq '`EMMA-A02` are the only admitted exact model values.' 'protocols/huawe
 grep -Fq 'EMMA-A01 never inherits an EMMA-A02-only capability.' 'protocols/huawei/gateway-readonly-v1.md'
 grep -Fq 'Basic and extended MEI are optional enrichment, never initial EMMA identification.' 'protocols/huawei/gateway-readonly-v1.md'
 grep -Fqx '## Identity tuple' 'protocols/growatt/protocol-ii-readonly-v1.md'
+grep -Fqx '## Request mapping' 'protocols/growatt/shinewilan-x2-bridge-v1.md'
+grep -Fqx '## Response mapping' 'protocols/growatt/shinewilan-x2-bridge-v1.md'
+grep -Fqx '## Read-only boundary' 'protocols/growatt/shinewilan-x2-bridge-v1.md'
+grep -Fqx '## Identity and admission' 'protocols/growatt/shinewilan-x2-bridge-v1.md'
+grep -Fqx '## Transparency limits' 'protocols/growatt/shinewilan-x2-bridge-v1.md'
+grep -Fq 'The bridge has no semantic registry profile of its own.' 'protocols/growatt/shinewilan-x2-bridge-v1.md'
+grep -Fq 'Unsupported or undocumented operations are' 'protocols/growatt/shinewilan-x2-bridge-v1.md'
+grep -Fq 'Unit Identifier 0 is RTU broadcast and is `NO_SEND`' 'protocols/growatt/shinewilan-x2-bridge-v1.md'
+check_x2_contract 'protocols/growatt/shinewilan-x2-bridge-v1.md'
+check_x2_publication 'protocols/growatt/shinewilan-x2-bridge-v1.md'
 
 sdongle_admission_required=(
   'Scope' 'Sanitized qualification boundary' 'Disposition' 'Requalification gate'
@@ -98,7 +156,6 @@ grep -Fq 'Each retry began after at least five seconds of idle time.' "$sdongle_
 
 check_sdongle_admission "$sdongle_admission"
 
-if grep -Ein 'https?://|/[Uu]sers/|sha-?[0-9a-f]{8,}|(source|vendor material) (is|are) public domain|sunspec\.inverter\.|canonical facts' "${multivendor_specs[@]}"; then
-  echo 'multivendor protocol specification contains a source locator, hash, or public-domain declaration' >&2
-  exit 1
-fi
+for multivendor_spec in "${multivendor_specs[@]}"; do
+  check_public_protocol "$multivendor_spec"
+done
