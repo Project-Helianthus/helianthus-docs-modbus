@@ -51,6 +51,14 @@ check_tesla_tedapi_contract() {
   grep -Fq 'are never retained or projected.' "$document"
   grep -Fq 'group boundaries with the same field number.' "$document"
   grep -Fq 'oversized, unpaired, or over-count summary is rejected.' "$document"
+  grep -Fqx '### MCP FC100 summary projection' "$document"
+  grep -Fq 'only from an injected, locally' "$document"
+  grep -Fq 'validated wire summary. It exposes only the qualification (`framing_only` or' "$document"
+  grep -Fq '`qualified_read_only`), total envelope length, nested-message length, entry' "$document"
+  grep -Fq 'count, ordered numeric field-number and wire-type entries, and payload digest.' "$document"
+  grep -Fq 'Its `outbound_allowed` value is always `false`.' "$document"
+  grep -Fq 'summary produces an unavailable result with no summary data.' "$document"
+  grep -Fq 'exposes raw bytes, values, field names, operation identity, capability, request' "$document"
   if grep -Ein "$forbidden" "$document"; then
     echo 'normative Tesla specification contains forbidden provenance material' >&2
     return 1
