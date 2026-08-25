@@ -91,6 +91,8 @@ check_tesla_tedapi_contract() {
   grep -Fq 'unknown response shape must cause no send.' "$document"
   grep -Fq 'nested request message is exactly `32 02 1a 00`; therefore its FC100 PDU is' "$document"
   grep -Fq 'exactly `04 32 02 1a 00`.' "$document"
+  grep -Fq 'optional FC100 intermediate and may occur no more than once.' "$document"
+  grep -Fq 'A duplicate echo, a second terminal, or any response after a terminal must be quarantined' "$document"
   grep -Fq 'nested envelope contains WC family `6` and one response tag `4`.' "$document"
   grep -Fq 'tag-`4` body is a bounded opaque terminal body.' "$document"
   grep -Fq 'not a lifetime result and must fail' "$document"

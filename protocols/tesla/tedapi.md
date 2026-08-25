@@ -137,8 +137,7 @@ message selects the empty lifetime request, and no caller-supplied request
 fields are permitted. This byte sequence is an operation descriptor, not an
 endpoint probe or a transmission instruction.
 
-An echoed PDU exactly equal to this request PDU is an FC100 intermediate. A
-successful terminal PDU is an FC100 normal response whose nested envelope contains WC family `6` and one response tag `4`. The tag-`4` body is a bounded opaque terminal body. This version defines no member,
+An echoed PDU exactly equal to this request PDU is an optional FC100 intermediate and may occur no more than once. A duplicate echo, a second terminal, or any response after a terminal must be quarantined and fail this operation. A successful terminal PDU is an FC100 normal response whose nested envelope contains WC family `6` and one response tag `4`. The tag-`4` body is a bounded opaque terminal body. This version defines no member,
 field number, wire type, scalar, enum, repeated value, unit, scale, range, or
 field-presence contract within that body. Its values, field names, units,
 identifiers, and raw bytes are not projected by this version; a decoder may

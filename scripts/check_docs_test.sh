@@ -103,6 +103,8 @@ for mutation in \
   's/qualified WC lifetime operation/unqualified WC lifetime operation/' \
   's/`tesla.hsc.fc100.wc_lifetime.v1`/`tesla.hsc.fc100.any_wc_operation.v1`/' \
   's/exactly `04 32 02 1a 00`/any FC100 PDU/' \
+  's/may occur no more than once/may occur without bound/' \
+  's/must be quarantined and fail this operation/may remain in flight/' \
   's/WC family `6` and one response tag `4`/WC family `4` and one response tag `4`/' \
   's/tag-`4` body is a bounded opaque terminal body/contains a required inner member/' \
   's/Common family `4` and error tag `1`/Common family `6` and error tag `4`/' \
