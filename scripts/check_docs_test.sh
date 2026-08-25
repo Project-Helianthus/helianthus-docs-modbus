@@ -36,6 +36,18 @@ for mutation in \
   fi
 done
 
+for contradiction in \
+  'V2 registry/runtime admission is approved.' \
+  'V2 registry admission is enabled.' \
+  'V2 runtime admission is implemented.'; do
+  cp "$sunspec_v2_document" "$sunspec_v2_fixture"
+  printf '\n%s\n' "$contradiction" >> "$sunspec_v2_fixture"
+  if "$repo_root/scripts/check_docs.sh" --check-sunspec-v2-contract "$sunspec_v2_fixture"; then
+    echo "SunSpec V2 contradiction was accepted: $contradiction" >&2
+    exit 1
+  fi
+done
+
 for leak in \
   'gateway.example.internal:1502' \
   'a:1502' \
