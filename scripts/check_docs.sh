@@ -284,7 +284,7 @@ check_sunspec_der_trip_lv_template_v2() {
   grep -Fq 'The current isolated offline boundary requires `L <= 65534`.' "$document"
   grep -Fq '`Crv[i].MustTrip.Pt[j].V` and `Crv[i].MustTrip.Pt[j].Tms` are separate paths.' "$document"
   grep -Fq '`V` is one `uint16` word scaled by `V_SF`; `Tms` is two big-endian `uint32` words scaled by `Tms_SF`.' "$document"
-  grep -Fq 'Invalid geometry remains raw-only with zero typed facts and exact raw source spans.' "$document"
+  grep -Fq 'Invalid geometry remains raw-only with zero typed facts and exact raw spans.' "$document"
   grep -Fq 'Every field is observed state only and is `NO_SEND`.' "$document"
   if grep -Ein "$contradiction" "$document"; then
     echo 'SunSpec Model 707 template contract exceeds its docs-only boundary' >&2
