@@ -56,7 +56,7 @@ for mutation in \
   's/`outbound_allowed` value is always `false`/`outbound_allowed` value may be `true`/' \
   's/an unavailable result with no summary data/a successful summary result/' \
   's/exposes raw bytes, values, field names/exposes raw bytes and values/' \
-  's/one qualified operation/two qualified operations/' \
+  's/a qualified operation/an unqualified operation/' \
   's/`wc3_24_44_3` operation version/any operation version/' \
   's/missing replay-safe declaration, or unknown response shape must cause no send/missing replay-safe declaration may send/' \
   's/exactly `04 32 02 0a 00`/any FC100 PDU/' \
@@ -74,7 +74,7 @@ for mutation in \
   's/invokes a generic/invokes a live/' \
   's/falls back to FC101 or FC102/falls back to FC100/' \
   's/It exposes no raw bytes,/It exposes no values,/' \
-  's/This version defines one qualified operation/This version defines no qualified operation/' \
+  's/This version defines a qualified operation/This version defines no qualified operation/' \
   's/terminal body. This version defines no member/terminal body. This version defines an inner member/' \
   's/unknown response shape must cause no send/unknown response shape may send/' \
   's/An echoed PDU exactly equal to this request PDU is an FC100 intermediate/An echoed PDU exactly equal to this request PDU is a terminal result/' \

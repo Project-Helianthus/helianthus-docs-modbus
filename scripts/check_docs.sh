@@ -60,7 +60,7 @@ check_tesla_tedapi_contract() {
   grep -Fq 'summary produces an unavailable result with no summary data.' "$document"
   grep -Fq 'exposes raw bytes, values, field names, operation identity, capability, request' "$document"
   grep -Fqx '### Qualified WC vitals operation' "$document"
-  grep -Fq 'This version defines one qualified operation: `tesla.hsc.fc100.wc_vitals.v1`.' "$document"
+  grep -Fq 'This version defines a qualified operation: `tesla.hsc.fc100.wc_vitals.v1`.' "$document"
   grep -Fq '`tesla_hsc_modbus_v1` profile and the `wc3_24_44_3` operation version.' "$document"
   grep -Fq 'missing replay-safe declaration, or unknown response shape must cause no send.' "$document"
   grep -Fq 'nested request message is exactly `32 02 0a 00`; therefore its FC100 PDU is' "$document"
@@ -84,6 +84,18 @@ check_tesla_tedapi_contract() {
   grep -Fq 'transport exchange, or falls back to FC101 or FC102.' "$document"
   grep -Fq 'transport exchange, or falls back to FC101 or FC102. It exposes no raw bytes,' "$document"
   grep -Fq 'snapshot values, field names, identifiers, control meaning, or runtime' "$document"
+  grep -Fqx '### Qualified Common system-information operation' "$document"
+  grep -Fq 'This version defines a qualified Common system-information operation:' "$document"
+  grep -Fq '`tesla.hsc.fc100.common_system_info.v1`.' "$document"
+  grep -Fq '`tesla_hsc_modbus_v1` profile and the' "$document"
+  grep -Fq '`wc3_24_44_3` operation version. Any other operation version, missing' "$document"
+  grep -Fq 'unknown response shape must cause no send.' "$document"
+  grep -Fq 'nested request message is exactly `22 02 12 00`; therefore its FC100 PDU is' "$document"
+  grep -Fq 'exactly `04 22 02 12 00`.' "$document"
+  grep -Fq 'Common-message response tag `3`.' "$document"
+  grep -Fq 'tag-`3` body is a bounded opaque terminal body.' "$document"
+  grep -Fq 'result and must fail closed as a redacted operation failure.' "$document"
+  grep -Fq 'normal Common error body is a terminal application failure;' "$document"
   if grep -Ein "$forbidden" "$document"; then
     echo 'normative Tesla specification contains forbidden provenance material' >&2
     return 1
