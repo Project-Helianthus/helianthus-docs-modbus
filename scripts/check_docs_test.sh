@@ -36,6 +36,8 @@ for leak in \
 done
 
 "$repo_root/scripts/check_docs.sh" --check-wit-matrix-contract "$wit_document"
+grep -Fq '| `WIT 50-100K-HU-US` | US branch; product context not established | not established by this contract | `UNKNOWN` | `UNKNOWN` | `INSUFFICIENT_EVIDENCE`; `NO_SEND` |' "$wit_document"
+grep -Fq '| `WIT 50-100K-AU-US` | US branch; product context not established | not established by this contract | `UNKNOWN` | `UNKNOWN` | `INSUFFICIENT_EVIDENCE`; `NO_SEND` |' "$wit_document"
 
 for mutation in \
   '/WIT 4-25K-HU/s/`UNKNOWN`/`V2.01`/' \
@@ -53,6 +55,18 @@ for mutation in \
   sed "$mutation" "$wit_document" > "$wit_fixture"
   if "$repo_root/scripts/check_docs.sh" --check-wit-matrix-contract "$wit_fixture"; then
     echo "WIT matrix mutation was accepted: $mutation" >&2
+    exit 1
+  fi
+done
+
+for contradiction in \
+  'VPP reads are permitted.' \
+  'Growatt Protocol II applies to a WIT family.' \
+  '`WIT 4-25K-HU` firmware version is `1.2.3`.'; do
+  cp "$wit_document" "$wit_fixture"
+  printf '\n%s\n' "$contradiction" >> "$wit_fixture"
+  if "$repo_root/scripts/check_docs.sh" --check-wit-matrix-contract "$wit_fixture"; then
+    echo "WIT contract contradiction was accepted: $contradiction" >&2
     exit 1
   fi
 done
