@@ -71,7 +71,11 @@ done
 "$repo_root/scripts/check_docs.sh" --check-sunspec-v2-licensing "$sunspec_v2_licensing_document"
 for mutation in \
   's/| 701 | 153 |/| 701 | 152 |/' \
+	's/| 703 | 17 |/| 703 | 18 |/' \
+	's/| 715 | 7 |/| 715 | 8 |/' \
   's/18 + 25\*NPrt/18 + 24*NPrt/g' \
+	's/Models 703 and 715 are control-observability only/Models 703 and 715 create operations/' \
+	's/Models 704 through 712 remain outside this V2 wave and remain opaque/Models 704 through 712 are decoded/' \
   's/0 through 2620/0 through 2621/' \
   's/zero is a valid value/zero means not implemented/' \
   's/truncate, or round/round to a float/' \
@@ -90,6 +94,7 @@ done
 for mutation in \
   's/sunspec\.der\.readonly\.v2/sunspec.der.readonly.v2-candidate/' \
   's/Common 1\/66 plus Models 701\/153/Common 1\/65 plus Models 701\/153/' \
+	's/703\/17/703\/18/' \
   's/offline decoder contract; runtime, vendor, and catalog admission default denied/runtime catalog approved/' \
   's/90b4a331dcca1d6eac69c1bead952fddcc5852e0/0000000000000000000000000000000000000000/'; do
   sed "$mutation" "$sunspec_v2_licensing_document" > "$sunspec_v2_licensing_fixture"
