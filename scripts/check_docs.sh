@@ -47,16 +47,18 @@ check_private_function_contract() {
 
 check_sunspec_v2_contract() {
   local document="$1"
-  local contradiction='V2[[:space:]]+(registry|runtime|registry([[:space:]]+(and|or)|/)[[:space:]]*runtime)[[:space:]]+admission[[:space:]]+(is|are)[[:space:]]+(approved|enabled|implemented)|sunspec\.models\.candidate\.v2[^.]*executable decoder|trailing spaces[^.]*trimmed'
+  local contradiction='sunspec\.models\.candidate\.v2|Common[[:space:]]+1/65[^.]*V2 decoder|V2[^.]*runtime catalog|V2[^.]*automatic acquisition|trailing spaces[^.]*trimmed'
 
   check_public_protocol "$document"
-  grep -Fqx '## Candidate catalog revision' "$document"
-  grep -Fqx '## Candidate model boundary' "$document"
+  grep -Fqx '## Schema revision' "$document"
+  grep -Fqx '## Model scope' "$document"
   grep -Fqx '## Model 714 geometry' "$document"
   grep -Fqx '## Value interpretation boundary' "$document"
-  grep -Fqx '## Registry and runtime gate' "$document"
-  grep -Fq '`sunspec.models.candidate.v2`' "$document"
+  grep -Fqx '## Offline implementation boundary' "$document"
+  grep -Fq '`sunspec.models@90b4a331-v2`' "$document"
   grep -Fq '`90b4a331dcca1d6eac69c1bead952fddcc5852e0`' "$document"
+  grep -Fq 'Common Model 1 with declared length 66 is the only V2 Common tuple.' "$document"
+  grep -Fq 'Common Model 1 length 65 is a V1 compatibility tuple and remains opaque under V2.' "$document"
   grep -Fq 'Models 701, 702, 713, and 714' "$document"
   grep -Fq '| 1 | 66 | Common device information |' "$document"
   grep -Fq '| 701 | 153 | DER AC measurement |' "$document"
@@ -65,12 +67,22 @@ check_sunspec_v2_contract() {
   grep -Fq '| 714 | `18 + 25*NPrt` | DER DC measurement with repeated ports |' "$document"
   grep -Fq 'Model 714 has data-register length `18 + 25*NPrt`' "$document"
   grep -Fq 'bounded from 0 through 2620' "$document"
+  grep -Fq 'unavailable, an unavailable sentinel, overflows, or does not match the declared length' "$document"
+  grep -Fq 'raw-only opaque block' "$document"
+  grep -Fq 'four big-endian words' "$document"
   grep -Fq 'zero is a valid value and all one-bits means not implemented' "$document"
+  grep -Fq 'Exact unsigned scaling must not pass through an `int64` or floating-point representation.' "$document"
+  grep -Fq 'A string beginning with word `0x0080` followed only by zero padding is a valid empty string.' "$document"
+  grep -Fq 'An all-zero string extent is unavailable.' "$document"
+  grep -Fq 'first NUL requires a zero-only tail' "$document"
   grep -Fq 'spaces before the terminator are data and are not trimmed' "$document"
-  grep -Fq 'V2 registry and runtime admission remains pending independent contract validation.' "$document"
-  grep -Fq 'the candidate is default denied' "$document"
+  grep -Fq 'V1 and V2 decoder definitions and caches are revision-isolated.' "$document"
+  grep -Fq 'V1 outputs remain unchanged.' "$document"
+  grep -Fq 'synthetic, non-vendor fixtures' "$document"
+  grep -Fq 'No runtime catalog registration, vendor admission, automatic acquisition, telemetry publication,' "$document"
+  grep -Fq 'or consumer exposure may be derived from this contract.' "$document"
   if grep -Ein "$contradiction" "$document"; then
-    echo 'SunSpec V2 candidate contradicts its pending/default-denied boundary' >&2
+    echo 'SunSpec V2 contract contradicts its offline-only boundary' >&2
     return 1
   fi
 }

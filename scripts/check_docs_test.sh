@@ -72,8 +72,8 @@ for mutation in \
   's/0 through 2620/0 through 2621/' \
   's/zero is a valid value/zero means not implemented/' \
   's/are data and are not trimmed/are padding and are trimmed/' \
-  's/remains pending independent contract validation/is approved and implemented/' \
-  's/the candidate is default denied/the candidate is automatically admitted/'; do
+  's/V1 outputs remain unchanged/V1 outputs are revised/' \
+  's/runtime catalog registration/runtime catalog admission/'; do
   sed "$mutation" "$sunspec_v2_document" > "$sunspec_v2_fixture"
   if "$repo_root/scripts/check_docs.sh" --check-sunspec-v2-contract "$sunspec_v2_fixture"; then
     echo "SunSpec V2 mutation was accepted: $mutation" >&2
@@ -82,9 +82,10 @@ for mutation in \
 done
 
 for contradiction in \
-  'V2 registry/runtime admission is approved.' \
-  'V2 registry admission is enabled.' \
-  'V2 runtime admission is implemented.'; do
+  'sunspec.models.candidate.v2' \
+  'Common 1/65 is accepted by the V2 decoder.' \
+  'V2 runtime catalog registration is enabled.' \
+  'V2 automatic acquisition is enabled.'; do
   cp "$sunspec_v2_document" "$sunspec_v2_fixture"
   printf '\n%s\n' "$contradiction" >> "$sunspec_v2_fixture"
   if "$repo_root/scripts/check_docs.sh" --check-sunspec-v2-contract "$sunspec_v2_fixture"; then
