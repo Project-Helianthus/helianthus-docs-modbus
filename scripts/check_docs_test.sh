@@ -11,6 +11,8 @@ x2_document="$repo_root/protocols/growatt/shinewilan-x2-bridge-v1.md"
 x2_fixture="$fixture_root/shinewilan-x2.md"
 bms_document="$repo_root/protocols/growatt/bms-rs485-1xsxxp-v202.md"
 bms_fixture="$fixture_root/bms-rs485.md"
+wit_document="$repo_root/protocols/growatt/wit-family-protocol-matrix-v1.md"
+wit_fixture="$fixture_root/wit-family-matrix.md"
 
 cp "$source_document" "$fixture_document"
 "$repo_root/scripts/check_docs.sh" --check-sdongle-admission "$fixture_document"
@@ -29,6 +31,42 @@ for leak in \
   printf '\n%s\n' "$leak" >> "$fixture_document"
   if "$repo_root/scripts/check_docs.sh" --check-sdongle-admission "$fixture_document"; then
     echo "admission leak was accepted: $leak" >&2
+    exit 1
+  fi
+done
+
+"$repo_root/scripts/check_docs.sh" --check-wit-matrix-contract "$wit_document"
+grep -Fq '| `WIT 50-100K-HU-US` | US branch; product context not established | not established by this contract | `UNKNOWN` | `UNKNOWN` | `INSUFFICIENT_EVIDENCE`; `NO_SEND` |' "$wit_document"
+grep -Fq '| `WIT 50-100K-AU-US` | US branch; product context not established | not established by this contract | `UNKNOWN` | `UNKNOWN` | `INSUFFICIENT_EVIDENCE`; `NO_SEND` |' "$wit_document"
+
+for mutation in \
+  '/WIT 4-25K-HU/s/`UNKNOWN`/`V2.01`/' \
+  '/WIT 50-100K-AU/s/`INSUFFICIENT_EVIDENCE`/`PROFILE_ADMITTED`/' \
+  's/WIT 4-25K-HU/WIT 4-25K-HU2/' \
+  's/WIT 50-100K-AU/WIT 50-100K-HU\/AU/' \
+  's/DTC `5601`/DTC `5602`/' \
+  's/the only WIT tuple/one WIT tuple/' \
+  's/does not admit `WIT 50-100K-HU`/also admits `WIT 50-100K-HU`/' \
+  's/no qualified firmware gate/a qualified firmware gate/' \
+  's/does not apply to a WIT row/applies to a WIT row/' \
+  's/Every VPP read, control, and write remains `NO_SEND`/VPP reads and controls are permitted/' \
+  's/No decoder, fixture, catalog registration/Decoder, fixture, and catalog registration/' \
+  's/produces `INSUFFICIENT_EVIDENCE`, no match, and no send/chooses the first matching profile/'; do
+  sed "$mutation" "$wit_document" > "$wit_fixture"
+  if "$repo_root/scripts/check_docs.sh" --check-wit-matrix-contract "$wit_fixture"; then
+    echo "WIT matrix mutation was accepted: $mutation" >&2
+    exit 1
+  fi
+done
+
+for contradiction in \
+  'VPP reads are permitted.' \
+  'Growatt Protocol II applies to a WIT family.' \
+  '`WIT 4-25K-HU` firmware version is `1.2.3`.'; do
+  cp "$wit_document" "$wit_fixture"
+  printf '\n%s\n' "$contradiction" >> "$wit_fixture"
+  if "$repo_root/scripts/check_docs.sh" --check-wit-matrix-contract "$wit_fixture"; then
+    echo "WIT contract contradiction was accepted: $contradiction" >&2
     exit 1
   fi
 done

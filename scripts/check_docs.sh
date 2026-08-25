@@ -97,9 +97,54 @@ check_bms_contract() {
   grep -Fq 'produces `insufficient_evidence`, no send, and no partial' "$document"
 }
 
+check_wit_matrix_contract() {
+  local document="$1"
+  local expected_rows actual_rows
+  local contradiction
+
+  expected_rows=$(printf '%s\n' \
+    '| `WIT 4-25K-HU` | worldwide, 380/400 Vac, low-voltage battery | Modbus TCP available; ShineWiLAN-X2 listed | `UNKNOWN` | `UNKNOWN` | `INSUFFICIENT_EVIDENCE`; `NO_SEND` |' \
+    '| `WIT 4-25K-XHU` | worldwide, 380/400 Vac, high-voltage battery | Modbus TCP available; ShineWiLAN-X2 listed | `UNKNOWN` | `UNKNOWN` | `INSUFFICIENT_EVIDENCE`; `NO_SEND` |' \
+    '| `WIT 29.9-50K-XHU` | worldwide, 380/400 Vac, high-voltage battery | ShineWiLan-X2 and ShineSEM-XA-R listed; wire exposure not established | `UNKNOWN` | `UNKNOWN` | `INSUFFICIENT_EVIDENCE`; `NO_SEND` |' \
+    '| `WIT 50-100K-HU` | APAC, 380/400/415 Vac, high-voltage battery | ShineWiLan-X2 and ShineSEM-XA-R listed; wire exposure not established | `UNKNOWN` | `UNKNOWN` | `INSUFFICIENT_EVIDENCE`; `NO_SEND` |' \
+    '| `WIT 50-100K-AU` | APAC, 380/400/415 Vac, high-voltage battery | ShineWiLan-X2 and ShineSEM-XA-R listed; wire exposure not established | `UNKNOWN` | `UNKNOWN` | `INSUFFICIENT_EVIDENCE`; `NO_SEND` |' \
+    '| `WIT 50-100K-HU-US` | US branch; product context not established | not established by this contract | `UNKNOWN` | `UNKNOWN` | `INSUFFICIENT_EVIDENCE`; `NO_SEND` |' \
+    '| `WIT 50-100K-AU-US` | US branch; product context not established | not established by this contract | `UNKNOWN` | `UNKNOWN` | `INSUFFICIENT_EVIDENCE`; `NO_SEND` |' \
+    '| `WIT 63-125K-XHU` | worldwide, 380/400 Vac, high-voltage battery | not established by this contract | `UNKNOWN` | `UNKNOWN` | `INSUFFICIENT_EVIDENCE`; `NO_SEND` |' \
+    '| `WIT 28-55K-HU-US L2` | US L2, 208/220 Vac, high-voltage battery | ShineMaster listed; wire exposure not established | `UNKNOWN` | `UNKNOWN` | `INSUFFICIENT_EVIDENCE`; `NO_SEND` |' \
+    '| `WIT 28-55K-AU-US L2` | US L2, 208/220 Vac, high-voltage battery | ShineMaster listed; wire exposure not established | `UNKNOWN` | `UNKNOWN` | `INSUFFICIENT_EVIDENCE`; `NO_SEND` |' \
+    '| `WIT 50-150K-XHU-US` | US, 277/480 Vac, high-voltage battery | not established by this contract | `UNKNOWN` | `UNKNOWN` | `INSUFFICIENT_EVIDENCE`; `NO_SEND` |')
+  actual_rows=$(sed -n \
+    '/^## Family qualification matrix$/,/^## Explicit VPP V2.01 tuple$/p' \
+    "$document" | sed -n '/^| `WIT /p')
+  if [[ "$actual_rows" != "$expected_rows" ]]; then
+    echo 'WIT family matrix is not exact' >&2
+    return 1
+  fi
+
+  contradiction='VPP (read|reads|control|controls|write|writes) (is|are) (permitted|allowed|enabled|supported)|Protocol II[^.]*(applies|is applicable)[[:space:]]+to[[:space:]]+(a[[:space:]]+|the[[:space:]]+|any[[:space:]]+)?WIT|`WIT [^`]+` firmware (version |gate )?(is|=)'
+  if grep -Ein "$contradiction" "$document"; then
+    echo 'WIT protocol specification contains a contradictory admission statement' >&2
+    return 1
+  fi
+
+  check_public_protocol "$document"
+  grep -Fq 'Each row is an independent, case-sensitive family branch.' "$document"
+  grep -Fq 'A combined marketing page does not make HU, AU, XHU, worldwide, or US branches protocol aliases.' "$document"
+  grep -Fq 'Modbus TCP availability and a listed logger or bridge are transport facts only.' "$document"
+  grep -Fq 'They do not establish a register map, firmware gate, identity tuple, or semantic profile.' "$document"
+  grep -Fq '`WIT 100KTL3-H` with DTC `5601` is the only WIT tuple explicitly associated with VPP protocol `V2.01`.' "$document"
+  grep -Fq 'It does not admit `WIT 50-100K-HU`, `WIT 50-100K-AU`, or any other WIT row.' "$document"
+  grep -Fq 'The VPP tuple has no qualified firmware gate in this contract.' "$document"
+  grep -Fq 'Growatt Protocol II v1.24 TL3-X does not apply to a WIT row by vendor or name similarity.' "$document"
+  grep -Fq 'Every VPP read, control, and write remains `NO_SEND`.' "$document"
+  grep -Fq 'No decoder, fixture, catalog registration, runtime admission, telemetry publication, or support claim is created.' "$document"
+  grep -Fq 'Missing or conflicting evidence produces `INSUFFICIENT_EVIDENCE`, no match, and no send.' "$document"
+}
+
 if [[ $# -gt 0 ]]; then
   if [[ $# -ne 2 ]]; then
-    echo 'usage: check_docs.sh [--check-sdongle-admission|--check-public-protocol|--check-x2-publication|--check-x2-contract|--check-bms-contract document]' >&2
+    echo 'usage: check_docs.sh [--check-sdongle-admission|--check-public-protocol|--check-x2-publication|--check-x2-contract|--check-bms-contract|--check-wit-matrix-contract document]' >&2
     exit 2
   fi
   case "$1" in
@@ -108,8 +153,9 @@ if [[ $# -gt 0 ]]; then
     --check-x2-publication) check_x2_publication "$2" ;;
     --check-x2-contract) check_x2_contract "$2" ;;
     --check-bms-contract) check_bms_contract "$2" ;;
+    --check-wit-matrix-contract) check_wit_matrix_contract "$2" ;;
     *)
-      echo 'usage: check_docs.sh [--check-sdongle-admission|--check-public-protocol|--check-x2-publication|--check-x2-contract|--check-bms-contract document]' >&2
+      echo 'usage: check_docs.sh [--check-sdongle-admission|--check-public-protocol|--check-x2-publication|--check-x2-contract|--check-bms-contract|--check-wit-matrix-contract document]' >&2
       exit 2
       ;;
   esac
@@ -131,6 +177,7 @@ multivendor_specs=(
   'protocols/growatt/protocol-ii-readonly-v1.md'
   'protocols/growatt/shinewilan-x2-bridge-v1.md'
   'protocols/growatt/bms-rs485-1xsxxp-v202.md'
+  'protocols/growatt/wit-family-protocol-matrix-v1.md'
 )
 for multivendor_spec in "${multivendor_specs[@]}"; do
   test -f "$multivendor_spec"
@@ -196,6 +243,7 @@ grep -Fqx '## FC03 read-only boundary' 'protocols/growatt/bms-rs485-1xsxxp-v202.
 grep -Fqx '## Writes and controls' 'protocols/growatt/bms-rs485-1xsxxp-v202.md'
 grep -Fqx '## Fixture and admission gate' 'protocols/growatt/bms-rs485-1xsxxp-v202.md'
 check_bms_contract 'protocols/growatt/bms-rs485-1xsxxp-v202.md'
+check_wit_matrix_contract 'protocols/growatt/wit-family-protocol-matrix-v1.md'
 
 sdongle_admission_required=(
   'Scope' 'Sanitized qualification boundary' 'Disposition' 'Requalification gate'
