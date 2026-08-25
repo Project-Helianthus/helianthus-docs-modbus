@@ -23,7 +23,7 @@ check_public_protocol() {
 
 check_sunspec_v2_contract() {
   local document="$1"
-  local contradiction='V2 registry (and|or) runtime admission (is|are) (approved|enabled|implemented)|sunspec\.models\.candidate\.v2[^.]*executable decoder|trailing spaces[^.]*trimmed'
+  local contradiction='V2[[:space:]]+(registry|runtime|registry([[:space:]]+(and|or)|/)[[:space:]]*runtime)[[:space:]]+admission[[:space:]]+(is|are)[[:space:]]+(approved|enabled|implemented)|sunspec\.models\.candidate\.v2[^.]*executable decoder|trailing spaces[^.]*trimmed'
 
   check_public_protocol "$document"
   grep -Fqx '## Candidate catalog revision' "$document"
