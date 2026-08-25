@@ -138,8 +138,7 @@ fields are permitted. This byte sequence is an operation descriptor, not an
 endpoint probe or a transmission instruction.
 
 An echoed PDU exactly equal to this request PDU is an FC100 intermediate. A
-successful terminal PDU selects one bounded WC-message response tag `4`. The
-tag-`4` body is a bounded opaque terminal body. This version defines no member,
+successful terminal PDU is an FC100 normal response whose nested envelope contains WC family `6` and one response tag `4`. The tag-`4` body is a bounded opaque terminal body. This version defines no member,
 field number, wire type, scalar, enum, repeated value, unit, scale, range, or
 field-presence contract within that body. Its values, field names, units,
 identifiers, and raw bytes are not projected by this version; a decoder may
@@ -147,7 +146,7 @@ retain only terminal-tag presence, terminal-body length, digest, and structural
 replay metadata. An omitted inner value must not be interpreted as a scalar
 zero, an empty repeated value, or an empty nested member. A normal terminal PDU
 that does not match this success shape is not a lifetime result and must fail
-closed as a redacted operation failure. A lifetime operation application failure is a terminal Common error body; the generic exception-response rules remain separate.
+closed as a redacted operation failure. A lifetime operation application failure is an FC100 normal response whose nested envelope contains Common family `4` and error tag `1`; the generic exception-response rules remain separate.
 
 Semantic read-only classification does not claim that the responder has no
 ephemeral transport-side effects. It grants no configuration, control, pairing,

@@ -103,8 +103,9 @@ for mutation in \
   's/qualified WC lifetime operation/unqualified WC lifetime operation/' \
   's/`tesla.hsc.fc100.wc_lifetime.v1`/`tesla.hsc.fc100.any_wc_operation.v1`/' \
   's/exactly `04 32 02 1a 00`/any FC100 PDU/' \
+  's/WC family `6` and one response tag `4`/WC family `4` and one response tag `4`/' \
   's/tag-`4` body is a bounded opaque terminal body/contains a required inner member/' \
-  's/lifetime operation application failure is a terminal Common error body/lifetime operation application failure is a successful result/' \
+  's/Common family `4` and error tag `1`/Common family `6` and error tag `4`/' \
   's/unknown response shape must cause no send/unknown response shape may send/'; do
   sed "$mutation" "$tesla_document" > "$tesla_fixture"
   if "$repo_root/scripts/check_docs.sh" --check-tesla-tedapi-contract "$tesla_fixture"; then
