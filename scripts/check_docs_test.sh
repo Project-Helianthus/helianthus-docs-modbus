@@ -49,8 +49,10 @@ for mutation in \
   's/are never retained or projected/are projected as operation semantics/' \
   's/group boundaries with the same field number/group boundaries without matching field numbers/' \
   's/oversized, unpaired, or over-count summary is rejected/oversized summaries are retained/' \
+  's/only from an injected, locally/without an injected provider/' \
   's/qualification (`framing_only` or/qualification (`unbounded` or/' \
   's/`qualified_read_only`), total envelope length/`qualified_read_only`), total envelope bytes and values/' \
+  's/count, ordered numeric field-number and wire-type entries, and payload digest/count and field names/' \
   's/`outbound_allowed` value is always `false`/`outbound_allowed` value may be `true`/' \
   's/an unavailable result with no summary data/a successful summary result/' \
   's/exposes raw bytes, values, field names/exposes raw bytes and values/'; do
