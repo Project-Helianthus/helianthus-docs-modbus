@@ -80,12 +80,13 @@ for mutation in \
 	's/| 806 | 1 |/| 806 | 2 |/' \
 	's/| 807 | 34 |/| 807 | 33 |/' \
 	's/| 808 | 1 |/| 808 | 2 |/' \
+	's/| 809 | 1 |/| 809 | 2 |/' \
 	's/18 + 25\*NPrt/18 + 24*NPrt/g' \
   's/Models 703 and 715 are control-observability only/Models 703 and 715 create operations/' \
   's/Models 704 through 712 remain outside this V2 wave and remain opaque/Models 704 through 712 are decoded/' \
 	's/Every Model 802 field is observed state only and is `NO_SEND`/Model 802 fields permit sends/' \
 	's/Model 801 remains excluded as deprecated/Model 801 is admitted/' \
-	's/Model 809 remains excluded pending a separate family and substructure decision/Model 809 is admitted/' \
+	's/Models 806 through 809 remain separately bounded flow battery structural leaves/Models 806 through 809 are interchangeable/' \
 	's/offset 0\. It is bounded/offset 1. It is bounded/' \
 	's/bounded from 0 through 2047/bounded from 0 through 2048/' \
 	's/Model 803 does not infer Model 804 child occurrences/Model 803 infers Model 804 child occurrences/' \
@@ -112,6 +113,12 @@ for mutation in \
 	's/Model 808 does not infer a relationship to Models 803 through 807 or 809/Model 808 infers a relationship to Model 809/' \
 	's/Every Model 808 field, including the zero-count `StackTBD` group name, is observed state only and is `NO_SEND`/Model 808 fields permit sends/' \
 	's/No Model 808 field creates a write method, send authority, operation admission,/Model 808 creates an operation admission,/' \
+	's/Model 809 has fixed data-register length 1 and no effective repeated group/Model 809 has a repeated group/' \
+	's/`StackTBD` remains uninterpreted structural observed state/`StackTBD` is a semantic telemetry value/' \
+	's/The declared cell group has count zero and is not materialized/The cell group is materialized/' \
+	's/Model 809 does not infer a relationship to Models 803 through 808/Model 809 infers a relationship to Model 808/' \
+	's/Every Model 809 field, including the zero-count `CellTBD` group name, is observed state only and is `NO_SEND`/Model 809 fields permit sends/' \
+	's/No Model 809 field creates a write method, send authority, operation admission,/Model 809 creates an operation admission,/' \
 	's/zero decoded facts/decoded best-effort facts/' \
   's/0 through 2620/0 through 2621/' \
   's/zero is a valid value/zero means not implemented/' \
