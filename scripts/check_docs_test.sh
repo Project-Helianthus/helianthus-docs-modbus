@@ -24,6 +24,7 @@ nested_layout_fixture="$fixture_root/sunspec-nested-layout-contract-v1.md"
 der_trip_lv_template_document="$repo_root/protocols/sunspec/der-trip-lv-template-v2.md"
 der_trip_lv_template_fixture="$fixture_root/sunspec-der-trip-lv-template-v2.md"
 der_trip_lv_projection_document="$repo_root/protocols/sunspec/der-trip-lv-typed-fact-projection-v2.md"
+der_trip_lv_projection_fixture="$fixture_root/sunspec-der-trip-lv-typed-fact-projection-v2.md"
 private_function_document="$repo_root/protocols/modbus/private-function-codes.md"
 private_function_fixture="$fixture_root/private-function-codes.md"
 
@@ -108,6 +109,21 @@ for mutation in \
 done
 
 "$repo_root/scripts/check_docs.sh" --check-sunspec-der-trip-lv-typed-fact-projection-v2 "$der_trip_lv_projection_document"
+for mutation in \
+  's/sunspec\.der\.v2\.707\.Crv\.MustTrip\.Pt\.V/sunspec.der.v2.707.Crv.Pt.V/' \
+  's/`VNomPct`; a nested `Tms` has unit `Secs`/`V`; a nested `Tms` has unit `s`/' \
+  's/`Required=false`/`Required=true`/' \
+  's/accept zero and reject `0xffff` as unavailable/accept zero and accept `0xffff`/' \
+  's/no substituted symbol/a default symbol/' \
+  's/but produces no scaled value/and produces a scaled default/' \
+  's/Malformed geometry produces zero typed facts/Malformed geometry produces partial typed facts/' \
+  's/Every observation in this contract is `NO_SEND`/Every observation in this contract can send/'; do
+  sed "$mutation" "$der_trip_lv_projection_document" > "$der_trip_lv_projection_fixture"
+  if "$repo_root/scripts/check_docs.sh" --check-sunspec-der-trip-lv-typed-fact-projection-v2 "$der_trip_lv_projection_fixture"; then
+    echo "SunSpec Model 707 typed-fact projection mutation was accepted: $mutation" >&2
+    exit 1
+  fi
+done
 
 "$repo_root/scripts/check_docs.sh" --check-sunspec-v2-contract "$sunspec_v2_document"
 "$repo_root/scripts/check_docs.sh" --check-sunspec-v2-licensing "$sunspec_v2_licensing_document"

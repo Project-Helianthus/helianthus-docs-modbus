@@ -13,6 +13,7 @@ Current protocol contracts:
 - [SunSpec DER read-only contract V2](protocols/sunspec/read-only-core-v2.md)
 - [SunSpec nested count-driven layout contract](protocols/sunspec/nested-layout-contract-v1.md)
 - [SunSpec V2 Model 707 nested template contract](protocols/sunspec/der-trip-lv-template-v2.md)
+- [SunSpec V2 Model 707 typed-fact projection contract](protocols/sunspec/der-trip-lv-typed-fact-projection-v2.md)
 - [Fronius SunSpec float flavor](protocols/fronius/sunspec-float-v1.md)
 - [Huawei gateway read-only candidates](protocols/huawei/gateway-readonly-v1.md)
 - [Growatt Protocol II read-only candidate](protocols/growatt/protocol-ii-readonly-v1.md)
