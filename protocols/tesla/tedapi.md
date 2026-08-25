@@ -72,9 +72,14 @@ profile, and operation selected this profile.
 
 ## Function 100
 
-FC100 carries one TEDAPI payload. Its first payload byte is the exact byte
-length of the remaining payload. The length prefix must equal the remaining
-payload length before transmission or acceptance.
+An FC100 data PDU is `length:u8 | message[length]`. The data PDU contains one
+through 252 bytes. `length` is zero through 251 and must equal the exact number
+of following bytes. A PDU containing only `00` is syntactically valid and
+contains an empty message; it does not admit an operation. No uint16 length is
+transmitted in the RTU frame.
+
+A missing prefix, an inexact prefix, or trailing bytes must be rejected and
+must cause no send.
 
 FC100 can produce an echoed request frame and a later result frame. The echo is
 an intermediate response, not proof of operation success. Implementations
@@ -90,17 +95,25 @@ function-code handler.
 
 ## Functions 101 and 102
 
-FC101 and FC102 use the same one-byte exact-length payload envelope. Their
-request and response payloads are opaque in this version. Implementations may
-frame, validate, classify, retain, and replay them offline. They must not infer
-field names, enums, units, control meaning, or operation admission from their
-bytes.
+An FC101 or FC102 request PDU is `length:u8 | request[length]`. The request
+PDU contains one through 252 bytes. `length` is zero through 251 and must equal
+the exact number of following bytes. A PDU containing only `00` is
+syntactically valid and contains an empty request. This request syntax does not
+admit transmission or assign read-only semantics.
+
+An FC101 or FC102 normal response is zero through 252 opaque bytes. This
+version defines no response length-prefix or field contract for either
+function. A normal response is one terminal response or an exception; FC100
+echo and result handling does not apply. Implementations may frame, classify,
+retain, and replay response bytes offline, but must not infer field names,
+enums, units, control meaning, or operation admission from them.
 
 Live outbound FC101 and FC102 are denied in the initial profile, including MCP
-operations. Future typed support requires a compatible specification version,
-qualified capability, explicit admission policy, and conformance vectors.
-Their byte values remain Tesla profile details and do not reserve those values
-for another vendor profile at a different endpoint.
+operations, even when their request syntax is locally valid. Future typed
+support requires a compatible specification version, qualified capability,
+explicit admission policy, and conformance vectors. Their byte values remain
+Tesla profile details and do not reserve those values for another vendor profile
+at a different endpoint.
 
 ## Exception responses
 
@@ -136,26 +149,32 @@ locally_validated -> denied -> idle
 Only an admitted, locally valid request can reach `sent`. A malformed or
 unrelated response reaches `quarantine`, never `terminal`.
 
+The `intermediate` transition applies only to FC100. FC101 and FC102 transition
+directly from `waiting` to a terminal response, exception, or deadline.
+
 ## Fail-closed validation rules
 
-Before sending, validate configuration, node, function, payload bound, length
-prefix, capability, version, read-only admission, and replay policy. Any failed
-validation produces no send. Vendor PDUs have zero retries by default. A retry
-is permitted only for an admitted replay-safe request and is bounded by an
-explicit policy.
+Before sending, validate configuration, node, function, payload bound, request
+length prefix, capability, version, read-only admission, and replay policy. Any
+failed validation produces no send. FC101 and FC102 produce no send in this
+version even when their request PDU is locally valid. Vendor PDUs have zero
+retries by default. A retry is permitted only for an admitted replay-safe
+request and is bounded by an explicit policy.
 
 ## Unknown payload and field retention
 
 Opaque payloads and unknown fields are retained as bounded byte sequences with
-their frame metadata. They are not converted to a value, enum, unit, capability,
-or command. Retention must preserve enough framing information for deterministic
-offline replay while enforcing size limits and redaction rules.
+their frame metadata and direction. FC101 and FC102 normal responses retain
+their raw bytes without length-prefix decoding. Retained bytes are not converted
+to a value, enum, unit, capability, or command. Retention must preserve enough
+framing information for deterministic offline replay while enforcing size limits
+and redaction rules.
 
 ## Runtime provenance
 
 Runtime records include contract version, flavor, configured node, function,
-frame length, CRC result, transaction state, capability disposition, timing
-outcome, and a redacted payload digest. Records must distinguish locally
+direction, frame length, CRC result, transaction state, capability disposition,
+timing outcome, and a redacted payload digest. Records must distinguish locally
 validated, sent, intermediate, terminal, timeout, exception, and quarantined
 outcomes. Records contain no raw sensitive payload by default.
 
@@ -177,16 +196,27 @@ deny outbound operations.
 
 ## Conformance vectors and sanitized examples
 
-The following vectors validate frame construction and CRC byte order only:
+The following vectors validate frame construction, envelope syntax where
+defined, and CRC byte order only:
 
 ```text
-FC100: 10 64 00 5a c5
-FC101: 10 65 00 5b 55
-FC102: 10 66 00 5b a5
+FC100 empty message: 10 64 00 5a c5
+FC100 one-byte message: 10 64 01 00 44 ab
+FC101 empty request: 10 65 00 5b 55
+FC102 empty request: 10 66 00 5b a5
 FC100 exception status 1: 10 e4 01 fa c5
+FC101 exception status 4: 10 e5 04 3b 56
+FC102 exception status 4: 10 e6 04 3b a6
+
+FC100 missing prefix: 10 64 0d 9b
+FC100 trailing byte: 10 64 00 00 45 3b
+FC100 inexact prefix: 10 64 02 00 44 5b
 ```
 
-The `00` payload is an empty nested payload and does not admit a live request.
+The first four vectors are normal request or FC100 data syntax only and do not
+admit a live request. The final three vectors have valid CRC bytes but must be
+rejected by FC100 envelope validation. There is no FC101 or FC102 normal
+response vector in this version.
 
 ## Interoperability levels
 
@@ -194,8 +224,8 @@ The `00` payload is an empty nested payload and does not admit a live request.
 2. **FC100 envelope:** validate FC100 length prefix and response phases.
 3. **Qualified read-only TEDAPI operations:** transmit only explicitly
    allowlisted, version-compatible, replay-safe operations.
-4. **FC101/FC102 opaque:** validate and retain frames; no live transmission or
-   typed interpretation.
+4. **FC101/FC102 opaque:** validate request envelopes, retain raw normal
+   response bytes, and perform no live transmission or typed interpretation.
 5. **Future typed FC101/FC102:** requires a later compatible contract and
    explicit qualification.
 
