@@ -76,12 +76,13 @@ for mutation in \
 	's/| 802 | 62 |/| 802 | 61 |/' \
 	's/| 803 | `26 + 32\*NStr` |/| 803 | `26 + 31*NStr` |/' \
 	's/| 804 | `46 + 16\*NMod` |/| 804 | `46 + 15*NMod` |/' \
+	's/| 805 | 42 |/| 805 | 41 |/' \
 	's/18 + 25\*NPrt/18 + 24*NPrt/g' \
   's/Models 703 and 715 are control-observability only/Models 703 and 715 create operations/' \
   's/Models 704 through 712 remain outside this V2 wave and remain opaque/Models 704 through 712 are decoded/' \
 	's/Every Model 802 field is observed state only and is `NO_SEND`/Model 802 fields permit sends/' \
 	's/Model 801 remains excluded as deprecated/Model 801 is admitted/' \
-	's/Models 805 through 809 remain excluded pending separate family and substructure decisions/Models 805 through 809 are admitted/' \
+	's/Models 806 through 809 remain excluded pending separate family and substructure decisions/Models 806 through 809 are admitted/' \
 	's/offset 0\. It is bounded/offset 1. It is bounded/' \
 	's/bounded from 0 through 2047/bounded from 0 through 2048/' \
 	's/Model 803 does not infer Model 804 child occurrences/Model 803 infers Model 804 child occurrences/' \
@@ -90,6 +91,8 @@ for mutation in \
 	's/isolated synthetic offline occurrence/terminal-qualified live chain/' \
 	's/fragmented bounded source spans/one unbounded source span/' \
 	's/Model 804 does not infer a Model 803 parent/Model 804 infers a Model 803 parent/' \
+	's/Neither establishes any inferred relationship to Model 803 or Model 804/Model 805 establishes an inferred relationship/' \
+	's/Every Model 805 field is observed state only and is `NO_SEND`/Model 805 fields permit sends/' \
 	's/zero decoded facts/decoded best-effort facts/' \
   's/0 through 2620/0 through 2621/' \
   's/zero is a valid value/zero means not implemented/' \
