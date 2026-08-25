@@ -51,6 +51,30 @@ check_sunspec_v2_contract() {
   fi
 }
 
+check_sunspec_v1_model_families_contract() {
+  local document="$1"
+
+  check_public_protocol "$document"
+  grep -Fqx '## Scope' "$document"
+  grep -Fqx '## Decoder Catalog Boundary' "$document"
+  grep -Fqx '## Inverter Families' "$document"
+  grep -Fqx '## Inverter Extensions' "$document"
+  grep -Fqx '## Meter Families' "$document"
+  grep -Fqx '## Environmental Families' "$document"
+  grep -Fqx '## Safety and Non-Claims' "$document"
+  grep -Fq 'identifiers and 29 exact decoder tuples' "$document"
+  grep -Fq 'length 65 is a compatibility tuple' "$document"
+  grep -Fq 'Models 101, 102, and 103 use integer values with declared scale factors.' "$document"
+  grep -Fq 'Models 111, 112, and 113 use IEEE FLOAT values.' "$document"
+  grep -Fq 'Models 123 and 124 are observed state only.' "$document"
+  grep -Fq 'identifiers or lengths remain opaque blocks.' "$document"
+  grep -Fq 'does not create a product, profile, or support' "$document"
+  if grep -Ein 'sunspec\.models\.candidate\.v2|V2 registry|PROFILE_ADMITTED|write authority' "$document"; then
+    echo 'SunSpec V1 model-families reference exceeds the V1 docs-only boundary' >&2
+    return 1
+  fi
+}
+
 check_x2_publication() {
   local document="$1"
   local bare_revision='(^|[^[:xdigit:]])[[:xdigit:]]{40}([^[:xdigit:]]|$)|(^|[^[:xdigit:]])[[:xdigit:]]{64}([^[:xdigit:]]|$)'
@@ -174,19 +198,20 @@ check_wit_matrix_contract() {
 
 if [[ $# -gt 0 ]]; then
   if [[ $# -ne 2 ]]; then
-    echo 'usage: check_docs.sh [--check-sdongle-admission|--check-public-protocol|--check-sunspec-v2-contract|--check-x2-publication|--check-x2-contract|--check-bms-contract|--check-wit-matrix-contract document]' >&2
+    echo 'usage: check_docs.sh [--check-sdongle-admission|--check-public-protocol|--check-sunspec-v1-model-families-contract|--check-sunspec-v2-contract|--check-x2-publication|--check-x2-contract|--check-bms-contract|--check-wit-matrix-contract document]' >&2
     exit 2
   fi
   case "$1" in
     --check-sdongle-admission) check_sdongle_admission "$2" ;;
     --check-public-protocol) check_public_protocol "$2" ;;
+    --check-sunspec-v1-model-families-contract) check_sunspec_v1_model_families_contract "$2" ;;
     --check-sunspec-v2-contract) check_sunspec_v2_contract "$2" ;;
     --check-x2-publication) check_x2_publication "$2" ;;
     --check-x2-contract) check_x2_contract "$2" ;;
     --check-bms-contract) check_bms_contract "$2" ;;
     --check-wit-matrix-contract) check_wit_matrix_contract "$2" ;;
     *)
-      echo 'usage: check_docs.sh [--check-sdongle-admission|--check-public-protocol|--check-sunspec-v2-contract|--check-x2-publication|--check-x2-contract|--check-bms-contract|--check-wit-matrix-contract document]' >&2
+      echo 'usage: check_docs.sh [--check-sdongle-admission|--check-public-protocol|--check-sunspec-v1-model-families-contract|--check-sunspec-v2-contract|--check-x2-publication|--check-x2-contract|--check-bms-contract|--check-wit-matrix-contract document]' >&2
       exit 2
       ;;
   esac
@@ -203,6 +228,7 @@ test -f "$sdongle_admission"
 multivendor_specs=(
   'protocols/applicability-and-licensing.md'
   'protocols/sunspec/read-only-core-v1.md'
+  'protocols/sunspec/read-only-core-v1-model-families.md'
   'protocols/sunspec/read-only-core-v2.md'
   'protocols/fronius/sunspec-float-v1.md'
   'protocols/huawei/gateway-readonly-v1.md'
@@ -249,6 +275,7 @@ fi
 grep -Fqx '## Publication boundary' 'protocols/applicability-and-licensing.md'
 grep -Fqx '## Admission rules' 'protocols/applicability-and-licensing.md'
 grep -Fqx '## Initial model catalog' 'protocols/sunspec/read-only-core-v1.md'
+check_sunspec_v1_model_families_contract 'protocols/sunspec/read-only-core-v1-model-families.md'
 check_sunspec_v2_contract 'protocols/sunspec/read-only-core-v2.md'
 grep -Fqx '## Exact chain geometry' 'protocols/fronius/sunspec-float-v1.md'
 grep -Fqx '## SmartLogger candidate' 'protocols/huawei/gateway-readonly-v1.md'
