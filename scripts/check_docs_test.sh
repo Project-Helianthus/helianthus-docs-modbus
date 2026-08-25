@@ -426,6 +426,8 @@ done
 
 "$repo_root/scripts/check_docs.sh" --check-x2-contract "$x2_document"
 
+test -f "$repo_root/protocols/outback/axs-port-sunspec-readonly-v1.md"
+
 for mutation in \
   's/downstream Modbus RTU unit address/downstream default Modbus RTU unit address/' \
   's/Protocol Identifier must be 0x0000/Protocol Identifier may be nonzero/' \
