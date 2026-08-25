@@ -9,6 +9,8 @@ source_document="$repo_root/architecture/sdongle-qualification-disposition-v1.md
 fixture_document="$fixture_root/admission.md"
 x2_document="$repo_root/protocols/growatt/shinewilan-x2-bridge-v1.md"
 x2_fixture="$fixture_root/shinewilan-x2.md"
+bms_document="$repo_root/protocols/growatt/bms-rs485-1xsxxp-v202.md"
+bms_fixture="$fixture_root/bms-rs485.md"
 
 cp "$source_document" "$fixture_document"
 "$repo_root/scripts/check_docs.sh" --check-sdongle-admission "$fixture_document"
@@ -27,6 +29,71 @@ for leak in \
   printf '\n%s\n' "$leak" >> "$fixture_document"
   if "$repo_root/scripts/check_docs.sh" --check-sdongle-admission "$fixture_document"; then
     echo "admission leak was accepted: $leak" >&2
+    exit 1
+  fi
+done
+
+"$repo_root/scripts/check_docs.sh" --check-bms-contract "$bms_document"
+
+for mutation in \
+  's/1xSxxP ESS/any Growatt battery/' \
+  's/Rev2\.01/Rev2.xx/' \
+  's/V2\.0/V2.1/' \
+  's/revision `2\.02`/revision `2.03`/' \
+  's/Unit 0 is broadcast and is always `NO_SEND`/Unit 0 is unicast and is always permitted/' \
+  's/function is FC03/function is FC10/' \
+  's/offset 0x0001, quantity 7/offset 0x0001, quantity 9/' \
+  's/offset 0x000D, quantity 29/offset 0x000D, quantity 30/' \
+  's/offset 0x0100, quantity 12/offset 0x0100, quantity 13/' \
+  's/offset 0x010D, quantity 2/offset 0x010D, quantity 3/' \
+  's/extension slices remain opaque words/extension slices are decoded telemetry/' \
+  's/are not read/are read when needed/' \
+  's/FC10 Preset Multiple Registers/FC10 Read Multiple Registers/' \
+  's/W or WR are unconditional `NO_SEND`/W or WR require operator approval/' \
+  's/Registry implementation is `NO_GO`/Registry implementation is `GO`/' \
+  's/A synthetic identity assembled from the document is not a substitute/A synthetic identity assembled from the document is sufficient/'; do
+  sed "$mutation" "$bms_document" > "$bms_fixture"
+  if "$repo_root/scripts/check_docs.sh" --check-bms-contract "$bms_fixture"; then
+    echo "BMS contract mutation was accepted: $mutation" >&2
+    exit 1
+  fi
+done
+
+for mutation in \
+  's/does not automatically apply the contract/automatically applies the contract/' \
+  's/are forbidden identity inputs/are permitted identity inputs/' \
+  's/negative-overlap records/optional overlap records/' \
+  's/Without that fixture/Without that document/' \
+  's/is ambiguous and produces no match/is ranked and selects the first match/' \
+  's/no partial/partial/'; do
+  sed "$mutation" "$bms_document" > "$bms_fixture"
+  if "$repo_root/scripts/check_docs.sh" --check-bms-contract "$bms_fixture"; then
+    echo "BMS admission mutation was accepted: $mutation" >&2
+    exit 1
+  fi
+done
+
+awk '
+  /^The two extension slices remain/ {
+    print "- offset 0x0200, quantity 1, for an unqualified extra slice;"
+  }
+  { print }
+' "$bms_document" > "$bms_fixture"
+if "$repo_root/scripts/check_docs.sh" --check-bms-contract "$bms_fixture"; then
+  echo 'BMS additive FC03 slice was accepted' >&2
+  exit 1
+fi
+
+for leak in \
+  'gateway.example.internal:1502' \
+  '192.0.2.1' \
+  'port 1502' \
+  '0123456789abcdef0123456789abcdef01234567' \
+  '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef'; do
+  cp "$bms_document" "$bms_fixture"
+  printf '\n%s\n' "$leak" >> "$bms_fixture"
+  if "$repo_root/scripts/check_docs.sh" --check-bms-contract "$bms_fixture"; then
+    echo "BMS private material was accepted: $leak" >&2
     exit 1
   fi
 done
