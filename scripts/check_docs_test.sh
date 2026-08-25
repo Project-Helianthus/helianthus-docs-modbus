@@ -389,7 +389,7 @@ for mutation in \
   's/offset 0x000D, quantity 29/offset 0x000D, quantity 30/' \
   's/offset 0x0100, quantity 12/offset 0x0100, quantity 13/' \
   's/offset 0x010D, quantity 2/offset 0x010D, quantity 3/' \
-  's/extension slices remain opaque words/extension slices are decoded telemetry/' \
+  's/Only the typed extension words listed below are decoded/Every extension word is decoded telemetry/' \
   's/are not read/are read when needed/' \
   's/FC10 Preset Multiple Registers/FC10 Read Multiple Registers/' \
   's/W or WR are unconditional `NO_SEND`/W or WR require operator approval/' \
@@ -416,7 +416,7 @@ for mutation in \
 done
 
 awk '
-  /^The two extension slices remain/ {
+  /^Only the typed extension words listed below are decoded/ {
     print "- offset 0x0200, quantity 1, for an unqualified extra slice;"
   }
   { print }

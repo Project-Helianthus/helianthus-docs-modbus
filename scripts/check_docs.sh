@@ -513,7 +513,15 @@ check_bms_contract() {
   grep -Fq 'offset 0x000D, quantity 29' "$document"
   grep -Fq 'offset 0x0100, quantity 12' "$document"
   grep -Fq 'offset 0x010D, quantity 2' "$document"
-  grep -Fq 'The two extension slices remain opaque words until an exact, versioned field' "$document"
+  grep -Fq 'Only the typed extension words listed below are decoded.' "$document"
+  grep -Fq '## Typed read-only fields' "$document"
+  grep -Fq 'The typed subset is limited to the fields listed below.' "$document"
+  grep -Fq 'Company and generation occupy the low and high bytes, respectively,' "$document"
+  grep -Fq 'SOC is the low byte at `0x0015` and must be in the inclusive range 0 through' "$document"
+  grep -Fq "Current at \`0x0017\` is signed two's-complement and uses 10 mA units." "$document"
+  grep -Fq 'Only `0x0100`, `0x0101`, `0x0102`, `0x0104`, `0x0105`, and `0x0106` have typed' "$document"
+  grep -Fq '`0x0103`, `0x0107`' "$document"
+  grep -Fq 'through `0x010B`, and both `0x010D` slice words remain opaque.' "$document"
   grep -Fq 'Offsets 0x0009 through 0x000C contain barcode material and are not read' "$document"
   grep -Fq 'FC10 Preset Multiple Registers, address allocation' "$document"
   grep -Fq 'every field marked' "$document"
@@ -623,7 +631,7 @@ if [[ $# -gt 0 ]]; then
       exit 2
       ;;
   esac
-  exit 0
+  exit $?
 fi
 
 spec='protocols/tesla/tedapi.md'
