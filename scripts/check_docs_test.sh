@@ -111,6 +111,7 @@ done
 "$repo_root/scripts/check_docs.sh" --check-sunspec-der-trip-lv-typed-fact-projection-v2 "$der_trip_lv_projection_document"
 for mutation in \
   's/sunspec\.der\.v2\.707\.Crv\.MustTrip\.Pt\.V/sunspec.der.v2.707.Crv.Pt.V/' \
+  's/Crv\[i\]\.MayTrip\.Pt\[j\]\.V/Crv[i].MustTrip.Pt[j].V/' \
   's/`VNomPct`; a nested `Tms` has unit `Secs`/`V`; a nested `Tms` has unit `s`/' \
   's/`Required=false`/`Required=true`/' \
   's/accept zero and reject `0xffff` as unavailable/accept zero and accept `0xffff`/' \

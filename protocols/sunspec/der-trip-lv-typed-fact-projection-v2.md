@@ -27,15 +27,19 @@ The following FieldIDs and paths are canonical:
 - `sunspec.der.v2.707.V_SF` maps to `V_SF`.
 - `sunspec.der.v2.707.Tms_SF` maps to `Tms_SF`.
 - `sunspec.der.v2.707.Crv.ReadOnly` maps to `Crv[i].ReadOnly`.
-- `sunspec.der.v2.707.Crv.MustTrip.ActPt`,
-  `sunspec.der.v2.707.Crv.MayTrip.ActPt`, and
-  `sunspec.der.v2.707.Crv.MomCess.ActPt` map to their same-named indexed
-  `Crv[i]` paths.
+- `sunspec.der.v2.707.Crv.MustTrip.ActPt` maps to
+  `Crv[i].MustTrip.ActPt`; `sunspec.der.v2.707.Crv.MayTrip.ActPt` maps to
+  `Crv[i].MayTrip.ActPt`; and `sunspec.der.v2.707.Crv.MomCess.ActPt` maps to
+  `Crv[i].MomCess.ActPt`.
 - `sunspec.der.v2.707.Crv.MustTrip.Pt.V` and
   `sunspec.der.v2.707.Crv.MustTrip.Pt.Tms` map to
   `Crv[i].MustTrip.Pt[j].V` and `Crv[i].MustTrip.Pt[j].Tms`.
-- The corresponding `MayTrip` and `MomCess` FieldIDs map to their own indexed
-  `Crv[i].<kind>.Pt[j]` paths; they do not alias a MustTrip path.
+- `sunspec.der.v2.707.Crv.MayTrip.Pt.V` and
+  `sunspec.der.v2.707.Crv.MayTrip.Pt.Tms` map to
+  `Crv[i].MayTrip.Pt[j].V` and `Crv[i].MayTrip.Pt[j].Tms`.
+- `sunspec.der.v2.707.Crv.MomCess.Pt.V` and
+  `sunspec.der.v2.707.Crv.MomCess.Pt.Tms` map to
+  `Crv[i].MomCess.Pt[j].V` and `Crv[i].MomCess.Pt[j].Tms`.
 
 Every fact retains its occurrence-relative source range and the exact ordered,
 possibly fragmented raw source spans for that range.
