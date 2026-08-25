@@ -11,6 +11,8 @@ x2_document="$repo_root/protocols/growatt/shinewilan-x2-bridge-v1.md"
 x2_fixture="$fixture_root/shinewilan-x2.md"
 bms_document="$repo_root/protocols/growatt/bms-rs485-1xsxxp-v202.md"
 bms_fixture="$fixture_root/bms-rs485.md"
+wit_document="$repo_root/protocols/growatt/wit-family-protocol-matrix-v1.md"
+wit_fixture="$fixture_root/wit-family-matrix.md"
 
 cp "$source_document" "$fixture_document"
 "$repo_root/scripts/check_docs.sh" --check-sdongle-admission "$fixture_document"
@@ -29,6 +31,26 @@ for leak in \
   printf '\n%s\n' "$leak" >> "$fixture_document"
   if "$repo_root/scripts/check_docs.sh" --check-sdongle-admission "$fixture_document"; then
     echo "admission leak was accepted: $leak" >&2
+    exit 1
+  fi
+done
+
+"$repo_root/scripts/check_docs.sh" --check-wit-matrix-contract "$wit_document"
+
+for mutation in \
+  's/WIT 4-25K-HU/WIT 4-25K-HU2/' \
+  's/WIT 50-100K-AU/WIT 50-100K-HU\/AU/' \
+  's/DTC `5601`/DTC `5602`/' \
+  's/the only WIT tuple/one WIT tuple/' \
+  's/does not admit `WIT 50-100K-HU`/also admits `WIT 50-100K-HU`/' \
+  's/no qualified firmware gate/a qualified firmware gate/' \
+  's/does not apply to a WIT row/applies to a WIT row/' \
+  's/Every VPP read, control, and write remains `NO_SEND`/VPP reads and controls are permitted/' \
+  's/No decoder, fixture, catalog registration/Decoder, fixture, and catalog registration/' \
+  's/produces `INSUFFICIENT_EVIDENCE`, no match, and no send/chooses the first matching profile/'; do
+  sed "$mutation" "$wit_document" > "$wit_fixture"
+  if "$repo_root/scripts/check_docs.sh" --check-wit-matrix-contract "$wit_fixture"; then
+    echo "WIT matrix mutation was accepted: $mutation" >&2
     exit 1
   fi
 done
