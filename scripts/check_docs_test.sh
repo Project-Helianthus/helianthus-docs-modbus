@@ -77,7 +77,7 @@ for mutation in \
   's/truncate, or round/round to a float/' \
   's/are data and are not trimmed/are padding and are trimmed/' \
   's/V1 outputs remain unchanged/V1 outputs are revised/' \
-  's/runtime catalog registration/runtime catalog admission/' \
+  's/catalog registration, vendor admission/catalog admission, vendor admission/' \
   's/raw-only opaque block/decoded best-effort/' \
   's/all-zero string extent is unavailable/all-zero string extent is empty/'; do
   sed "$mutation" "$sunspec_v2_document" > "$sunspec_v2_fixture"
