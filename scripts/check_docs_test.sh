@@ -85,6 +85,9 @@ for mutation in \
 	's/offset 0\. It is bounded/offset 1. It is bounded/' \
 	's/bounded from 0 through 2047/bounded from 0 through 2048/' \
 	's/Model 803 does not infer Model 804 child occurrences/Model 803 infers Model 804 child occurrences/' \
+	's/offset 1\. It is bounded/offset 0. It is bounded/' \
+	's/bounded from 0 through 4093/bounded from 0 through 4094/' \
+	's/Model 804 does not infer a Model 803 parent/Model 804 infers a Model 803 parent/' \
 	's/zero decoded facts/decoded best-effort facts/' \
   's/0 through 2620/0 through 2621/' \
   's/zero is a valid value/zero means not implemented/' \
