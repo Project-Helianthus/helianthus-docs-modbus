@@ -234,6 +234,35 @@ check_sunspec_v1_model_families_contract() {
   fi
 }
 
+check_sunspec_nested_layout_contract() {
+  local document="$1"
+
+  check_public_protocol "$document"
+  for heading in \
+    'Scope' \
+    'Template selection' \
+    'Per-occurrence validation' \
+    'Hierarchical paths and offsets' \
+    'Bounds and allocation' \
+    'Failure and isolation' \
+    'No-send boundary' \
+    'Bounded examples' \
+    'Compatibility'; do
+    grep -Fqx "## $heading" "$document"
+  done
+  grep -Fq 'An immutable schema template is selected only by the exact schema revision and model identifier.' "$document"
+  grep -Fq 'A declared length never selects a template and is never an expanded-layout cache key.' "$document"
+  grep -Fq 'A layout is instantiated for one occurrence only after every documented count and its declared length validate together.' "$document"
+  grep -Fq 'It must not infer counts from a declared length, an activation point, or trailing words.' "$document"
+  grep -Fq '`Crv[2].MustTrip.Pt[5].Hz` is a hierarchical path, not a flattened repeat index.' "$document"
+  grep -Fq 'Offsets are relative to the occurrence and map each decoded point to exact source spans.' "$document"
+  grep -Fq 'Checked arithmetic applies before every extent, aggregate, fact-count, or allocation decision.' "$document"
+  grep -Fq 'Invalid geometry remains raw-only with zero typed facts.' "$document"
+  grep -Fq 'V1 templates, caches, and outputs remain isolated and unchanged.' "$document"
+  grep -Fq 'This contract creates no runtime, vendor, transport, gateway, live-I/O, write, send, or operation behavior.' "$document"
+  grep -Fq 'Models 707, 708, and 709 are bounded examples only and do not define Model 710 or any other model.' "$document"
+}
+
 check_x2_publication() {
   local document="$1"
   local bare_revision='(^|[^[:xdigit:]])[[:xdigit:]]{40}([^[:xdigit:]]|$)|(^|[^[:xdigit:]])[[:xdigit:]]{64}([^[:xdigit:]]|$)'
@@ -357,7 +386,7 @@ check_wit_matrix_contract() {
 
 if [[ $# -gt 0 ]]; then
   if [[ $# -ne 2 ]]; then
-    echo 'usage: check_docs.sh [--check-sdongle-admission|--check-public-protocol|--check-private-function-contract|--check-sunspec-v1-model-families-contract|--check-sunspec-v2-contract|--check-sunspec-v2-licensing|--check-x2-publication|--check-x2-contract|--check-bms-contract|--check-wit-matrix-contract document]' >&2
+    echo 'usage: check_docs.sh [--check-sdongle-admission|--check-public-protocol|--check-private-function-contract|--check-sunspec-v1-model-families-contract|--check-sunspec-nested-layout-contract|--check-sunspec-v2-contract|--check-sunspec-v2-licensing|--check-x2-publication|--check-x2-contract|--check-bms-contract|--check-wit-matrix-contract document]' >&2
     exit 2
   fi
   case "$1" in
@@ -365,6 +394,7 @@ if [[ $# -gt 0 ]]; then
     --check-public-protocol) check_public_protocol "$2" ;;
     --check-private-function-contract) check_private_function_contract "$2" ;;
     --check-sunspec-v1-model-families-contract) check_sunspec_v1_model_families_contract "$2" ;;
+    --check-sunspec-nested-layout-contract) check_sunspec_nested_layout_contract "$2" ;;
     --check-sunspec-v2-contract) check_sunspec_v2_contract "$2" ;;
     --check-sunspec-v2-licensing) check_sunspec_v2_licensing "$2" ;;
     --check-x2-publication) check_x2_publication "$2" ;;
@@ -372,7 +402,7 @@ if [[ $# -gt 0 ]]; then
     --check-bms-contract) check_bms_contract "$2" ;;
     --check-wit-matrix-contract) check_wit_matrix_contract "$2" ;;
     *)
-      echo 'usage: check_docs.sh [--check-sdongle-admission|--check-public-protocol|--check-private-function-contract|--check-sunspec-v1-model-families-contract|--check-sunspec-v2-contract|--check-sunspec-v2-licensing|--check-x2-publication|--check-x2-contract|--check-bms-contract|--check-wit-matrix-contract document]' >&2
+      echo 'usage: check_docs.sh [--check-sdongle-admission|--check-public-protocol|--check-private-function-contract|--check-sunspec-v1-model-families-contract|--check-sunspec-nested-layout-contract|--check-sunspec-v2-contract|--check-sunspec-v2-licensing|--check-x2-publication|--check-x2-contract|--check-bms-contract|--check-wit-matrix-contract document]' >&2
       exit 2
       ;;
   esac
@@ -381,6 +411,8 @@ fi
 
 spec='protocols/tesla/tedapi.md'
 test -f "$spec"
+nested_layout_spec='protocols/sunspec/nested-layout-contract-v1.md'
+test -f "$nested_layout_spec"
 private_spec='protocols/modbus/private-function-codes.md'
 test -f "$private_spec"
 sdongle_admission='architecture/sdongle-qualification-disposition-v1.md'
@@ -391,6 +423,7 @@ multivendor_specs=(
   'protocols/sunspec/read-only-core-v1.md'
   'protocols/sunspec/read-only-core-v1-model-families.md'
   'protocols/sunspec/read-only-core-v2.md'
+  'protocols/sunspec/nested-layout-contract-v1.md'
   'protocols/fronius/sunspec-float-v1.md'
   'protocols/huawei/gateway-readonly-v1.md'
   'protocols/growatt/protocol-ii-readonly-v1.md'
@@ -430,6 +463,7 @@ grep -Fqx '## Admission rules' 'protocols/applicability-and-licensing.md'
 grep -Fqx '## Initial model catalog' 'protocols/sunspec/read-only-core-v1.md'
 check_sunspec_v1_model_families_contract 'protocols/sunspec/read-only-core-v1-model-families.md'
 check_sunspec_v2_contract 'protocols/sunspec/read-only-core-v2.md'
+check_sunspec_nested_layout_contract "$nested_layout_spec"
 check_sunspec_v2_licensing 'protocols/applicability-and-licensing.md'
 grep -Fqx '## Exact chain geometry' 'protocols/fronius/sunspec-float-v1.md'
 grep -Fqx '## SmartLogger candidate' 'protocols/huawei/gateway-readonly-v1.md'
