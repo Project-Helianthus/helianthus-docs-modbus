@@ -149,8 +149,7 @@ catalog activation, transport behavior, gateway behavior, or live I/O.
 ## Flow battery module boundary
 
 Model 808 has fixed data-register length 1 and no effective repeated group.
-`ModuleTBD` remains uninterpreted structural observed state. The declared stack
-group has count zero and is not materialized. Model 808 does not infer a relationship to Models 803 through 807 or 809. Every Model 808 field, including the zero-count `StackTBD` group name, is observed state only and is `NO_SEND`.
+`ModuleTBD` remains uninterpreted structural observed state. The declared stack group has count zero and is not materialized. Model 808 does not infer a relationship to Models 803 through 807 or 809. Every Model 808 field, including the zero-count `StackTBD` group name, is observed state only and is `NO_SEND`.
 
 No Model 808 field creates a write method, send authority, operation admission,
 dispatch, retry, control behavior, runtime activation, vendor activation,
