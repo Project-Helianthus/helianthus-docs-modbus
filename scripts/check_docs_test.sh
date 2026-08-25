@@ -21,6 +21,8 @@ sunspec_v1_families_document="$repo_root/protocols/sunspec/read-only-core-v1-mod
 sunspec_v1_families_fixture="$fixture_root/sunspec-read-only-core-v1-model-families.md"
 nested_layout_document="$repo_root/protocols/sunspec/nested-layout-contract-v1.md"
 nested_layout_fixture="$fixture_root/sunspec-nested-layout-contract-v1.md"
+der_trip_lv_template_document="$repo_root/protocols/sunspec/der-trip-lv-template-v2.md"
+der_trip_lv_template_fixture="$fixture_root/sunspec-der-trip-lv-template-v2.md"
 private_function_document="$repo_root/protocols/modbus/private-function-codes.md"
 private_function_fixture="$fixture_root/private-function-codes.md"
 
@@ -84,6 +86,22 @@ for mutation in \
   sed "$mutation" "$nested_layout_document" > "$nested_layout_fixture"
   if "$repo_root/scripts/check_docs.sh" --check-sunspec-nested-layout-contract "$nested_layout_fixture"; then
     echo "SunSpec nested-layout mutation was accepted: $mutation" >&2
+    exit 1
+  fi
+done
+
+"$repo_root/scripts/check_docs.sh" --check-sunspec-der-trip-lv-template-v2 "$der_trip_lv_template_document"
+for mutation in \
+  's/occurrence-word offsets 5 and 6/occurrence-word offsets 4 and 5/' \
+  's/L = 7 + C\*(4 + 9\*P)/L = 7 + C*(4 + 8*P)/' \
+  's/L <= 65534/L <= 65535/' \
+  's/Invalid geometry remains raw-only with zero typed facts/Invalid geometry emits partial typed facts/' \
+  's/Every field is observed state only and is `NO_SEND`/Every field creates a write operation/' \
+  's/Model 707/Model 708/' \
+  's/does not create live acquisition or operational behavior/does not create live acquisition; 708 uses this template/'; do
+  sed "$mutation" "$der_trip_lv_template_document" > "$der_trip_lv_template_fixture"
+  if "$repo_root/scripts/check_docs.sh" --check-sunspec-der-trip-lv-template-v2 "$der_trip_lv_template_fixture"; then
+    echo "SunSpec Model 707 template mutation was accepted: $mutation" >&2
     exit 1
   fi
 done
