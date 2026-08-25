@@ -294,11 +294,12 @@ check_sunspec_der_trip_lv_template_v2() {
 
 check_sunspec_der_trip_lv_typed_fact_projection_v2() {
   local document="$1"
-  local contradiction='creates a typed fact|selects a model|authorizes a profile|permits sends|writes to a device|creates an operation|creates live-system behavior|Model 708|Model 709'
+  local contradiction='projection is admitted|projection has a decoder key|projection is a `SunSpecDecodedChain`|projection authorizes a profile|projection permits sends|projection writes to a device|projection creates an operation|projection creates live-system behavior'
 
   check_public_protocol "$document"
   for heading in \
     'Scope and non-emission' \
+    'Public offline projection API' \
     'Stable identity and nested paths' \
     'Requiredness and observation state' \
     'Types, units, and symbols' \
@@ -307,6 +308,18 @@ check_sunspec_der_trip_lv_typed_fact_projection_v2() {
   done
   grep -Fq 'It does not change the current raw-only behavior,' "$document"
   grep -Fq 'Every observation in this contract is `NO_SEND`' "$document"
+  grep -Fq '`ProjectSunSpecStructuralFacts(snapshot)` returns zero or more immutable' "$document"
+  grep -Fq '`SunSpecStructuralProjection` records.' "$document"
+  grep -Fq '`WireKey()`, `SchemaRevision()`, `Ordinal()`, `RawWords()`,' "$document"
+  grep -Fq '`SourceSpans()`, and `Facts()`.' "$document"
+  grep -Fq 'It has no `DecoderKey()`, admission, qualification, topology, or' "$document"
+  grep -Fq '`SunSpecDecodedChain` identity.' "$document"
+  grep -Fq 'Only a complete V2 Model 707 `structural_candidate` may produce a projection.' "$document"
+  grep -Fq 'Candidate absence or malformed structural geometry produces no projection and zero facts.' "$document"
+  grep -Fq 'does not modify an occurrence, chain snapshot, or qualification-observation JSON.' "$document"
+  grep -Fq 'Repeated Model 707 occurrences produce independent projections.' "$document"
+  grep -Fq 'V1, Model 708, and Model 709 produce no projection.' "$document"
+  grep -Fq 'does not change acquisition, queueing, retry, deadline, limit, or terminal behavior.' "$document"
   grep -Fq 'A FieldID names a field template and never embeds an occurrence, curve, or' "$document"
   grep -Fq '`sunspec.der.v2.707.Crv.MustTrip.Pt.V` and' "$document"
   grep -Fq '`Crv[i].MustTrip.Pt[j].V` and `Crv[i].MustTrip.Pt[j].Tms`.' "$document"
