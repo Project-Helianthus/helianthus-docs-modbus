@@ -38,6 +38,8 @@ done
 "$repo_root/scripts/check_docs.sh" --check-wit-matrix-contract "$wit_document"
 
 for mutation in \
+  '/WIT 4-25K-HU/s/`UNKNOWN`/`V2.01`/' \
+  '/WIT 50-100K-AU/s/`INSUFFICIENT_EVIDENCE`/`PROFILE_ADMITTED`/' \
   's/WIT 4-25K-HU/WIT 4-25K-HU2/' \
   's/WIT 50-100K-AU/WIT 50-100K-HU\/AU/' \
   's/DTC `5601`/DTC `5602`/' \
