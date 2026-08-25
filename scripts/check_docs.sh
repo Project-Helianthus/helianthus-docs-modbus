@@ -21,6 +21,36 @@ check_public_protocol() {
   fi
 }
 
+check_sunspec_v2_contract() {
+  local document="$1"
+  local contradiction='V2 registry (and|or) runtime admission (is|are) (approved|enabled|implemented)|sunspec\.models\.candidate\.v2[^.]*executable decoder|trailing spaces[^.]*trimmed'
+
+  check_public_protocol "$document"
+  grep -Fqx '## Candidate catalog revision' "$document"
+  grep -Fqx '## Candidate model boundary' "$document"
+  grep -Fqx '## Model 714 geometry' "$document"
+  grep -Fqx '## Value interpretation boundary' "$document"
+  grep -Fqx '## Registry and runtime gate' "$document"
+  grep -Fq '`sunspec.models.candidate.v2`' "$document"
+  grep -Fq '`90b4a331dcca1d6eac69c1bead952fddcc5852e0`' "$document"
+  grep -Fq 'Models 701, 702, 713, and 714' "$document"
+  grep -Fq '| 1 | 66 | Common device information |' "$document"
+  grep -Fq '| 701 | 153 | DER AC measurement |' "$document"
+  grep -Fq '| 702 | 50 | DER capacity |' "$document"
+  grep -Fq '| 713 | 7 | DER storage capacity |' "$document"
+  grep -Fq '| 714 | `18 + 25*NPrt` | DER DC measurement with repeated ports |' "$document"
+  grep -Fq 'Model 714 has data-register length `18 + 25*NPrt`' "$document"
+  grep -Fq 'bounded from 0 through 2620' "$document"
+  grep -Fq 'zero is a valid value and all one-bits means not implemented' "$document"
+  grep -Fq 'spaces before the terminator are data and are not trimmed' "$document"
+  grep -Fq 'V2 registry and runtime admission remains pending independent contract validation.' "$document"
+  grep -Fq 'the candidate is default denied' "$document"
+  if grep -Ein "$contradiction" "$document"; then
+    echo 'SunSpec V2 candidate contradicts its pending/default-denied boundary' >&2
+    return 1
+  fi
+}
+
 check_x2_publication() {
   local document="$1"
   local bare_revision='(^|[^[:xdigit:]])[[:xdigit:]]{40}([^[:xdigit:]]|$)|(^|[^[:xdigit:]])[[:xdigit:]]{64}([^[:xdigit:]]|$)'
@@ -144,18 +174,19 @@ check_wit_matrix_contract() {
 
 if [[ $# -gt 0 ]]; then
   if [[ $# -ne 2 ]]; then
-    echo 'usage: check_docs.sh [--check-sdongle-admission|--check-public-protocol|--check-x2-publication|--check-x2-contract|--check-bms-contract|--check-wit-matrix-contract document]' >&2
+    echo 'usage: check_docs.sh [--check-sdongle-admission|--check-public-protocol|--check-sunspec-v2-contract|--check-x2-publication|--check-x2-contract|--check-bms-contract|--check-wit-matrix-contract document]' >&2
     exit 2
   fi
   case "$1" in
     --check-sdongle-admission) check_sdongle_admission "$2" ;;
     --check-public-protocol) check_public_protocol "$2" ;;
+    --check-sunspec-v2-contract) check_sunspec_v2_contract "$2" ;;
     --check-x2-publication) check_x2_publication "$2" ;;
     --check-x2-contract) check_x2_contract "$2" ;;
     --check-bms-contract) check_bms_contract "$2" ;;
     --check-wit-matrix-contract) check_wit_matrix_contract "$2" ;;
     *)
-      echo 'usage: check_docs.sh [--check-sdongle-admission|--check-public-protocol|--check-x2-publication|--check-x2-contract|--check-bms-contract|--check-wit-matrix-contract document]' >&2
+      echo 'usage: check_docs.sh [--check-sdongle-admission|--check-public-protocol|--check-sunspec-v2-contract|--check-x2-publication|--check-x2-contract|--check-bms-contract|--check-wit-matrix-contract document]' >&2
       exit 2
       ;;
   esac
@@ -218,17 +249,7 @@ fi
 grep -Fqx '## Publication boundary' 'protocols/applicability-and-licensing.md'
 grep -Fqx '## Admission rules' 'protocols/applicability-and-licensing.md'
 grep -Fqx '## Initial model catalog' 'protocols/sunspec/read-only-core-v1.md'
-grep -Fqx '## Candidate catalog revision' 'protocols/sunspec/read-only-core-v2.md'
-grep -Fqx '## Candidate model boundary' 'protocols/sunspec/read-only-core-v2.md'
-grep -Fqx '## Model 714 geometry' 'protocols/sunspec/read-only-core-v2.md'
-grep -Fqx '## Value interpretation boundary' 'protocols/sunspec/read-only-core-v2.md'
-grep -Fqx '## Registry and runtime gate' 'protocols/sunspec/read-only-core-v2.md'
-grep -Fq '`sunspec.models.candidate.v2`' 'protocols/sunspec/read-only-core-v2.md'
-grep -Fq '`90b4a331dcca1d6eac69c1bead952fddcc5852e0`' 'protocols/sunspec/read-only-core-v2.md'
-grep -Fq 'Models 701, 702, 713, and 714' 'protocols/sunspec/read-only-core-v2.md'
-grep -Fq 'Model 714 has data-register length `18 + 25*NPrt`' 'protocols/sunspec/read-only-core-v2.md'
-grep -Fq '`NPrt` is bounded from 0 through 2620' 'protocols/sunspec/read-only-core-v2.md'
-grep -Fq 'V2 registry and runtime admission remains pending independent contract validation.' 'protocols/sunspec/read-only-core-v2.md'
+check_sunspec_v2_contract 'protocols/sunspec/read-only-core-v2.md'
 grep -Fqx '## Exact chain geometry' 'protocols/fronius/sunspec-float-v1.md'
 grep -Fqx '## SmartLogger candidate' 'protocols/huawei/gateway-readonly-v1.md'
 grep -Fqx '## S-Dongle candidate' 'protocols/huawei/gateway-readonly-v1.md'

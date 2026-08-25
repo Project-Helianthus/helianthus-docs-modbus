@@ -13,10 +13,28 @@ bms_document="$repo_root/protocols/growatt/bms-rs485-1xsxxp-v202.md"
 bms_fixture="$fixture_root/bms-rs485.md"
 wit_document="$repo_root/protocols/growatt/wit-family-protocol-matrix-v1.md"
 wit_fixture="$fixture_root/wit-family-matrix.md"
+sunspec_v2_document="$repo_root/protocols/sunspec/read-only-core-v2.md"
+sunspec_v2_fixture="$fixture_root/sunspec-read-only-core-v2.md"
 
 cp "$source_document" "$fixture_document"
 "$repo_root/scripts/check_docs.sh" --check-sdongle-admission "$fixture_document"
 grep -Fq 'Each retry began after at least five seconds of idle time.' "$source_document"
+
+"$repo_root/scripts/check_docs.sh" --check-sunspec-v2-contract "$sunspec_v2_document"
+for mutation in \
+  's/| 701 | 153 |/| 701 | 152 |/' \
+  's/18 + 25\*NPrt/18 + 24*NPrt/g' \
+  's/0 through 2620/0 through 2621/' \
+  's/zero is a valid value/zero means not implemented/' \
+  's/are data and are not trimmed/are padding and are trimmed/' \
+  's/remains pending independent contract validation/is approved and implemented/' \
+  's/the candidate is default denied/the candidate is automatically admitted/'; do
+  sed "$mutation" "$sunspec_v2_document" > "$sunspec_v2_fixture"
+  if "$repo_root/scripts/check_docs.sh" --check-sunspec-v2-contract "$sunspec_v2_fixture"; then
+    echo "SunSpec V2 mutation was accepted: $mutation" >&2
+    exit 1
+  fi
+done
 
 for leak in \
   'gateway.example.internal:1502' \
