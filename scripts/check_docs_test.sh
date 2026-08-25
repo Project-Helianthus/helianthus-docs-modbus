@@ -112,6 +112,17 @@ done
 
 "$repo_root/scripts/check_docs.sh" --check-sunspec-der-trip-lv-typed-fact-projection-v2 "$der_trip_lv_projection_document"
 for mutation in \
+  's/## Public offline projection API/## Public projection API/' \
+  's/snapshot SunSpecChainSnapshot/decoded SunSpecDecodedChain/' \
+  's/has no `DecoderKey()`, admission/has a `DecoderKey()`, admission/' \
+  's/Only a complete V2 Model 707 `structural_candidate` may produce a projection/Every V2 model may produce a projection/' \
+  's/must not accept or derive a projection/may accept or derive a projection/' \
+  's/must not recompute structural state/recomputes structural state/' \
+  's/produces no projection and zero facts/produces partial facts/' \
+  's/does not modify an occurrence, chain snapshot, or qualification-observation JSON/modifies qualification-observation JSON/' \
+  's/Repeated Model 707 occurrences produce independent projections/Repeated Model 707 occurrences share one projection/' \
+  's/V1, Model 708, and Model 709 produce no projection/V1, Model 708, and Model 709 produce projections/' \
+  's/does not change acquisition, queueing, retry, deadline, limit, or terminal behavior/changes retry behavior/' \
   's/sunspec\.der\.v2\.707\.Crv\.MustTrip\.Pt\.V/sunspec.der.v2.707.Crv.Pt.V/' \
   's/Crv\[i\]\.MayTrip\.Pt\[j\]\.V/Crv[i].MustTrip.Pt[j].V/' \
   's/`VNomPct`; a nested `Tms` has unit `Secs`/`V`; a nested `Tms` has unit `s`/' \
