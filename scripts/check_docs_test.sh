@@ -71,7 +71,8 @@ done
 "$repo_root/scripts/check_docs.sh" --check-sunspec-v2-licensing "$sunspec_v2_licensing_document"
 for mutation in \
   's/| 701 | 153 |/| 701 | 152 |/' \
-  's/| 703 | 17 |/| 703 | 18 |/' \
+	's/| 703 | 17 |/| 703 | 18 |/' \
+	's/| 707 | `9 + NCrvSet` |/| 707 | `8 + NCrvSet` |/' \
 	's/| 715 | 7 |/| 715 | 8 |/' \
 	's/| 802 | 62 |/| 802 | 61 |/' \
 	's/| 803 | `26 + 32\*NStr` |/| 803 | `26 + 31*NStr` |/' \
@@ -83,7 +84,15 @@ for mutation in \
 	's/| 809 | 1 |/| 809 | 2 |/' \
 	's/18 + 25\*NPrt/18 + 24*NPrt/g' \
   's/Models 703 and 715 are control-observability only/Models 703 and 715 create operations/' \
-  's/Models 704 through 712 remain outside this V2 wave and remain opaque/Models 704 through 712 are decoded/' \
+	's/Models 704 through 706 and 708 through 712 remain outside this V2 wave and remain opaque/Models 704 through 712 are decoded/' \
+	's/Model 707 has data-register length `9 + NCrvSet`/Model 707 has fixed length 9/' \
+	's/`NCrvSet` is at payload-register offset 4 and absolute model word 6/`NCrvSet` is at payload-register offset 5/' \
+	's/bounded from 0 through 65526/bounded from 0 through 65527/' \
+	's/Each repeated `Crv` observation consumes exactly 1 data register/Each repeated `Crv` observation consumes exactly 2 data registers/' \
+	's/partial repeated group makes Model 707 raw-only opaque with zero decoded facts/partial repeated group permits facts/' \
+	's/Model 707 does not infer a relationship to Models 708 through 710/Model 707 infers a relationship to Model 708/' \
+	's/Every Model 707 field, including `Ena`, `AdptCrvReq`, and repeated `Crv.ReadOnly`, is observed state only and is `NO_SEND`/Model 707 fields permit sends/' \
+	's/No Model 707 field creates a write method, send authority, operation admission,/Model 707 creates an operation admission,/' \
 	's/Every Model 802 field is observed state only and is `NO_SEND`/Model 802 fields permit sends/' \
 	's/Model 801 remains excluded as deprecated/Model 801 is admitted/' \
 	's/Models 806 through 809 remain separately bounded flow battery structural leaves/Models 806 through 809 are interchangeable/' \
