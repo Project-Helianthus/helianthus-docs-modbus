@@ -7,9 +7,9 @@ not a device support claim, permission to acquire from a live endpoint, vendor
 flavor, runtime catalog registration, or control interface. Existing SunSpec
 V1 behavior remains unchanged.
 
-The contract covers the `SunS` signature, Common Model 1, Models 701, 702, 713,
-and 714, and the terminal block. It does not make a proprietary Huawei or
-Growatt register map SunSpec.
+The contract covers the `SunS` signature, Common Model 1, Models 701, 702, 703,
+713, 714, and 715, and the terminal block. It does not make a proprietary
+Huawei or Growatt register map SunSpec.
 
 ## Schema revision
 
@@ -37,20 +37,34 @@ zero.
 
 ## Model scope
 
-The bounded V2 scope contains Common Model 1 and Models 701, 702, 713, and 714.
+The bounded V2 scope contains Common Model 1 and Models 701, 702, 703, 713, 714,
+and 715.
 
 | Model | V2 data-register length | Read-only role |
 | --- | --- | --- |
 | 1 | 66 | Common device information |
 | 701 | 153 | DER AC measurement |
 | 702 | 50 | DER capacity |
+| 703 | 17 | DER enter-service observed state |
 | 713 | 7 | DER storage capacity |
 | 714 | `18 + 25*NPrt` | DER DC measurement with repeated ports |
+| 715 | 7 | DER controller observed state |
 
 A V2 offline decoder selects only by model identifier, exact declared length,
 and `sunspec.models@90b4a331-v2`. A known identifier with another length
-remains opaque. No fixed ordering is inferred among Models 701, 702, 713, and
-714.
+remains opaque. No fixed ordering is inferred among Models 701, 702, 703, 713,
+714, and 715.
+
+## Control-observability boundary
+
+Models 703 and 715 are control-observability only. A decoder may retain their
+observed words and derived state, including points that upstream describes as
+read/write, but it does not infer current control authority or a permitted
+operation from those words.
+
+No point in either model creates a write method, send authority, operation admission,
+dispatch, retry, runtime activation, vendor activation, or catalog activation.
+Models 704 through 712 remain outside this V2 wave and remain opaque.
 
 ## Model 714 geometry
 
@@ -93,11 +107,12 @@ Offline conformance uses synthetic, non-vendor fixtures. Fixtures retain chain
 order, repeated occurrences, raw spans, and opaque blocks without vendor
 identity, endpoint, serial number, live capture, or support claim.
 
-The fixture set must cover Common with 701 and 702; Common with 701, 702, 713,
-and a repeated-port 714; 714 count and length mismatch; zero and all-one
-`uint64`; invalid or missing scale factors; invalid string encoding; preserved
-spaces; unknown enum and bit-mask values; repeated occurrences; and an
-unsupported model length retained as opaque.
+The fixture set must cover Common with 701 and 702; Common with fixed 703 and
+715 observed-state blocks; Common with 701, 702, 713, and a repeated-port 714;
+714 count and length mismatch; zero and all-one `uint64`; invalid or missing
+scale factors; invalid string encoding; preserved spaces; unknown enum and
+bit-mask values; repeated occurrences; and an unsupported model length retained
+as opaque.
 
 ## Offline implementation boundary
 
