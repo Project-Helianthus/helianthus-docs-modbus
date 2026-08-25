@@ -8,7 +8,7 @@ flavor, runtime catalog registration, or control interface. Existing SunSpec
 V1 behavior remains unchanged.
 
 The contract covers the `SunS` signature, Common Model 1, Models 701, 702, 703,
-713, 714, and 715, and the terminal block. It does not make a proprietary
+713, 714, 715, and 802, and the terminal block. It does not make a proprietary
 Huawei or Growatt register map SunSpec.
 
 ## Schema revision
@@ -38,7 +38,7 @@ zero.
 ## Model scope
 
 The bounded V2 scope contains Common Model 1 and Models 701, 702, 703, 713, 714,
-and 715.
+715, and 802.
 
 | Model | V2 data-register length | Read-only role |
 | --- | --- | --- |
@@ -49,11 +49,12 @@ and 715.
 | 713 | 7 | DER storage capacity |
 | 714 | `18 + 25*NPrt` | DER DC measurement with repeated ports |
 | 715 | 7 | DER controller observed state |
+| 802 | 62 | BESS base observed state |
 
 A V2 offline decoder selects only by model identifier, exact declared length,
 and `sunspec.models@90b4a331-v2`. A known identifier with another length
 remains opaque. No fixed ordering is inferred among Models 701, 702, 703, 713,
-714, and 715.
+714, 715, and 802.
 
 ## Control-observability boundary
 
@@ -65,6 +66,17 @@ operation from those words.
 No point in either model creates a write method, send authority, operation admission,
 dispatch, retry, runtime activation, vendor activation, or catalog activation.
 Models 704 through 712 remain outside this V2 wave and remain opaque.
+
+## BESS base observed-state boundary
+
+Model 802 is a fixed-geometry battery base block with declared length 62.
+It occupies 64 total words including its header and has no repeated group.
+Every Model 802 field is observed state only and is `NO_SEND`.
+
+No Model 802 field creates a write method, operation dispatch, control behavior,
+runtime activation, vendor activation, catalog activation, transport behavior,
+gateway behavior, or live I/O. Model 801 remains excluded as deprecated.
+Models 803 through 809 remain excluded pending separate family and substructure decisions.
 
 ## Model 714 geometry
 
@@ -108,11 +120,11 @@ order, repeated occurrences, raw spans, and opaque blocks without vendor
 identity, endpoint, serial number, live capture, or support claim.
 
 The fixture set must cover Common with 701 and 702; Common with fixed 703 and
-715 observed-state blocks; Common with 701, 702, 713, and a repeated-port 714;
-714 count and length mismatch; zero and all-one `uint64`; invalid or missing
-scale factors; invalid string encoding; preserved spaces; unknown enum and
-bit-mask values; repeated occurrences; and an unsupported model length retained
-as opaque.
+715 observed-state blocks; Common with fixed 802 observed-state words; Common
+with 701, 702, 713, and a repeated-port 714; 714 count and length mismatch;
+zero and all-one `uint64`; invalid or missing scale factors; invalid string
+encoding; preserved spaces; unknown enum and bit-mask values; repeated
+occurrences; and an unsupported model length retained as opaque.
 
 ## Offline implementation boundary
 
