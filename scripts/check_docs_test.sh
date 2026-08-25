@@ -95,8 +95,9 @@ for mutation in \
 	's/must not infer `P` or `C` from/may infer `P` or `C` from/' \
 	's/Models 707, 708, and 709 are inventory-known raw-only quarantine blocks/Models 707, 708, and 709 emit typed facts/' \
 	's/Every field in Models 707, 708, and 709, including `Ena`, `AdptCrvReq`,/Models 707, 708, and 709 permit sends, including `Ena`,/' \
-	's/Models 707 and 708 use `V_SF` and `Tms_SF`/Models 707 and 708 use `Hz_SF` and `Tms_SF`/' \
-	's/Model 709 uses `Hz_SF` and `Tms_SF`/Model 709 uses `V_SF` and `Tms_SF`/' \
+	's/Model 707 has `V_SF` and `Tms_SF`/Model 707 has `Hz_SF` and `Tms_SF`/' \
+	's/Model 708 has the same source-derived point spans as Model 707/Model 708 infers its point spans from Model 707/' \
+	's/Model 709 has `Hz_SF` and `Tms_SF`/Model 709 has `V_SF` and `Tms_SF`/' \
 	's/Every Model 802 field is observed state only and is `NO_SEND`/Model 802 fields permit sends/' \
 	's/Model 801 remains excluded as deprecated/Model 801 is admitted/' \
 	's/Models 806 through 809 remain separately bounded flow battery structural leaves/Models 806 through 809 are interchangeable/' \

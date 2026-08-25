@@ -95,7 +95,7 @@ check_sunspec_v2_contract() {
 	grep -Fq 'must not infer `P` or `C` from' "$document"
 	grep -Fq '`L`, `ActPt`, or trailing words.' "$document"
 	grep -Fq 'Models 707, 708, and 709 are inventory-known raw-only quarantine blocks.' "$document"
-	grep -Fq 'A separate occurrence-aware nested-layout contract is required before any typed' "$document"
+	grep -Fq 'separate occurrence-aware nested-layout contract is required before any typed' "$document"
 	grep -Fq 'Every field in Models 707, 708, and 709, including `Ena`, `AdptCrvReq`,' "$document"
 	grep -Fq 'No field creates a write method, send authority, operation admission,' "$document"
 	grep -Fqx '## DER Trip model-specific observed fields' "$document"
