@@ -37,8 +37,7 @@ zero.
 
 ## Model scope
 
-The bounded V2 scope contains Common Model 1 and Models 701, 702, 703, 707, 713,
-714, 715, 802, 803, 804, 805, 806, 807, 808, and 809.
+The bounded V2 scope contains Common Model 1 and Models 701, 702, 703, 707, 708, 713, 714, 715, 802, 803, 804, 805, 806, 807, 808, and 809.
 
 | Model | V2 data-register length | Read-only role |
 | --- | --- | --- |
@@ -47,6 +46,7 @@ The bounded V2 scope contains Common Model 1 and Models 701, 702, 703, 707, 713,
 | 702 | 50 | DER capacity |
 | 703 | 17 | DER enter-service observed state |
 | 707 | `7 + NCrvSet` | DER Trip LV observed state with repeated curve observations |
+| 708 | `7 + NCrvSet` | DER Trip HV observed state with repeated curve observations |
 | 713 | 7 | DER storage capacity |
 | 714 | `18 + 25*NPrt` | DER DC measurement with repeated ports |
 | 715 | 7 | DER controller observed state |
@@ -62,7 +62,7 @@ The bounded V2 scope contains Common Model 1 and Models 701, 702, 703, 707, 713,
 A V2 offline decoder selects only by model identifier, exact declared length,
 and `sunspec.models@90b4a331-v2`. A known identifier with another length
 remains opaque. No fixed ordering is inferred among Models 701, 702, 703, 707,
-713, 714, 715, 802, 803, 804, 805, 806, 807, 808, and 809.
+708, 713, 714, 715, 802, 803, 804, 805, 806, 807, 808, and 809.
 
 ## Control-observability boundary
 
@@ -73,7 +73,7 @@ operation from those words.
 
 No point in either model creates a write method, send authority, operation admission,
 dispatch, retry, runtime activation, vendor activation, or catalog activation.
-Models 704 through 706 and 708 through 712 remain outside this V2 wave and remain opaque.
+Models 704 through 706 and 709 through 712 remain outside this V2 wave and remain opaque.
 
 ## DER Trip LV geometry
 
@@ -84,6 +84,18 @@ The maximum source-schema count occupies 65,537 total model words including the 
 An unavailable sentinel, missing count, overflow, declared length mismatch, or partial repeated group makes Model 707 raw-only opaque with zero decoded facts. No count is inferred from trailing words. Model 707 does not infer a relationship to Models 708 through 710. Every Model 707 field, including `Ena`, `AdptCrvReq`, and repeated `Crv.ReadOnly`, is observed state only and is `NO_SEND`.
 
 No Model 707 field creates a write method, send authority, operation admission,
+dispatch, retry, control behavior, runtime activation, vendor activation,
+catalog activation, transport behavior, gateway behavior, or live I/O.
+
+## DER Trip HV geometry
+
+Model 708 has data-register length `7 + NCrvSet`. `NCrvSet` is at payload-register offset 4 and absolute model word 6. The source-schema length permits a non-sentinel count from 0 through 65528. Zero is a valid zero-curve observation. Each repeated `Crv` observation consumes exactly 1 data register.
+
+The maximum source-schema count occupies 65,537 total model words including the header. It exceeds the current 65,536-word isolated offline extent boundary, so it remains raw-only opaque with zero decoded facts pending a separately reviewed aggregate-extent contract. No decoder infers a smaller count from trailing words.
+
+An unavailable sentinel, missing count, overflow, declared length mismatch, or partial repeated group makes Model 708 raw-only opaque with zero decoded facts. No count is inferred from trailing words. Model 708 does not infer a relationship to Models 707, 709, or 710. Every Model 708 field, including `Ena`, `AdptCrvReq`, and repeated `Crv.ReadOnly`, is observed state only and is `NO_SEND`.
+
+No Model 708 field creates a write method, send authority, operation admission,
 dispatch, retry, control behavior, runtime activation, vendor activation,
 catalog activation, transport behavior, gateway behavior, or live I/O.
 

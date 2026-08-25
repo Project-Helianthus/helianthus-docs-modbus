@@ -61,7 +61,7 @@ check_sunspec_v2_contract() {
   grep -Fq 'Common Model 1 length 65 is a V1 compatibility tuple and' "$document"
   grep -Fq 'remains opaque under V2.' "$document"
   grep -Fq 'Models 701, 702, 703,' "$document"
-	grep -Fq '708, 713, 714, 715, 802, 803, 804, 805, 806, and 807' "$document"
+	grep -Fq '708, 713, 714, 715, 802, 803, 804, 805, 806, 807, 808, and 809.' "$document"
   grep -Fq '| 1 | 66 | Common device information |' "$document"
   grep -Fq '| 701 | 153 | DER AC measurement |' "$document"
   grep -Fq '| 702 | 50 | DER capacity |' "$document"
