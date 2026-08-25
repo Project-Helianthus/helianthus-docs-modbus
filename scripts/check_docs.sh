@@ -265,7 +265,7 @@ check_sunspec_nested_layout_contract() {
 
 check_sunspec_der_trip_lv_template_v2() {
   local document="$1"
-  local contradiction='decoder|catalog|admission|support|runtime|Model 708|Model 709'
+  local contradiction='decoder|catalog|admission|support|runtime|(^|[^0-9])708([^0-9]|$)|(^|[^0-9])709([^0-9]|$)'
 
   check_public_protocol "$document"
   for heading in \

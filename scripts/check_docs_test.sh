@@ -97,7 +97,8 @@ for mutation in \
   's/L <= 65534/L <= 65535/' \
   's/Invalid geometry remains raw-only with zero typed facts/Invalid geometry emits partial typed facts/' \
   's/Every field is observed state only and is `NO_SEND`/Every field creates a write operation/' \
-  's/Model 707/Model 708/'; do
+  's/Model 707/Model 708/' \
+  's/does not create live acquisition or operational behavior/does not create live acquisition; 708 uses this template/'; do
   sed "$mutation" "$der_trip_lv_template_document" > "$der_trip_lv_template_fixture"
   if "$repo_root/scripts/check_docs.sh" --check-sunspec-der-trip-lv-template-v2 "$der_trip_lv_template_fixture"; then
     echo "SunSpec Model 707 template mutation was accepted: $mutation" >&2
