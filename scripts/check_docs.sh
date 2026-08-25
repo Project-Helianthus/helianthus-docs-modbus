@@ -533,7 +533,7 @@ check_outback_axs_contract() {
   grep -Fq 'all read/write or write-only fields are excluded from output. They are `NO_SEND`.' "$document"
   grep -Fq 'No function in this contract writes a register' "$document"
   grep -Fq 'does not identify a network endpoint, unit identifier, installation,' "$document"
-  if grep -Ein 'write method is enabled|automatic acquisition is enabled|runtime activation is enabled|generic inverter profile|control capability is derived' "$document"; then
+  if grep -Ein 'write method is enabled|automatic acquisition is enabled|runtime activation is enabled|converts an OutBack device into a generic inverter profile|control capability is derived' "$document"; then
     echo 'OutBack AXS protocol specification exceeds the read-only boundary' >&2
     return 1
   fi

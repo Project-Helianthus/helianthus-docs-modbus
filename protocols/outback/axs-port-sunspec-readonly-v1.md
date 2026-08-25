@@ -41,8 +41,7 @@ contract does not create inferred labels.
 ## Excluded fields and operations
 
 Network settings, device addresses, hardware addresses, credentials, passwords,
-mail settings, time settings, logging controls, configuration values, and all
-read/write or write-only fields are excluded from output. They are `NO_SEND`.
+mail settings, time settings, logging controls, configuration values, and all read/write or write-only fields are excluded from output. They are `NO_SEND`.
 
 No function in this contract writes a register, clears a log, changes a device
 setting, requests a control action, or derives a control capability. A read-only
