@@ -24,10 +24,11 @@ check_public_protocol() {
 check_x2_publication() {
   local document="$1"
   local bare_revision='(^|[^[:xdigit:]])[[:xdigit:]]{40}([^[:xdigit:]]|$)|(^|[^[:xdigit:]])[[:xdigit:]]{64}([^[:xdigit:]]|$)'
+  local private_endpoint='([0-9]{1,3}\.){3}[0-9]{1,3}|([[:alnum:]][[:alnum:].-]*):([0-9]{1,5}|[[:alpha:]][[:alnum:].-]*)|[Pp]ort[[:space:]]+[0-9]{1,5}'
 
   check_public_protocol "$document"
-  if grep -Ein "$bare_revision" "$document"; then
-    echo 'X2 protocol specification contains a bare source revision' >&2
+  if grep -Ein "$bare_revision|$private_endpoint" "$document"; then
+    echo 'X2 protocol specification contains a bare revision or private endpoint' >&2
     return 1
   fi
 }

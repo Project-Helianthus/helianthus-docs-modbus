@@ -38,6 +38,9 @@ for leak in \
   'https://example.invalid/vendor-manual' \
   '/Users/example/private-capture' \
   'sha256-deadbeef01234567' \
+  'gateway.example.internal:1502' \
+  '192.0.2.1' \
+  'port 1502' \
   '0123456789abcdef0123456789abcdef01234567' \
   '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef'; do
   cp "$x2_document" "$x2_fixture"
