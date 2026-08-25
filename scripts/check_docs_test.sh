@@ -55,7 +55,15 @@ for mutation in \
   's/count, ordered numeric field-number and wire-type entries, and payload digest/count and field names/' \
   's/`outbound_allowed` value is always `false`/`outbound_allowed` value may be `true`/' \
   's/an unavailable result with no summary data/a successful summary result/' \
-  's/exposes raw bytes, values, field names/exposes raw bytes and values/'; do
+  's/exposes raw bytes, values, field names/exposes raw bytes and values/' \
+  's/one qualified operation/two qualified operations/' \
+  's/`wc3_24_44_3` operation version/any operation version/' \
+  's/missing replay-safe declaration, or unknown response shape must cause no send/missing replay-safe declaration may send/' \
+  's/exactly `04 32 02 0a 00`/any FC100 PDU/' \
+  's/is an FC100 intermediate/is a successful terminal/' \
+  's/identifiers, and raw bytes are not projected/identifiers and raw bytes are projected/' \
+  's/must fail closed as a redacted operation failure/may be decoded as vitals/' \
+  's/does not claim that the responder has no/claims that the responder has no/'; do
   sed "$mutation" "$tesla_document" > "$tesla_fixture"
   if "$repo_root/scripts/check_docs.sh" --check-tesla-tedapi-contract "$tesla_fixture"; then
     echo "Tesla replay metadata mutation was accepted: $mutation" >&2

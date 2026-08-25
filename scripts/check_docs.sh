@@ -59,6 +59,16 @@ check_tesla_tedapi_contract() {
   grep -Fq 'Its `outbound_allowed` value is always `false`.' "$document"
   grep -Fq 'summary produces an unavailable result with no summary data.' "$document"
   grep -Fq 'exposes raw bytes, values, field names, operation identity, capability, request' "$document"
+  grep -Fqx '### Qualified WC vitals operation' "$document"
+  grep -Fq 'This version defines one qualified operation: `tesla.hsc.fc100.wc_vitals.v1`.' "$document"
+  grep -Fq '`tesla_hsc_modbus_v1` profile and the `wc3_24_44_3` operation version.' "$document"
+  grep -Fq 'missing replay-safe declaration, or unknown response shape must cause no send.' "$document"
+  grep -Fq 'nested request message is exactly `32 02 0a 00`; therefore its FC100 PDU is' "$document"
+  grep -Fq 'exactly `04 32 02 0a 00`.' "$document"
+  grep -Fq 'An echoed PDU exactly equal to this request PDU is an FC100 intermediate.' "$document"
+  grep -Fq 'names, units, identifiers, and raw bytes are not projected by this version;' "$document"
+  grep -Fq 'vitals result and must fail closed as a redacted operation failure.' "$document"
+  grep -Fq 'Semantic read-only classification does not claim that the responder has no' "$document"
   if grep -Ein "$forbidden" "$document"; then
     echo 'normative Tesla specification contains forbidden provenance material' >&2
     return 1
