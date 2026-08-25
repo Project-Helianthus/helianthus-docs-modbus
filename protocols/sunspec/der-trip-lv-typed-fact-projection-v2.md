@@ -12,10 +12,10 @@ device support claim, acquisition behavior, or live-system behavior.
 
 ## Public offline projection API
 
-`ProjectSunSpecStructuralFacts(snapshot)` returns zero or more immutable
-`SunSpecStructuralProjection` records. It is a separately invoked, offline
-projection query; it neither extends nor changes `DecodeOccurrence` or
-`DecodeChain`.
+`ProjectSunSpecStructuralFacts(snapshot SunSpecChainSnapshot)` accepts exactly one immutable
+`SunSpecChainSnapshot` and returns zero or more immutable `SunSpecStructuralProjection` records.
+It is a separately invoked, offline projection query; it neither extends nor
+changes `DecodeOccurrence` or `DecodeChain`.
 
 Each record provides `WireKey()`, `SchemaRevision()`, `Ordinal()`, `RawWords()`,
 `SourceSpans()`, and `Facts()`. Getter results are detached copies. It has no `DecoderKey()`, admission, qualification, topology, or
@@ -25,6 +25,10 @@ Only a complete V2 Model 707 `structural_candidate` may produce a projection.
 The candidate remains a post-payload classifier: it does not itself admit a
 decoder or emit a fact. Candidate absence or malformed structural geometry produces no projection and zero facts.
 The projection query does not modify an occurrence, chain snapshot, or qualification-observation JSON.
+
+It must not accept or derive a projection from `SunSpecDecodedChain` or
+`SunSpecQualificationObservation`. It must not recompute structural state from a wire key, words, spans, or
+declared length; it uses only the retained private candidate sidecar.
 
 Repeated Model 707 occurrences produce independent projections. V1, Model 708, and Model 709 produce no projection.
 The projection query does not change acquisition, queueing, retry, deadline, limit, or terminal behavior.
