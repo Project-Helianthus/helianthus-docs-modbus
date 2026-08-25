@@ -258,7 +258,8 @@ done
 
 private_required=(
   'Scope and non-goals' 'Selection and ownership' 'Transport exchange'
-  'Function-code isolation' 'Ambiguity and no-send'
+  'Function-code isolation' 'Standard and private function boundary'
+  'Ambiguity and no-send'
   'Response correlation and exceptions' 'RTU serialization'
   'Validation and compatibility'
 )
