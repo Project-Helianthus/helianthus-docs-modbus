@@ -45,9 +45,9 @@ The bounded V2 scope contains Common Model 1 and Models 701, 702, 703, 707, 708,
 | 701 | 153 | DER AC measurement |
 | 702 | 50 | DER capacity |
 | 703 | 17 | DER enter-service observed state |
-| 707 | `7 + NCrvSet` | DER Trip LV observed state with repeated curve observations |
-| 708 | `7 + NCrvSet` | DER Trip HV observed state with repeated curve observations |
-| 709 | `7 + NCrvSet` | DER Trip LF observed state with repeated curve observations |
+| 707 | `7 + NCrvSet*(4 + 9*NPt)` | DER Trip LV nested geometry, raw-only quarantine |
+| 708 | `7 + NCrvSet*(4 + 9*NPt)` | DER Trip HV nested geometry, raw-only quarantine |
+| 709 | `7 + NCrvSet*(4 + 12*NPt)` | DER Trip LF nested geometry, raw-only quarantine |
 | 713 | 7 | DER storage capacity |
 | 714 | `18 + 25*NPrt` | DER DC measurement with repeated ports |
 | 715 | 7 | DER controller observed state |
@@ -76,41 +76,65 @@ No point in either model creates a write method, send authority, operation admis
 dispatch, retry, runtime activation, vendor activation, or catalog activation.
 Models 704 through 706 and 710 through 712 remain outside this V2 wave and remain opaque.
 
-## DER Trip LV geometry
+## DER Trip nested geometry
 
-Model 707 has data-register length `7 + NCrvSet`. `NCrvSet` is at payload-register offset 4 and absolute model word 6. The source-schema length permits a non-sentinel count from 0 through 65528. Zero is a valid zero-curve observation. Each repeated `Crv` observation consumes exactly 1 data register.
+Models 707, 708, and 709 each have two header words followed by seven top-level
+data words: `Ena`, `AdptCrvReq`, `AdptCrvRslt`, `NPt`, `NCrvSet`, a
+model-specific scale factor, and `Tms_SF`. `NPt` is at payload-register offset
+3 and absolute model word 5. `NCrvSet` is at payload-register offset 4 and
+absolute model word 6.
 
-The maximum source-schema count occupies 65,537 total model words including the header. It exceeds the current 65,536-word isolated offline extent boundary, so it remains raw-only opaque with zero decoded facts pending a separately reviewed aggregate-extent contract. No decoder infers a smaller count from trailing words.
+Let `P` equal `NPt` and `C` equal `NCrvSet`. Their formal non-sentinel domains
+are each 0 through 65534; zero is valid. Every `Crv[i]` contains `ReadOnly`,
+then `MustTrip`, `MayTrip`, and `MomCess`. Each of those nested curves contains
+`ActPt`, followed by `Pt[1..P]`. The exact point spans and declared
+data-register-length formula are model-specific below.
 
-An unavailable sentinel, missing count, overflow, declared length mismatch, or partial repeated group makes Model 707 raw-only opaque with zero decoded facts. No count is inferred from trailing words. Model 707 does not infer a relationship to Models 708 through 710. Every Model 707 field, including `Ena`, `AdptCrvReq`, and repeated `Crv.ReadOnly`, is observed state only and is `NO_SEND`.
+`Crv[i].MustTrip.Pt[j]`, `Crv[i].MayTrip.Pt[j]`, and
+`Crv[i].MomCess.Pt[j]` are distinct nested paths. An implementation must retain
+their exact occurrence-relative offsets; it must not infer `P` or `C` from
+`L`, `ActPt`, or trailing words. A missing or unavailable count, arithmetic
+overflow, a length that does not fit `uint16`, a length that exceeds the current
+isolated offline extent boundary, a declared-length mismatch, or a partial
+nested group is raw-only opaque with zero decoded facts.
 
-No Model 707 field creates a write method, send authority, operation admission,
+For a model-specific point span `S`, the zero-based payload offset of
+`Crv[i]` is `7 + (i-1)*(4 + 3*S*P)`. `ReadOnly` is at that offset;
+`MustTrip.ActPt`, `MayTrip.ActPt`, and `MomCess.ActPt` are respectively at
+offsets `+1`, `+2 + S*P`, and `+3 + 2*S*P`. Within each nested curve,
+`Pt[j]` begins one data register after `ActPt` plus `(j-1)*S`.
+
+Models 707, 708, and 709 are inventory-known raw-only quarantine blocks. A
+separate occurrence-aware nested-layout contract is required before any typed
+facts may be emitted. They do not infer relationships to one another or to
+Models 710 through 712.
+
+Every field in Models 707, 708, and 709, including `Ena`, `AdptCrvReq`,
+`ReadOnly`, `ActPt`, and every nested point, is observed state only and is
+`NO_SEND`. No field creates a write method, send authority, operation admission,
 dispatch, retry, control behavior, runtime activation, vendor activation,
 catalog activation, transport behavior, gateway behavior, or live I/O.
 
-## DER Trip HV geometry
+## DER Trip model-specific observed fields
 
-Model 708 has data-register length `7 + NCrvSet`. `NCrvSet` is at payload-register offset 4 and absolute model word 6. The source-schema length permits a non-sentinel count from 0 through 65528. Zero is a valid zero-curve observation. Each repeated `Crv` observation consumes exactly 1 data register.
+Model 707 has `V_SF` and `Tms_SF`. Every nested `Pt[j]` is `V:uint16` scaled by
+`V_SF` followed by `Tms:uint32` scaled by `Tms_SF`, consuming three data
+registers. Its exact declared data-register length is
+`L = 7 + C*(4 + 9*P)`.
 
-The maximum source-schema count occupies 65,537 total model words including the header. It exceeds the current 65,536-word isolated offline extent boundary, so it remains raw-only opaque with zero decoded facts pending a separately reviewed aggregate-extent contract. No decoder infers a smaller count from trailing words.
+Model 708 has the same source-derived point spans as Model 707:
+`V:uint16` scaled by `V_SF` followed by `Tms:uint32` scaled by `Tms_SF`,
+consuming three data registers per `Pt[j]`. Its exact declared data-register
+length is `L = 7 + C*(4 + 9*P)`.
 
-An unavailable sentinel, missing count, overflow, declared length mismatch, or partial repeated group makes Model 708 raw-only opaque with zero decoded facts. No count is inferred from trailing words. Model 708 does not infer a relationship to Models 707, 709, or 710. Every Model 708 field, including `Ena`, `AdptCrvReq`, and repeated `Crv.ReadOnly`, is observed state only and is `NO_SEND`.
+Model 709 has `Hz_SF` and `Tms_SF`. Every nested `Pt[j]` is `Hz:uint32` scaled
+by `Hz_SF` followed by `Tms:uint32` scaled by `Tms_SF`, consuming four data
+registers. Its exact declared data-register length is
+`L = 7 + C*(4 + 12*P)`.
 
-No Model 708 field creates a write method, send authority, operation admission,
-dispatch, retry, control behavior, runtime activation, vendor activation,
-catalog activation, transport behavior, gateway behavior, or live I/O.
-
-## DER Trip LF geometry
-
-Model 709 has data-register length `7 + NCrvSet`. `NCrvSet` is at payload-register offset 4 and absolute model word 6. The source-schema length permits a non-sentinel count from 0 through 65528. Zero is a valid zero-curve observation. Each repeated `Crv` observation consumes exactly 1 data register. Model 709 retains `Hz_SF` and `Tms_SF` as observed scale-factor fields.
-
-The maximum source-schema count occupies 65,537 total model words including the header. It exceeds the current 65,536-word isolated offline extent boundary, so it remains raw-only opaque with zero decoded facts pending a separately reviewed aggregate-extent contract. No decoder infers a smaller count from trailing words.
-
-An unavailable sentinel, missing count, overflow, declared length mismatch, or partial repeated group makes Model 709 raw-only opaque with zero decoded facts. No count is inferred from trailing words. Model 709 does not infer a relationship to Models 707, 708, or 710. Every Model 709 field, including `Ena`, `AdptCrvReq`, and repeated `Crv.ReadOnly`, is observed state only and is `NO_SEND`.
-
-No Model 709 field creates a write method, send authority, operation admission,
-dispatch, retry, control behavior, runtime activation, vendor activation,
-catalog activation, transport behavior, gateway behavior, or live I/O.
+For Models 707 and 708, `S` is 3; for Model 709, `S` is 4. These type, span,
+scale-factor, and offset differences do not authorize a decoder, product
+profile, or control operation.
 
 ## BESS base observed-state boundary
 

@@ -72,9 +72,9 @@ done
 for mutation in \
   's/| 701 | 153 |/| 701 | 152 |/' \
 	's/| 703 | 17 |/| 703 | 18 |/' \
-	's/| 707 | `7 + NCrvSet` |/| 707 | `8 + NCrvSet` |/' \
-	's/| 708 | `7 + NCrvSet` |/| 708 | `8 + NCrvSet` |/' \
-	's/| 709 | `7 + NCrvSet` |/| 709 | `8 + NCrvSet` |/' \
+	's/| 707 | `7 + NCrvSet\*(4 + 9\*NPt)` |/| 707 | `8 + NCrvSet*(4 + 9*NPt)` |/' \
+	's/| 708 | `7 + NCrvSet\*(4 + 9\*NPt)` |/| 708 | `8 + NCrvSet*(4 + 9*NPt)` |/' \
+	's/| 709 | `7 + NCrvSet\*(4 + 12\*NPt)` |/| 709 | `8 + NCrvSet*(4 + 12*NPt)` |/' \
 	's/| 715 | 7 |/| 715 | 8 |/' \
 	's/| 802 | 62 |/| 802 | 61 |/' \
 	's/| 803 | `26 + 32\*NStr` |/| 803 | `26 + 31*NStr` |/' \
@@ -87,24 +87,20 @@ for mutation in \
 	's/18 + 25\*NPrt/18 + 24*NPrt/g' \
   's/Models 703 and 715 are control-observability only/Models 703 and 715 create operations/' \
 	's/Models 704 through 706 and 710 through 712 remain outside this V2 wave and remain opaque/Models 704 through 712 are decoded/' \
-	's/Model 707 has data-register length `7 + NCrvSet`/Model 707 has fixed length 7/' \
-	's/`NCrvSet` is at payload-register offset 4 and absolute model word 6/`NCrvSet` is at payload-register offset 5/' \
-	's/non-sentinel count from 0 through 65528/non-sentinel count from 0 through 65527/' \
-	's/Each repeated `Crv` observation consumes exactly 1 data register/Each repeated `Crv` observation consumes exactly 2 data registers/' \
-	's/current 65,536-word isolated offline extent boundary/current 65,535-word isolated offline extent boundary/' \
-	's/partial repeated group makes Model 707 raw-only opaque with zero decoded facts/partial repeated group permits facts/' \
-	's/Model 707 does not infer a relationship to Models 708 through 710/Model 707 infers a relationship to Model 708/' \
-	's/Every Model 707 field, including `Ena`, `AdptCrvReq`, and repeated `Crv.ReadOnly`, is observed state only and is `NO_SEND`/Model 707 fields permit sends/' \
-	's/No Model 707 field creates a write method, send authority, operation admission,/Model 707 creates an operation admission,/' \
-	's/Model 708 has data-register length `7 + NCrvSet`/Model 708 has fixed length 7/' \
-	's/Model 708 does not infer a relationship to Models 707, 709, or 710/Model 708 infers a relationship to Model 707/' \
-	's/Every Model 708 field, including `Ena`, `AdptCrvReq`, and repeated `Crv.ReadOnly`, is observed state only and is `NO_SEND`/Model 708 fields permit sends/' \
-	's/No Model 708 field creates a write method, send authority, operation admission,/Model 708 creates an operation admission,/' \
-	's/Model 709 has data-register length `7 + NCrvSet`/Model 709 has fixed length 7/' \
-	's/Model 709 retains `Hz_SF` and `Tms_SF` as observed scale-factor fields/Model 709 retains `V_SF` and `Tms_SF` as observed scale-factor fields/' \
-	's/Model 709 does not infer a relationship to Models 707, 708, or 710/Model 709 infers a relationship to Model 708/' \
-	's/Every Model 709 field, including `Ena`, `AdptCrvReq`, and repeated `Crv.ReadOnly`, is observed state only and is `NO_SEND`/Model 709 fields permit sends/' \
-	's/No Model 709 field creates a write method, send authority, operation admission,/Model 709 creates an operation admission,/' \
+	's/`L = 7 + C\*(4 + 9\*P)`/`L = 7 + C*(4 + 8*P)`/' \
+	's/`L = 7 + C\*(4 + 12\*P)`/`L = 7 + C*(4 + 11*P)`/' \
+	's/absolute model word 6/absolute model word 7/' \
+	's/are each 0 through 65534; zero is valid/are each 0 through 65535; zero is invalid/' \
+	's/`Crv\[i\]\.MomCess\.Pt\[j\]` are distinct nested paths/`Crv[i].MomCess.Pt[j]` is inferred from MustTrip/' \
+	's/must not infer `P` or `C` from/may infer `P` or `C` from/' \
+	's/`Crv\[i\]` is `7 + (i-1)\*(4 + 3\*S\*P)`/`Crv[i]` is inferred from trailing words/' \
+	's/offsets `+1`, `+2 + S\*P`, and `+3 + 2\*S\*P`/offsets are implementation-defined/' \
+	's/For Models 707 and 708, `S` is 3; for Model 709, `S` is 4/Every model uses `S` 3/' \
+	's/Models 707, 708, and 709 are inventory-known raw-only quarantine blocks/Models 707, 708, and 709 emit typed facts/' \
+	's/Every field in Models 707, 708, and 709, including `Ena`, `AdptCrvReq`,/Models 707, 708, and 709 permit sends, including `Ena`,/' \
+	's/Model 707 has `V_SF` and `Tms_SF`/Model 707 has `Hz_SF` and `Tms_SF`/' \
+	's/Model 708 has the same source-derived point spans as Model 707/Model 708 infers its point spans from Model 707/' \
+	's/Model 709 has `Hz_SF` and `Tms_SF`/Model 709 has `V_SF` and `Tms_SF`/' \
 	's/Every Model 802 field is observed state only and is `NO_SEND`/Model 802 fields permit sends/' \
 	's/Model 801 remains excluded as deprecated/Model 801 is admitted/' \
 	's/Models 806 through 809 remain separately bounded flow battery structural leaves/Models 806 through 809 are interchangeable/' \
