@@ -111,13 +111,11 @@ are permitted. This byte sequence is an operation descriptor, not an endpoint
 probe or a transmission instruction.
 
 An echoed PDU exactly equal to this request PDU is an FC100 intermediate. A
-successful terminal PDU has one bounded nested message with the WC-message
-response selection and one bounded vitals snapshot member. Its values, field
-names, units, identifiers, and raw bytes are not projected by this version; a
-decoder may retain only its bounded length, digest, and structural replay
-metadata. A normal terminal PDU that does not match this success shape is not a
-vitals result and must fail closed as a redacted operation failure. The generic
-exception-response rules remain separate.
+successful terminal PDU selects one bounded WC-message response tag `2`. The
+tag-`2` body is a bounded opaque terminal body. This version defines no member,
+field number, wire type, scalar, enum, repeated value, unit, scale, range, or
+field-presence contract within that body. Its values, field names, units, identifiers, and raw bytes are not projected by this version; a decoder may retain only terminal-tag presence, terminal-body length, digest, and structural replay metadata. An omitted inner value must not be interpreted as a scalar
+zero, an empty repeated value, or an empty nested member. A normal terminal PDU that does not match this success shape is not a vitals result and must fail closed as a redacted operation failure. The generic exception-response rules remain separate.
 
 Semantic read-only classification does not claim that the responder has no
 ephemeral transport-side effects. It grants no configuration, control, pairing,
@@ -277,6 +275,7 @@ FC102 empty request: 10 66 00 5b a5
 FC100 exception status 1: 10 e4 01 fa c5
 FC101 exception status 4: 10 e5 04 3b 56
 FC102 exception status 4: 10 e6 04 3b a6
+FC100 qualified terminal with synthetic opaque body: 10 64 06 32 04 12 02 08 01 31 81
 
 FC100 missing prefix: 10 64 0d 9b
 FC100 trailing byte: 10 64 00 00 45 3b
