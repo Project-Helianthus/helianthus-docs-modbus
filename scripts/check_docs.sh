@@ -75,7 +75,8 @@ check_tesla_tedapi_contract() {
   grep -Fq 'always `false`. An unavailable or invalid provider result produces no data.' "$document"
   grep -Fq 'opens a serial endpoint, invokes a generic' "$document"
   grep -Fq 'transport exchange, or falls back to FC101 or FC102.' "$document"
-  grep -Fq 'no raw bytes, snapshot values, field names, identifiers, control meaning, or runtime' "$document"
+  grep -Fq 'transport exchange, or falls back to FC101 or FC102. It exposes no raw bytes,' "$document"
+  grep -Fq 'snapshot values, field names, identifiers, control meaning, or runtime' "$document"
   if grep -Ein "$forbidden" "$document"; then
     echo 'normative Tesla specification contains forbidden provenance material' >&2
     return 1

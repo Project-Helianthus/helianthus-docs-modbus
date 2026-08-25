@@ -69,7 +69,7 @@ for mutation in \
   's/produces no data/produces successful data/' \
   's/invokes a generic/invokes a live/' \
   's/falls back to FC101 or FC102/falls back to FC100/' \
-  's/no raw bytes, snapshot values/no raw bytes but snapshot values/'; do
+  's/It exposes no raw bytes,/It exposes no values,/'; do
   sed "$mutation" "$tesla_document" > "$tesla_fixture"
   if "$repo_root/scripts/check_docs.sh" --check-tesla-tedapi-contract "$tesla_fixture"; then
     echo "Tesla replay metadata mutation was accepted: $mutation" >&2
