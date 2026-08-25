@@ -92,6 +92,11 @@ offset 1. It is bounded from 0 through 4093 so the computed length remains
 representable by the 16-bit model-length field. Each repeated module consumes
 exactly 16 data registers.
 
+At NMod=4093, Model 804 has declared data-register length 65534 and occupies 65536 words including header.
+The maximum is valid only for an isolated synthetic offline occurrence.
+It must not be used as a terminal-qualified live chain or acquisition map.
+Maximum provenance retains fragmented bounded source spans whose cumulative extent is exactly 65536 words.
+
 For either model, an unavailable sentinel, missing count, overflow, declared
 length mismatch, partial repeated group, or source-span extent overrun makes the
 block raw-only opaque with zero decoded facts. No count is inferred from trailing

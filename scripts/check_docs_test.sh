@@ -87,6 +87,8 @@ for mutation in \
 	's/Model 803 does not infer Model 804 child occurrences/Model 803 infers Model 804 child occurrences/' \
 	's/offset 1\. It is bounded/offset 0. It is bounded/' \
 	's/bounded from 0 through 4093/bounded from 0 through 4094/' \
+	's/isolated synthetic offline occurrence/terminal-qualified live chain/' \
+	's/fragmented bounded source spans/one unbounded source span/' \
 	's/Model 804 does not infer a Model 803 parent/Model 804 infers a Model 803 parent/' \
 	's/zero decoded facts/decoded best-effort facts/' \
   's/0 through 2620/0 through 2621/' \
