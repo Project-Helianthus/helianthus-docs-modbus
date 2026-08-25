@@ -2,14 +2,32 @@
 
 ## Scope and non-emission
 
-This page defines the stable typed-fact names and value rules that a separately
-reviewed, offline-only implementation may use for exactly Model 707 under
-`sunspec.models@90b4a331-v2`. It does not change the current raw-only behavior,
-create a typed fact, select a model, or authorize a profile.
+This page defines the stable typed-fact names, value rules, and public offline
+projection API that a separately reviewed implementation may use for exactly
+Model 707 under `sunspec.models@90b4a331-v2`. It does not change the current raw-only behavior, select a model, or authorize a profile.
 
 Every observation in this contract is `NO_SEND`, including fields whose wire
 access permits modification. This contract creates no operation, write method,
 device support claim, acquisition behavior, or live-system behavior.
+
+## Public offline projection API
+
+`ProjectSunSpecStructuralFacts(snapshot)` returns zero or more immutable
+`SunSpecStructuralProjection` records. It is a separately invoked, offline
+projection query; it neither extends nor changes `DecodeOccurrence` or
+`DecodeChain`.
+
+Each record provides `WireKey()`, `SchemaRevision()`, `Ordinal()`, `RawWords()`,
+`SourceSpans()`, and `Facts()`. Getter results are detached copies. It has no `DecoderKey()`, admission, qualification, topology, or
+`SunSpecDecodedChain` identity. A projection is therefore neither a decoder selection nor a profile, capability, or product result.
+
+Only a complete V2 Model 707 `structural_candidate` may produce a projection.
+The candidate remains a post-payload classifier: it does not itself admit a
+decoder or emit a fact. Candidate absence or malformed structural geometry produces no projection and zero facts.
+The projection query does not modify an occurrence, chain snapshot, or qualification-observation JSON.
+
+Repeated Model 707 occurrences produce independent projections. V1, Model 708, and Model 709 produce no projection.
+The projection query does not change acquisition, queueing, retry, deadline, limit, or terminal behavior.
 
 ## Stable identity and nested paths
 
@@ -51,9 +69,9 @@ declared length, available counts, and exact geometry must validate before any
 typed fact exists. They are not a profile qualification signal.
 
 For a valid occurrence, every listed template field is an observed fact with
-`Required=false`. A non-structural unavailable or invalid value remains an
-observed raw value with its state; it is not replaced with a default and does
-not establish capability or operation authority.
+`Required=false`. A non-structural unavailable or invalid value remains a raw
+fact with its observation state; it is not replaced with a default and does not
+establish capability or operation authority.
 
 `NPt` and `NCrvSet` accept zero and reject `0xffff` as unavailable. A count
 sentinel, count/length mismatch, arithmetic overflow, partial group, or source
@@ -73,7 +91,7 @@ enum number remains its numeric observation with no substituted symbol.
 For unsigned scalar types, an all-ones wire value is not implemented. It does
 not become a signed value, a zero, or a default. `V_SF` and `Tms_SF` are
 `sunssf` observations. A missing scale binding, unavailable scale, or invalid
-scale leaves the dependent raw observation intact but produces no scaled value.
+scale leaves the dependent raw fact intact but produces no scaled value.
 
 ## Geometry, provenance, and isolation
 
