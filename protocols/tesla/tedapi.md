@@ -115,10 +115,7 @@ successful terminal PDU selects one bounded WC-message response tag `2`. The
 tag-`2` body is a bounded opaque terminal body. This version defines no member,
 field number, wire type, scalar, enum, repeated value, unit, scale, range, or
 field-presence contract within that body. Its values, field names, units, identifiers, and raw bytes are not projected by this version; a decoder may retain only terminal-tag presence, terminal-body length, digest, and structural replay metadata. An omitted inner value must not be interpreted as a scalar
-zero, an empty repeated value, or an empty nested member. A normal terminal PDU
-that does not match this success shape is not a vitals result and must fail
-closed as a redacted operation failure. The generic exception-response rules
-remain separate.
+zero, an empty repeated value, or an empty nested member. A normal terminal PDU that does not match this success shape is not a vitals result and must fail closed as a redacted operation failure. The generic exception-response rules remain separate.
 
 Semantic read-only classification does not claim that the responder has no
 ephemeral transport-side effects. It grants no configuration, control, pairing,
