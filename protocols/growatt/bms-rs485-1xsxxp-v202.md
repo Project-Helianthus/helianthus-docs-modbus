@@ -36,8 +36,9 @@ CRC16 wire order. A 200 millisecond response interval is the documented
 protocol expectation; an implementation still requires an explicit bounded
 operation deadline and must not retry by widening the request.
 
-Only unit addresses 1 through 247 are response-bearing candidates. Unit 0 is
-broadcast and is always `NO_SEND`. A unit is selected explicitly; there is no
+Only unit addresses 1 through 247 are response-bearing candidates.
+Unit 0 is broadcast and is always `NO_SEND`.
+A unit is selected explicitly; there is no
 unit scan, first-response selection, address fallback, or inferred default.
 One request is in flight on one RTU session at a time.
 

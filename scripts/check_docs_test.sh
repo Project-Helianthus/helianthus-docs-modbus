@@ -38,8 +38,15 @@ done
 for mutation in \
   's/1xSxxP ESS/any Growatt battery/' \
   's/Rev2\.01/Rev2.xx/' \
+  's/V2\.0/V2.1/' \
   's/revision `2\.02`/revision `2.03`/' \
+  's/Unit 0 is broadcast and is always `NO_SEND`/Unit 0 is unicast and is always permitted/' \
   's/function is FC03/function is FC10/' \
+  's/offset 0x0001, quantity 7/offset 0x0001, quantity 9/' \
+  's/offset 0x000D, quantity 29/offset 0x000D, quantity 30/' \
+  's/offset 0x0100, quantity 12/offset 0x0100, quantity 13/' \
+  's/offset 0x010D, quantity 2/offset 0x010D, quantity 3/' \
+  's/extension slices remain opaque words/extension slices are decoded telemetry/' \
   's/are not read/are read when needed/' \
   's/FC10 Preset Multiple Registers/FC10 Read Multiple Registers/' \
   's/W or WR are unconditional `NO_SEND`/W or WR require operator approval/' \
