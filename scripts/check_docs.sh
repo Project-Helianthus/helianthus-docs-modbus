@@ -292,6 +292,47 @@ check_sunspec_der_trip_lv_template_v2() {
   fi
 }
 
+check_sunspec_der_trip_lv_typed_fact_projection_v2() {
+  local document="$1"
+  local contradiction='creates a typed fact|selects a model|authorizes a profile|permits sends|writes to a device|creates an operation|creates live-system behavior|Model 708|Model 709'
+
+  check_public_protocol "$document"
+  for heading in \
+    'Scope and non-emission' \
+    'Stable identity and nested paths' \
+    'Requiredness and observation state' \
+    'Types, units, and symbols' \
+    'Geometry, provenance, and isolation'; do
+    grep -Fqx "## $heading" "$document"
+  done
+  grep -Fq 'It does not change the current raw-only behavior,' "$document"
+  grep -Fq 'Every observation in this contract is `NO_SEND`' "$document"
+  grep -Fq 'A FieldID names a field template and never embeds an occurrence, curve, or' "$document"
+  grep -Fq '`sunspec.der.v2.707.Crv.MustTrip.Pt.V` and' "$document"
+  grep -Fq '`Crv[i].MustTrip.Pt[j].V` and `Crv[i].MustTrip.Pt[j].Tms`.' "$document"
+  grep -Fq '`sunspec.der.v2.707.Crv.MayTrip.Pt.V` and' "$document"
+  grep -Fq '`Crv[i].MayTrip.Pt[j].V` and `Crv[i].MayTrip.Pt[j].Tms`.' "$document"
+  grep -Fq '`sunspec.der.v2.707.Crv.MomCess.Pt.V` and' "$document"
+  grep -Fq '`Crv[i].MomCess.Pt[j].V` and `Crv[i].MomCess.Pt[j].Tms`.' "$document"
+  grep -Fq 'For a valid occurrence, every listed template field is an observed fact with' "$document"
+  grep -Fq '`Required=false`.' "$document"
+  grep -Fq '`NPt` and `NCrvSet` accept zero and reject `0xffff` as unavailable.' "$document"
+  grep -Fq 'makes the entire occurrence raw-only with zero typed facts.' "$document"
+  grep -Fq 'A nested `V` has unit' "$document"
+  grep -Fq '`VNomPct`; a nested `Tms` has unit `Secs`.' "$document"
+  grep -Fq '`Ena`: `0=DISABLED`, `1=ENABLED`; `AdptCrvRslt`: `0=IN_PROGRESS`,' "$document"
+  grep -Fq 'An otherwise valid' "$document"
+  grep -Fq 'enum number remains its numeric observation with no substituted symbol.' "$document"
+  grep -Fq 'A missing scale binding, unavailable scale, or invalid' "$document"
+  grep -Fq 'but produces no scaled value.' "$document"
+  grep -Fq 'possibly fragmented raw source spans for that range.' "$document"
+  grep -Fq 'Malformed geometry produces zero typed facts and preserves the complete' "$document"
+  if grep -Ein "$contradiction" "$document"; then
+    echo 'SunSpec Model 707 typed-fact projection contract exceeds its docs-only boundary' >&2
+    return 1
+  fi
+}
+
 check_x2_publication() {
   local document="$1"
   local bare_revision='(^|[^[:xdigit:]])[[:xdigit:]]{40}([^[:xdigit:]]|$)|(^|[^[:xdigit:]])[[:xdigit:]]{64}([^[:xdigit:]]|$)'
@@ -415,7 +456,7 @@ check_wit_matrix_contract() {
 
 if [[ $# -gt 0 ]]; then
   if [[ $# -ne 2 ]]; then
-    echo 'usage: check_docs.sh [--check-sdongle-admission|--check-public-protocol|--check-private-function-contract|--check-sunspec-v1-model-families-contract|--check-sunspec-nested-layout-contract|--check-sunspec-der-trip-lv-template-v2|--check-sunspec-v2-contract|--check-sunspec-v2-licensing|--check-x2-publication|--check-x2-contract|--check-bms-contract|--check-wit-matrix-contract document]' >&2
+    echo 'usage: check_docs.sh [--check-sdongle-admission|--check-public-protocol|--check-private-function-contract|--check-sunspec-v1-model-families-contract|--check-sunspec-nested-layout-contract|--check-sunspec-der-trip-lv-template-v2|--check-sunspec-der-trip-lv-typed-fact-projection-v2|--check-sunspec-v2-contract|--check-sunspec-v2-licensing|--check-x2-publication|--check-x2-contract|--check-bms-contract|--check-wit-matrix-contract document]' >&2
     exit 2
   fi
   case "$1" in
@@ -425,6 +466,7 @@ if [[ $# -gt 0 ]]; then
     --check-sunspec-v1-model-families-contract) check_sunspec_v1_model_families_contract "$2" ;;
     --check-sunspec-nested-layout-contract) check_sunspec_nested_layout_contract "$2" ;;
     --check-sunspec-der-trip-lv-template-v2) check_sunspec_der_trip_lv_template_v2 "$2" ;;
+    --check-sunspec-der-trip-lv-typed-fact-projection-v2) check_sunspec_der_trip_lv_typed_fact_projection_v2 "$2" ;;
     --check-sunspec-v2-contract) check_sunspec_v2_contract "$2" ;;
     --check-sunspec-v2-licensing) check_sunspec_v2_licensing "$2" ;;
     --check-x2-publication) check_x2_publication "$2" ;;
@@ -432,7 +474,7 @@ if [[ $# -gt 0 ]]; then
     --check-bms-contract) check_bms_contract "$2" ;;
     --check-wit-matrix-contract) check_wit_matrix_contract "$2" ;;
     *)
-    echo 'usage: check_docs.sh [--check-sdongle-admission|--check-public-protocol|--check-private-function-contract|--check-sunspec-v1-model-families-contract|--check-sunspec-nested-layout-contract|--check-sunspec-der-trip-lv-template-v2|--check-sunspec-v2-contract|--check-sunspec-v2-licensing|--check-x2-publication|--check-x2-contract|--check-bms-contract|--check-wit-matrix-contract document]' >&2
+    echo 'usage: check_docs.sh [--check-sdongle-admission|--check-public-protocol|--check-private-function-contract|--check-sunspec-v1-model-families-contract|--check-sunspec-nested-layout-contract|--check-sunspec-der-trip-lv-template-v2|--check-sunspec-der-trip-lv-typed-fact-projection-v2|--check-sunspec-v2-contract|--check-sunspec-v2-licensing|--check-x2-publication|--check-x2-contract|--check-bms-contract|--check-wit-matrix-contract document]' >&2
       exit 2
       ;;
   esac
@@ -445,6 +487,8 @@ nested_layout_spec='protocols/sunspec/nested-layout-contract-v1.md'
 test -f "$nested_layout_spec"
 der_trip_lv_template_spec='protocols/sunspec/der-trip-lv-template-v2.md'
 test -f "$der_trip_lv_template_spec"
+der_trip_lv_projection_spec='protocols/sunspec/der-trip-lv-typed-fact-projection-v2.md'
+test -f "$der_trip_lv_projection_spec"
 private_spec='protocols/modbus/private-function-codes.md'
 test -f "$private_spec"
 sdongle_admission='architecture/sdongle-qualification-disposition-v1.md'
