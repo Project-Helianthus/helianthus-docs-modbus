@@ -93,6 +93,27 @@ RTU allows one in-flight exchange per endpoint. The endpoint owns frame
 separation, deadline handling, response correlation, quarantine, and recovery.
 It makes no multi-initiator arbitration guarantee.
 
+## Configured serial boundary
+
+An RTU implementation may use a configured, bidirectional serial byte stream.
+The stream is responsible only for opening the explicitly named local endpoint,
+applying its explicit serial format, reporting the monotonic receipt offset of
+each byte, writing complete framed byte sequences, and closing its own local
+resource. It must not discover endpoints, select a vendor profile, infer a
+codec from a function code, or admit an operation.
+
+Opening a serial stream makes transport available; it does not make any vendor
+operation eligible to be sent. Profile selection and operation admission remain
+preconditions at the registry boundary. A serial stream must not be exposed as
+a raw external-operation bypass.
+
+Opening or configuration failure, cancellation, short write, read failure, and
+unexpected endpoint loss are transport failures. They must preserve the
+in-flight exchange boundary: after an uncertain transmission, the endpoint
+must quarantine and recover before it accepts a successor request. A normal
+lifecycle close ends the local stream without creating a successor request or
+classifying itself as a failed exchange.
+
 ## Validation and compatibility
 
 Before send, validate endpoint identity, unit identifier, exact profile
