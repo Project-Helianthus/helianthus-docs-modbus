@@ -49,6 +49,26 @@ The registry and endpoint identity select the codec before a frame is sent or a
 normal response is decoded. Replayed frames are decoded only by the codec
 selected for their own retained operation identity.
 
+## Standard and private function boundary
+
+A function-code byte never identifies a vendor, vendor profile, or operation.
+This contract applies only after an operation has been independently classified
+as vendor-defined or private and the exact endpoint, unit identifier, profile,
+and operation selection has succeeded.
+
+FC100, FC101, and FC102 may be reused by different qualified vendor profiles.
+Their payload format and result interpretation remain selected-codec concerns;
+the byte values have no global ownership in this contract.
+
+FC0x41 is profile-qualified and is not globally reserved by this contract.
+
+FC23 is a standard Modbus function code, not a private-function operation. It
+is not covered by the raw private-function request contract.
+
+A vendor-specific allocation interpretation for FC23 requires a separately admitted standard-function operation and a typed standard-function codec.
+
+This contract makes no claim about the meaning, sendability, or allocation workflow of such an operation.
+
 ## Ambiguity and no-send
 
 If the registry has zero or more than one qualified profile for an endpoint and

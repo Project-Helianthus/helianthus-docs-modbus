@@ -21,6 +21,30 @@ check_public_protocol() {
   fi
 }
 
+check_private_function_contract() {
+  local document="$1"
+
+  check_public_protocol "$document"
+  for heading in \
+    'Scope and non-goals' \
+    'Selection and ownership' \
+    'Transport exchange' \
+    'Function-code isolation' \
+    'Standard and private function boundary' \
+    'Ambiguity and no-send' \
+    'Response correlation and exceptions' \
+    'RTU serialization' \
+    'Validation and compatibility'; do
+    grep -Fqx "## $heading" "$document"
+  done
+  grep -Fq 'A function-code byte never identifies a vendor, vendor profile, or operation.' "$document"
+  grep -Fq 'FC100, FC101, and FC102 may be reused by different qualified vendor profiles.' "$document"
+  grep -Fq 'FC0x41 is profile-qualified and is not globally reserved by this contract.' "$document"
+  grep -Fq 'FC23 is a standard Modbus function code, not a private-function operation.' "$document"
+  grep -Fq 'A vendor-specific allocation interpretation for FC23 requires a separately admitted standard-function operation and a typed standard-function codec.' "$document"
+  grep -Fq 'This contract makes no claim about the meaning, sendability, or allocation workflow of such an operation.' "$document"
+}
+
 check_sunspec_v2_contract() {
   local document="$1"
   local contradiction='V2[[:space:]]+(registry|runtime|registry([[:space:]]+(and|or)|/)[[:space:]]*runtime)[[:space:]]+admission[[:space:]]+(is|are)[[:space:]]+(approved|enabled|implemented)|sunspec\.models\.candidate\.v2[^.]*executable decoder|trailing spaces[^.]*trimmed'
@@ -198,12 +222,13 @@ check_wit_matrix_contract() {
 
 if [[ $# -gt 0 ]]; then
   if [[ $# -ne 2 ]]; then
-    echo 'usage: check_docs.sh [--check-sdongle-admission|--check-public-protocol|--check-sunspec-v1-model-families-contract|--check-sunspec-v2-contract|--check-x2-publication|--check-x2-contract|--check-bms-contract|--check-wit-matrix-contract document]' >&2
+    echo 'usage: check_docs.sh [--check-sdongle-admission|--check-public-protocol|--check-private-function-contract|--check-sunspec-v1-model-families-contract|--check-sunspec-v2-contract|--check-x2-publication|--check-x2-contract|--check-bms-contract|--check-wit-matrix-contract document]' >&2
     exit 2
   fi
   case "$1" in
     --check-sdongle-admission) check_sdongle_admission "$2" ;;
     --check-public-protocol) check_public_protocol "$2" ;;
+    --check-private-function-contract) check_private_function_contract "$2" ;;
     --check-sunspec-v1-model-families-contract) check_sunspec_v1_model_families_contract "$2" ;;
     --check-sunspec-v2-contract) check_sunspec_v2_contract "$2" ;;
     --check-x2-publication) check_x2_publication "$2" ;;
@@ -211,7 +236,7 @@ if [[ $# -gt 0 ]]; then
     --check-bms-contract) check_bms_contract "$2" ;;
     --check-wit-matrix-contract) check_wit_matrix_contract "$2" ;;
     *)
-      echo 'usage: check_docs.sh [--check-sdongle-admission|--check-public-protocol|--check-sunspec-v1-model-families-contract|--check-sunspec-v2-contract|--check-x2-publication|--check-x2-contract|--check-bms-contract|--check-wit-matrix-contract document]' >&2
+      echo 'usage: check_docs.sh [--check-sdongle-admission|--check-public-protocol|--check-private-function-contract|--check-sunspec-v1-model-families-contract|--check-sunspec-v2-contract|--check-x2-publication|--check-x2-contract|--check-bms-contract|--check-wit-matrix-contract document]' >&2
       exit 2
       ;;
   esac
@@ -256,15 +281,7 @@ for heading in "${required[@]}"; do
   grep -Fqx "## $heading" "$spec"
 done
 
-private_required=(
-  'Scope and non-goals' 'Selection and ownership' 'Transport exchange'
-  'Function-code isolation' 'Ambiguity and no-send'
-  'Response correlation and exceptions' 'RTU serialization'
-  'Validation and compatibility'
-)
-for heading in "${private_required[@]}"; do
-  grep -Fqx "## $heading" "$private_spec"
-done
+check_private_function_contract "$private_spec"
 
 forbidden='https?://|/[Uu]sers/|\.md`|sha-?[0-9a-f]{8,}|0x[0-9A-Fa-f]{6,}|reverse engineering|static-confirmed|conform sursei|am observat'
 if grep -Ein "$forbidden" "$spec"; then

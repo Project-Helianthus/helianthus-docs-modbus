@@ -17,10 +17,26 @@ sunspec_v2_document="$repo_root/protocols/sunspec/read-only-core-v2.md"
 sunspec_v2_fixture="$fixture_root/sunspec-read-only-core-v2.md"
 sunspec_v1_families_document="$repo_root/protocols/sunspec/read-only-core-v1-model-families.md"
 sunspec_v1_families_fixture="$fixture_root/sunspec-read-only-core-v1-model-families.md"
+private_function_document="$repo_root/protocols/modbus/private-function-codes.md"
+private_function_fixture="$fixture_root/private-function-codes.md"
 
 cp "$source_document" "$fixture_document"
 "$repo_root/scripts/check_docs.sh" --check-sdongle-admission "$fixture_document"
 grep -Fq 'Each retry began after at least five seconds of idle time.' "$source_document"
+
+"$repo_root/scripts/check_docs.sh" --check-private-function-contract "$private_function_document"
+for mutation in \
+  's/FC100, FC101, and FC102 may be reused/FC100, FC101, and FC102 are globally reserved/' \
+  's/FC0x41 is profile-qualified and is not globally reserved/FC0x41 is globally reserved/' \
+  's/FC23 is a standard Modbus function code, not a private-function operation/FC23 is a private-function operation/' \
+  's/requires a separately admitted standard-function operation and a typed standard-function codec/requires only a private-function request/' \
+  's/A function-code byte never identifies a vendor, vendor profile, or operation/A function-code byte identifies the vendor profile/'; do
+  sed "$mutation" "$private_function_document" > "$private_function_fixture"
+  if "$repo_root/scripts/check_docs.sh" --check-private-function-contract "$private_function_fixture"; then
+    echo "private-function boundary mutation was accepted: $mutation" >&2
+    exit 1
+  fi
+done
 
 "$repo_root/scripts/check_docs.sh" --check-sunspec-v1-model-families-contract "$sunspec_v1_families_document"
 for mutation in \
