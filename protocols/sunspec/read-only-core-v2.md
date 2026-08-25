@@ -98,6 +98,12 @@ overflow, a length that does not fit `uint16`, a length that exceeds the current
 isolated offline extent boundary, a declared-length mismatch, or a partial
 nested group is raw-only opaque with zero decoded facts.
 
+For a model-specific point span `S`, the zero-based payload offset of
+`Crv[i]` is `7 + (i-1)*(4 + 3*S*P)`. `ReadOnly` is at that offset;
+`MustTrip.ActPt`, `MayTrip.ActPt`, and `MomCess.ActPt` are respectively at
+offsets `+1`, `+2 + S*P`, and `+3 + 2*S*P`. Within each nested curve,
+`Pt[j]` begins one data register after `ActPt` plus `(j-1)*S`.
+
 Models 707, 708, and 709 are inventory-known raw-only quarantine blocks. A
 separate occurrence-aware nested-layout contract is required before any typed
 facts may be emitted. They do not infer relationships to one another or to
@@ -126,8 +132,9 @@ by `Hz_SF` followed by `Tms:uint32` scaled by `Tms_SF`, consuming four data
 registers. Its exact declared data-register length is
 `L = 7 + C*(4 + 12*P)`.
 
-These type, span, and scale-factor differences do not authorize a decoder,
-product profile, or control operation.
+For Models 707 and 708, `S` is 3; for Model 709, `S` is 4. These type, span,
+scale-factor, and offset differences do not authorize a decoder, product
+profile, or control operation.
 
 ## BESS base observed-state boundary
 

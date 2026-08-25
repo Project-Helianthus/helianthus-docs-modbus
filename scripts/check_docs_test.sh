@@ -93,6 +93,9 @@ for mutation in \
 	's/are each 0 through 65534; zero is valid/are each 0 through 65535; zero is invalid/' \
 	's/`Crv\[i\]\.MomCess\.Pt\[j\]` are distinct nested paths/`Crv[i].MomCess.Pt[j]` is inferred from MustTrip/' \
 	's/must not infer `P` or `C` from/may infer `P` or `C` from/' \
+	's/`Crv\[i\]` is `7 + (i-1)\*(4 + 3\*S\*P)`/`Crv[i]` is inferred from trailing words/' \
+	's/offsets `+1`, `+2 + S\*P`, and `+3 + 2\*S\*P`/offsets are implementation-defined/' \
+	's/For Models 707 and 708, `S` is 3; for Model 709, `S` is 4/Every model uses `S` 3/' \
 	's/Models 707, 708, and 709 are inventory-known raw-only quarantine blocks/Models 707, 708, and 709 emit typed facts/' \
 	's/Every field in Models 707, 708, and 709, including `Ena`, `AdptCrvReq`,/Models 707, 708, and 709 permit sends, including `Ena`,/' \
 	's/Model 707 has `V_SF` and `Tms_SF`/Model 707 has `Hz_SF` and `Tms_SF`/' \
