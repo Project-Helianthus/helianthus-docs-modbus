@@ -64,6 +64,7 @@ for mutation in \
   's/identifiers, and raw bytes are not projected/identifiers and raw bytes are projected/' \
   's/must fail closed as a redacted operation failure/may be decoded as vitals/' \
   's/does not claim that the responder has no/claims that the responder has no/' \
+  's/only by an injected provider/through an unqualified generic provider/' \
   's/`wc3_24_44_3`\. It exposes only the operation/any operation version. It exposes only the operation/' \
   's/always `false`/may be `true`/' \
   's/produces no data/produces successful data/' \
