@@ -99,22 +99,22 @@ check_bms_contract() {
 
 check_wit_matrix_contract() {
   local document="$1"
-  local expected_families actual_families
+  local expected_rows actual_rows
 
-  expected_families=$(printf '%s\n' \
-    'WIT 4-25K-HU' \
-    'WIT 4-25K-XHU' \
-    'WIT 29.9-50K-XHU' \
-    'WIT 50-100K-HU' \
-    'WIT 50-100K-AU' \
-    'WIT 63-125K-XHU' \
-    'WIT 28-55K-HU-US L2' \
-    'WIT 28-55K-AU-US L2' \
-    'WIT 50-150K-XHU-US')
-  actual_families=$(sed -n \
+  expected_rows=$(printf '%s\n' \
+    '| `WIT 4-25K-HU` | worldwide, 380/400 Vac, low-voltage battery | Modbus TCP available; ShineWiLAN-X2 listed | `UNKNOWN` | `UNKNOWN` | `INSUFFICIENT_EVIDENCE`; `NO_SEND` |' \
+    '| `WIT 4-25K-XHU` | worldwide, 380/400 Vac, high-voltage battery | Modbus TCP available; ShineWiLAN-X2 listed | `UNKNOWN` | `UNKNOWN` | `INSUFFICIENT_EVIDENCE`; `NO_SEND` |' \
+    '| `WIT 29.9-50K-XHU` | worldwide, 380/400 Vac, high-voltage battery | ShineWiLan-X2 and ShineSEM-XA-R listed; wire exposure not established | `UNKNOWN` | `UNKNOWN` | `INSUFFICIENT_EVIDENCE`; `NO_SEND` |' \
+    '| `WIT 50-100K-HU` | APAC, 380/400/415 Vac, high-voltage battery | ShineWiLan-X2 and ShineSEM-XA-R listed; wire exposure not established | `UNKNOWN` | `UNKNOWN` | `INSUFFICIENT_EVIDENCE`; `NO_SEND` |' \
+    '| `WIT 50-100K-AU` | APAC, 380/400/415 Vac, high-voltage battery | ShineWiLan-X2 and ShineSEM-XA-R listed; wire exposure not established | `UNKNOWN` | `UNKNOWN` | `INSUFFICIENT_EVIDENCE`; `NO_SEND` |' \
+    '| `WIT 63-125K-XHU` | worldwide, 380/400 Vac, high-voltage battery | not established by this contract | `UNKNOWN` | `UNKNOWN` | `INSUFFICIENT_EVIDENCE`; `NO_SEND` |' \
+    '| `WIT 28-55K-HU-US L2` | US L2, 208/220 Vac, high-voltage battery | ShineMaster listed; wire exposure not established | `UNKNOWN` | `UNKNOWN` | `INSUFFICIENT_EVIDENCE`; `NO_SEND` |' \
+    '| `WIT 28-55K-AU-US L2` | US L2, 208/220 Vac, high-voltage battery | ShineMaster listed; wire exposure not established | `UNKNOWN` | `UNKNOWN` | `INSUFFICIENT_EVIDENCE`; `NO_SEND` |' \
+    '| `WIT 50-150K-XHU-US` | US, 277/480 Vac, high-voltage battery | not established by this contract | `UNKNOWN` | `UNKNOWN` | `INSUFFICIENT_EVIDENCE`; `NO_SEND` |')
+  actual_rows=$(sed -n \
     '/^## Family qualification matrix$/,/^## Explicit VPP V2.01 tuple$/p' \
-    "$document" | sed -nE 's/^\| `([^`]+)` \|.*/\1/p')
-  if [[ "$actual_families" != "$expected_families" ]]; then
+    "$document" | sed -n '/^| `WIT /p')
+  if [[ "$actual_rows" != "$expected_rows" ]]; then
     echo 'WIT family matrix is not exact' >&2
     return 1
   fi
