@@ -263,6 +263,35 @@ check_sunspec_nested_layout_contract() {
   grep -Fq 'Models 707, 708, and 709 are bounded examples only and do not define Model 710 or any other model.' "$document"
 }
 
+check_sunspec_der_trip_lv_template_v2() {
+  local document="$1"
+  local contradiction='decoder|catalog|admission|support|runtime|Model 708|Model 709'
+
+  check_public_protocol "$document"
+  for heading in \
+    'Scope and isolation' \
+    'Template identity and top-level map' \
+    'Nested curve layout' \
+    'Per-occurrence validation and bounds' \
+    'Failure boundary' \
+    'Observed-state boundary'; do
+    grep -Fqx "## $heading" "$document"
+  done
+  grep -Fq 'The template identity is exactly schema revision `sunspec.models@90b4a331-v2` and Model 707.' "$document"
+  grep -Fq '`NPt` and `NCrvSet` are at occurrence-word offsets 5 and 6.' "$document"
+  grep -Fq '`P` and `C` each accept 0 through 65534; `0xffff` is unavailable and zero is valid.' "$document"
+  grep -Fq '`L = 7 + C*(4 + 9*P)`.' "$document"
+  grep -Fq 'The current isolated offline boundary requires `L <= 65534`.' "$document"
+  grep -Fq '`Crv[i].MustTrip.Pt[j].V` and `Crv[i].MustTrip.Pt[j].Tms` are separate paths.' "$document"
+  grep -Fq '`V` is one `uint16` word scaled by `V_SF`; `Tms` is two big-endian `uint32` words scaled by `Tms_SF`.' "$document"
+  grep -Fq 'Invalid geometry remains raw-only with zero typed facts and exact raw source spans.' "$document"
+  grep -Fq 'Every field is observed state only and is `NO_SEND`.' "$document"
+  if grep -Ein "$contradiction" "$document"; then
+    echo 'SunSpec Model 707 template contract exceeds its docs-only boundary' >&2
+    return 1
+  fi
+}
+
 check_x2_publication() {
   local document="$1"
   local bare_revision='(^|[^[:xdigit:]])[[:xdigit:]]{40}([^[:xdigit:]]|$)|(^|[^[:xdigit:]])[[:xdigit:]]{64}([^[:xdigit:]]|$)'
@@ -386,7 +415,7 @@ check_wit_matrix_contract() {
 
 if [[ $# -gt 0 ]]; then
   if [[ $# -ne 2 ]]; then
-    echo 'usage: check_docs.sh [--check-sdongle-admission|--check-public-protocol|--check-private-function-contract|--check-sunspec-v1-model-families-contract|--check-sunspec-nested-layout-contract|--check-sunspec-v2-contract|--check-sunspec-v2-licensing|--check-x2-publication|--check-x2-contract|--check-bms-contract|--check-wit-matrix-contract document]' >&2
+    echo 'usage: check_docs.sh [--check-sdongle-admission|--check-public-protocol|--check-private-function-contract|--check-sunspec-v1-model-families-contract|--check-sunspec-nested-layout-contract|--check-sunspec-der-trip-lv-template-v2|--check-sunspec-v2-contract|--check-sunspec-v2-licensing|--check-x2-publication|--check-x2-contract|--check-bms-contract|--check-wit-matrix-contract document]' >&2
     exit 2
   fi
   case "$1" in
@@ -395,6 +424,7 @@ if [[ $# -gt 0 ]]; then
     --check-private-function-contract) check_private_function_contract "$2" ;;
     --check-sunspec-v1-model-families-contract) check_sunspec_v1_model_families_contract "$2" ;;
     --check-sunspec-nested-layout-contract) check_sunspec_nested_layout_contract "$2" ;;
+    --check-sunspec-der-trip-lv-template-v2) check_sunspec_der_trip_lv_template_v2 "$2" ;;
     --check-sunspec-v2-contract) check_sunspec_v2_contract "$2" ;;
     --check-sunspec-v2-licensing) check_sunspec_v2_licensing "$2" ;;
     --check-x2-publication) check_x2_publication "$2" ;;
@@ -402,7 +432,7 @@ if [[ $# -gt 0 ]]; then
     --check-bms-contract) check_bms_contract "$2" ;;
     --check-wit-matrix-contract) check_wit_matrix_contract "$2" ;;
     *)
-      echo 'usage: check_docs.sh [--check-sdongle-admission|--check-public-protocol|--check-private-function-contract|--check-sunspec-v1-model-families-contract|--check-sunspec-nested-layout-contract|--check-sunspec-v2-contract|--check-sunspec-v2-licensing|--check-x2-publication|--check-x2-contract|--check-bms-contract|--check-wit-matrix-contract document]' >&2
+    echo 'usage: check_docs.sh [--check-sdongle-admission|--check-public-protocol|--check-private-function-contract|--check-sunspec-v1-model-families-contract|--check-sunspec-nested-layout-contract|--check-sunspec-der-trip-lv-template-v2|--check-sunspec-v2-contract|--check-sunspec-v2-licensing|--check-x2-publication|--check-x2-contract|--check-bms-contract|--check-wit-matrix-contract document]' >&2
       exit 2
       ;;
   esac
@@ -413,6 +443,8 @@ spec='protocols/tesla/tedapi.md'
 test -f "$spec"
 nested_layout_spec='protocols/sunspec/nested-layout-contract-v1.md'
 test -f "$nested_layout_spec"
+der_trip_lv_template_spec='protocols/sunspec/der-trip-lv-template-v2.md'
+test -f "$der_trip_lv_template_spec"
 private_spec='protocols/modbus/private-function-codes.md'
 test -f "$private_spec"
 sdongle_admission='architecture/sdongle-qualification-disposition-v1.md'
@@ -464,6 +496,7 @@ grep -Fqx '## Initial model catalog' 'protocols/sunspec/read-only-core-v1.md'
 check_sunspec_v1_model_families_contract 'protocols/sunspec/read-only-core-v1-model-families.md'
 check_sunspec_v2_contract 'protocols/sunspec/read-only-core-v2.md'
 check_sunspec_nested_layout_contract "$nested_layout_spec"
+check_sunspec_der_trip_lv_template_v2 "$der_trip_lv_template_spec"
 check_sunspec_v2_licensing 'protocols/applicability-and-licensing.md'
 grep -Fqx '## Exact chain geometry' 'protocols/fronius/sunspec-float-v1.md'
 grep -Fqx '## SmartLogger candidate' 'protocols/huawei/gateway-readonly-v1.md'
