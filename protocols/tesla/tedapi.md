@@ -197,6 +197,17 @@ timing outcome, and a redacted payload digest. Records must distinguish locally
 validated, sent, intermediate, terminal, timeout, exception, and quarantined
 outcomes. Records contain no raw sensitive payload by default.
 
+### MCP FC100 summary projection
+
+An MCP FC100 summary view may be emitted only from an injected, locally
+validated wire summary. It exposes only the qualification (`framing_only` or
+`qualified_read_only`), total envelope length, nested-message length, entry
+count, ordered numeric field-number and wire-type entries, and payload digest.
+Its `outbound_allowed` value is always `false`. A missing or invalid provider
+summary produces an unavailable result with no summary data. The view never
+exposes raw bytes, values, field names, operation identity, capability, request
+construction, or control meaning.
+
 ## Security, privacy, and redaction
 
 The initial profile is read-only and disabled by default. Raw payload bytes,

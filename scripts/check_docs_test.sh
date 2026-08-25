@@ -48,7 +48,12 @@ for mutation in \
   's/Values are consumed only to validate wire boundaries and/Values are retained while validating wire boundaries and/' \
   's/are never retained or projected/are projected as operation semantics/' \
   's/group boundaries with the same field number/group boundaries without matching field numbers/' \
-  's/oversized, unpaired, or over-count summary is rejected/oversized summaries are retained/'; do
+  's/oversized, unpaired, or over-count summary is rejected/oversized summaries are retained/' \
+  's/qualification (`framing_only` or/qualification (`unbounded` or/' \
+  's/`qualified_read_only`), total envelope length/`qualified_read_only`), total envelope bytes and values/' \
+  's/`outbound_allowed` value is always `false`/`outbound_allowed` value may be `true`/' \
+  's/an unavailable result with no summary data/a successful summary result/' \
+  's/exposes raw bytes, values, field names/exposes raw bytes and values/'; do
   sed "$mutation" "$tesla_document" > "$tesla_fixture"
   if "$repo_root/scripts/check_docs.sh" --check-tesla-tedapi-contract "$tesla_fixture"; then
     echo "Tesla replay metadata mutation was accepted: $mutation" >&2
