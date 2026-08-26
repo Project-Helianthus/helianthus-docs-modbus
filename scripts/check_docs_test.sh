@@ -522,8 +522,11 @@ done
 protocol_ii_document="$repo_root/protocols/growatt/protocol-ii-readonly-v1.md"
 protocol_ii_fixture="$(mktemp)"
 for mutation in \
-  's/Serial-number words/Serial values/' \
-  's/automatic detection, telemetry, endpoint acquisition, control, or a device/automatic detection is enabled/'; do
+  's/offsets 23 through 27, five words/offsets 23 through 27, four words/' \
+  's/## Native identity capability/## Sanitized identity projection/' \
+  's/unicast unit,/an inferred unit,/' \
+  's/model-build pair, Modbus protocol version, and the five exact FC03 identity/model-build pair, Modbus protocol version, and inferred data/' \
+  's/does not define an FC06 or FC16 control operation/defines generic FC16 control/' ; do
   sed "$mutation" "$protocol_ii_document" > "$protocol_ii_fixture"
   if "$repo_root/scripts/check_docs.sh" --check-growatt-protocol-ii-identity-projection "$protocol_ii_fixture"; then
     echo "Growatt Protocol II projection mutation was accepted: $mutation" >&2

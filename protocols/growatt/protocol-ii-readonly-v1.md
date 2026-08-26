@@ -2,10 +2,11 @@
 
 ## Scope
 
-This profile defines an offline candidate for the Growatt Modbus RTU Protocol
-II v1.24 TL3-X class: MAX, MID, and MAC families using holding and input ranges
-0 through 249. It is a native Growatt map, not SunSpec. It is disabled for
-automatic detection and live acquisition.
+This profile defines a caller-selected native Growatt Modbus RTU Protocol II
+v1.24 TL3-X capability for MAX, MID, and MAC families using holding and input
+ranges 0 through 249. It is a native Growatt map, not SunSpec. Automatic
+cross-family detection is not part of this contract; a caller supplies the
+exact family and version selection.
 
 ## Transport and addressing
 
@@ -23,13 +24,13 @@ remove only terminal NUL or space padding.
 An offline candidate fixture must contain one coherent FC03 snapshot with:
 
 - offsets 9 through 14, six words, for primary and control firmware text;
+- offsets 23 through 27, five words, for native serial text;
 - offset 43, one word, for the device type code;
 - offsets 82 and 83, two words, for the model-letter build tuple; and
 - offset 88, one word, for the Modbus protocol version.
 
-Serial-number offsets 23 through 27 are sensitive and are not read or used as
-identity. Manufacturer text, unit readability, one firmware field, or register
-range alone is insufficient.
+Manufacturer text, unit readability, one firmware field, or register range
+alone is insufficient.
 
 The initial exact family gate accepts only a fixture declared as Protocol II
 v1.24 TL3-X MAX/MID/MAC with a device type and model tuple explicitly mapped by
@@ -37,17 +38,24 @@ that fixture. Unknown device type, malformed ASCII, a protocol value outside
 the selected schema, or disagreement among identity fields remains
 `insufficient_evidence`.
 
-## Public identity projection
+## Native identity capability
 
-A qualified identity projection may contain only the selected family, the
-normalized firmware text, the device type code, the two-word model-build pair,
-and the Modbus protocol version. Each projected value comes from the exact
-identity tuple above; it is not inferred from a related Growatt family.
+A qualified runtime identity contains the selected family, unicast unit,
+normalized firmware text, native serial text, device type code, the two-word
+model-build pair, Modbus protocol version, and the five exact FC03 identity
+slices in their declared order. Each field comes from the exact identity tuple
+above; it is not inferred from a related Growatt family.
 
-Serial-number words, unit identifiers, raw slices, endpoints, and transport
-details are excluded from this projection. This projection does not add
-automatic detection, telemetry, endpoint acquisition, control, or a device
-support claim. A failed tuple gate produces no partial identity projection.
+The runtime API may carry its configured endpoint and transport context with
+this native observation. Public documentation and fixtures use synthetic
+identity values and do not publish installation-specific identifiers, captures,
+or endpoint coordinates. A failed tuple gate produces no partial identity
+projection.
+
+The currently enumerated operation is FC03 identity acquisition. This contract
+does not define an FC06 or FC16 control operation, so no control command is
+constructed from it. A later exact operation contract may add command
+construction and fake execution without making a real-device write automatic.
 
 ## Offline telemetry candidate
 
@@ -58,9 +66,9 @@ width, and units belong to the exact field definition and are never inferred
 from a similar Growatt family.
 
 The downstream POC must prove deterministic fixture decoding. This
-specification does not register an automatic detector, enable an endpoint, or
-claim support for TL-X, TL-XH, TL-XH US, MAX 1500V, MAX-X LV, MOD TL3-XH, MIX,
-SPA, or SPH ranges.
+specification does not register an automatic detector or claim support for
+TL-X, TL-XH, TL-XH US, MAX 1500V, MAX-X LV, MOD TL3-XH, MIX, SPA, or SPH
+ranges.
 
 ## Failure and overlap
 

@@ -645,11 +645,15 @@ check_growatt_protocol_ii_identity_projection() {
 
   check_public_protocol "$document"
   grep -Fqx '## Identity tuple' "$document"
-  grep -Fqx '## Public identity projection' "$document"
-  grep -Fq 'A qualified identity projection may contain only the selected family,' "$document"
-  grep -Fq 'Serial-number words, unit identifiers, raw slices, endpoints, and transport' "$document"
-  grep -Fq 'details are excluded from this projection. This projection does not add' "$document"
-  grep -Fq 'automatic detection, telemetry, endpoint acquisition, control, or a device' "$document"
+  grep -Fqx '## Native identity capability' "$document"
+  grep -Fq 'offsets 23 through 27, five words, for native serial text;' "$document"
+  grep -Fq 'A qualified runtime identity contains the selected family, unicast unit,' "$document"
+  grep -Fq 'model-build pair, Modbus protocol version, and the five exact FC03 identity' "$document"
+  grep -Fq 'The runtime API may carry its configured endpoint and transport context with' "$document"
+  grep -Fq 'this native observation. Public documentation and fixtures use synthetic' "$document"
+  grep -Fq 'identity values and do not publish installation-specific identifiers, captures,' "$document"
+  grep -Fq 'The currently enumerated operation is FC03 identity acquisition. This contract' "$document"
+  grep -Fq 'does not define an FC06 or FC16 control operation, so no control command is' "$document"
 }
 
 check_wit_matrix_contract() {
