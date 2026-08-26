@@ -65,6 +65,16 @@ for mutation in \
     exit 1
   fi
 done
+for mutation in \
+  's/complete bounded native payload for each retained request or response./digest only for each retained request or response./' \
+  's/FC100 catalog applies only to the Gen3 profile/FC100 catalog applies to the legacy profile/' \
+  's/normal payloads remain opaque unless a separate version-scoped operation contract assigns a named/normal payloads are named without a version-scoped operation contract/'; do
+  sed "$mutation" "$tesla_gen3_document" > "$tesla_gen3_fixture"
+  if "$repo_root/scripts/check_docs.sh" --check-tesla-generation-contracts "$tesla_legacy_document" "$tesla_gen3_fixture"; then
+    echo "Tesla Gen3 native-operation mutation was accepted: $mutation" >&2
+    exit 1
+  fi
+done
 awk '
   { print }
   /No numeric minimum version is asserted by this contract\./ {

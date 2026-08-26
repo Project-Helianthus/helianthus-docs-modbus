@@ -40,6 +40,17 @@ Qualification requires an explicit endpoint, configured node, exact version prof
 
 Native runtime records retain bounded payloads, including unknown fields, exactly. Named operation records preserve their compatibility version, function, direction, transaction state, and native request or response bytes. Unknown data remains native rather than being discarded or projected into a semantic model.
 
+## Native operation records
+
+The FC100 operation catalog defines version-scoped native operation records. A
+record retains its selected Gen3 profile, operation version, private function
+code, request and response direction, normal or exception outcome, and the
+complete bounded native payload for each retained request or response. The FC100 catalog applies only to the Gen3 profile; it does not select or reinterpret a legacy Wall Connector frame.
+
+The Gen3 native operation catalog is defined in the TEDAPI protocol contract.
+Known operation names describe the applicable request and terminal container,
+but unknown fields and values remain part of the native payload. FC101 and FC102 retain the same native record context, while their normal payloads remain opaque unless a separate version-scoped operation contract assigns a named structure.
+
 ## Safety boundary
 
 Offline codecs, request construction, and fake or replay dispatch may represent documented read and mutation operations. This contract does not authorize a live transmission, hardware action, deployment, or credential use. A live state-changing command requires action-time operator confirmation.
