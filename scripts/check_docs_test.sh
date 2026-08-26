@@ -174,6 +174,19 @@ for mutation in \
   fi
 done
 
+awk '
+  /^### Qualified WC PPU settings operation$/ { in_ppu = 1 }
+  /^### Qualified WC system-information operation$/ { in_ppu = 0 }
+  { print }
+  in_ppu && /A real device exchange requires separate action-time laboratory confirmation\./ {
+    print "This operation exposes configuration values, enables a setter, may fall back to FC101 or FC102, and creates gateway automatic dispatch."
+  }
+' "$tesla_document" > "$tesla_fixture"
+if "$repo_root/scripts/check_docs.sh" --check-tesla-tedapi-contract "$tesla_fixture"; then
+  echo 'Tesla WC PPU settings additive scope expansion was accepted' >&2
+  exit 1
+fi
+
 "$repo_root/scripts/check_docs.sh" --check-private-function-contract "$private_function_document"
 for mutation in \
   's/FC100, FC101, and FC102 may be reused/FC100, FC101, and FC102 are globally reserved/' \
