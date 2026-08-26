@@ -283,6 +283,12 @@ opaque payload, function, compatibility version, and provenance until a later
 qualified contract defines metadata for them. Unknown payload fields remain
 native bytes and are not discarded.
 
+One projection contains at most eight native records. Each payload is at most
+252 bytes. The disposition, compatibility, provenance, request name, response
+name, and each field name are at most 128 bytes; a record contains at most 64
+field names. An oversized provider result is rejected as unavailable rather
+than truncated or transformed.
+
 The projection preserves the provider's `outbound_allowed` context without
 constructing a request, opening a serial endpoint, selecting a transport, or
 performing an exchange. It is an inspection interface, not a hardware action.
