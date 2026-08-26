@@ -1,0 +1,49 @@
+# Tesla Wall Connector Gen3 HSC RTU contract
+
+## Scope and separation
+
+This contract defines the Wall Connector Gen3 Home Site Controller profile carried in Modbus-shaped RTU frames. It is distinct from the Tesla legacy Wall Connector RS-485 contract. It must not use the legacy SLIP framing, checksum, command vocabulary, or qualification predicate.
+
+This page defines the transport and version boundary. Named TEDAPI operation records and their request and response shapes are defined by the Tesla TEDAPI operation catalog.
+
+## Serial and activation
+
+The Gen3 HSC serial format is 115200 baud, eight data bits, no parity, and one stop bit. Before an exchange, the endpoint must complete the device-originated activation sequence: `TESLA` followed by NUL and then `PASS` followed by NUL. An activation failure, timeout, reset, unexpected frame, or loss of the selected profile disables the HSC exchange state.
+
+## RTU framing
+
+An RTU frame is:
+
+```text
+node | function | payload | crc-low | crc-high
+```
+
+The CRC is CRC16-Modbus with low byte first. A payload contains zero through 252 bytes and a complete frame contains four through 256 bytes. The usual configured HSC node is `0x10`; it is not a detector, broadcast address, or universal identity.
+
+## Function boundary
+
+FC100, FC101, and FC102 are private function-code values selected only by this Gen3 profile. FC100 uses `length:u8 | message[length]`. FC101 and FC102 requests use `length:u8 | request[length]`; their normal responses remain bounded native payloads until an operation-specific contract assigns a response structure.
+
+These values are not globally reserved and do not select a Tesla codec outside a configured Gen3 profile.
+
+## Exact version profiles
+
+`wc3_24_28_3` and `wc3_24_44_3` are known HSC observations, not a version whitelist. An unenumerated version is recorded as `compatible_candidate` when its separately supplied HSC activation, private-function, and operation capabilities are compatible; otherwise it is `unknown`. `compatible_candidate` retains an unenumerated Gen3 version with its native payloads.
+
+No numeric minimum version is asserted by this contract. The version label alone does not grant a HSC operation or live exchange. Compatibility evaluates version evidence independently from HSC activation, private-function path, and operation-schema capabilities. A legacy Wall Connector identity never qualifies this profile.
+
+## Qualification
+
+Qualification requires an explicit endpoint, configured node, exact version profile, compatible activation state, bounded single-flight correlation, and an operation contract. A frame that parses successfully is not itself a capability, admission, or completion claim.
+
+## Native retention
+
+Native runtime records retain bounded payloads, including unknown fields, exactly. Named operation records preserve their compatibility version, function, direction, transaction state, and native request or response bytes. Unknown data remains native rather than being discarded or projected into a semantic model.
+
+## Safety boundary
+
+Offline codecs, request construction, and fake or replay dispatch may represent documented read and mutation operations. This contract does not authorize a live transmission, hardware action, deployment, or credential use. A live state-changing command requires action-time operator confirmation.
+
+## Compatibility
+
+The Gen3 HSC profile is independent from the legacy Wall Connector RS-485 profile. It does not provide a fallback to legacy SLIP, and the legacy profile does not provide a fallback to FC100, FC101, or FC102.

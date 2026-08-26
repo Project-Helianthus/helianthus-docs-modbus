@@ -37,6 +37,44 @@ grep -Fq 'Each retry began after at least five seconds of idle time.' "$source_d
 tesla_document="$repo_root/protocols/tesla/tedapi.md"
 tesla_fixture="$fixture_root/tesla-tedapi.md"
 "$repo_root/scripts/check_docs.sh" --check-tesla-tedapi-contract "$tesla_document"
+
+tesla_legacy_document="$repo_root/protocols/tesla/legacy-wall-connector-rs485.md"
+tesla_legacy_fixture="$fixture_root/tesla-legacy-wall-connector-rs485.md"
+tesla_gen3_document="$repo_root/protocols/tesla/gen3-hsc-rtu.md"
+tesla_gen3_fixture="$fixture_root/tesla-gen3-hsc-rtu.md"
+"$repo_root/scripts/check_docs.sh" --check-tesla-generation-contracts "$tesla_legacy_document" "$tesla_gen3_document"
+for mutation in \
+  's/A legacy command byte `FC` is not a Modbus function code./A legacy command byte `FC` is a Modbus function code./' \
+  's/FC100, FC101, and FC102 are not part of this contract./FC100, FC101, and FC102 are part of this contract./' \
+  's/without claiming a firmware build/with a universal firmware build/'; do
+  sed "$mutation" "$tesla_legacy_document" > "$tesla_legacy_fixture"
+  if "$repo_root/scripts/check_docs.sh" --check-tesla-generation-contracts "$tesla_legacy_fixture" "$tesla_gen3_document"; then
+    echo "Tesla legacy generation-contract mutation was accepted: $mutation" >&2
+    exit 1
+  fi
+done
+for mutation in \
+  's/It must not use the legacy SLIP framing/It may use the legacy SLIP framing/' \
+  's/known HSC observations, not a version whitelist/only qualified HSC versions/' \
+  's/No numeric minimum version is asserted by this contract./A numeric minimum version is 24.28.3./' \
+  's/otherwise it is `unknown`./otherwise it is `compatible`./' \
+  's/The version label alone does not grant a HSC operation or live exchange./The version label alone grants a HSC operation and live exchange./'; do
+  sed "$mutation" "$tesla_gen3_document" > "$tesla_gen3_fixture"
+  if "$repo_root/scripts/check_docs.sh" --check-tesla-generation-contracts "$tesla_legacy_document" "$tesla_gen3_fixture"; then
+    echo "Tesla Gen3 generation-contract mutation was accepted: $mutation" >&2
+    exit 1
+  fi
+done
+awk '
+  { print }
+  /No numeric minimum version is asserted by this contract\./ {
+    print "Minimum version 24.28.3 qualifies this profile."
+  }
+' "$tesla_gen3_document" > "$tesla_gen3_fixture"
+if "$repo_root/scripts/check_docs.sh" --check-tesla-generation-contracts "$tesla_legacy_document" "$tesla_gen3_fixture"; then
+  echo 'Tesla Gen3 additive numeric threshold was accepted' >&2
+  exit 1
+fi
 for mutation in \
   's/payload exactly, together with its function, compatibility version, and/payload only as a digest, without its function or compatibility version,/' \
   's/digest-only format does not limit the native HSC record projection/digest-only format replaces the native HSC record projection/' \
