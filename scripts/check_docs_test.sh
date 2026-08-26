@@ -56,6 +56,7 @@ done
 for mutation in \
   's/It must not use the legacy SLIP framing/It may use the legacy SLIP framing/' \
   's/known HSC observations, not a version whitelist/only qualified HSC versions/' \
+  's/No numeric minimum version is asserted by this contract./A numeric minimum version is 24.28.3./' \
   's/The version label alone does not grant a HSC operation or live exchange./The version label alone grants a HSC operation and live exchange./'; do
   sed "$mutation" "$tesla_gen3_document" > "$tesla_gen3_fixture"
   if "$repo_root/scripts/check_docs.sh" --check-tesla-generation-contracts "$tesla_legacy_document" "$tesla_gen3_fixture"; then

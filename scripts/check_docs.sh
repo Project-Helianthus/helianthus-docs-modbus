@@ -233,6 +233,7 @@ check_tesla_generation_contracts() {
 	grep -Fq 'FC100, FC101, and FC102 are private function-code values selected only by this Gen3 profile.' "$gen3"
 	grep -Fq '`wc3_24_28_3` and `wc3_24_44_3` are known HSC observations, not a version whitelist.' "$gen3"
 	grep -Fq '`compatible_candidate` retains an unenumerated Gen3 version with its native payloads.' "$gen3"
+	grep -Fq 'No numeric minimum version is asserted by this contract.' "$gen3"
 	grep -Fq 'The version label alone does not grant a HSC operation or live exchange.' "$gen3"
 	grep -Fq 'Native runtime records retain bounded payloads, including unknown fields, exactly.' "$gen3"
 }

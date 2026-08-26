@@ -38,7 +38,7 @@ It excludes the first command byte and the checksum byte itself. A receiver vali
 
 ## Command-family boundary
 
-The recovered command families are `FB`, `FC`, and `FD`. The known link and heartbeat forms include `FCE1`, `FBE2`, `FDE2`, `FBE0`, and `FDE0`. Their fields remain native records unless a separately versioned operation contract assigns semantics.
+The command families are `FB`, `FC`, and `FD`. The known link and heartbeat forms include `FCE1`, `FBE2`, `FDE2`, `FBE0`, and `FDE0`. Their fields remain native records unless a separately versioned operation contract assigns semantics.
 
 A legacy command byte `FC` is not a Modbus function code. FC100, FC101, and FC102 are not part of this contract. A legacy decoder must not call a Gen3 HSC codec, a Modbus RTU parser, or a TEDAPI envelope parser.
 
