@@ -271,6 +271,28 @@ transport exchange, or falls back to FC101 or FC102. It exposes no raw bytes,
 snapshot values, field names, identifiers, control meaning, or runtime
 activation state.
 
+### MCP native HSC record projection
+
+The native HSC MCP status projection accepts only an already-correlated,
+injected provider result. It retains each bounded FC100, FC101, or FC102
+payload exactly, together with its function, compatibility version, and
+provenance label. A compatibility-qualified FC100 registry record may also
+carry its family, request tag, response tag, recovered request name, recovered
+response name, and field-name list. FC101 and FC102 records carry only their
+opaque payload, function, compatibility version, and provenance until a later
+qualified contract defines metadata for them. Unknown payload fields remain
+native bytes and are not discarded.
+
+The projection preserves the provider's `outbound_allowed` context without
+constructing a request, opening a serial endpoint, selecting a transport, or
+performing an exchange. It is an inspection interface, not a hardware action.
+FC100 may contain a bounded echo/result sequence; FC101 and FC102 each contain
+one normal terminal record. A Modbus exception remains a transport outcome and
+is not represented as a native normal record.
+
+The structural FC100 summary projection is a separate compact view. Its
+digest-only format does not limit the native HSC record projection.
+
 ### Read-only replay metadata
 
 An offline FC100 decoder may retain the nested-message length, the numeric
@@ -432,17 +454,18 @@ request and is bounded by an explicit policy.
 Opaque payloads and unknown fields are retained as bounded byte sequences with
 their frame metadata and direction. FC101 and FC102 normal responses retain
 their raw bytes without length-prefix decoding. Retained bytes are not converted
-to a value, enum, unit, capability, or command. Retention must preserve enough
-framing information for deterministic offline replay while enforcing size limits
-and redaction rules.
+to a value, enum, unit, capability, or command. Retention preserves enough
+framing information for deterministic offline replay while enforcing size
+limits.
 
 ## Runtime provenance
 
 Runtime records include contract version, flavor, configured node, function,
 direction, frame length, CRC result, transaction state, capability disposition,
-timing outcome, and a redacted payload digest. Records must distinguish locally
-validated, sent, intermediate, terminal, timeout, exception, and quarantined
-outcomes. Records contain no raw sensitive payload by default.
+timing outcome, and the complete bounded native payload. Records must
+distinguish locally validated, sent, intermediate, terminal, timeout,
+exception, and quarantined outcomes. The MCP native-record projection preserves
+its provider-supplied payload and compatibility context.
 
 ### MCP FC100 summary projection
 
@@ -457,11 +480,12 @@ construction, or control meaning.
 
 ## Security, privacy, and redaction
 
-The initial profile is read-only and disabled by default. Raw payload bytes,
-serial numbers, device identifiers, account material, and private coordinates
-must not be published through logs, MCP, fixtures, or diagnostics. Public MCP
-results expose length, digest, function, timing, and redacted categorical
-metadata only. Offline fixtures use sanitized values.
+Public repository artifacts must not contain operator captures, serial numbers,
+credentials, account material, endpoints, or other private laboratory data.
+Fixtures and documentation examples use synthetic values. At runtime, the
+native HSC MCP projection preserves bounded provider-supplied payloads and
+metadata; this does not create serial I/O, deployment, credential handling, or
+a hardware action.
 
 ## Capability and version gates
 
