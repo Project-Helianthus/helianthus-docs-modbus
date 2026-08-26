@@ -552,8 +552,8 @@ for mutation in \
   's/Only the typed extension words listed below are decoded/Every extension word is decoded telemetry/' \
   's/are not read/are read when needed/' \
   's/FC10 Preset Multiple Registers/FC10 Read Multiple Registers/' \
-  's/W or WR are unconditional `NO_SEND`/W or WR require operator approval/' \
-  's/A bounded offline decoder is permitted only/A bounded offline decoder is permitted without/' \
+  's/W or WR require an exact operation contract that names function, address,/W or WR require operator approval/' \
+  's/A bounded decoder is permitted only/A bounded decoder is permitted without/' \
   's/No bounded decoder creates catalog registration/Bounded decoder creates catalog registration/' \
   's/synthetic identity assembled from the document is not a substitute/synthetic identity assembled from the document is sufficient/'; do
   sed "$mutation" "$bms_document" > "$bms_fixture"
@@ -565,7 +565,7 @@ done
 
 for mutation in \
   's/does not automatically apply the contract/automatically applies the contract/' \
-  's/are forbidden identity inputs/are permitted identity inputs/' \
+  's/revision-declared tuple remains required/revision-declared tuple is optional/' \
   's/is ambiguous and produces no match/is ranked and selects the first match/' \
   's/no partial/partial/'; do
   sed "$mutation" "$bms_document" > "$bms_fixture"

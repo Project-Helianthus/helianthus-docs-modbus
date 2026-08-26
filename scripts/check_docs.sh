@@ -628,12 +628,12 @@ check_bms_contract() {
   grep -Fq 'Offsets 0x0009 through 0x000C contain barcode material and are not read' "$document"
   grep -Fq 'FC10 Preset Multiple Registers, address allocation' "$document"
   grep -Fq 'every field marked' "$document"
-  grep -Fq 'W or WR are unconditional `NO_SEND`.' "$document"
-  grep -Fq 'A bounded offline decoder is permitted only for an externally declared' "$document"
+  grep -Fq 'W or WR require an exact operation contract that names function, address,' "$document"
+  grep -Fq 'A bounded decoder is permitted only for an externally declared' "$document"
   grep -Fq 'No bounded decoder creates catalog registration, executable detection,' "$document"
   grep -Fq 'synthetic identity assembled from the document is not a substitute for a' "$document"
   grep -Fq 'does not automatically apply the contract to any commercial battery' "$document"
-  grep -Fq 'are forbidden identity inputs.' "$document"
+  grep -Fq 'revision-declared tuple remains required.' "$document"
   grep -Fq 'An observation that also satisfies Growatt Protocol II, SunSpec/Fronius, or a' "$document"
   grep -Fq 'automatic runtime admission, telemetry publication, or a support claim.' "$document"
   grep -Fq 'is ambiguous and produces no match.' "$document"
@@ -824,6 +824,8 @@ check_x2_publication 'protocols/growatt/shinewilan-x2-bridge-v1.md'
 grep -Fqx '## Exact applicability and revision' 'protocols/growatt/bms-rs485-1xsxxp-v202.md'
 grep -Fqx '## FC03 read-only boundary' 'protocols/growatt/bms-rs485-1xsxxp-v202.md'
 grep -Fqx '## Writes and controls' 'protocols/growatt/bms-rs485-1xsxxp-v202.md'
+grep -Fq 'Runtime observations retain the selected unit, transport context, and exact' 'protocols/growatt/bms-rs485-1xsxxp-v202.md'
+grep -Fq 'Public fixtures use synthetic values and do not publish installation data.' 'protocols/growatt/bms-rs485-1xsxxp-v202.md'
 grep -Fqx '## Decoder and runtime boundary' 'protocols/growatt/bms-rs485-1xsxxp-v202.md'
 check_bms_contract 'protocols/growatt/bms-rs485-1xsxxp-v202.md'
 check_wit_matrix_contract 'protocols/growatt/wit-family-protocol-matrix-v1.md'
