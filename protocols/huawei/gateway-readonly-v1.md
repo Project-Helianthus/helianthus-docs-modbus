@@ -15,7 +15,16 @@ values are big-endian and most-significant word first. Strings occupy exactly
 terminal NUL or space padding.
 
 Serial numbers, ESNs, registration keys, writable aliases, credentials, and
-write-only search controls are excluded from detection and public output.
+write-only search controls are not qualification predicates. That admission
+rule does not redact an implemented native read observation: a codec preserves
+the native value, identifier, configuration, payload, provenance, and version
+context that it supports. A consumer may make a separate semantic projection.
+
+The public-artifact boundary is separate from the runtime boundary. This
+repository never publishes an operator's real capture, identifier, credential,
+endpoint, or laboratory data; examples and fixtures are synthetic. It does not
+turn native runtime observations into digests, masks, or withheld fields merely
+because they are sensitive or mutating.
 
 ## SmartLogger candidate
 
@@ -109,10 +118,11 @@ loops, duplicate objects, duplicate child addresses, count mismatch, malformed
 attributes, a second wrap, or a changing inventory guard.
 
 A child record may contain model, software version, interface protocol,
-device/address, feature version, product type, and parent relation. ESN is
-sensitive and omitted from public facts. Stable child identity uses the parent
-profile, routing address, model/product type, and source revision; it never uses
-ESN alone.
+device/address, feature version, product type, parent relation, and ESN. ESN is
+not by itself a stable child identity: stable identity uses the parent profile,
+routing address, model/product type, and source revision. When an implemented
+codec reads an ESN, it remains a native observation; public fixtures and prose
+use synthetic values instead of an operator's actual identifier.
 
 Total enumeration is bounded to 15 seconds. SmartLogger and EMMA permit at most
 248 pages, 248 objects, and 65536 response bytes. A separately qualified
