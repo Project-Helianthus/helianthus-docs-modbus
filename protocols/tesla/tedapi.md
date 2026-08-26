@@ -275,11 +275,13 @@ activation state.
 
 The native HSC MCP status projection accepts only an already-correlated,
 injected provider result. It retains each bounded FC100, FC101, or FC102
-payload exactly, together with its function, compatibility version, provenance
-label, and any available family, request tag, response tag, recovered request
-name, recovered response name, and field-name list. Names and fields are
-version-scoped metadata; unknown payload fields remain native bytes and are not
-discarded.
+payload exactly, together with its function, compatibility version, and
+provenance label. A compatibility-qualified FC100 registry record may also
+carry its family, request tag, response tag, recovered request name, recovered
+response name, and field-name list. FC101 and FC102 records carry only their
+opaque payload, function, compatibility version, and provenance until a later
+qualified contract defines metadata for them. Unknown payload fields remain
+native bytes and are not discarded.
 
 The projection preserves the provider's `outbound_allowed` context without
 constructing a request, opening a serial endpoint, selecting a transport, or
