@@ -186,6 +186,55 @@ check_tesla_tedapi_contract() {
   return 0
 }
 
+check_tesla_generation_contracts() {
+	local legacy="$1"
+	local gen3="$2"
+
+	check_public_protocol "$legacy"
+	check_public_protocol "$gen3"
+
+	for heading in \
+		'Scope and identification' \
+		'Serial and framing' \
+		'Checksum' \
+		'Command-family boundary' \
+		'Qualification' \
+		'Native retention' \
+		'Safety boundary' \
+		'Compatibility'; do
+		grep -Fqx "## $heading" "$legacy"
+	done
+	grep -Fq 'The legacy profile is a pre-Gen3 candidate and is not an assertion that every Wall Connector Gen2 implements this protocol.' "$legacy"
+	grep -Fq 'A legacy command byte `FC` is not a Modbus function code.' "$legacy"
+	grep -Fq 'FC100, FC101, and FC102 are not part of this contract.' "$legacy"
+	grep -Fq '9600 baud, eight data bits, no parity, and one stop bit' "$legacy"
+	grep -Fq 'C0 | escaped(message) | C0' "$legacy"
+	grep -Fq 'C0 -> DB DC' "$legacy"
+	grep -Fq 'DB -> DB DD' "$legacy"
+	grep -Fq 'sum(message_without_checksum[1:]) & 0xff' "$legacy"
+	grep -Fq 'Native runtime records retain bounded decoded frames and unknown command payloads exactly.' "$legacy"
+
+	for heading in \
+		'Scope and separation' \
+		'Serial and activation' \
+		'RTU framing' \
+		'Function boundary' \
+		'Exact version profiles' \
+		'Qualification' \
+		'Native retention' \
+		'Safety boundary' \
+		'Compatibility'; do
+		grep -Fqx "## $heading" "$gen3"
+	done
+	grep -Fq 'It must not use the legacy SLIP framing, checksum, command vocabulary, or qualification predicate.' "$gen3"
+	grep -Fq '115200 baud, eight data bits, no parity, and one stop bit' "$gen3"
+	grep -Fq '`TESLA` followed by NUL and then `PASS` followed by NUL' "$gen3"
+	grep -Fq 'FC100, FC101, and FC102 are private function-code values selected only by this Gen3 profile.' "$gen3"
+	grep -Fq '`wc3_24_28_3` and `wc3_24_44_3`' "$gen3"
+	grep -Fq 'No version range, family-prefix, or legacy Wall Connector identity qualifies this profile.' "$gen3"
+	grep -Fq 'Native runtime records retain bounded payloads, including unknown fields, exactly.' "$gen3"
+}
+
 check_private_function_contract() {
   local document="$1"
 
@@ -744,14 +793,20 @@ check_outback_axs_contract() {
 }
 
 if [[ $# -gt 0 ]]; then
-  if [[ $# -ne 2 ]]; then
-    echo 'usage: check_docs.sh [--check-sdongle-admission|--check-public-protocol|--check-tesla-tedapi-contract|--check-private-function-contract|--check-sunspec-v1-model-families-contract|--check-sunspec-nested-layout-contract|--check-sunspec-der-trip-lv-template-v2|--check-sunspec-der-trip-lv-typed-fact-projection-v2|--check-sunspec-dynamic-structural-selection-v2|--check-sunspec-v2-contract|--check-sunspec-v2-licensing|--check-x2-publication|--check-x2-contract|--check-bms-contract|--check-growatt-protocol-ii-identity-projection|--check-wit-matrix-contract document]' >&2
+  if [[ $# -ne 2 ]] && [[ "$1" != '--check-tesla-generation-contracts' || $# -ne 3 ]]; then
+    echo 'usage: check_docs.sh [--check-sdongle-admission|--check-public-protocol|--check-tesla-tedapi-contract|--check-tesla-generation-contracts|--check-private-function-contract|--check-sunspec-v1-model-families-contract|--check-sunspec-nested-layout-contract|--check-sunspec-der-trip-lv-template-v2|--check-sunspec-der-trip-lv-typed-fact-projection-v2|--check-sunspec-dynamic-structural-selection-v2|--check-sunspec-v2-contract|--check-sunspec-v2-licensing|--check-x2-publication|--check-x2-contract|--check-bms-contract|--check-growatt-protocol-ii-identity-projection|--check-wit-matrix-contract document]' >&2
     exit 2
   fi
   case "$1" in
     --check-sdongle-admission) check_sdongle_admission "$2" ;;
     --check-public-protocol) check_public_protocol "$2" ;;
     --check-tesla-tedapi-contract) check_tesla_tedapi_contract "$2" ;;
+    --check-tesla-generation-contracts)
+      if [[ $# -ne 3 ]]; then
+        exit 2
+      fi
+      check_tesla_generation_contracts "$2" "$3"
+      ;;
     --check-private-function-contract) check_private_function_contract "$2" ;;
     --check-sunspec-v1-model-families-contract) check_sunspec_v1_model_families_contract "$2" ;;
     --check-sunspec-nested-layout-contract) check_sunspec_nested_layout_contract "$2" ;;
@@ -776,6 +831,10 @@ fi
 
 spec='protocols/tesla/tedapi.md'
 test -f "$spec"
+tesla_legacy_spec='protocols/tesla/legacy-wall-connector-rs485.md'
+tesla_gen3_spec='protocols/tesla/gen3-hsc-rtu.md'
+test -f "$tesla_legacy_spec"
+test -f "$tesla_gen3_spec"
 nested_layout_spec='protocols/sunspec/nested-layout-contract-v1.md'
 test -f "$nested_layout_spec"
 der_trip_lv_template_spec='protocols/sunspec/der-trip-lv-template-v2.md'
@@ -808,6 +867,7 @@ for multivendor_spec in "${multivendor_specs[@]}"; do
 done
 
 check_tesla_tedapi_contract "$spec"
+check_tesla_generation_contracts "$tesla_legacy_spec" "$tesla_gen3_spec"
 
 check_private_function_contract "$private_spec"
 
