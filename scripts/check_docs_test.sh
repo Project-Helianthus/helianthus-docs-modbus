@@ -134,6 +134,20 @@ for mutation in \
   fi
 done
 
+for mutation in \
+  's/qualified WC load-sharing-state operation/unqualified WC load-sharing-state operation/' \
+  's/`tesla.hsc.fc100.wc_load_sharing_state.v1`/`tesla.hsc.fc100.any_wc_operation.v1`/' \
+  's/exactly `04 32 02 5a 00`/any FC100 PDU/' \
+  's/WC family `6` and one response tag `12`/WC family `6` and one response tag `11`/' \
+  's/tag-`12` body is a bounded opaque terminal body/contains a required inner member/' \
+  's/unknown response shape must cause no send/unknown response shape may send/'; do
+  sed "$mutation" "$tesla_document" > "$tesla_fixture"
+  if "$repo_root/scripts/check_docs.sh" --check-tesla-tedapi-contract "$tesla_fixture"; then
+    echo "Tesla WC load-sharing-state mutation was accepted: $mutation" >&2
+    exit 1
+  fi
+done
+
 "$repo_root/scripts/check_docs.sh" --check-private-function-contract "$private_function_document"
 for mutation in \
   's/FC100, FC101, and FC102 may be reused/FC100, FC101, and FC102 are globally reserved/' \
