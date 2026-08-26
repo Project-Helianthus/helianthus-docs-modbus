@@ -113,6 +113,22 @@ check_tesla_tedapi_contract() {
   printf '%s\n' "$wc_system_information" | grep -Fq 'tag-`10` body is a bounded opaque terminal body.'
   printf '%s\n' "$wc_system_information" | grep -Fq 'not a WC system-information result and must fail closed'
   printf '%s\n' "$wc_system_information" | grep -Fq 'general application failure is an FC100 normal response whose nested envelope contains Common family `4` and error tag `1`;'
+  grep -Fqx '### Qualified WC load-sharing-state operation' "$document"
+  local wc_load_sharing
+  wc_load_sharing=$(awk '/^### Qualified WC load-sharing-state operation$/{keep=1; next} /^### /{keep=0} keep' "$document")
+  printf '%s\n' "$wc_load_sharing" | grep -Fq 'This version defines a qualified WC load-sharing-state operation:'
+  printf '%s\n' "$wc_load_sharing" | grep -Fq '`tesla.hsc.fc100.wc_load_sharing_state.v1`.'
+  printf '%s\n' "$wc_load_sharing" | grep -Fq 'compatible only with the explicit `tesla_hsc_modbus_v1` profile and the'
+  printf '%s\n' "$wc_load_sharing" | grep -Fq '`wc3_24_44_3` operation version.'
+  printf '%s\n' "$wc_load_sharing" | grep -Fq 'unknown response shape must cause no send.'
+  printf '%s\n' "$wc_load_sharing" | grep -Fq 'nested request message is exactly `32 02 5a 00`; therefore its FC100 PDU is'
+  printf '%s\n' "$wc_load_sharing" | grep -Fq 'exactly `04 32 02 5a 00`.'
+  printf '%s\n' "$wc_load_sharing" | grep -Fq 'optional FC100 intermediate and may occur no more than once.'
+  printf '%s\n' "$wc_load_sharing" | grep -Fq 'A duplicate echo, a second terminal, or any response after a terminal must be quarantined'
+  printf '%s\n' "$wc_load_sharing" | grep -Fq 'nested envelope contains WC family `6` and one response tag `12`.'
+  printf '%s\n' "$wc_load_sharing" | grep -Fq 'tag-`12` body is a bounded opaque terminal body.'
+  printf '%s\n' "$wc_load_sharing" | grep -Fq 'not a load-sharing-state result and must fail closed'
+  printf '%s\n' "$wc_load_sharing" | grep -Fq 'general application failure is an FC100 normal response whose nested envelope contains Common family `4` and error tag `1`;'
   grep -Fqx '### Qualified Common system-information operation' "$document"
   grep -Fq 'This version defines a qualified Common system-information operation:' "$document"
   grep -Fq '`tesla.hsc.fc100.common_system_info.v1`.' "$document"
