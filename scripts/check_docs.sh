@@ -640,6 +640,23 @@ check_bms_contract() {
   grep -Fq 'produces `insufficient_evidence`, no send, and no partial' "$document"
 }
 
+check_growatt_protocol_ii_identity_projection() {
+  local document="$1"
+
+  check_public_protocol "$document"
+  grep -Fqx '## Identity tuple' "$document"
+  grep -Fqx '## Native identity capability' "$document"
+  grep -Fq 'offsets 23 through 27, five words, for native serial text;' "$document"
+  grep -Fq 'A qualified runtime identity contains the selected family, unicast unit,' "$document"
+  grep -Fq 'model-build pair, Modbus protocol version, and the five exact FC03 identity' "$document"
+  grep -Fq 'The runtime API may carry its configured endpoint and transport context with' "$document"
+  grep -Fq 'this native observation. Public documentation and fixtures use synthetic' "$document"
+  grep -Fq 'identity values and do not publish installation-specific identifiers, captures,' "$document"
+  grep -Fq 'The currently enumerated operation is FC03 identity acquisition. This contract' "$document"
+  grep -Fq 'does not define an FC06 or FC16 control operation, so no control command is' "$document"
+  grep -Fq 'partial publication. This version enumerates no control operation.' "$document"
+}
+
 check_wit_matrix_contract() {
   local document="$1"
   local expected_rows actual_rows
@@ -709,7 +726,7 @@ check_outback_axs_contract() {
 
 if [[ $# -gt 0 ]]; then
   if [[ $# -ne 2 ]]; then
-    echo 'usage: check_docs.sh [--check-sdongle-admission|--check-public-protocol|--check-tesla-tedapi-contract|--check-private-function-contract|--check-sunspec-v1-model-families-contract|--check-sunspec-nested-layout-contract|--check-sunspec-der-trip-lv-template-v2|--check-sunspec-der-trip-lv-typed-fact-projection-v2|--check-sunspec-dynamic-structural-selection-v2|--check-sunspec-v2-contract|--check-sunspec-v2-licensing|--check-x2-publication|--check-x2-contract|--check-bms-contract|--check-wit-matrix-contract document]' >&2
+    echo 'usage: check_docs.sh [--check-sdongle-admission|--check-public-protocol|--check-tesla-tedapi-contract|--check-private-function-contract|--check-sunspec-v1-model-families-contract|--check-sunspec-nested-layout-contract|--check-sunspec-der-trip-lv-template-v2|--check-sunspec-der-trip-lv-typed-fact-projection-v2|--check-sunspec-dynamic-structural-selection-v2|--check-sunspec-v2-contract|--check-sunspec-v2-licensing|--check-x2-publication|--check-x2-contract|--check-bms-contract|--check-growatt-protocol-ii-identity-projection|--check-wit-matrix-contract document]' >&2
     exit 2
   fi
   case "$1" in
@@ -727,10 +744,11 @@ if [[ $# -gt 0 ]]; then
     --check-x2-publication) check_x2_publication "$2" ;;
     --check-x2-contract) check_x2_contract "$2" ;;
     --check-bms-contract) check_bms_contract "$2" ;;
+    --check-growatt-protocol-ii-identity-projection) check_growatt_protocol_ii_identity_projection "$2" ;;
     --check-wit-matrix-contract) check_wit_matrix_contract "$2" ;;
     --check-outback-axs-contract) check_outback_axs_contract "$2" ;;
     *)
-    echo 'usage: check_docs.sh [--check-sdongle-admission|--check-public-protocol|--check-tesla-tedapi-contract|--check-private-function-contract|--check-sunspec-v1-model-families-contract|--check-sunspec-nested-layout-contract|--check-sunspec-der-trip-lv-template-v2|--check-sunspec-der-trip-lv-typed-fact-projection-v2|--check-sunspec-dynamic-structural-selection-v2|--check-sunspec-v2-contract|--check-sunspec-v2-licensing|--check-x2-publication|--check-x2-contract|--check-bms-contract|--check-wit-matrix-contract document]' >&2
+    echo 'usage: check_docs.sh [--check-sdongle-admission|--check-public-protocol|--check-tesla-tedapi-contract|--check-private-function-contract|--check-sunspec-v1-model-families-contract|--check-sunspec-nested-layout-contract|--check-sunspec-der-trip-lv-template-v2|--check-sunspec-der-trip-lv-typed-fact-projection-v2|--check-sunspec-dynamic-structural-selection-v2|--check-sunspec-v2-contract|--check-sunspec-v2-licensing|--check-x2-publication|--check-x2-contract|--check-bms-contract|--check-growatt-protocol-ii-identity-projection|--check-wit-matrix-contract document]' >&2
       exit 2
       ;;
   esac
@@ -792,7 +810,7 @@ grep -Fq '`EMMA-A01` and' 'protocols/huawei/gateway-readonly-v1.md'
 grep -Fq '`EMMA-A02` are the only admitted exact model values.' 'protocols/huawei/gateway-readonly-v1.md'
 grep -Fq 'EMMA-A01 never inherits an EMMA-A02-only capability.' 'protocols/huawei/gateway-readonly-v1.md'
 grep -Fq 'Basic and extended MEI are optional enrichment, never initial EMMA identification.' 'protocols/huawei/gateway-readonly-v1.md'
-grep -Fqx '## Identity tuple' 'protocols/growatt/protocol-ii-readonly-v1.md'
+check_growatt_protocol_ii_identity_projection 'protocols/growatt/protocol-ii-readonly-v1.md'
 grep -Fqx '## Request mapping' 'protocols/growatt/shinewilan-x2-bridge-v1.md'
 grep -Fqx '## Response mapping' 'protocols/growatt/shinewilan-x2-bridge-v1.md'
 grep -Fqx '## Read-only boundary' 'protocols/growatt/shinewilan-x2-bridge-v1.md'
