@@ -552,7 +552,7 @@ for mutation in \
   's/Only the typed extension words listed below are decoded/Every extension word is decoded telemetry/' \
   's/are not read/are read when needed/' \
   's/FC10 Preset Multiple Registers/FC10 Read Multiple Registers/' \
-  's/W or WR are unconditional `NO_SEND`/W or WR require operator approval/' \
+  's/W or WR require an exact operation contract that names function, address,/W or WR require operator approval/' \
   's/A bounded offline decoder is permitted only/A bounded offline decoder is permitted without/' \
   's/No bounded decoder creates catalog registration/Bounded decoder creates catalog registration/' \
   's/synthetic identity assembled from the document is not a substitute/synthetic identity assembled from the document is sufficient/'; do
