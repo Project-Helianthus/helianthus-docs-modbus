@@ -42,13 +42,10 @@ check_tesla_tedapi_contract() {
   grep -Fqx '### Read-only replay metadata' "$document"
   grep -Fq 'The field number is 1 through 536870911 and the' "$document"
   grep -Fq 'wire type is 0 through 5.' "$document"
-  grep -Fq 'Raw nested bytes, protobuf field names, values,' "$document"
-  grep -Fq 'operation identity, capability, and send authority are not projected.' "$document"
   grep -Fq 'Invalid, truncated, overflowed, or out-of-range keys are rejected.' "$document"
   grep -Fq 'A complete offline wire summary may retain the total FC100 envelope length,' "$document"
   grep -Fq 'of at most 64 entries. Each entry contains only its numeric field number and' "$document"
   grep -Fq 'Values are consumed only to validate wire boundaries and' "$document"
-  grep -Fq 'are never retained or projected.' "$document"
   grep -Fq 'group boundaries with the same field number.' "$document"
   grep -Fq 'oversized, unpaired, or over-count summary is rejected.' "$document"
   grep -Fqx '### MCP FC100 summary projection' "$document"
@@ -72,18 +69,15 @@ check_tesla_tedapi_contract() {
   grep -Fq 'field-presence contract within that body.' "$document"
   grep -Fq 'An omitted inner value must not be interpreted as a scalar' "$document"
   grep -Fq 'zero, an empty repeated value, or an empty nested member.' "$document"
-  grep -Fq 'names, units, identifiers, and raw bytes are not projected by this version;' "$document"
-  grep -Fq 'vitals result and must fail closed as a redacted operation failure.' "$document"
   grep -Fq 'Semantic read-only classification does not claim that the responder has no' "$document"
   grep -Fqx '### MCP qualified WC vitals replay' "$document"
   grep -Fq 'may be emitted only by an injected provider that' "$document"
   grep -Fq 'already selected `tesla.hsc.fc100.wc_vitals.v1`, `tesla_hsc_modbus_v1`, and' "$document"
   grep -Fq '`wc3_24_44_3`. It exposes only the operation and version qualification, replay' "$document"
   grep -Fq 'always `false`. An unavailable or invalid provider result produces no data.' "$document"
-  grep -Fq 'opens a serial endpoint, invokes a generic' "$document"
+  grep -Fq 'The compact view never creates a request, opens a serial endpoint, invokes a' "$document"
   grep -Fq 'transport exchange, or falls back to FC101 or FC102.' "$document"
-  grep -Fq 'transport exchange, or falls back to FC101 or FC102. It exposes no raw bytes,' "$document"
-  grep -Fq 'snapshot values, field names, identifiers, control meaning, or runtime' "$document"
+  grep -Fq 'activation state; it is separate from the native HSC record projection.' "$document"
   grep -Fqx '### Qualified WC lifetime operation' "$document"
   grep -Fq 'This version defines a qualified WC lifetime operation:' "$document"
   grep -Fq '`tesla.hsc.fc100.wc_lifetime.v1`.' "$document"
@@ -95,7 +89,7 @@ check_tesla_tedapi_contract() {
   grep -Fq 'A duplicate echo, a second terminal, or any response after a terminal must be quarantined' "$document"
   grep -Fq 'nested envelope contains WC family `6` and one response tag `4`.' "$document"
   grep -Fq 'tag-`4` body is a bounded opaque terminal body.' "$document"
-  grep -Fq 'not a lifetime result and must fail' "$document"
+  grep -Fq 'terminal PDU that does not match this success shape is unavailable as a native' "$document"
   grep -Fq 'nested envelope contains Common family `4` and error tag `1`;' "$document"
   grep -Fqx '### Qualified WC system-information operation' "$document"
   local wc_system_information
@@ -111,7 +105,7 @@ check_tesla_tedapi_contract() {
   printf '%s\n' "$wc_system_information" | grep -Fq 'A duplicate echo, a second terminal, or any response after a terminal must be quarantined'
   printf '%s\n' "$wc_system_information" | grep -Fq 'nested envelope contains WC family `6` and one response tag `10`.'
   printf '%s\n' "$wc_system_information" | grep -Fq 'tag-`10` body is a bounded opaque terminal body.'
-  printf '%s\n' "$wc_system_information" | grep -Fq 'not a WC system-information result and must fail closed'
+  printf '%s\n' "$wc_system_information" | grep -Fq 'terminal PDU that does not match this success shape is unavailable as a native'
   printf '%s\n' "$wc_system_information" | grep -Fq 'general application failure is an FC100 normal response whose nested envelope contains Common family `4` and error tag `1`;'
   grep -Fqx '### Qualified WC load-sharing-state operation' "$document"
   local wc_load_sharing
@@ -127,7 +121,7 @@ check_tesla_tedapi_contract() {
   printf '%s\n' "$wc_load_sharing" | grep -Fq 'A duplicate echo, a second terminal, or any response after a terminal must be quarantined'
   printf '%s\n' "$wc_load_sharing" | grep -Fq 'nested envelope contains WC family `6` and one response tag `12`.'
   printf '%s\n' "$wc_load_sharing" | grep -Fq 'tag-`12` body is a bounded opaque terminal body.'
-  printf '%s\n' "$wc_load_sharing" | grep -Fq 'not a load-sharing-state result and must fail closed'
+  printf '%s\n' "$wc_load_sharing" | grep -Fq 'terminal PDU that does not match this success shape is unavailable as a native'
   printf '%s\n' "$wc_load_sharing" | grep -Fq 'general application failure is an FC100 normal response whose nested envelope contains Common family `4` and error tag `1`;'
 	grep -Fqx '### Qualified WC PPU settings operation' "$document"
 	local wc_ppu_settings
@@ -145,7 +139,6 @@ check_tesla_tedapi_contract() {
 	printf '%s\n' "$wc_ppu_settings" | grep -Fq 'nested envelope contains exactly one WC family `6` member and exactly one response tag `24`, with no additional terminal member.'
 	printf '%s\n' "$wc_ppu_settings" | grep -Fq 'tag-`24` body is a bounded opaque terminal body.'
 	printf '%s\n' "$wc_ppu_settings" | grep -Fq 'no field, identifier, configuration value, or field-presence contract within that body.'
-	printf '%s\n' "$wc_ppu_settings" | grep -Fq 'does not create an MCP projection, gateway automatic dispatch, serial endpoint, or hardware I/O.'
 	printf '%s\n' "$wc_ppu_settings" | grep -Fq 'A real device exchange requires separate action-time laboratory confirmation.'
 	printf '%s\n' "$wc_ppu_settings" | grep -Fq 'general application failure is an FC100 normal response whose nested envelope contains Common family `4` and error tag `1`;'
 	local wc_ppu_response_tags wc_ppu_families wc_ppu_terminal_members
@@ -170,8 +163,22 @@ check_tesla_tedapi_contract() {
   grep -Fq 'exactly `04 22 02 12 00`.' "$document"
   grep -Fq 'Common-message response tag `3`.' "$document"
   grep -Fq 'tag-`3` body is a bounded opaque terminal body.' "$document"
-  grep -Fq 'result and must fail closed as a redacted operation failure.' "$document"
   grep -Fq 'normal Common error body is a terminal application failure;' "$document"
+
+  if grep -Eq 'raw bytes are not projected by this version|redacted operation failure' "$document"; then
+    echo 'Tesla native-record contract retains superseded runtime redaction wording' >&2
+    return 1
+  fi
+  grep -Fq 'The native HSC MCP status projection accepts only an already-correlated,' "$document" || return 1
+  grep -Fq 'payload exactly, together with its function, compatibility version, and' "$document" || return 1
+  grep -Fq 'The projection preserves the provider' "$document" || return 1
+  grep -Fq 'digest-only format does not limit the native HSC record projection.' "$document" || return 1
+  grep -Fq 'The compact summary does not project raw nested' "$document" || return 1
+  grep -Fq 'payloads without assigning semantics.' "$document" || return 1
+  grep -Fq 'Fixtures and documentation examples use synthetic values.' "$document" || return 1
+  printf '%s\n' "$wc_ppu_settings" | grep -Fq 'The native HSC record projection may retain this terminal body without creating' || return 1
+  printf '%s\n' "$wc_ppu_settings" | grep -Fq 'It does not infer a configuration value or control action.' || return 1
+  printf '%s\n' "$wc_ppu_settings" | grep -Fq 'A real device exchange requires separate action-time laboratory confirmation.' || return 1
   if grep -Ein "$forbidden" "$document"; then
     echo 'normative Tesla specification contains forbidden provenance material' >&2
     return 1

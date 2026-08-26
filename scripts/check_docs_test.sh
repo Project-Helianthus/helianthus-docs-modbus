@@ -38,15 +38,23 @@ tesla_document="$repo_root/protocols/tesla/tedapi.md"
 tesla_fixture="$fixture_root/tesla-tedapi.md"
 "$repo_root/scripts/check_docs.sh" --check-tesla-tedapi-contract "$tesla_document"
 for mutation in \
+  's/payload exactly, together with its function, compatibility version, and/payload only as a digest, without its function or compatibility version,/' \
+  's/digest-only format does not limit the native HSC record projection/digest-only format replaces the native HSC record projection/' \
+  's/Fixtures and documentation examples use synthetic values/Fixtures and documentation examples may use operator captures/' \
+  's/It does not infer a configuration value or control action/It infers a configuration value and control action/'; do
+  sed "$mutation" "$tesla_document" > "$tesla_fixture"
+  if "$repo_root/scripts/check_docs.sh" --check-tesla-tedapi-contract "$tesla_fixture"; then
+    echo "Tesla native-record boundary mutation was accepted: $mutation" >&2
+    exit 1
+  fi
+done
+for mutation in \
   's/1 through 536870911/1 through 536870912/' \
   's/wire type is 0 through 5/wire type is 0 through 6/' \
-  's/Raw nested bytes, protobuf field names, values,/Raw nested bytes and protobuf field names are projected,/' \
-  's/operation identity, capability, and send authority are not projected/operation identity and send authority are projected/' \
   's/Invalid, truncated, overflowed, or out-of-range keys are rejected/Invalid keys are retained/' \
   's/at most 64 entries/at most 65 entries/' \
   's/total FC100 envelope length/total FC100 envelope bytes and values/' \
   's/Values are consumed only to validate wire boundaries and/Values are retained while validating wire boundaries and/' \
-  's/are never retained or projected/are projected as operation semantics/' \
   's/group boundaries with the same field number/group boundaries without matching field numbers/' \
   's/oversized, unpaired, or over-count summary is rejected/oversized summaries are retained/' \
   's/only from an injected, locally/without an injected provider/' \
@@ -64,16 +72,13 @@ for mutation in \
   's/tag-`2` body is a bounded opaque terminal body/contains a required inner member/' \
   's/This version defines no member,/This version defines a member,/' \
   's/zero, an empty repeated value, or an empty nested member./zero is always available./' \
-  's/identifiers, and raw bytes are not projected/identifiers and raw bytes are projected/' \
-  's/must fail closed as a redacted operation failure/may be decoded as vitals/' \
   's/does not claim that the responder has no/claims that the responder has no/' \
   's/only by an injected provider/through an unqualified generic provider/' \
   's/`wc3_24_44_3`\. It exposes only the operation/any operation version. It exposes only the operation/' \
   's/always `false`/may be `true`/' \
   's/produces no data/produces successful data/' \
-  's/invokes a generic/invokes a live/' \
+  's/The compact view never creates a request/The compact view creates a request/' \
   's/falls back to FC101 or FC102/falls back to FC100/' \
-  's/It exposes no raw bytes,/It exposes no values,/' \
   's/This version defines a qualified operation/This version defines no qualified operation/' \
   's/terminal body. This version defines no member/terminal body. This version defines an inner member/' \
   's/unknown response shape must cause no send/unknown response shape may send/' \
@@ -164,7 +169,7 @@ for mutation in \
   '/^### Qualified WC PPU settings operation$/,/^### Qualified WC system-information operation$/s/exactly one WC family `6` member and exactly one response tag `24`, with no additional terminal member/one WC family `6` member and one response tag `23`/' \
   '/^### Qualified WC PPU settings operation$/,/^### Qualified WC system-information operation$/s/tag-`24` body is a bounded opaque terminal body/contains a required inner member/' \
   '/^### Qualified WC PPU settings operation$/,/^### Qualified WC system-information operation$/s/no field, identifier, configuration value, or field-presence contract within that body/a configuration value is projected from that body/' \
-  '/^### Qualified WC PPU settings operation$/,/^### Qualified WC system-information operation$/s|does not create an MCP projection, gateway automatic dispatch, serial endpoint, or hardware I/O|creates an MCP projection and gateway dispatch|' \
+  '/^### Qualified WC PPU settings operation$/,/^### Qualified WC system-information operation$/s|The native HSC record projection may retain this terminal body without creating|The native HSC record projection creates gateway automatic dispatch|' \
   '/^### Qualified WC PPU settings operation$/,/^### Qualified WC system-information operation$/s/A real device exchange requires separate action-time laboratory confirmation/A real device exchange is automatically enabled/' \
   '/^### Qualified WC PPU settings operation$/,/^### Qualified WC system-information operation$/s/Common family `4` and error tag `1`/Common family `6` and error tag `24`/'; do
   sed "$mutation" "$tesla_document" > "$tesla_fixture"
