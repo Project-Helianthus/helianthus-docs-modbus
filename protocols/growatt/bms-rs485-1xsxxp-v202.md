@@ -2,7 +2,7 @@
 
 ## Scope
 
-This contract defines a default-denied, offline read-only candidate for the
+This contract defines a caller-selected native observation contract for the
 Growatt 1xSxxP ESS battery protocol over Modbus RTU. It is a battery-to-inverter
 interoperability protocol, not Growatt inverter Protocol II and not SunSpec.
 
@@ -83,7 +83,8 @@ The minimum offline tuple combines all of:
 Company codes, generation values, software version, a readable unit, or one
 telemetry value alone are insufficient. The company fields are scoped to this
 protocol and are not a global Growatt vendor detector. Barcode, serial number,
-unit address, and writable configuration are forbidden identity inputs.
+and unit address are not independent identity selectors; the complete
+revision-declared tuple remains required.
 
 Because the protocol revision is not wire-identifiable, a fixture must declare
 the exact revision tuple independently and prove that its decoded identity
@@ -148,8 +149,9 @@ only and cannot authorize a request or control action.
 
 FC10 Preset Multiple Registers, address allocation, handshake writes, force
 charge, protection settings, calibration, BMS control, and every field marked
-W or WR are unconditional `NO_SEND`. This remains true even if an offline
-fixture contains a structurally valid request or a device would accept it.
+W or WR require an exact operation contract that names function, address,
+payload encoding, preconditions, and terminal response. This page enumerates
+no such command, so it constructs none.
 
 Offset 0x010C and offsets 0x010F through 0x0161 are outside the admitted read
 plan because they contain control or writable calibration authority. FC05,
@@ -158,10 +160,11 @@ operations.
 
 ## Decoder and runtime boundary
 
-A bounded offline decoder is permitted only for an externally declared
+A bounded decoder is permitted only for an externally declared
 revision tuple, one explicitly selected unicast unit, and the exact FC03 slices
-listed above. It must retain raw words with barcode, serial, endpoint, and
-installation identity absent. Every decoded field needs an exact versioned
+listed above. Runtime observations retain the selected unit, transport context, and exact
+FC03 slices. Public fixtures use synthetic values and do not publish installation data.
+Every decoded field needs an exact versioned
 byte-order, word-order, signedness, and scaling definition; otherwise it stays
 opaque. Repeated-pack data requires an exact extent and explicit pack identity;
 without those, no repeated fact is emitted.
