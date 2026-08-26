@@ -249,6 +249,22 @@ check_tesla_generation_contracts() {
 	fi
 }
 
+check_tesla_evse_scope() {
+	local document="$1"
+	local forbidden='Wifi|Wi-Fi|OCPP|Provision|Registration|credential|password|FactoryReset|PerformUpdate|CheckForUpdate|ClearUpdate|Configure|PrepareRegistration|AccessControl|ChargeSchedule|SecurityParameter|CountryCode|Neurio'
+
+	grep -Fqx '### FC100 EVSE operation registry' "$document"
+	grep -Fq 'GetVitals' "$document"
+	grep -Fq 'GetLifetimeStats' "$document"
+	grep -Fq 'GetLoadSharingNetworkState' "$document"
+	grep -Fq 'GetSystemInfo' "$document"
+	grep -Fq 'EVSE charging-current limit control' "$document"
+	if grep -Eqi "$forbidden" "$document"; then
+		echo 'Tesla TEDAPI document exceeds the EVSE interoperability scope' >&2
+		return 1
+	fi
+}
+
 check_private_function_contract() {
   local document="$1"
 
@@ -882,6 +898,7 @@ done
 
 check_tesla_tedapi_contract "$spec"
 check_tesla_generation_contracts "$tesla_legacy_spec" "$tesla_gen3_spec"
+check_tesla_evse_scope "$spec"
 
 check_private_function_contract "$private_spec"
 
