@@ -1,7 +1,8 @@
 # Helianthus Modbus Documentation
 
 This public repository is the canonical home for Helianthus Modbus-native
-protocol contracts, device notes, and redacted interoperability material.
+protocol contracts, device notes, native-evidence boundaries, and synthetic
+interoperability material.
 
 Current protocol contracts:
 
