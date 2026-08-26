@@ -205,8 +205,8 @@ awk '
   /^### Qualified WC system-information operation$/ { in_ppu = 0 }
   { print }
   in_ppu && /A real device exchange requires separate action-time laboratory confirmation\./ {
-    print "A successful terminal may include response tag 25."
-    print "An additional WC family is accepted."
+    print "An additional terminal member of response tag 25 is permitted."
+    print "A second WC family 6 member is permitted."
   }
 ' "$tesla_document" > "$tesla_fixture"
 if "$repo_root/scripts/check_docs.sh" --check-tesla-tedapi-contract "$tesla_fixture"; then
