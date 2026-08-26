@@ -164,7 +164,7 @@ for mutation in \
   '/^### Qualified WC PPU settings operation$/,/^### Qualified WC system-information operation$/s/WC family `6` and one response tag `24`/WC family `6` and one response tag `23`/' \
   '/^### Qualified WC PPU settings operation$/,/^### Qualified WC system-information operation$/s/tag-`24` body is a bounded opaque terminal body/contains a required inner member/' \
   '/^### Qualified WC PPU settings operation$/,/^### Qualified WC system-information operation$/s/no field, identifier, configuration value, or field-presence contract within that body/a configuration value is projected from that body/' \
-  '/^### Qualified WC PPU settings operation$/,/^### Qualified WC system-information operation$/s/does not create an MCP projection, gateway automatic dispatch, serial endpoint, or hardware I/O/creates an MCP projection and gateway dispatch/' \
+  '/^### Qualified WC PPU settings operation$/,/^### Qualified WC system-information operation$/s|does not create an MCP projection, gateway automatic dispatch, serial endpoint, or hardware I/O|creates an MCP projection and gateway dispatch|' \
   '/^### Qualified WC PPU settings operation$/,/^### Qualified WC system-information operation$/s/A real device exchange requires separate action-time laboratory confirmation/A real device exchange is automatically enabled/' \
   '/^### Qualified WC PPU settings operation$/,/^### Qualified WC system-information operation$/s/Common family `4` and error tag `1`/Common family `6` and error tag `24`/'; do
   sed "$mutation" "$tesla_document" > "$tesla_fixture"

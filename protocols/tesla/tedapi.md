@@ -183,33 +183,23 @@ It is compatible only with the explicit `tesla_hsc_modbus_v1` profile and the
 capability, unqualified endpoint or node, missing replay-safe declaration, or
 unknown response shape must cause no send.
 
-The nested request message is exactly `32 03 ba 01 00`; therefore its FC100 PDU
-is exactly `05 32 03 ba 01 00`. The outer message selects WC messages, the
+The nested request message is exactly `32 03 ba 01 00`; therefore its FC100 PDU is
+exactly `05 32 03 ba 01 00`. The outer message selects WC messages, the
 nested message selects the empty PPU settings request, and no caller-supplied
 request fields are permitted. This byte sequence is an offline operation
 descriptor, not an endpoint probe or a transmission instruction.
 
-An echoed PDU exactly equal to this request PDU is an optional FC100
-intermediate and may occur no more than once. A duplicate echo, a second
-terminal, or any response after a terminal must be quarantined and fail this
-operation. A successful terminal PDU is an FC100 normal response whose nested
-envelope contains WC family `6` and one response tag `24`. The tag-`24` body is
-a bounded opaque terminal body. This version defines no field, identifier,
-configuration value, or field-presence contract within that body. Its values,
-field names, units, identifiers, and raw bytes are not projected by this
-version; a decoder may retain only terminal-tag presence, terminal-body length,
-digest, and structural replay metadata. An omitted inner value must not be
-interpreted as a scalar zero, an empty repeated value, or an empty nested
-member. A normal terminal PDU that does not match this success shape is not a
-PPU settings result and must fail closed as a redacted operation failure. A
-general application failure is an FC100 normal response whose nested envelope
-contains Common family `4` and error tag `1`; the generic exception-response
-rules remain separate.
+An echoed PDU exactly equal to this request PDU is an optional FC100 intermediate and may occur no more than once.
+A duplicate echo, a second terminal, or any response after a terminal must be quarantined and fail this operation.
+A successful terminal PDU is an FC100 normal response whose nested envelope contains WC family `6` and one response tag `24`.
+The tag-`24` body is a bounded opaque terminal body. This version defines no field, identifier, configuration value, or field-presence contract within that body.
+Its values, field names, units, identifiers, and raw bytes are not projected by this version; a decoder may retain only terminal-tag presence, terminal-body length, digest, and structural replay metadata.
+An omitted inner value must not be interpreted as a scalar zero, an empty repeated value, or an empty nested member.
+A normal terminal PDU that does not match this success shape is not a PPU settings result and must fail closed as a redacted operation failure.
+A general application failure is an FC100 normal response whose nested envelope contains Common family `4` and error tag `1`; the generic exception-response rules remain separate.
 
-This operation does not create an MCP projection, gateway automatic dispatch,
-serial endpoint, or hardware I/O. It admits no configuration value, identifier,
-or raw body to any public surface. A real device exchange requires separate
-action-time laboratory confirmation.
+This operation does not create an MCP projection, gateway automatic dispatch, serial endpoint, or hardware I/O.
+It admits no configuration value, identifier, or raw body to any public surface. A real device exchange requires separate action-time laboratory confirmation.
 
 Semantic read-only classification does not claim that the responder has no
 ephemeral transport-side effects. It grants no configuration, control, pairing,
