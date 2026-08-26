@@ -78,7 +78,7 @@ name, unit number, or score must not pick a winner.
 
 Malformed extents, inconsistent identity reads, unknown schema revision,
 unsupported register range, timeout, or exception produces no send and no
-partial publication. All live operations remain denied in this version.
+partial publication. This version enumerates no control operation.
 
 Executable fixture decoding and negative-overlap proof belong to the consuming
 profile registry. This page creates no admission by itself.

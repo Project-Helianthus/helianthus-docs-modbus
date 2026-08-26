@@ -654,6 +654,7 @@ check_growatt_protocol_ii_identity_projection() {
   grep -Fq 'identity values and do not publish installation-specific identifiers, captures,' "$document"
   grep -Fq 'The currently enumerated operation is FC03 identity acquisition. This contract' "$document"
   grep -Fq 'does not define an FC06 or FC16 control operation, so no control command is' "$document"
+  grep -Fq 'partial publication. This version enumerates no control operation.' "$document"
 }
 
 check_wit_matrix_contract() {
