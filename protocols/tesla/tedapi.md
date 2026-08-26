@@ -288,6 +288,77 @@ are never retained or projected. Wire types 3 and 4 are valid only as paired
 group boundaries with the same field number. A malformed, truncated,
 oversized, unpaired, or over-count summary is rejected.
 
+### FC100 named operation registry for WC3 24.44.3
+
+Each row is a catalog-recognized fallback operation descriptor. The descriptor
+defines the bounded request and terminal shape for offline construction,
+decoding, and replay; it does not itself open hardware, select a live
+transport, or transmit a frame. A terminal retains its complete bounded native
+body and preserves unknown wire fields.
+
+| Family | Tags | Request | Terminal | request body |
+|---|---|---|---|---|
+| Common | 2→3 | CommonAPIGetSystemInfo | CommonSystemInfo | exact empty |
+| Common | 6→7 | CommonAPIPerformUpdate | PerformUpdateResponse | exact empty |
+| Common | 8→9 | CommonAPIFactoryReset | FactoryResetResponse | exact empty |
+| Common | 10→11 | CommonAPIWifiScan | WifiScanResponse | caller-supplied opaque non-empty: `max_scan_duration_s?`, repeated callback value, `maximum_total_aps?` |
+| Common | 12→13 | CommonAPIConfigureWifi | ConfigureWifiResponse | caller-supplied opaque non-empty: `enabled`, `wifi_config{ssid,password{value},security_type}` |
+| Common | 14→15 | CommonAPICheckForUpdate | CheckForUpdateResponse | caller-supplied opaque non-empty: `download_if_available?` |
+| Common | 16→17 | CommonAPIClearUpdate | ClearUpdateResponse | exact empty |
+| Common | 36→37 | CommonAPIPrepareRegistrationPayload | PrepareRegistrationPayloadResponse | caller-supplied opaque non-empty: `customer_registration_info?` |
+| WC | 1→2 | GetVitals | WCVitals | exact empty |
+| WC | 3→4 | GetLifetimeStats | WCLifetimeStats | exact empty |
+| WC | 5→6 | GetConfig | WCConfig | exact empty |
+| WC | 7→8 | ConfigureSettings | ConfigureSettingsResponse | caller-supplied opaque non-empty: `settings` |
+| WC | 9→10 | GetSystemInfo | WCGenealogy | exact empty |
+| WC | 11→12 | GetLoadSharingNetworkState | WCLoadSharingNetworkState | exact empty |
+| WC | 17→18 | SetLoadSharingNetworkOperation | SetLoadSharingNetworkOperationResponse | caller-supplied opaque non-empty: `charging_enabled` |
+| WC | 19→20 | ConfigureLoadSharingSettings | ConfigureLoadSharingSettingsResponse | caller-supplied opaque non-empty: `settings` |
+| WC | 21→22 | ConfigurePpuSettings | ConfigurePpuSettingsResponse | caller-supplied opaque non-empty: `ppu_config` |
+| WC | 23→24 | GetPpuSettings | WCPpuConfig | exact empty |
+| WC | 25→26 | SetProvisionalOperationalParams | SetProvisionalOperationalParamsResponse | caller-supplied opaque non-empty: `prov_op_params` |
+| WC | 27→28 | GetProvisionalOperationalParams | WCProvisionalOperationalParams | exact empty |
+| WC | 29→30 | GetAccessControlSettings | WCAccessControlEntry | exact empty |
+| WC | 31→32 | ConfigureAccessControlSettings | WCAccessControlEntry | caller-supplied opaque non-empty: `operation`, `vin`, `name` |
+| WC | 33→34 | GetRecentVehicles | RecentVehicles | exact empty |
+| WC | 35→36 | PushPpuAuthorizationState | Common ErrorResponse | caller-supplied opaque non-empty: `authorized`, `auth_uuid`; normal status 7 |
+| WC | 37→38 | ConfigureChargeSchedule | ConfigureChargeScheduleResponse | caller-supplied opaque non-empty: `config`, `time_zone` |
+| WC | 39→40 | PushChargeCommand | PushChargeCommandResponse | caller-supplied opaque non-empty: `charge_command` |
+| WC | 41→42 | ConfigureThirdPartyVehicleMode | ConfigureThirdPartyVehicleModeResponse | caller-supplied opaque non-empty: `third_party_vehicle_mode` |
+| WC | 43→44 | ConfigureHomeSiteController | ConfigureHomeSiteControllerResponse | caller-supplied opaque non-empty: `din`, `modbus_node_id`, `vehicle_to_home` |
+| WC | 45→46 | ConfigureOcppSettings | ConfigureOcppSettingsResponse | caller-supplied opaque non-empty: `settings` |
+| WC | 47→48 | SetOcppSecurityParameter | SetOcppSecurityParameterResponse | caller-supplied opaque non-empty: `security_parameter_type`, `security_parameter` |
+| WC | 49→50 | GetOcppSecurityParameter | OcppSecurityParameter | caller-supplied opaque non-empty: `security_parameter_type` |
+| WC | 51→52 | ConfigureOperationalSettings | ConfigureOperationalSettingsResponse | caller-supplied opaque non-empty: `operational_settings_config` |
+| WC | 53→54 | GetOperationalSettings | WCOperationalSettingsConfig | exact empty |
+| WC | 55→56 | ConfigureCountryCodeSettings | ConfigureCountryCodeSettingsResponse | caller-supplied opaque non-empty: `country` |
+| Neurio | 5→6 | NeurioMeterAPIConfigureCts | ConfigureCtsResponse | caller-supplied opaque non-empty: `serial?`, `ct_config[]{location,real_power_scale_factor}` |
+
+Recovered names include CommonAPIGetSystemInfo/CommonSystemInfo,
+CommonAPIWifiScan/WifiScanResponse, GetVitals/WCVitals,
+GetLifetimeStats/WCLifetimeStats, GetConfig/WCConfig,
+GetSystemInfo/WCGenealogy, GetLoadSharingNetworkState/WCLoadSharingNetworkState,
+GetPpuSettings/WCPpuConfig, GetProvisionalOperationalParams/
+WCProvisionalOperationalParams, GetAccessControlSettings/WCAccessControlEntry,
+GetRecentVehicles/RecentVehicles, GetOcppSecurityParameter/
+OcppSecurityParameter, GetOperationalSettings/WCOperationalSettingsConfig, and
+NeurioMeterAPIConfigureCts/ConfigureCtsResponse.
+
+The words **exact empty** require a zero-byte nested request body. A
+**caller-supplied opaque non-empty** body must be complete and non-empty; its
+unknown fields remain native data and are retained. The supplied names identify
+known request structure but do not infer a value, unit, enum, or field presence
+beyond this compatibility version.
+
+CommonSystemInfo fields are `device_id`, `din`, `firmware_version`,
+`system_update`, `device_type`; WifiScanResponse network fields are `ssid`,
+`rssi_value`, `rssi`, `security_type`; WCLifetimeStats ends with
+`charging_energy`; WCGenealogy contains `region`, `handle_type`, and
+`hardware_features`. No later-version field is implied. Common tags 2, 6, 8,
+16 and WC tags 1, 3, 5, 9, 11, 23, 27, 29, 33, 53 have exact empty bodies.
+Common tags 10 and 12 require non-empty structures. WC tag 35 produces normal
+application status 7 in the FC100 context.
+
 ## Functions 101 and 102
 
 An FC101 or FC102 request PDU is `length:u8 | request[length]`. The request
