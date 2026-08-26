@@ -633,9 +633,9 @@ for mutation in \
   's/length 23\./length 24./' \
   's/vendor-scoped observed state/standard observed state/' \
   's/does not convert an OutBack device into a generic inverter profile./converts an OutBack device into a generic inverter profile./' \
-  's/complete caller-supplied Model 64110 raw word block/selected raw word block/' \
-  's/they do not become typed facts or an operation contract./they become typed facts and an operation contract./' \
-  's/Every write or control operation remains `NO_SEND` until an operation-specific contract/Every write or control operation is enabled/' \
+  's/complete caller-supplied Model 64110 raw word/selected raw word/' \
+  's/observation data when supplied; they do not become typed facts or an operation/observation data becomes typed facts and an operation/' \
+  's/Every write or control operation remains `NO_SEND` until an operation-specific/Every write or control operation is enabled/' \
   's/No function in this contract writes a register/A function in this contract writes a register/' \
   's/does not identify a network endpoint, unit identifier, installation,/identifies a network endpoint, unit identifier, installation,/'; do
   sed "$mutation" "$outback_document" > "$outback_fixture"

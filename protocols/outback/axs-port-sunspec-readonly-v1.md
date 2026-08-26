@@ -38,14 +38,24 @@ All other Model 64110 words, all unknown models, and every wrong-length model
 remain opaque. Unknown status or error bits retain raw numeric provenance; this
 contract does not create inferred labels.
 
+An implementation may expose the complete caller-supplied Model 64110 raw word
+block and its exact source spans as native observation data. The raw block
+preserves its supplied order and must not acquire typed field labels, a profile
+match, or control authority from this contract.
+
 ## Excluded fields and operations
 
-Network settings, device addresses, hardware addresses, credentials, passwords,
-mail settings, time settings, logging controls, configuration values, and all read/write or write-only fields are excluded from output. They are `NO_SEND`.
+Configuration-like, network, address, hardware-address, credential, password,
+mail, time, logging-control, and other untyped raw words remain native
+observation data when supplied; they do not become typed facts or an operation
+contract.
 
-No function in this contract writes a register, clears a log, changes a device
-setting, requests a control action, or derives a control capability. A read-only
-observation must not be reused as an authorization token for a later operation.
+Every write or control operation remains `NO_SEND` until an operation-specific
+contract defines its function, address, payload, and execution boundary. No
+function in this contract writes a register, clears a log, changes a device
+setting, requests a control action, or derives a control capability. A
+read-only observation must not be reused as an authorization token for a later
+operation.
 
 ## Failure and ambiguity
 
