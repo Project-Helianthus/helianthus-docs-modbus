@@ -52,6 +52,19 @@ identity values and do not publish installation-specific identifiers, captures,
 or endpoint coordinates. A failed tuple gate produces no partial identity
 projection.
 
+## MCP native identity projection
+
+An MCP result for a qualified identity returns the selected family, unicast
+unit, normalized firmware text, native serial text, device type code,
+model-build pair, protocol version, and the five exact FC03 identity slices as
+`native_identity` without a redaction marker or a substitute digest. Each field
+retains its native tuple position and is not inferred from a related Growatt
+family, unit, or firmware selection.
+
+An incomplete, conflicting, or unsupported identity tuple produces no partial
+identity projection. The identity projection does not authorize an FC06, FC16,
+or other write.
+
 The currently enumerated operation is FC03 identity acquisition. This contract
 does not define an FC06 or FC16 control operation, so no control command is
 constructed from it. A later exact operation contract may add command

@@ -144,6 +144,18 @@ Warnings, errors, company-specific status interpretation, calibration, and
 every control-adjacent value remain opaque. Decoding any field is observation
 only and cannot authorize a request or control action.
 
+## MCP native observation projection
+
+For a qualified observation, an MCP status result must return the selected
+unit, revision tuple, and all four exact FC03 slices that formed the bounded
+observation. It must preserve every retained word at its native offset, in the
+same slice order, alongside any typed identity, status, or telemetry view.
+Typed values supplement the native observation; they do not replace it.
+
+Missing, malformed, or contradictory slices produce no qualified projection.
+An admitted observation does not authorize FC05, FC06, FC0F, FC10, FC17, a
+private function, broadcast, calibration, or any other write.
+
 
 ## Writes and controls
 
