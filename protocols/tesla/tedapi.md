@@ -290,11 +290,20 @@ oversized, unpaired, or over-count summary is rejected.
 
 ### FC100 named operation registry for WC3 24.44.3
 
-Compatibility version `wc3_24_44_3` defines Common request-to-terminal pairs
-2→3, 6→7, 8→9, 10→11, 12→13, 14→15, 16→17 and 36→37; WC pairs 1→2,
-3→4, 5→6, 7→8, 9→10, 11→12, 17→18 through 55→56 for the accepted odd
-request tags; and Neurio pair 5→6. A terminal retains its complete bounded
-native body and preserves unknown wire fields.
+Each row is an accepted fallback operation. A terminal retains its complete
+bounded native body and preserves unknown wire fields.
+
+| Family | Tags | Request | Response | body rule |
+|---|---|---|---|---|
+| Common | 2→3 | CommonAPIGetSystemInfo | CommonSystemInfo | empty |
+| Common | 6→7; 8→9; 16→17 | CommonAPIPerformUpdate; CommonAPIFactoryReset; CommonAPIClearUpdate | corresponding response | empty |
+| Common | 10→11 | CommonAPIWifiScan | WifiScanResponse | non-empty |
+| Common | 12→13 | CommonAPIConfigureWifi | ConfigureWifiResponse | non-empty |
+| Common | 14→15; 36→37 | CommonAPICheckForUpdate; CommonAPIPrepareRegistrationPayload | corresponding response | non-empty |
+| WC | 1→2; 3→4; 5→6; 9→10; 11→12; 23→24; 27→28; 29→30; 33→34; 53→54 | GetVitals; GetLifetimeStats; GetConfig; GetSystemInfo; GetLoadSharingNetworkState; GetPpuSettings; GetProvisionalOperationalParams; GetAccessControlSettings; GetRecentVehicles; GetOperationalSettings | corresponding named terminal | empty |
+| WC | 7→8; 17→18; 19→20; 21→22; 25→26; 31→32; 37→38; 39→40; 41→42; 43→44; 45→46; 47→48; 49→50; 51→52; 55→56 | ConfigureSettings; SetLoadSharingNetworkOperation; ConfigureLoadSharingSettings; ConfigurePpuSettings; SetProvisionalOperationalParams; ConfigureAccessControlSettings; ConfigureChargeSchedule; PushChargeCommand; ConfigureThirdPartyVehicleMode; ConfigureHomeSiteController; ConfigureOcppSettings; SetOcppSecurityParameter; GetOcppSecurityParameter; ConfigureOperationalSettings; ConfigureCountryCodeSettings | corresponding response | non-empty |
+| WC | 35→36 | PushPpuAuthorizationState | Common ErrorResponse | normal status 7 |
+| Neurio | 5→6 | NeurioMeterAPIConfigureCts | ConfigureCtsResponse | non-empty |
 
 Recovered names include CommonAPIGetSystemInfo/CommonSystemInfo,
 CommonAPIWifiScan/WifiScanResponse, GetVitals/WCVitals,
