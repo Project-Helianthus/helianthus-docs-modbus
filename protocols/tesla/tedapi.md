@@ -290,8 +290,11 @@ oversized, unpaired, or over-count summary is rejected.
 
 ### FC100 named operation registry for WC3 24.44.3
 
-Each row is an accepted fallback operation. A terminal retains its complete
-bounded native body and preserves unknown wire fields.
+Each row is a catalog-recognized fallback operation descriptor. The descriptor
+defines the bounded request and terminal shape for offline construction,
+decoding, and replay; it does not itself open hardware, select a live
+transport, or transmit a frame. A terminal retains its complete bounded native
+body and preserves unknown wire fields.
 
 | Family | Tags | Request | Response | body rule |
 |---|---|---|---|---|
