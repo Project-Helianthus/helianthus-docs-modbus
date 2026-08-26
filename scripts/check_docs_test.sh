@@ -152,6 +152,68 @@ for mutation in \
   fi
 done
 
+for mutation in \
+  's/qualified WC PPU settings operation/unqualified WC PPU settings operation/' \
+  's/`tesla.hsc.fc100.wc_ppu_settings.v1`/`tesla.hsc.fc100.any_wc_operation.v1`/' \
+  's/read-only configuration operation/mutating configuration operation/' \
+  's/exactly `05 32 03 ba 01 00`/any FC100 PDU/' \
+  '/^### Qualified WC PPU settings operation$/,/^### Qualified WC system-information operation$/s/`wc3_24_44_3` operation version/any operation version/' \
+  '/^### Qualified WC PPU settings operation$/,/^### Qualified WC system-information operation$/s/unknown response shape must cause no send/unknown response shape may send/' \
+  '/^### Qualified WC PPU settings operation$/,/^### Qualified WC system-information operation$/s/may occur no more than once/may occur without bound/' \
+  '/^### Qualified WC PPU settings operation$/,/^### Qualified WC system-information operation$/s/must be quarantined and fail this operation/may remain in flight/' \
+  '/^### Qualified WC PPU settings operation$/,/^### Qualified WC system-information operation$/s/exactly one WC family `6` member and exactly one response tag `24`, with no additional terminal member/one WC family `6` member and one response tag `23`/' \
+  '/^### Qualified WC PPU settings operation$/,/^### Qualified WC system-information operation$/s/tag-`24` body is a bounded opaque terminal body/contains a required inner member/' \
+  '/^### Qualified WC PPU settings operation$/,/^### Qualified WC system-information operation$/s/no field, identifier, configuration value, or field-presence contract within that body/a configuration value is projected from that body/' \
+  '/^### Qualified WC PPU settings operation$/,/^### Qualified WC system-information operation$/s|does not create an MCP projection, gateway automatic dispatch, serial endpoint, or hardware I/O|creates an MCP projection and gateway dispatch|' \
+  '/^### Qualified WC PPU settings operation$/,/^### Qualified WC system-information operation$/s/A real device exchange requires separate action-time laboratory confirmation/A real device exchange is automatically enabled/' \
+  '/^### Qualified WC PPU settings operation$/,/^### Qualified WC system-information operation$/s/Common family `4` and error tag `1`/Common family `6` and error tag `24`/'; do
+  sed "$mutation" "$tesla_document" > "$tesla_fixture"
+  if "$repo_root/scripts/check_docs.sh" --check-tesla-tedapi-contract "$tesla_fixture"; then
+    echo "Tesla WC PPU settings mutation was accepted: $mutation" >&2
+    exit 1
+  fi
+done
+
+awk '
+  /^### Qualified WC PPU settings operation$/ { in_ppu = 1 }
+  /^### Qualified WC system-information operation$/ { in_ppu = 0 }
+  { print }
+  in_ppu && /A real device exchange requires separate action-time laboratory confirmation\./ {
+    print "This operation exposes configuration values, enables a setter, may fall back to FC101 or FC102, and creates gateway automatic dispatch."
+  }
+' "$tesla_document" > "$tesla_fixture"
+if "$repo_root/scripts/check_docs.sh" --check-tesla-tedapi-contract "$tesla_fixture"; then
+  echo 'Tesla WC PPU settings additive scope expansion was accepted' >&2
+  exit 1
+fi
+
+awk '
+  /^### Qualified WC PPU settings operation$/ { in_ppu = 1 }
+  /^### Qualified WC system-information operation$/ { in_ppu = 0 }
+  { print }
+  in_ppu && /A real device exchange requires separate action-time laboratory confirmation\./ {
+    print "This operation may fall back to FC101 or FC102."
+  }
+' "$tesla_document" > "$tesla_fixture"
+if "$repo_root/scripts/check_docs.sh" --check-tesla-tedapi-contract "$tesla_fixture"; then
+  echo 'Tesla WC PPU settings fallback expansion was accepted' >&2
+  exit 1
+fi
+
+awk '
+  /^### Qualified WC PPU settings operation$/ { in_ppu = 1 }
+  /^### Qualified WC system-information operation$/ { in_ppu = 0 }
+  { print }
+  in_ppu && /A real device exchange requires separate action-time laboratory confirmation\./ {
+    print "An additional terminal member of response tag 25 is permitted."
+    print "A second WC family 6 member is permitted."
+  }
+' "$tesla_document" > "$tesla_fixture"
+if "$repo_root/scripts/check_docs.sh" --check-tesla-tedapi-contract "$tesla_fixture"; then
+  echo 'Tesla WC PPU settings terminal-shape expansion was accepted' >&2
+  exit 1
+fi
+
 "$repo_root/scripts/check_docs.sh" --check-private-function-contract "$private_function_document"
 for mutation in \
   's/FC100, FC101, and FC102 may be reused/FC100, FC101, and FC102 are globally reserved/' \
