@@ -519,6 +519,19 @@ for contradiction in \
   fi
 done
 
+protocol_ii_document="$repo_root/protocols/growatt/protocol-ii-readonly-v1.md"
+protocol_ii_fixture="$(mktemp)"
+for mutation in \
+  's/Serial-number words/Serial values/' \
+  's/automatic detection, telemetry, endpoint acquisition, control, or a device/automatic detection is enabled/'; do
+  sed "$mutation" "$protocol_ii_document" > "$protocol_ii_fixture"
+  if "$repo_root/scripts/check_docs.sh" --check-growatt-protocol-ii-identity-projection "$protocol_ii_fixture"; then
+    echo "Growatt Protocol II projection mutation was accepted: $mutation" >&2
+    exit 1
+  fi
+done
+rm -f "$protocol_ii_fixture"
+
 "$repo_root/scripts/check_docs.sh" --check-bms-contract "$bms_document"
 
 for mutation in \

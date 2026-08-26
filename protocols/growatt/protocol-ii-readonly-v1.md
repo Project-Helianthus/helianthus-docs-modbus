@@ -37,6 +37,18 @@ that fixture. Unknown device type, malformed ASCII, a protocol value outside
 the selected schema, or disagreement among identity fields remains
 `insufficient_evidence`.
 
+## Public identity projection
+
+A qualified identity projection may contain only the selected family, the
+normalized firmware text, the device type code, the two-word model-build pair,
+and the Modbus protocol version. Each projected value comes from the exact
+identity tuple above; it is not inferred from a related Growatt family.
+
+Serial-number words, unit identifiers, raw slices, endpoints, and transport
+details are excluded from this projection. This projection does not add
+automatic detection, telemetry, endpoint acquisition, control, or a device
+support claim. A failed tuple gate produces no partial identity projection.
+
 ## Offline telemetry candidate
 
 After the identity tuple passes, a fixture may decode bounded FC04 telemetry
