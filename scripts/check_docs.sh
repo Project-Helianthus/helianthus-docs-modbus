@@ -234,8 +234,13 @@ check_tesla_generation_contracts() {
 	grep -Fq '`wc3_24_28_3` and `wc3_24_44_3` are known HSC observations, not a version whitelist.' "$gen3"
 	grep -Fq '`compatible_candidate` retains an unenumerated Gen3 version with its native payloads.' "$gen3"
 	grep -Fq 'No numeric minimum version is asserted by this contract.' "$gen3"
+	grep -Fq 'otherwise it is `unknown`.' "$gen3"
 	grep -Fq 'The version label alone does not grant a HSC operation or live exchange.' "$gen3"
 	grep -Fq 'Native runtime records retain bounded payloads, including unknown fields, exactly.' "$gen3"
+	if grep -Eqi '([0-9]+\.[0-9]+\.[0-9]+)[^.]*\b(minimum|or newer|and later|qualifies)\b|\bminimum version\b[^.]*[0-9]' "$gen3"; then
+		echo 'Tesla Gen3 contract introduces a numeric version threshold' >&2
+		return 1
+	fi
 }
 
 check_private_function_contract() {

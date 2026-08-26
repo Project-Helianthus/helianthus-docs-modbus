@@ -57,6 +57,7 @@ for mutation in \
   's/It must not use the legacy SLIP framing/It may use the legacy SLIP framing/' \
   's/known HSC observations, not a version whitelist/only qualified HSC versions/' \
   's/No numeric minimum version is asserted by this contract./A numeric minimum version is 24.28.3./' \
+  's/otherwise it is `unknown`./otherwise it is `compatible`./' \
   's/The version label alone does not grant a HSC operation or live exchange./The version label alone grants a HSC operation and live exchange./'; do
   sed "$mutation" "$tesla_gen3_document" > "$tesla_gen3_fixture"
   if "$repo_root/scripts/check_docs.sh" --check-tesla-generation-contracts "$tesla_legacy_document" "$tesla_gen3_fixture"; then
@@ -64,6 +65,16 @@ for mutation in \
     exit 1
   fi
 done
+awk '
+  { print }
+  /No numeric minimum version is asserted by this contract\./ {
+    print "Minimum version 24.28.3 qualifies this profile."
+  }
+' "$tesla_gen3_document" > "$tesla_gen3_fixture"
+if "$repo_root/scripts/check_docs.sh" --check-tesla-generation-contracts "$tesla_legacy_document" "$tesla_gen3_fixture"; then
+  echo 'Tesla Gen3 additive numeric threshold was accepted' >&2
+  exit 1
+fi
 for mutation in \
   's/payload exactly, together with its function, compatibility version, and/payload only as a digest, without its function or compatibility version,/' \
   's/digest-only format does not limit the native HSC record projection/digest-only format replaces the native HSC record projection/' \
