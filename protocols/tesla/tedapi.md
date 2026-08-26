@@ -22,8 +22,8 @@ bytes are retained without assigning fields, units, enums, or commands.
 
 ## Endpoint roles
 
-The initiator owns local serialization, deadlines, retry policy, redaction, and
-operation admission. The responder accepts a configured node and vendor
+The initiator owns local serialization, deadlines, retry policy, native record
+retention, and operation admission. The responder accepts a configured node and vendor
 function. A capture or replay endpoint is receive-only or offline and must not
 open a live serial endpoint or transmit frames.
 
@@ -114,8 +114,13 @@ An echoed PDU exactly equal to this request PDU is an FC100 intermediate. A
 successful terminal PDU selects one bounded WC-message response tag `2`. The
 tag-`2` body is a bounded opaque terminal body. This version defines no member,
 field number, wire type, scalar, enum, repeated value, unit, scale, range, or
-field-presence contract within that body. Its values, field names, units, identifiers, and raw bytes are not projected by this version; a decoder may retain only terminal-tag presence, terminal-body length, digest, and structural replay metadata. An omitted inner value must not be interpreted as a scalar
-zero, an empty repeated value, or an empty nested member. A normal terminal PDU that does not match this success shape is not a vitals result and must fail closed as a redacted operation failure. The generic exception-response rules remain separate.
+field-presence contract within that body. Its bounded terminal bytes are
+projected as a native HSC record with function, compatibility version,
+provenance, and terminal context; no scalar, field name, unit, identifier, or
+control meaning is inferred. An omitted inner value must not be interpreted as
+a scalar zero, an empty repeated value, or an empty nested member. A normal
+terminal PDU that does not match this success shape is unavailable as a native
+terminal record. The generic exception-response rules remain separate.
 
 Semantic read-only classification does not claim that the responder has no
 ephemeral transport-side effects. It grants no configuration, control, pairing,
@@ -139,13 +144,15 @@ endpoint probe or a transmission instruction.
 
 An echoed PDU exactly equal to this request PDU is an optional FC100 intermediate and may occur no more than once. A duplicate echo, a second terminal, or any response after a terminal must be quarantined and fail this operation. A successful terminal PDU is an FC100 normal response whose nested envelope contains WC family `6` and one response tag `4`. The tag-`4` body is a bounded opaque terminal body. This version defines no member,
 field number, wire type, scalar, enum, repeated value, unit, scale, range, or
-field-presence contract within that body. Its values, field names, units,
-identifiers, and raw bytes are not projected by this version; a decoder may
-retain only terminal-tag presence, terminal-body length, digest, and structural
-replay metadata. An omitted inner value must not be interpreted as a scalar
-zero, an empty repeated value, or an empty nested member. A normal terminal PDU
-that does not match this success shape is not a lifetime result and must fail
-closed as a redacted operation failure. A lifetime operation application failure is an FC100 normal response whose nested envelope contains Common family `4` and error tag `1`; the generic exception-response rules remain separate.
+field-presence contract within that body. Its bounded terminal bytes are
+projected as a native HSC record with function, compatibility version,
+provenance, and terminal context; no scalar, field name, unit, identifier, or
+control meaning is inferred. An omitted inner value must not be interpreted as
+a scalar zero, an empty repeated value, or an empty nested member. A normal
+terminal PDU that does not match this success shape is unavailable as a native
+terminal record. A lifetime operation application failure is an FC100 normal
+response whose nested envelope contains Common family `4` and error tag `1`; the
+generic exception-response rules remain separate.
 
 Semantic read-only classification does not claim that the responder has no
 ephemeral transport-side effects. It grants no configuration, control, pairing,
@@ -167,7 +174,7 @@ message selects the empty load-sharing-state request, and no caller-supplied
 request fields are permitted. This byte sequence is an operation descriptor,
 not an endpoint probe or a transmission instruction.
 
-An echoed PDU exactly equal to this request PDU is an optional FC100 intermediate and may occur no more than once. A duplicate echo, a second terminal, or any response after a terminal must be quarantined and fail this operation. A successful terminal PDU is an FC100 normal response whose nested envelope contains WC family `6` and one response tag `12`. The tag-`12` body is a bounded opaque terminal body. This version defines no member, field number, wire type, scalar, enum, repeated value, unit, scale, range, or field-presence contract within that body. Its values, field names, units, identifiers, and raw bytes are not projected by this version; a decoder may retain only terminal-tag presence, terminal-body length, digest, and structural replay metadata. An omitted inner value must not be interpreted as a scalar zero, an empty repeated value, or an empty nested member. A normal terminal PDU that does not match this success shape is not a load-sharing-state result and must fail closed as a redacted operation failure. A general application failure is an FC100 normal response whose nested envelope contains Common family `4` and error tag `1`; the generic exception-response rules remain separate.
+An echoed PDU exactly equal to this request PDU is an optional FC100 intermediate and may occur no more than once. A duplicate echo, a second terminal, or any response after a terminal must be quarantined and fail this operation. A successful terminal PDU is an FC100 normal response whose nested envelope contains WC family `6` and one response tag `12`. The tag-`12` body is a bounded opaque terminal body. This version defines no member, field number, wire type, scalar, enum, repeated value, unit, scale, range, or field-presence contract within that body. Its bounded terminal bytes are projected as a native HSC record with function, compatibility version, provenance, and terminal context; no scalar, field name, unit, identifier, or control meaning is inferred. An omitted inner value must not be interpreted as a scalar zero, an empty repeated value, or an empty nested member. A normal terminal PDU that does not match this success shape is unavailable as a native terminal record. A general application failure is an FC100 normal response whose nested envelope contains Common family `4` and error tag `1`; the generic exception-response rules remain separate.
 
 Semantic read-only classification does not claim that the responder has no
 ephemeral transport-side effects. It grants no configuration, control, pairing,
@@ -193,13 +200,15 @@ An echoed PDU exactly equal to this request PDU is an optional FC100 intermediat
 A duplicate echo, a second terminal, or any response after a terminal must be quarantined and fail this operation.
 A successful terminal PDU is an FC100 normal response whose nested envelope contains exactly one WC family `6` member and exactly one response tag `24`, with no additional terminal member.
 The tag-`24` body is a bounded opaque terminal body. This version defines no field, identifier, configuration value, or field-presence contract within that body.
-Its values, field names, units, identifiers, and raw bytes are not projected by this version; a decoder may retain only terminal-tag presence, terminal-body length, digest, and structural replay metadata.
+Its bounded terminal bytes are projected as a native HSC record with function,
+compatibility version, provenance, and terminal context; no configuration value,
+field name, identifier, or control meaning is inferred.
 An omitted inner value must not be interpreted as a scalar zero, an empty repeated value, or an empty nested member.
-A normal terminal PDU that does not match this success shape is not a PPU settings result and must fail closed as a redacted operation failure.
+A normal terminal PDU that does not match this success shape is unavailable as a native terminal record.
 A general application failure is an FC100 normal response whose nested envelope contains Common family `4` and error tag `1`; the generic exception-response rules remain separate.
 
-This operation does not create an MCP projection, gateway automatic dispatch, serial endpoint, or hardware I/O.
-It admits no configuration value, identifier, or raw body to any public surface. A real device exchange requires separate action-time laboratory confirmation.
+The native HSC record projection may retain this terminal body without creating
+gateway automatic dispatch, a serial endpoint, or hardware I/O. It does not infer a configuration value or control action. A real device exchange requires separate action-time laboratory confirmation.
 
 Semantic read-only classification does not claim that the responder has no
 ephemeral transport-side effects. It grants no configuration, control, pairing,
@@ -221,7 +230,7 @@ message selects the empty system-information request, and no caller-supplied
 request fields are permitted. This byte sequence is an operation descriptor,
 not an endpoint probe or a transmission instruction.
 
-An echoed PDU exactly equal to this request PDU is an optional FC100 intermediate and may occur no more than once. A duplicate echo, a second terminal, or any response after a terminal must be quarantined and fail this operation. A successful terminal PDU is an FC100 normal response whose nested envelope contains WC family `6` and one response tag `10`. The tag-`10` body is a bounded opaque terminal body. This version defines no member, field number, wire type, scalar, enum, repeated value, unit, scale, range, or field-presence contract within that body. Its values, field names, units, identifiers, and raw bytes are not projected by this version; a decoder may retain only terminal-tag presence, terminal-body length, digest, and structural replay metadata. An omitted inner value must not be interpreted as a scalar zero, an empty repeated value, or an empty nested member. A normal terminal PDU that does not match this success shape is not a WC system-information result and must fail closed as a redacted operation failure. A general application failure is an FC100 normal response whose nested envelope contains Common family `4` and error tag `1`; the generic exception-response rules remain separate.
+An echoed PDU exactly equal to this request PDU is an optional FC100 intermediate and may occur no more than once. A duplicate echo, a second terminal, or any response after a terminal must be quarantined and fail this operation. A successful terminal PDU is an FC100 normal response whose nested envelope contains WC family `6` and one response tag `10`. The tag-`10` body is a bounded opaque terminal body. This version defines no member, field number, wire type, scalar, enum, repeated value, unit, scale, range, or field-presence contract within that body. Its bounded terminal bytes are projected as a native HSC record with function, compatibility version, provenance, and terminal context; no scalar, field name, unit, identifier, or control meaning is inferred. An omitted inner value must not be interpreted as a scalar zero, an empty repeated value, or an empty nested member. A normal terminal PDU that does not match this success shape is unavailable as a native terminal record. A general application failure is an FC100 normal response whose nested envelope contains Common family `4` and error tag `1`; the generic exception-response rules remain separate.
 
 Semantic read-only classification does not claim that the responder has no
 ephemeral transport-side effects. It grants no configuration, control, pairing,
@@ -247,13 +256,14 @@ An echoed PDU exactly equal to this request PDU is an FC100 intermediate. A
 successful terminal PDU selects one bounded Common-message response tag `3`.
 The tag-`3` body is a bounded opaque terminal body. This version defines no
 member, field number, wire type, scalar, enum, repeated value, unit, scale,
-range, or field-presence contract within that body. Its values, field names,
-units, identifiers, and raw bytes are not projected by this version; a decoder
-may retain only terminal-tag presence, terminal-body length, digest, and
-structural replay metadata. An omitted inner value must not be interpreted as a
-scalar zero, an empty repeated value, or an empty nested member. A normal
-terminal PDU that does not match this success shape is not a system-information
-result and must fail closed as a redacted operation failure. A normal Common error body is a terminal application failure; the generic exception-response rules remain separate.
+range, or field-presence contract within that body. Its bounded terminal bytes
+are projected as a native HSC record with function, compatibility version,
+provenance, and terminal context; no scalar, field name, unit, identifier, or
+control meaning is inferred. An omitted inner value must not be interpreted as
+a scalar zero, an empty repeated value, or an empty nested member. A normal
+terminal PDU that does not match this success shape is unavailable as a native
+terminal record. A normal Common error body is a terminal application failure;
+the generic exception-response rules remain separate.
 
 Semantic read-only classification does not claim that the responder has no
 ephemeral transport-side effects. It grants no configuration, control, pairing,
@@ -266,10 +276,10 @@ already selected `tesla.hsc.fc100.wc_vitals.v1`, `tesla_hsc_modbus_v1`, and
 `wc3_24_44_3`. It exposes only the operation and version qualification, replay
 kind, snapshot length, and snapshot digest. Its `outbound_allowed` value is
 always `false`. An unavailable or invalid provider result produces no data.
-The view never creates a request, opens a serial endpoint, invokes a generic
-transport exchange, or falls back to FC101 or FC102. It exposes no raw bytes,
-snapshot values, field names, identifiers, control meaning, or runtime
-activation state.
+The compact view never creates a request, opens a serial endpoint, invokes a
+generic transport exchange, or falls back to FC101 or FC102. It exposes no raw
+bytes, snapshot values, field names, identifiers, control meaning, or runtime
+activation state; it is separate from the native HSC record projection.
 
 ### MCP native HSC record projection
 
@@ -304,15 +314,17 @@ digest-only format does not limit the native HSC record projection.
 An offline FC100 decoder may retain the nested-message length, the numeric
 first protobuf key field number, its numeric wire type, and a deterministic
 digest of the nested message. The field number is 1 through 536870911 and the
-wire type is 0 through 5. Raw nested bytes, protobuf field names, values,
-operation identity, capability, and send authority are not projected.
+wire type is 0 through 5. The compact summary does not project raw nested
+bytes, protobuf field names, values, operation identity, capability, or send
+authority; the separate native HSC record projection retains bounded terminal
+payloads without assigning semantics.
 Invalid, truncated, overflowed, or out-of-range keys are rejected.
 
 A complete offline wire summary may retain the total FC100 envelope length,
 nested-message length, deterministic digest, entry count, and an ordered list
 of at most 64 entries. Each entry contains only its numeric field number and
 numeric wire type. Values are consumed only to validate wire boundaries and
-are never retained or projected. Wire types 3 and 4 are valid only as paired
+are not projected by this compact summary. Wire types 3 and 4 are valid only as paired
 group boundaries with the same field number. A malformed, truncated,
 oversized, unpaired, or over-count summary is rejected.
 
