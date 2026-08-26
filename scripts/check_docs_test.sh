@@ -161,7 +161,7 @@ for mutation in \
   '/^### Qualified WC PPU settings operation$/,/^### Qualified WC system-information operation$/s/unknown response shape must cause no send/unknown response shape may send/' \
   '/^### Qualified WC PPU settings operation$/,/^### Qualified WC system-information operation$/s/may occur no more than once/may occur without bound/' \
   '/^### Qualified WC PPU settings operation$/,/^### Qualified WC system-information operation$/s/must be quarantined and fail this operation/may remain in flight/' \
-  '/^### Qualified WC PPU settings operation$/,/^### Qualified WC system-information operation$/s/WC family `6` and one response tag `24`/WC family `6` and one response tag `23`/' \
+  '/^### Qualified WC PPU settings operation$/,/^### Qualified WC system-information operation$/s/exactly one WC family `6` member and exactly one response tag `24`, with no additional terminal member/one WC family `6` member and one response tag `23`/' \
   '/^### Qualified WC PPU settings operation$/,/^### Qualified WC system-information operation$/s/tag-`24` body is a bounded opaque terminal body/contains a required inner member/' \
   '/^### Qualified WC PPU settings operation$/,/^### Qualified WC system-information operation$/s/no field, identifier, configuration value, or field-presence contract within that body/a configuration value is projected from that body/' \
   '/^### Qualified WC PPU settings operation$/,/^### Qualified WC system-information operation$/s|does not create an MCP projection, gateway automatic dispatch, serial endpoint, or hardware I/O|creates an MCP projection and gateway dispatch|' \
@@ -197,6 +197,20 @@ awk '
 ' "$tesla_document" > "$tesla_fixture"
 if "$repo_root/scripts/check_docs.sh" --check-tesla-tedapi-contract "$tesla_fixture"; then
   echo 'Tesla WC PPU settings fallback expansion was accepted' >&2
+  exit 1
+fi
+
+awk '
+  /^### Qualified WC PPU settings operation$/ { in_ppu = 1 }
+  /^### Qualified WC system-information operation$/ { in_ppu = 0 }
+  { print }
+  in_ppu && /A real device exchange requires separate action-time laboratory confirmation\./ {
+    print "A successful terminal may include response tag 25."
+    print "An additional WC family is accepted."
+  }
+' "$tesla_document" > "$tesla_fixture"
+if "$repo_root/scripts/check_docs.sh" --check-tesla-tedapi-contract "$tesla_fixture"; then
+  echo 'Tesla WC PPU settings terminal-shape expansion was accepted' >&2
   exit 1
 fi
 

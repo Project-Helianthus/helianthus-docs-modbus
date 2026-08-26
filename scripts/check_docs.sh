@@ -142,13 +142,13 @@ check_tesla_tedapi_contract() {
 	printf '%s\n' "$wc_ppu_settings" | grep -Fq 'exactly `05 32 03 ba 01 00`.'
 	printf '%s\n' "$wc_ppu_settings" | grep -Fq 'optional FC100 intermediate and may occur no more than once.'
 	printf '%s\n' "$wc_ppu_settings" | grep -Fq 'A duplicate echo, a second terminal, or any response after a terminal must be quarantined'
-	printf '%s\n' "$wc_ppu_settings" | grep -Fq 'nested envelope contains WC family `6` and one response tag `24`.'
+	printf '%s\n' "$wc_ppu_settings" | grep -Fq 'nested envelope contains exactly one WC family `6` member and exactly one response tag `24`, with no additional terminal member.'
 	printf '%s\n' "$wc_ppu_settings" | grep -Fq 'tag-`24` body is a bounded opaque terminal body.'
 	printf '%s\n' "$wc_ppu_settings" | grep -Fq 'no field, identifier, configuration value, or field-presence contract within that body.'
 	printf '%s\n' "$wc_ppu_settings" | grep -Fq 'does not create an MCP projection, gateway automatic dispatch, serial endpoint, or hardware I/O.'
 	printf '%s\n' "$wc_ppu_settings" | grep -Fq 'A real device exchange requires separate action-time laboratory confirmation.'
 	printf '%s\n' "$wc_ppu_settings" | grep -Fq 'general application failure is an FC100 normal response whose nested envelope contains Common family `4` and error tag `1`;'
-	if printf '%s\n' "$wc_ppu_settings" | grep -Eqi '\b(exposes|projects|retains|returns|publishes)\b.*\b(configuration values?|identifiers?|raw (body|bytes?))\b|\b(enables|permits|admits|creates|invokes|dispatches)\b.*\b(setter|control|configuration mutation|FC101|FC102|serial endpoint|hardware I/O|gateway automatic dispatch)\b|\b((may|can|will)[[:space:]]+)?fall(s)? back to\b.*\bFC10[12]\b|\b(uses|sends through)\b.*\bFC10[12]\b|\boutbound_allowed\b.*\btrue\b|\breal device exchange\b.*\b(automatic|enabled)\b'; then
+	if printf '%s\n' "$wc_ppu_settings" | grep -Eqi '\b(exposes|projects|retains|returns|publishes)\b.*\b(configuration values?|identifiers?|raw (body|bytes?))\b|\b(enables|permits|admits|creates|invokes|dispatches)\b.*\b(setter|control|configuration mutation|FC101|FC102|serial endpoint|hardware I/O|gateway automatic dispatch)\b|\b((may|can|will)[[:space:]]+)?fall(s)? back to\b.*\bFC10[12]\b|\b(uses|sends through)\b.*\bFC10[12]\b|\bmay (include|contain)\b.*\b(WC family|response tag)\b|\badditional (WC family|response tag)\b.*\b(accepted|allowed|permitted)\b|\boutbound_allowed\b.*\btrue\b|\breal device exchange\b.*\b(automatic|enabled)\b'; then
 		echo 'Tesla WC PPU settings contract exceeds its opaque replay boundary' >&2
 		return 1
 	fi

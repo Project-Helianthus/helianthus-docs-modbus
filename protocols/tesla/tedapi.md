@@ -191,7 +191,7 @@ descriptor, not an endpoint probe or a transmission instruction.
 
 An echoed PDU exactly equal to this request PDU is an optional FC100 intermediate and may occur no more than once.
 A duplicate echo, a second terminal, or any response after a terminal must be quarantined and fail this operation.
-A successful terminal PDU is an FC100 normal response whose nested envelope contains WC family `6` and one response tag `24`.
+A successful terminal PDU is an FC100 normal response whose nested envelope contains exactly one WC family `6` member and exactly one response tag `24`, with no additional terminal member.
 The tag-`24` body is a bounded opaque terminal body. This version defines no field, identifier, configuration value, or field-presence contract within that body.
 Its values, field names, units, identifiers, and raw bytes are not projected by this version; a decoder may retain only terminal-tag presence, terminal-body length, digest, and structural replay metadata.
 An omitted inner value must not be interpreted as a scalar zero, an empty repeated value, or an empty nested member.
