@@ -288,6 +288,33 @@ are never retained or projected. Wire types 3 and 4 are valid only as paired
 group boundaries with the same field number. A malformed, truncated,
 oversized, unpaired, or over-count summary is rejected.
 
+### FC100 named operation registry for WC3 24.44.3
+
+Compatibility version `wc3_24_44_3` defines Common request-to-terminal pairs
+2→3, 6→7, 8→9, 10→11, 12→13, 14→15, 16→17 and 36→37; WC pairs 1→2,
+3→4, 5→6, 7→8, 9→10, 11→12, 17→18 through 55→56 for the accepted odd
+request tags; and Neurio pair 5→6. A terminal retains its complete bounded
+native body and preserves unknown wire fields.
+
+Recovered names include CommonAPIGetSystemInfo/CommonSystemInfo,
+CommonAPIWifiScan/WifiScanResponse, GetVitals/WCVitals,
+GetLifetimeStats/WCLifetimeStats, GetConfig/WCConfig,
+GetSystemInfo/WCGenealogy, GetLoadSharingNetworkState/WCLoadSharingNetworkState,
+GetPpuSettings/WCPpuConfig, GetProvisionalOperationalParams/
+WCProvisionalOperationalParams, GetAccessControlSettings/WCAccessControlEntry,
+GetRecentVehicles/RecentVehicles, GetOcppSecurityParameter/
+OcppSecurityParameter, GetOperationalSettings/WCOperationalSettingsConfig, and
+NeurioMeterAPIConfigureCts/ConfigureCtsResponse.
+
+CommonSystemInfo fields are `device_id`, `din`, `firmware_version`,
+`system_update`, `device_type`; WifiScanResponse network fields are `ssid`,
+`rssi_value`, `rssi`, `security_type`; WCLifetimeStats ends with
+`charging_energy`; WCGenealogy contains `region`, `handle_type`, and
+`hardware_features`. No later-version field is implied. Common tags 2, 6, 8,
+16 and WC tags 1, 3, 5, 9, 11, 23, 27, 29, 33, 53 have exact empty bodies.
+Common tags 10 and 12 require non-empty structures. WC tag 35 produces normal
+application status 7 in the FC100 context.
+
 ## Functions 101 and 102
 
 An FC101 or FC102 request PDU is `length:u8 | request[length]`. The request
