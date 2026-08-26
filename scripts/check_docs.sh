@@ -148,7 +148,7 @@ check_tesla_tedapi_contract() {
 	printf '%s\n' "$wc_ppu_settings" | grep -Fq 'does not create an MCP projection, gateway automatic dispatch, serial endpoint, or hardware I/O.'
 	printf '%s\n' "$wc_ppu_settings" | grep -Fq 'A real device exchange requires separate action-time laboratory confirmation.'
 	printf '%s\n' "$wc_ppu_settings" | grep -Fq 'general application failure is an FC100 normal response whose nested envelope contains Common family `4` and error tag `1`;'
-	if printf '%s\n' "$wc_ppu_settings" | grep -Eqi '\b(exposes|projects|retains|returns|publishes)\b.*\b(configuration values?|identifiers?|raw (body|bytes?))\b|\b(enables|permits|admits|creates|invokes|dispatches)\b.*\b(setter|control|configuration mutation|FC101|FC102|serial endpoint|hardware I/O|gateway automatic dispatch)\b|\b(falls back to|uses|sends through)\b.*\bFC10[12]\b|\boutbound_allowed\b.*\btrue\b|\breal device exchange\b.*\b(automatic|enabled)\b'; then
+	if printf '%s\n' "$wc_ppu_settings" | grep -Eqi '\b(exposes|projects|retains|returns|publishes)\b.*\b(configuration values?|identifiers?|raw (body|bytes?))\b|\b(enables|permits|admits|creates|invokes|dispatches)\b.*\b(setter|control|configuration mutation|FC101|FC102|serial endpoint|hardware I/O|gateway automatic dispatch)\b|\b((may|can|will)[[:space:]]+)?fall(s)? back to\b.*\bFC10[12]\b|\b(uses|sends through)\b.*\bFC10[12]\b|\boutbound_allowed\b.*\btrue\b|\breal device exchange\b.*\b(automatic|enabled)\b'; then
 		echo 'Tesla WC PPU settings contract exceeds its opaque replay boundary' >&2
 		return 1
 	fi
