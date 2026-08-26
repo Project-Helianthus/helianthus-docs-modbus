@@ -212,6 +212,7 @@ check_tesla_generation_contracts() {
 	grep -Fq 'C0 -> DB DC' "$legacy"
 	grep -Fq 'DB -> DB DD' "$legacy"
 	grep -Fq 'sum(message_without_checksum[1:]) & 0xff' "$legacy"
+	grep -Fq 'The family-compatible tier accepts a locally declared legacy protocol family without claiming a firmware build.' "$legacy"
 	grep -Fq 'Native runtime records retain bounded decoded frames and unknown command payloads exactly.' "$legacy"
 
 	for heading in \
@@ -230,8 +231,9 @@ check_tesla_generation_contracts() {
 	grep -Fq '115200 baud, eight data bits, no parity, and one stop bit' "$gen3"
 	grep -Fq '`TESLA` followed by NUL and then `PASS` followed by NUL' "$gen3"
 	grep -Fq 'FC100, FC101, and FC102 are private function-code values selected only by this Gen3 profile.' "$gen3"
-	grep -Fq '`wc3_24_28_3` and `wc3_24_44_3`' "$gen3"
-	grep -Fq 'No version range, family-prefix, or legacy Wall Connector identity qualifies this profile.' "$gen3"
+	grep -Fq '`wc3_24_28_3` and `wc3_24_44_3` are known HSC observations, not a version whitelist.' "$gen3"
+	grep -Fq '`compatible_candidate` retains an unenumerated Gen3 version with its native payloads.' "$gen3"
+	grep -Fq 'The version label alone does not grant a HSC operation or live exchange.' "$gen3"
 	grep -Fq 'Native runtime records retain bounded payloads, including unknown fields, exactly.' "$gen3"
 }
 

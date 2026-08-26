@@ -8,6 +8,8 @@ Current protocol contracts:
 
 - [Generic private function-code transport](protocols/modbus/private-function-codes.md)
 - [Tesla TEDAPI over Modbus RTU](protocols/tesla/tedapi.md)
+- [Tesla legacy Wall Connector RS-485 contract](protocols/tesla/legacy-wall-connector-rs485.md)
+- [Tesla Wall Connector Gen3 HSC RTU contract](protocols/tesla/gen3-hsc-rtu.md)
 - [Protocol applicability and licensing](protocols/applicability-and-licensing.md)
 - [SunSpec read-only core V1](protocols/sunspec/read-only-core-v1.md)
 - [SunSpec read-only core V1 model families](protocols/sunspec/read-only-core-v1-model-families.md)
