@@ -633,8 +633,10 @@ for mutation in \
   's/length 23\./length 24./' \
   's/vendor-scoped observed state/standard observed state/' \
   's/does not convert an OutBack device into a generic inverter profile./converts an OutBack device into a generic inverter profile./' \
-  's/all read\/write or write-only fields are excluded from output. They are `NO_SEND`./read\/write fields are permitted./' \
-  's/No function in this contract writes a register/A function in this contract writes a register/' \
+  's/complete caller-supplied Model 64110 raw word/selected raw word/' \
+  's/observation data when supplied; they do not become typed facts or an operation/observation data becomes typed facts and an operation/' \
+  's/Every write or control operation remains `NO_SEND` until an operation-specific/Every write or control operation is enabled/' \
+  's/function in this contract writes a register/function in this contract permits a register write/' \
   's/does not identify a network endpoint, unit identifier, installation,/identifies a network endpoint, unit identifier, installation,/'; do
   sed "$mutation" "$outback_document" > "$outback_fixture"
   if "$repo_root/scripts/check_docs.sh" --check-outback-axs-contract "$outback_fixture"; then
