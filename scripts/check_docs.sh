@@ -721,10 +721,14 @@ check_outback_axs_contract() {
   grep -Fq 'Its values remain vendor-scoped observed state under this contract.' "$document"
   grep -Fq 'does not convert an OutBack device into a generic inverter profile.' "$document"
   grep -Fq 'All other Model 64110 words, all unknown models, and every wrong-length model' "$document"
-  grep -Fq 'all read/write or write-only fields are excluded from output. They are `NO_SEND`.' "$document"
+  grep -Fq 'An implementation may expose the complete caller-supplied Model 64110 raw word block' "$document"
+  grep -Fq 'The raw block preserves its supplied order and must not acquire typed field labels, a profile' "$document"
+  grep -Fq 'Configuration-like, network, address, hardware-address, credential, password, mail, time,' "$document"
+  grep -Fq 'they do not become typed facts or an operation contract.' "$document"
+  grep -Fq 'Every write or control operation remains `NO_SEND` until an operation-specific contract' "$document"
   grep -Fq 'No function in this contract writes a register' "$document"
   grep -Fq 'does not identify a network endpoint, unit identifier, installation,' "$document"
-  if grep -Ein 'write method is enabled|automatic acquisition is enabled|runtime activation is enabled|converts an OutBack device into a generic inverter profile|control capability is derived' "$document"; then
+  if grep -Ein 'write method is enabled|automatic acquisition is enabled|runtime activation is enabled|converts an OutBack device into a generic inverter profile|control capability is derived|raw word block is excluded from output' "$document"; then
     echo 'OutBack AXS protocol specification exceeds the read-only boundary' >&2
     return 1
   fi
