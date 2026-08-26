@@ -116,6 +116,24 @@ for mutation in \
   fi
 done
 
+for mutation in \
+  's/qualified WC system-information operation/unqualified WC system-information operation/' \
+  's/`tesla.hsc.fc100.wc_system_info.v1`/`tesla.hsc.fc100.any_wc_operation.v1`/' \
+  's/exactly `04 32 02 4a 00`/any FC100 PDU/' \
+  '/^### Qualified WC system-information operation$/,/^### Qualified Common system-information operation$/s/`wc3_24_44_3` operation version/any operation version/' \
+  '/^### Qualified WC system-information operation$/,/^### Qualified Common system-information operation$/s/unknown response shape must cause no send/unknown response shape may send/' \
+  '/^### Qualified WC system-information operation$/,/^### Qualified Common system-information operation$/s/may occur no more than once/may occur without bound/' \
+  '/^### Qualified WC system-information operation$/,/^### Qualified Common system-information operation$/s/must be quarantined and fail this operation/may remain in flight/' \
+  '/^### Qualified WC system-information operation$/,/^### Qualified Common system-information operation$/s/WC family `6` and one response tag `10`/WC family `6` and one response tag `9`/' \
+  '/^### Qualified WC system-information operation$/,/^### Qualified Common system-information operation$/s/tag-`10` body is a bounded opaque terminal body/contains a required inner member/' \
+  '/^### Qualified WC system-information operation$/,/^### Qualified Common system-information operation$/s/Common family `4` and error tag `1`/Common family `6` and error tag `10`/'; do
+  sed "$mutation" "$tesla_document" > "$tesla_fixture"
+  if "$repo_root/scripts/check_docs.sh" --check-tesla-tedapi-contract "$tesla_fixture"; then
+    echo "Tesla WC system-information mutation was accepted: $mutation" >&2
+    exit 1
+  fi
+done
+
 "$repo_root/scripts/check_docs.sh" --check-private-function-contract "$private_function_document"
 for mutation in \
   's/FC100, FC101, and FC102 may be reused/FC100, FC101, and FC102 are globally reserved/' \
