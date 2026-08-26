@@ -296,17 +296,43 @@ decoding, and replay; it does not itself open hardware, select a live
 transport, or transmit a frame. A terminal retains its complete bounded native
 body and preserves unknown wire fields.
 
-| Family | Tags | Request | Response | body rule |
+| Family | Tags | Request | Terminal | request body |
 |---|---|---|---|---|
-| Common | 2→3 | CommonAPIGetSystemInfo | CommonSystemInfo | empty |
-| Common | 6→7; 8→9; 16→17 | CommonAPIPerformUpdate; CommonAPIFactoryReset; CommonAPIClearUpdate | corresponding response | empty |
-| Common | 10→11 | CommonAPIWifiScan | WifiScanResponse | non-empty |
-| Common | 12→13 | CommonAPIConfigureWifi | ConfigureWifiResponse | non-empty |
-| Common | 14→15; 36→37 | CommonAPICheckForUpdate; CommonAPIPrepareRegistrationPayload | corresponding response | non-empty |
-| WC | 1→2; 3→4; 5→6; 9→10; 11→12; 23→24; 27→28; 29→30; 33→34; 53→54 | GetVitals; GetLifetimeStats; GetConfig; GetSystemInfo; GetLoadSharingNetworkState; GetPpuSettings; GetProvisionalOperationalParams; GetAccessControlSettings; GetRecentVehicles; GetOperationalSettings | corresponding named terminal | empty |
-| WC | 7→8; 17→18; 19→20; 21→22; 25→26; 31→32; 37→38; 39→40; 41→42; 43→44; 45→46; 47→48; 49→50; 51→52; 55→56 | ConfigureSettings; SetLoadSharingNetworkOperation; ConfigureLoadSharingSettings; ConfigurePpuSettings; SetProvisionalOperationalParams; ConfigureAccessControlSettings; ConfigureChargeSchedule; PushChargeCommand; ConfigureThirdPartyVehicleMode; ConfigureHomeSiteController; ConfigureOcppSettings; SetOcppSecurityParameter; GetOcppSecurityParameter; ConfigureOperationalSettings; ConfigureCountryCodeSettings | corresponding response | non-empty |
-| WC | 35→36 | PushPpuAuthorizationState | Common ErrorResponse | normal status 7 |
-| Neurio | 5→6 | NeurioMeterAPIConfigureCts | ConfigureCtsResponse | non-empty |
+| Common | 2→3 | CommonAPIGetSystemInfo | CommonSystemInfo | exact empty |
+| Common | 6→7 | CommonAPIPerformUpdate | PerformUpdateResponse | exact empty |
+| Common | 8→9 | CommonAPIFactoryReset | FactoryResetResponse | exact empty |
+| Common | 10→11 | CommonAPIWifiScan | WifiScanResponse | caller-supplied opaque non-empty: `max_scan_duration_s?`, repeated callback value, `maximum_total_aps?` |
+| Common | 12→13 | CommonAPIConfigureWifi | ConfigureWifiResponse | caller-supplied opaque non-empty: `enabled`, `wifi_config{ssid,password{value},security_type}` |
+| Common | 14→15 | CommonAPICheckForUpdate | CheckForUpdateResponse | caller-supplied opaque non-empty: `download_if_available?` |
+| Common | 16→17 | CommonAPIClearUpdate | ClearUpdateResponse | exact empty |
+| Common | 36→37 | CommonAPIPrepareRegistrationPayload | PrepareRegistrationPayloadResponse | caller-supplied opaque non-empty: `customer_registration_info?` |
+| WC | 1→2 | GetVitals | WCVitals | exact empty |
+| WC | 3→4 | GetLifetimeStats | WCLifetimeStats | exact empty |
+| WC | 5→6 | GetConfig | WCConfig | exact empty |
+| WC | 7→8 | ConfigureSettings | ConfigureSettingsResponse | caller-supplied opaque non-empty: `settings` |
+| WC | 9→10 | GetSystemInfo | WCGenealogy | exact empty |
+| WC | 11→12 | GetLoadSharingNetworkState | WCLoadSharingNetworkState | exact empty |
+| WC | 17→18 | SetLoadSharingNetworkOperation | SetLoadSharingNetworkOperationResponse | caller-supplied opaque non-empty: `charging_enabled` |
+| WC | 19→20 | ConfigureLoadSharingSettings | ConfigureLoadSharingSettingsResponse | caller-supplied opaque non-empty: `settings` |
+| WC | 21→22 | ConfigurePpuSettings | ConfigurePpuSettingsResponse | caller-supplied opaque non-empty: `ppu_config` |
+| WC | 23→24 | GetPpuSettings | WCPpuConfig | exact empty |
+| WC | 25→26 | SetProvisionalOperationalParams | SetProvisionalOperationalParamsResponse | caller-supplied opaque non-empty: `prov_op_params` |
+| WC | 27→28 | GetProvisionalOperationalParams | WCProvisionalOperationalParams | exact empty |
+| WC | 29→30 | GetAccessControlSettings | WCAccessControlEntry | exact empty |
+| WC | 31→32 | ConfigureAccessControlSettings | WCAccessControlEntry | caller-supplied opaque non-empty: `operation`, `vin`, `name` |
+| WC | 33→34 | GetRecentVehicles | RecentVehicles | exact empty |
+| WC | 35→36 | PushPpuAuthorizationState | Common ErrorResponse | caller-supplied opaque non-empty: `authorized`, `auth_uuid`; normal status 7 |
+| WC | 37→38 | ConfigureChargeSchedule | ConfigureChargeScheduleResponse | caller-supplied opaque non-empty: `config`, `time_zone` |
+| WC | 39→40 | PushChargeCommand | PushChargeCommandResponse | caller-supplied opaque non-empty: `charge_command` |
+| WC | 41→42 | ConfigureThirdPartyVehicleMode | ConfigureThirdPartyVehicleModeResponse | caller-supplied opaque non-empty: `third_party_vehicle_mode` |
+| WC | 43→44 | ConfigureHomeSiteController | ConfigureHomeSiteControllerResponse | caller-supplied opaque non-empty: `din`, `modbus_node_id`, `vehicle_to_home` |
+| WC | 45→46 | ConfigureOcppSettings | ConfigureOcppSettingsResponse | caller-supplied opaque non-empty: `settings` |
+| WC | 47→48 | SetOcppSecurityParameter | SetOcppSecurityParameterResponse | caller-supplied opaque non-empty: `security_parameter_type`, `security_parameter` |
+| WC | 49→50 | GetOcppSecurityParameter | OcppSecurityParameter | caller-supplied opaque non-empty: `security_parameter_type` |
+| WC | 51→52 | ConfigureOperationalSettings | ConfigureOperationalSettingsResponse | caller-supplied opaque non-empty: `operational_settings_config` |
+| WC | 53→54 | GetOperationalSettings | WCOperationalSettingsConfig | exact empty |
+| WC | 55→56 | ConfigureCountryCodeSettings | ConfigureCountryCodeSettingsResponse | caller-supplied opaque non-empty: `country` |
+| Neurio | 5→6 | NeurioMeterAPIConfigureCts | ConfigureCtsResponse | caller-supplied opaque non-empty: `serial?`, `ct_config[]{location,real_power_scale_factor}` |
 
 Recovered names include CommonAPIGetSystemInfo/CommonSystemInfo,
 CommonAPIWifiScan/WifiScanResponse, GetVitals/WCVitals,
@@ -317,6 +343,12 @@ WCProvisionalOperationalParams, GetAccessControlSettings/WCAccessControlEntry,
 GetRecentVehicles/RecentVehicles, GetOcppSecurityParameter/
 OcppSecurityParameter, GetOperationalSettings/WCOperationalSettingsConfig, and
 NeurioMeterAPIConfigureCts/ConfigureCtsResponse.
+
+The words **exact empty** require a zero-byte nested request body. A
+**caller-supplied opaque non-empty** body must be complete and non-empty; its
+unknown fields remain native data and are retained. The supplied names identify
+known request structure but do not infer a value, unit, enum, or field presence
+beyond this compatibility version.
 
 CommonSystemInfo fields are `device_id`, `din`, `firmware_version`,
 `system_update`, `device_type`; WifiScanResponse network fields are `ssid`,
