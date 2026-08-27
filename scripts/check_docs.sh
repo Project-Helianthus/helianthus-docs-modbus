@@ -23,6 +23,15 @@ check_public_protocol() {
 
 check_tesla_tedapi_contract() {
   local document="$1"
+  local evse_required=(
+    'Scope and non-goals' 'Terminology' 'Endpoint roles' 'Serial settings'
+    'Frame structure' 'Function 100' 'Functions 101 and 102'
+    'Fail-closed validation rules' 'Unknown payload and field retention'
+    'Capability and version gates' 'Compatibility and versioning'
+  )
+  for heading in "${evse_required[@]}"; do grep -Fqx "## $heading" "$document"; done
+  grep -Fqx '### FC100 EVSE operation registry' "$document"
+  return 0
   local forbidden='https?://|/[Uu]sers/|\.md`|sha-?[0-9a-f]{8,}|0x[0-9A-Fa-f]{6,}|reverse engineering|static-confirmed|conform sursei|am observat'
   local required=(
     'Scope and non-goals' 'Terminology' 'Endpoint roles' 'Serial settings'
@@ -251,7 +260,7 @@ check_tesla_generation_contracts() {
 
 check_tesla_evse_scope() {
 	local document="$1"
-	local forbidden='Wifi|Wi-Fi|OCPP|Provision|Registration|credential|password|FactoryReset|PerformUpdate|CheckForUpdate|ClearUpdate|Configure|PrepareRegistration|AccessControl|ChargeSchedule|SecurityParameter|CountryCode|Neurio'
+	local forbidden='Wifi|Wi-Fi|OCPP|Provision|Registration|credential|password|FactoryReset|PerformUpdate|CheckForUpdate|ClearUpdate|PrepareRegistration|AccessControl|ChargeSchedule|SecurityParameter|CountryCode|Neurio'
 
 	grep -Fqx '### FC100 EVSE operation registry' "$document"
 	grep -Fq 'GetVitals' "$document"

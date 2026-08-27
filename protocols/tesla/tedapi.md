@@ -1,562 +1,102 @@
-# Tesla Energy Device API over Modbus RTU
+# Tesla Gen3 HSC EVSE over Modbus RTU
 
 ## Scope and non-goals
 
-This specification defines the Tesla Home Site Controller (HSC) read-only
-interoperability profile carried in Modbus RTU-shaped frames. It defines frame
-validation, opaque vendor function handling, qualification gates, and safe
-runtime reporting.
-
-It does not define configuration, firmware update, pairing, trust management,
-contactor, inverter, battery, or other control operations. It does not define a
-Tesla Modbus/TCP service, arbitrary TEDAPI operation admission, or field
-semantics for FC101 or FC102.
+This profile is limited to EVSE interoperability for energy management. It retains serial identity, model, firmware version, charging state, current capability, electrical observations, faults/interlocks, and capability/version provenance. It also defines only explicitly qualified EVSE enable, disable, and charging-current-limit controls. Non-EVSE operations are out of scope.
 
 ## Terminology
 
-An **initiator** sends a request. A **responder** returns a response. **HSC**
-denotes the Tesla flavor addressed by this profile. **TEDAPI payload** denotes a
-bounded opaque nanopb message. **Qualified** means admitted by explicit
-configuration and applicable capability and version gates. **Opaque** means
-bytes are retained without assigning fields, units, enums, or commands.
+Native data is the complete bounded payload with profile and transaction context. An EVSE limit is a charging-current limit.
 
 ## Endpoint roles
 
-The initiator owns local serialization, deadlines, retry policy, native record
-retention, and operation admission. The responder accepts a configured node and vendor
-function. A capture or replay endpoint is receive-only or offline and must not
-open a live serial endpoint or transmit frames.
+The initiator owns serialization, deadlines, correlation, and native retention. Offline replay does not open a serial endpoint.
 
 ## Serial settings
 
-The HSC profile uses 115200 baud, eight data bits, no parity, and one stop bit.
-A character is ten bit times. The configured receiver separation is 35 bit
-times, equivalent to 3.5 character times at this format.
+Gen3 HSC uses 115200 baud, eight data bits, no parity, and one stop bit.
 
 ## Frame structure
 
-Each RTU frame is:
-
-```text
-node | function | payload | crc-low | crc-high
-```
-
-`node` and `function` are one byte each. Payload contains zero through 252
-bytes. The entire frame contains four through 256 bytes. No fragmentation,
-transaction identifier, or additional outer length field is defined.
+`node | function | payload | CRC16-Modbus`; FC100 through FC102 are selected only by this Gen3 profile.
 
 ## Byte order and CRC
 
-CRC is CRC16-Modbus with initial value `0xffff` and reflected polynomial
-`0xa001`. It covers `node`, `function`, and every payload byte. CRC is appended
-low byte first.
+CRC16-Modbus is low byte first.
 
 ## Frame and payload limits
 
-An implementation must reject a frame shorter than four bytes or longer than
-256 bytes. It must reject a payload longer than 252 bytes. It must not truncate,
-split, concatenate, or retry a rejected frame.
+A frame is 4 through 256 bytes and a payload is 0 through 252 bytes.
 
 ## Node addressing and configuration
 
-The usual HSC node is `0x10`. This value is a configurable profile default, not
-a universal detector. Enabling this flavor requires explicit local
-configuration and applicable passive compatibility and version gates. A valid
-frame, a matching node, or a readable response alone is insufficient to admit a
-vendor request.
-
-Tesla HSC codec selection is profile-scoped. The generic transport treats each
-private function code as a byte value and does not select a Tesla codec from
-that byte. A normal HSC payload is decoded only after the endpoint, node,
-profile, and operation selected this profile.
+Node `0x10` is common but configured explicitly.
 
 ## Function 100
 
-An FC100 data PDU is `length:u8 | message[length]`. The data PDU contains one
-through 252 bytes. `length` is zero through 251 and must equal the exact number
-of following bytes. A PDU containing only `00` is syntactically valid and
-contains an empty message; it does not admit an operation. No uint16 length is
-transmitted in the RTU frame.
+An FC100 PDU is `length:u8 | message[length]`, with exact length equality.
 
-A missing prefix, an inexact prefix, or trailing bytes must be rejected and
-must cause no send.
+### FC100 EVSE operation registry
 
-FC100 can produce an echoed request frame and a later result frame. The echo is
-an intermediate response, not proof of operation success. Implementations
-must classify intermediate and terminal frames inside one bounded single-flight
-transaction and must quarantine late, unrelated, malformed, or timed-out
-frames so they cannot satisfy a later request. A terminal response may arrive
-without an echo.
+| Operation | EVSE use | request | terminal |
+|---|---|---|---|
+| GetVitals | charging state and aggregate electrical observations | exact empty | bounded native terminal |
+| GetLifetimeStats | energy observations | exact empty | bounded native terminal |
+| GetLoadSharingNetworkState | current capability and limits | exact empty | bounded native terminal |
+| GetSystemInfo | serial/model/firmware identity, capability and version provenance | exact empty | bounded native terminal |
 
-FC100 is not a general TEDAPI admission mechanism. This profile admits no
-outbound FC100 operation, including a request with a locally valid envelope. A
-later compatible profile may admit one particular operation only with an
-explicit non-mutating per-operation contract, version qualification, read-only
-admission, and replay-safe declaration. The Tesla profile alone owns FC100
-interpretation; it does not create a global function-code handler.
+Terminals retain their complete bounded native body and unknown fields. Per-phase values remain native when present.
 
-### Qualified WC vitals operation
-
-This version defines a qualified operation: `tesla.hsc.fc100.wc_vitals.v1`.
-It is a semantic read-only snapshot operation and is not a configuration,
-control, or discovery operation. It is compatible only with the explicit
-`tesla_hsc_modbus_v1` profile and the `wc3_24_44_3` operation version. Any
-other operation version, missing capability, unqualified endpoint or node,
-missing replay-safe declaration, or unknown response shape must cause no send.
-
-The nested request message is exactly `32 02 0a 00`; therefore its FC100 PDU is
-exactly `04 32 02 0a 00`. The outer message selects WC messages, the nested
-message selects the empty vitals request, and no caller-supplied request fields
-are permitted. This byte sequence is an operation descriptor, not an endpoint
-probe or a transmission instruction.
-
-An echoed PDU exactly equal to this request PDU is an FC100 intermediate. A
-successful terminal PDU selects one bounded WC-message response tag `2`. The
-tag-`2` body is a bounded opaque terminal body. This version defines no member,
-field number, wire type, scalar, enum, repeated value, unit, scale, range, or
-field-presence contract within that body. Its bounded terminal bytes are
-projected as a native HSC record with function, compatibility version,
-provenance, and terminal context; no scalar, field name, unit, identifier, or
-control meaning is inferred. An omitted inner value must not be interpreted as
-a scalar zero, an empty repeated value, or an empty nested member. A normal
-terminal PDU that does not match this success shape is unavailable as a native
-terminal record. The generic exception-response rules remain separate.
-
-Semantic read-only classification does not claim that the responder has no
-ephemeral transport-side effects. It grants no configuration, control, pairing,
-trust, firmware, or other persistent authority.
-
-### Qualified WC lifetime operation
-
-This version defines a qualified WC lifetime operation:
-`tesla.hsc.fc100.wc_lifetime.v1`. It is a semantic read-only snapshot operation
-and is not a configuration, control, or discovery operation. It is compatible
-only with the explicit `tesla_hsc_modbus_v1` profile and the `wc3_24_44_3`
-operation version. Any other operation version, missing capability,
-unqualified endpoint or node, missing replay-safe declaration, or unknown
-response shape must cause no send.
-
-The nested request message is exactly `32 02 1a 00`; therefore its FC100 PDU is
-exactly `04 32 02 1a 00`. The outer message selects WC messages, the nested
-message selects the empty lifetime request, and no caller-supplied request
-fields are permitted. This byte sequence is an operation descriptor, not an
-endpoint probe or a transmission instruction.
-
-An echoed PDU exactly equal to this request PDU is an optional FC100 intermediate and may occur no more than once. A duplicate echo, a second terminal, or any response after a terminal must be quarantined and fail this operation. A successful terminal PDU is an FC100 normal response whose nested envelope contains WC family `6` and one response tag `4`. The tag-`4` body is a bounded opaque terminal body. This version defines no member,
-field number, wire type, scalar, enum, repeated value, unit, scale, range, or
-field-presence contract within that body. Its bounded terminal bytes are
-projected as a native HSC record with function, compatibility version,
-provenance, and terminal context; no scalar, field name, unit, identifier, or
-control meaning is inferred. An omitted inner value must not be interpreted as
-a scalar zero, an empty repeated value, or an empty nested member. A normal
-terminal PDU that does not match this success shape is unavailable as a native
-terminal record. A lifetime operation application failure is an FC100 normal
-response whose nested envelope contains Common family `4` and error tag `1`; the
-generic exception-response rules remain separate.
-
-Semantic read-only classification does not claim that the responder has no
-ephemeral transport-side effects. It grants no configuration, control, pairing,
-trust, firmware, or other persistent authority.
-
-### Qualified WC load-sharing-state operation
-
-This version defines a qualified WC load-sharing-state operation:
-`tesla.hsc.fc100.wc_load_sharing_state.v1`. It is a semantic read-only snapshot
-operation and is not a configuration, control, or discovery operation. It is
-compatible only with the explicit `tesla_hsc_modbus_v1` profile and the
-`wc3_24_44_3` operation version. Any other operation version, missing
-capability, unqualified endpoint or node, missing replay-safe declaration, or
-unknown response shape must cause no send.
-
-The nested request message is exactly `32 02 5a 00`; therefore its FC100 PDU is
-exactly `04 32 02 5a 00`. The outer message selects WC messages, the nested
-message selects the empty load-sharing-state request, and no caller-supplied
-request fields are permitted. This byte sequence is an operation descriptor,
-not an endpoint probe or a transmission instruction.
-
-An echoed PDU exactly equal to this request PDU is an optional FC100 intermediate and may occur no more than once. A duplicate echo, a second terminal, or any response after a terminal must be quarantined and fail this operation. A successful terminal PDU is an FC100 normal response whose nested envelope contains WC family `6` and one response tag `12`. The tag-`12` body is a bounded opaque terminal body. This version defines no member, field number, wire type, scalar, enum, repeated value, unit, scale, range, or field-presence contract within that body. Its bounded terminal bytes are projected as a native HSC record with function, compatibility version, provenance, and terminal context; no scalar, field name, unit, identifier, or control meaning is inferred. An omitted inner value must not be interpreted as a scalar zero, an empty repeated value, or an empty nested member. A normal terminal PDU that does not match this success shape is unavailable as a native terminal record. A general application failure is an FC100 normal response whose nested envelope contains Common family `4` and error tag `1`; the generic exception-response rules remain separate.
-
-Semantic read-only classification does not claim that the responder has no
-ephemeral transport-side effects. It grants no configuration, control, pairing,
-trust, firmware, or other persistent authority.
-
-### Qualified WC PPU settings operation
-
-This version defines a qualified WC PPU settings operation:
-`tesla.hsc.fc100.wc_ppu_settings.v1`. It is a read-only configuration operation
-and is not a configuration mutation, control, discovery, or identity operation.
-It is compatible only with the explicit `tesla_hsc_modbus_v1` profile and the
-`wc3_24_44_3` operation version. Any other operation version, missing
-capability, unqualified endpoint or node, missing replay-safe declaration, or
-unknown response shape must cause no send.
-
-The nested request message is exactly `32 03 ba 01 00`; therefore its FC100 PDU is
-exactly `05 32 03 ba 01 00`. The outer message selects WC messages, the
-nested message selects the empty PPU settings request, and no caller-supplied
-request fields are permitted. This byte sequence is an offline operation
-descriptor, not an endpoint probe or a transmission instruction.
-
-An echoed PDU exactly equal to this request PDU is an optional FC100 intermediate and may occur no more than once.
-A duplicate echo, a second terminal, or any response after a terminal must be quarantined and fail this operation.
-A successful terminal PDU is an FC100 normal response whose nested envelope contains exactly one WC family `6` member and exactly one response tag `24`, with no additional terminal member.
-The tag-`24` body is a bounded opaque terminal body. This version defines no field, identifier, configuration value, or field-presence contract within that body.
-Its bounded terminal bytes are projected as a native HSC record with function,
-compatibility version, provenance, and terminal context; no configuration value,
-field name, identifier, or control meaning is inferred.
-An omitted inner value must not be interpreted as a scalar zero, an empty repeated value, or an empty nested member.
-A normal terminal PDU that does not match this success shape is unavailable as a native terminal record.
-A general application failure is an FC100 normal response whose nested envelope contains Common family `4` and error tag `1`; the generic exception-response rules remain separate.
-
-The native HSC record projection may retain this terminal body without creating
-gateway automatic dispatch, a serial endpoint, or hardware I/O. It does not infer a configuration value or control action. A real device exchange requires separate action-time laboratory confirmation.
-
-Semantic read-only classification does not claim that the responder has no
-ephemeral transport-side effects. It grants no configuration, control, pairing,
-trust, firmware, or other persistent authority.
-
-### Qualified WC system-information operation
-
-This version defines a qualified WC system-information operation:
-`tesla.hsc.fc100.wc_system_info.v1`. It is a semantic read-only snapshot
-operation and is not a configuration, control, or discovery operation. It is
-compatible only with the explicit `tesla_hsc_modbus_v1` profile and the
-`wc3_24_44_3` operation version. Any other operation version, missing
-capability, unqualified endpoint or node, missing replay-safe declaration, or
-unknown response shape must cause no send.
-
-The nested request message is exactly `32 02 4a 00`; therefore its FC100 PDU is
-exactly `04 32 02 4a 00`. The outer message selects WC messages, the nested
-message selects the empty system-information request, and no caller-supplied
-request fields are permitted. This byte sequence is an operation descriptor,
-not an endpoint probe or a transmission instruction.
-
-An echoed PDU exactly equal to this request PDU is an optional FC100 intermediate and may occur no more than once. A duplicate echo, a second terminal, or any response after a terminal must be quarantined and fail this operation. A successful terminal PDU is an FC100 normal response whose nested envelope contains WC family `6` and one response tag `10`. The tag-`10` body is a bounded opaque terminal body. This version defines no member, field number, wire type, scalar, enum, repeated value, unit, scale, range, or field-presence contract within that body. Its bounded terminal bytes are projected as a native HSC record with function, compatibility version, provenance, and terminal context; no scalar, field name, unit, identifier, or control meaning is inferred. An omitted inner value must not be interpreted as a scalar zero, an empty repeated value, or an empty nested member. A normal terminal PDU that does not match this success shape is unavailable as a native terminal record. A general application failure is an FC100 normal response whose nested envelope contains Common family `4` and error tag `1`; the generic exception-response rules remain separate.
-
-Semantic read-only classification does not claim that the responder has no
-ephemeral transport-side effects. It grants no configuration, control, pairing,
-trust, firmware, or other persistent authority.
-
-### Qualified Common system-information operation
-
-This version defines a qualified Common system-information operation:
-`tesla.hsc.fc100.common_system_info.v1`. It is a semantic read-only snapshot
-operation and is not a configuration, control, or discovery operation. It is
-compatible only with the explicit `tesla_hsc_modbus_v1` profile and the
-`wc3_24_44_3` operation version. Any other operation version, missing
-capability, unqualified endpoint or node, missing replay-safe declaration, or
-unknown response shape must cause no send.
-
-The nested request message is exactly `22 02 12 00`; therefore its FC100 PDU is
-exactly `04 22 02 12 00`. The outer message selects Common messages, the nested
-message selects the empty system-information request, and no caller-supplied
-request fields are permitted. This byte sequence is an operation descriptor,
-not an endpoint probe or a transmission instruction.
-
-An echoed PDU exactly equal to this request PDU is an FC100 intermediate. A
-successful terminal PDU selects one bounded Common-message response tag `3`.
-The tag-`3` body is a bounded opaque terminal body. This version defines no
-member, field number, wire type, scalar, enum, repeated value, unit, scale,
-range, or field-presence contract within that body. Its bounded terminal bytes
-are projected as a native HSC record with function, compatibility version,
-provenance, and terminal context; no scalar, field name, unit, identifier, or
-control meaning is inferred. An omitted inner value must not be interpreted as
-a scalar zero, an empty repeated value, or an empty nested member. A normal
-terminal PDU that does not match this success shape is unavailable as a native
-terminal record. A normal Common error body is a terminal application failure;
-the generic exception-response rules remain separate.
-
-Semantic read-only classification does not claim that the responder has no
-ephemeral transport-side effects. It grants no configuration, control, pairing,
-trust, firmware, or other persistent authority.
-
-### MCP qualified WC vitals replay
-
-An MCP WC vitals replay view may be emitted only by an injected provider that
-already selected `tesla.hsc.fc100.wc_vitals.v1`, `tesla_hsc_modbus_v1`, and
-`wc3_24_44_3`. It exposes only the operation and version qualification, replay
-kind, snapshot length, and snapshot digest. Its `outbound_allowed` value is
-always `false`. An unavailable or invalid provider result produces no data.
-The compact view never creates a request, opens a serial endpoint, invokes a
-generic transport exchange, or falls back to FC101 or FC102. It exposes no raw
-bytes, snapshot values, field names, identifiers, control meaning, or runtime
-activation state; it is separate from the native HSC record projection.
-
-### MCP native HSC record projection
-
-The native HSC MCP status projection accepts only an already-correlated,
-injected provider result. It retains each bounded FC100, FC101, or FC102
-payload exactly, together with its function, compatibility version, and
-provenance label. A compatibility-qualified FC100 registry record may also
-carry its family, request tag, response tag, recovered request name, recovered
-response name, and field-name list. FC101 and FC102 records carry only their
-opaque payload, function, compatibility version, and provenance until a later
-qualified contract defines metadata for them. Unknown payload fields remain
-native bytes and are not discarded.
-
-One projection contains at most eight native records. Each payload is at most
-252 bytes. The disposition, compatibility, provenance, request name, response
-name, and each field name are at most 128 bytes; a record contains at most 64
-field names. An oversized provider result is rejected as unavailable rather
-than truncated or transformed.
-
-The projection preserves the provider's `outbound_allowed` context without
-constructing a request, opening a serial endpoint, selecting a transport, or
-performing an exchange. It is an inspection interface, not a hardware action.
-FC100 may contain a bounded echo/result sequence; FC101 and FC102 each contain
-one normal terminal record. A Modbus exception remains a transport outcome and
-is not represented as a native normal record.
-
-The structural FC100 summary projection is a separate compact view. Its
-digest-only format does not limit the native HSC record projection.
-
-### Read-only replay metadata
-
-An offline FC100 decoder may retain the nested-message length, the numeric
-first protobuf key field number, its numeric wire type, and a deterministic
-digest of the nested message. The field number is 1 through 536870911 and the
-wire type is 0 through 5. The compact summary does not project raw nested
-bytes, protobuf field names, values, operation identity, capability, or send
-authority; the separate native HSC record projection retains bounded terminal
-payloads without assigning semantics.
-Invalid, truncated, overflowed, or out-of-range keys are rejected.
-
-A complete offline wire summary may retain the total FC100 envelope length,
-nested-message length, deterministic digest, entry count, and an ordered list
-of at most 64 entries. Each entry contains only its numeric field number and
-numeric wire type. Values are consumed only to validate wire boundaries and
-are not projected by this compact summary. Wire types 3 and 4 are valid only as paired
-group boundaries with the same field number. A malformed, truncated,
-oversized, unpaired, or over-count summary is rejected.
-
-### FC100 named operation registry for WC3 24.44.3
-
-Each row is a catalog-recognized fallback operation descriptor. The descriptor
-defines the bounded request and terminal shape for offline construction,
-decoding, and replay; it does not itself open hardware, select a live
-transport, or transmit a frame. A terminal retains its complete bounded native
-body and preserves unknown wire fields.
-
-| Family | Tags | Request | Terminal | request body |
-|---|---|---|---|---|
-| Common | 2→3 | CommonAPIGetSystemInfo | CommonSystemInfo | exact empty |
-| Common | 6→7 | CommonAPIPerformUpdate | PerformUpdateResponse | exact empty |
-| Common | 8→9 | CommonAPIFactoryReset | FactoryResetResponse | exact empty |
-| Common | 10→11 | CommonAPIWifiScan | WifiScanResponse | caller-supplied opaque non-empty: `max_scan_duration_s?`, repeated callback value, `maximum_total_aps?` |
-| Common | 12→13 | CommonAPIConfigureWifi | ConfigureWifiResponse | caller-supplied opaque non-empty: `enabled`, `wifi_config{ssid,password{value},security_type}` |
-| Common | 14→15 | CommonAPICheckForUpdate | CheckForUpdateResponse | caller-supplied opaque non-empty: `download_if_available?` |
-| Common | 16→17 | CommonAPIClearUpdate | ClearUpdateResponse | exact empty |
-| Common | 36→37 | CommonAPIPrepareRegistrationPayload | PrepareRegistrationPayloadResponse | caller-supplied opaque non-empty: `customer_registration_info?` |
-| WC | 1→2 | GetVitals | WCVitals | exact empty |
-| WC | 3→4 | GetLifetimeStats | WCLifetimeStats | exact empty |
-| WC | 5→6 | GetConfig | WCConfig | exact empty |
-| WC | 7→8 | ConfigureSettings | ConfigureSettingsResponse | caller-supplied opaque non-empty: `settings` |
-| WC | 9→10 | GetSystemInfo | WCGenealogy | exact empty |
-| WC | 11→12 | GetLoadSharingNetworkState | WCLoadSharingNetworkState | exact empty |
-| WC | 17→18 | SetLoadSharingNetworkOperation | SetLoadSharingNetworkOperationResponse | caller-supplied opaque non-empty: `charging_enabled` |
-| WC | 19→20 | ConfigureLoadSharingSettings | ConfigureLoadSharingSettingsResponse | caller-supplied opaque non-empty: `settings` |
-| WC | 21→22 | ConfigurePpuSettings | ConfigurePpuSettingsResponse | caller-supplied opaque non-empty: `ppu_config` |
-| WC | 23→24 | GetPpuSettings | WCPpuConfig | exact empty |
-| WC | 25→26 | SetProvisionalOperationalParams | SetProvisionalOperationalParamsResponse | caller-supplied opaque non-empty: `prov_op_params` |
-| WC | 27→28 | GetProvisionalOperationalParams | WCProvisionalOperationalParams | exact empty |
-| WC | 29→30 | GetAccessControlSettings | WCAccessControlEntry | exact empty |
-| WC | 31→32 | ConfigureAccessControlSettings | WCAccessControlEntry | caller-supplied opaque non-empty: `operation`, `vin`, `name` |
-| WC | 33→34 | GetRecentVehicles | RecentVehicles | exact empty |
-| WC | 35→36 | PushPpuAuthorizationState | Common ErrorResponse | caller-supplied opaque non-empty: `authorized`, `auth_uuid`; normal status 7 |
-| WC | 37→38 | ConfigureChargeSchedule | ConfigureChargeScheduleResponse | caller-supplied opaque non-empty: `config`, `time_zone` |
-| WC | 39→40 | PushChargeCommand | PushChargeCommandResponse | caller-supplied opaque non-empty: `charge_command` |
-| WC | 41→42 | ConfigureThirdPartyVehicleMode | ConfigureThirdPartyVehicleModeResponse | caller-supplied opaque non-empty: `third_party_vehicle_mode` |
-| WC | 43→44 | ConfigureHomeSiteController | ConfigureHomeSiteControllerResponse | caller-supplied opaque non-empty: `din`, `modbus_node_id`, `vehicle_to_home` |
-| WC | 45→46 | ConfigureOcppSettings | ConfigureOcppSettingsResponse | caller-supplied opaque non-empty: `settings` |
-| WC | 47→48 | SetOcppSecurityParameter | SetOcppSecurityParameterResponse | caller-supplied opaque non-empty: `security_parameter_type`, `security_parameter` |
-| WC | 49→50 | GetOcppSecurityParameter | OcppSecurityParameter | caller-supplied opaque non-empty: `security_parameter_type` |
-| WC | 51→52 | ConfigureOperationalSettings | ConfigureOperationalSettingsResponse | caller-supplied opaque non-empty: `operational_settings_config` |
-| WC | 53→54 | GetOperationalSettings | WCOperationalSettingsConfig | exact empty |
-| WC | 55→56 | ConfigureCountryCodeSettings | ConfigureCountryCodeSettingsResponse | caller-supplied opaque non-empty: `country` |
-| Neurio | 5→6 | NeurioMeterAPIConfigureCts | ConfigureCtsResponse | caller-supplied opaque non-empty: `serial?`, `ct_config[]{location,real_power_scale_factor}` |
-
-Recovered names include CommonAPIGetSystemInfo/CommonSystemInfo,
-CommonAPIWifiScan/WifiScanResponse, GetVitals/WCVitals,
-GetLifetimeStats/WCLifetimeStats, GetConfig/WCConfig,
-GetSystemInfo/WCGenealogy, GetLoadSharingNetworkState/WCLoadSharingNetworkState,
-GetPpuSettings/WCPpuConfig, GetProvisionalOperationalParams/
-WCProvisionalOperationalParams, GetAccessControlSettings/WCAccessControlEntry,
-GetRecentVehicles/RecentVehicles, GetOcppSecurityParameter/
-OcppSecurityParameter, GetOperationalSettings/WCOperationalSettingsConfig, and
-NeurioMeterAPIConfigureCts/ConfigureCtsResponse.
-
-The words **exact empty** require a zero-byte nested request body. A
-**caller-supplied opaque non-empty** body must be complete and non-empty; its
-unknown fields remain native data and are retained. The supplied names identify
-known request structure but do not infer a value, unit, enum, or field presence
-beyond this compatibility version.
-
-CommonSystemInfo fields are `device_id`, `din`, `firmware_version`,
-`system_update`, `device_type`; WifiScanResponse network fields are `ssid`,
-`rssi_value`, `rssi`, `security_type`; WCLifetimeStats ends with
-`charging_energy`; WCGenealogy contains `region`, `handle_type`, and
-`hardware_features`. No later-version field is implied. Common tags 2, 6, 8,
-16 and WC tags 1, 3, 5, 9, 11, 23, 27, 29, 33, 53 have exact empty bodies.
-Common tags 10 and 12 require non-empty structures. WC tag 35 produces normal
-application status 7 in the FC100 context.
+EVSE charging-current limit control, enable, and disable require an independently qualified request shape, unit and range where applicable, acknowledgement, and post-command confirmation. This version has no qualified Gen3 control setter.
 
 ## Functions 101 and 102
 
-An FC101 or FC102 request PDU is `length:u8 | request[length]`. The request
-PDU contains one through 252 bytes. `length` is zero through 251 and must equal
-the exact number of following bytes. A PDU containing only `00` is
-syntactically valid and contains an empty request. This request syntax does not
-admit transmission or assign read-only semantics.
-
-An FC101 or FC102 normal response is zero through 252 opaque bytes. This
-version defines no response length-prefix or field contract for either
-function. A normal response is one terminal response or an exception; FC100
-echo and result handling does not apply. Implementations may frame, classify,
-retain, and replay response bytes offline, but must not infer field names,
-enums, units, control meaning, or operation admission from them.
-
-Live outbound FC101 and FC102 are denied in the initial profile, including MCP
-operations, even when their request syntax is locally valid. Future typed
-support requires a compatible specification version, qualified capability,
-explicit admission policy, and conformance vectors. Their byte values remain
-Tesla profile details and do not reserve those values for another vendor profile
-at a different endpoint.
+FC101 and FC102 use bounded native payloads but have no EVSE operation mapping in this version.
 
 ## Exception responses
 
-An exception response has `function | 0x80` and exactly one status byte before
-the CRC. An unknown function can return status `1`. FC101 or FC102 codec failure
-can return status `4`. Other status values remain opaque numeric values unless a
-later version defines them.
+An exception has `function | 0x80` and exactly one status byte.
 
 ## Timing, deadlines, and frame separation
 
-Frame separation is 3.5 character times. The initiator applies a bounded
-request deadline and a bounded post-timeout quarantine. Partial frames and
-trailing bytes are not carried into a subsequent transaction. An implementation
-must preserve an explicit timeout result rather than guessing a response.
+Frame separation is 3.5 character times; timeout and partial frames are quarantined.
 
 ## Concurrency and arbitration
 
-This profile assumes one locally serialized initiator. It makes no
-multi-initiator arbitration, collision detection, carrier-sense, or
-listen-before-talk guarantee. An implementation must not use concurrent sends,
-probe by broadcast, or infer safe multi-initiator operation.
+One locally serialized initiator is required.
 
 ## Request and response state machine
 
-```text
-idle -> locally_validated -> sent -> waiting
-waiting -> intermediate -> waiting
-waiting -> terminal -> idle
-waiting -> deadline -> quarantine -> idle
-locally_validated -> denied -> idle
-```
-
-Only an admitted, locally valid request can reach `sent`. A malformed or
-unrelated response reaches `quarantine`, never `terminal`.
-
-The `intermediate` transition applies only to FC100. FC101 and FC102 transition
-directly from `waiting` to a terminal response, exception, or deadline.
+`idle -> validated -> waiting -> terminal | exception | deadline -> idle`.
 
 ## Fail-closed validation rules
 
-Before sending, validate configuration, node, function, payload bound, request
-length prefix, capability, version, read-only admission, and replay policy. Any
-failed validation produces no send. FC101 and FC102 produce no send in this
-version even when their request PDU is locally valid. Vendor PDUs have zero
-retries by default. A retry is permitted only for an admitted replay-safe
-request and is bounded by an explicit policy.
+Require endpoint/node, profile/version, bounds, correlation, and an EVSE operation contract. Unknown data grants no control.
 
 ## Unknown payload and field retention
 
-Opaque payloads and unknown fields are retained as bounded byte sequences with
-their frame metadata and direction. FC101 and FC102 normal responses retain
-their raw bytes without length-prefix decoding. Retained bytes are not converted
-to a value, enum, unit, capability, or command. Retention preserves enough
-framing information for deterministic offline replay while enforcing size
-limits.
+Retain bounded native payloads exactly with function, direction, profile, version, and outcome.
 
 ## Runtime provenance
 
-Runtime records include contract version, flavor, configured node, function,
-direction, frame length, CRC result, transaction state, capability disposition,
-timing outcome, and the complete bounded native payload. Records must
-distinguish locally validated, sent, intermediate, terminal, timeout,
-exception, and quarantined outcomes. The MCP native-record projection preserves
-its provider-supplied payload and compatibility context.
-
-### MCP FC100 summary projection
-
-An MCP FC100 summary view may be emitted only from an injected, locally
-validated wire summary. It exposes only the qualification (`framing_only` or
-`qualified_read_only`), total envelope length, nested-message length, entry
-count, ordered numeric field-number and wire-type entries, and payload digest.
-Its `outbound_allowed` value is always `false`. A missing or invalid provider
-summary produces an unavailable result with no summary data. The view never
-exposes raw bytes, values, field names, operation identity, capability, request
-construction, or control meaning.
+Records retain complete native EVSE payload with version, function, direction, and outcome.
 
 ## Security, privacy, and redaction
 
-Public repository artifacts must not contain operator captures, serial numbers,
-credentials, account material, endpoints, or other private laboratory data.
-Fixtures and documentation examples use synthetic values. At runtime, the
-native HSC MCP projection preserves bounded provider-supplied payloads and
-metadata; this does not create serial I/O, deployment, credential handling, or
-a hardware action.
+Runtime native EVSE data is retained; public examples use synthetic values.
 
 ## Capability and version gates
 
-Framing support is not a capability claim. Detection performs no vendor
-transmission. A flavor is usable only when explicit configuration, passive
-compatibility evidence, capability profile, and version compatibility all pass.
-Unknown versions and missing capability information remain framing-only and
-deny outbound operations.
+Version alone does not admit an operation.
 
 ## Conformance vectors and sanitized examples
 
-The following vectors validate frame construction, envelope syntax where
-defined, and CRC byte order only:
-
-```text
-FC100 empty message: 10 64 00 5a c5
-FC100 one-byte message: 10 64 01 00 44 ab
-FC101 empty request: 10 65 00 5b 55
-FC102 empty request: 10 66 00 5b a5
-FC100 exception status 1: 10 e4 01 fa c5
-FC101 exception status 4: 10 e5 04 3b 56
-FC102 exception status 4: 10 e6 04 3b a6
-FC100 qualified terminal with synthetic opaque body: 10 64 06 32 04 12 02 08 01 31 81
-FC100 qualified WC lifetime request: 10 64 04 32 02 1a 00 57 3d
-FC100 qualified WC lifetime terminal with synthetic opaque body: 10 64 06 32 04 22 02 08 01 3e 81
-FC100 qualified Common system-information request: 10 64 04 22 02 12 00 54 3d
-FC100 qualified Common terminal with synthetic opaque body: 10 64 06 22 04 1a 02 08 01 31 71
-
-FC100 missing prefix: 10 64 0d 9b
-FC100 trailing byte: 10 64 00 00 45 3b
-FC100 inexact prefix: 10 64 02 00 44 5b
-```
-
-The first four vectors are normal request or FC100 data syntax only and do not
-admit a live request. The final three vectors have valid CRC bytes but must be
-rejected by FC100 envelope validation. There is no FC101 or FC102 normal
-response vector in this version.
+`10 64 00 5a c5` is a valid empty FC100 envelope.
 
 ## Interoperability levels
 
-1. **Framing only:** validate bounded RTU frames and preserve opaque bytes.
-2. **FC100 envelope:** validate FC100 length prefix and response phases.
-3. **Qualified read-only TEDAPI operations:** transmit only explicitly
-   allowlisted, version-compatible, replay-safe operations.
-4. **FC101/FC102 opaque:** validate request envelopes, retain raw normal
-   response bytes, and perform no live transmission or typed interpretation.
-5. **Future typed FC101/FC102:** requires a later compatible contract and
-   explicit qualification.
+Framing; native EVSE observation; qualified EVSE state/measurement; future qualified current-limit control.
 
 ## Compatibility and versioning
 
-This profile is versioned as a compatibility contract. A newer implementation
-must preserve the fail-closed behavior of this version for unknown fields,
-unknown status values, unsupported functions, and unqualified capabilities.
-Typed interpretations or new outbound operations require a new compatible
-contract version and corresponding conformance coverage.
+This Gen3 profile is separate from legacy Wall Connector RS-485.
