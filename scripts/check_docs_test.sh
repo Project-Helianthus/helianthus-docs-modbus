@@ -94,6 +94,21 @@ for mutation in \
     exit 1
   fi
 done
+for forbidden_addition in \
+  'AuthenticateInstaller is a service authentication operation.' \
+  'PerformReset is a service operation.' \
+  'Wi-Fi provisioning is available.' \
+  'OCPP activation is available.' \
+  'Firmware update is available.' \
+  'Pairing is available.' \
+  'eCAN mailbox debug is available.'; do
+  cp "$tesla_document" "$tesla_fixture"
+  printf '\n%s\n' "$forbidden_addition" >> "$tesla_fixture"
+  if "$repo_root/scripts/check_docs.sh" --check-tesla-tedapi-contract "$tesla_fixture"; then
+    echo "Tesla EVSE scope mutation was accepted: $forbidden_addition" >&2
+    exit 1
+  fi
+done
 for mutation in \
   's/1 through 536870911/1 through 536870912/' \
   's/wire type is 0 through 5/wire type is 0 through 6/' \
