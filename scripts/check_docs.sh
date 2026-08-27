@@ -31,6 +31,7 @@ check_tesla_tedapi_contract() {
   )
   for heading in "${evse_required[@]}"; do grep -Fqx "## $heading" "$document"; done
   grep -Fqx '### FC100 EVSE operation registry' "$document"
+	grep -Fq 'Records retain complete native EVSE payload with version, function, direction, and outcome.' "$document"
   return 0
   local forbidden='https?://|/[Uu]sers/|\.md`|sha-?[0-9a-f]{8,}|0x[0-9A-Fa-f]{6,}|reverse engineering|static-confirmed|conform sursei|am observat'
   local required=(

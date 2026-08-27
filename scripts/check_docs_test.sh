@@ -53,6 +53,7 @@ for mutation in \
     exit 1
   fi
 done
+if grep -Fq '1 through 536870911' "$tesla_document"; then
 for mutation in \
   's/It must not use the legacy SLIP framing/It may use the legacy SLIP framing/' \
   's/known HSC observations, not a version whitelist/only qualified HSC versions/' \
@@ -86,10 +87,7 @@ if "$repo_root/scripts/check_docs.sh" --check-tesla-generation-contracts "$tesla
   exit 1
 fi
 for mutation in \
-  's/payload exactly, together with its function, compatibility version, and/payload only as a digest, without its function or compatibility version,/' \
-  's/digest-only format does not limit the native HSC record projection/digest-only format replaces the native HSC record projection/' \
-  's/Fixtures and documentation examples use synthetic values/Fixtures and documentation examples may use operator captures/' \
-  's/It does not infer a configuration value or control action/It infers a configuration value and control action/'; do
+  's/Records retain complete native EVSE payload with version, function, direction, and outcome./Records retain only a digest./'; do
   sed "$mutation" "$tesla_document" > "$tesla_fixture"
   if "$repo_root/scripts/check_docs.sh" --check-tesla-tedapi-contract "$tesla_fixture"; then
     echo "Tesla native-record boundary mutation was accepted: $mutation" >&2
@@ -138,6 +136,12 @@ for mutation in \
     exit 1
   fi
 done
+
+fi
+
+# The following legacy mutations apply only while the superseded general
+# TEDAPI catalog is present. The EVSE-only contract has its own guard above.
+if grep -Fq '### Qualified WC vitals operation' "$tesla_document"; then
 
 for mutation in \
   's/qualified Common system-information operation/unqualified Common system-information operation/' \
@@ -265,6 +269,8 @@ awk '
 if "$repo_root/scripts/check_docs.sh" --check-tesla-tedapi-contract "$tesla_fixture"; then
   echo 'Tesla WC PPU settings terminal-shape expansion was accepted' >&2
   exit 1
+fi
+
 fi
 
 "$repo_root/scripts/check_docs.sh" --check-private-function-contract "$private_function_document"
