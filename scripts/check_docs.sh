@@ -22,168 +22,17 @@ check_public_protocol() {
 }
 
 check_tesla_tedapi_contract() {
-  local document="$1"
-  local forbidden='https?://|/[Uu]sers/|\.md`|sha-?[0-9a-f]{8,}|0x[0-9A-Fa-f]{6,}|reverse engineering|static-confirmed|conform sursei|am observat'
-  local required=(
+	local document="$1"
+	local evse_required=(
     'Scope and non-goals' 'Terminology' 'Endpoint roles' 'Serial settings'
-    'Frame structure' 'Byte order and CRC' 'Frame and payload limits'
-    'Node addressing and configuration' 'Function 100' 'Functions 101 and 102'
-    'Exception responses' 'Timing, deadlines, and frame separation'
-    'Concurrency and arbitration' 'Request and response state machine'
+    'Frame structure' 'Function 100' 'Functions 101 and 102'
     'Fail-closed validation rules' 'Unknown payload and field retention'
-    'Runtime provenance' 'Security, privacy, and redaction'
-    'Capability and version gates' 'Conformance vectors and sanitized examples'
-    'Interoperability levels' 'Compatibility and versioning'
-  )
-
-  for heading in "${required[@]}"; do
-    grep -Fqx "## $heading" "$document"
-  done
-  grep -Fqx '### Read-only replay metadata' "$document"
-  grep -Fq 'The field number is 1 through 536870911 and the' "$document"
-  grep -Fq 'wire type is 0 through 5.' "$document"
-  grep -Fq 'Invalid, truncated, overflowed, or out-of-range keys are rejected.' "$document"
-  grep -Fq 'A complete offline wire summary may retain the total FC100 envelope length,' "$document"
-  grep -Fq 'of at most 64 entries. Each entry contains only its numeric field number and' "$document"
-  grep -Fq 'Values are consumed only to validate wire boundaries and' "$document"
-  grep -Fq 'group boundaries with the same field number.' "$document"
-  grep -Fq 'oversized, unpaired, or over-count summary is rejected.' "$document"
-  grep -Fqx '### MCP FC100 summary projection' "$document"
-  grep -Fq 'only from an injected, locally' "$document"
-  grep -Fq 'validated wire summary. It exposes only the qualification (`framing_only` or' "$document"
-  grep -Fq '`qualified_read_only`), total envelope length, nested-message length, entry' "$document"
-  grep -Fq 'count, ordered numeric field-number and wire-type entries, and payload digest.' "$document"
-  grep -Fq 'Its `outbound_allowed` value is always `false`.' "$document"
-  grep -Fq 'summary produces an unavailable result with no summary data.' "$document"
-  grep -Fq 'exposes raw bytes, values, field names, operation identity, capability, request' "$document"
-  grep -Fqx '### Qualified WC vitals operation' "$document"
-  grep -Fq 'This version defines a qualified operation: `tesla.hsc.fc100.wc_vitals.v1`.' "$document"
-  grep -Fq '`tesla_hsc_modbus_v1` profile and the `wc3_24_44_3` operation version.' "$document"
-  grep -Fq 'missing replay-safe declaration, or unknown response shape must cause no send.' "$document"
-  grep -Fq 'nested request message is exactly `32 02 0a 00`; therefore its FC100 PDU is' "$document"
-  grep -Fq 'exactly `04 32 02 0a 00`.' "$document"
-  grep -Fq 'An echoed PDU exactly equal to this request PDU is an FC100 intermediate.' "$document"
-  grep -Fq 'tag-`2` body is a bounded opaque terminal body.' "$document"
-  grep -Fq 'This version defines no member,' "$document"
-  grep -Fq 'field number, wire type, scalar, enum, repeated value, unit, scale, range, or' "$document"
-  grep -Fq 'field-presence contract within that body.' "$document"
-  grep -Fq 'An omitted inner value must not be interpreted as a scalar' "$document"
-  grep -Fq 'zero, an empty repeated value, or an empty nested member.' "$document"
-  grep -Fq 'Semantic read-only classification does not claim that the responder has no' "$document"
-  grep -Fqx '### MCP qualified WC vitals replay' "$document"
-  grep -Fq 'may be emitted only by an injected provider that' "$document"
-  grep -Fq 'already selected `tesla.hsc.fc100.wc_vitals.v1`, `tesla_hsc_modbus_v1`, and' "$document"
-  grep -Fq '`wc3_24_44_3`. It exposes only the operation and version qualification, replay' "$document"
-  grep -Fq 'always `false`. An unavailable or invalid provider result produces no data.' "$document"
-  grep -Fq 'The compact view never creates a request, opens a serial endpoint, invokes a' "$document"
-  grep -Fq 'transport exchange, or falls back to FC101 or FC102.' "$document"
-  grep -Fq 'activation state; it is separate from the native HSC record projection.' "$document"
-  grep -Fqx '### Qualified WC lifetime operation' "$document"
-  grep -Fq 'This version defines a qualified WC lifetime operation:' "$document"
-  grep -Fq '`tesla.hsc.fc100.wc_lifetime.v1`.' "$document"
-  grep -Fq '`tesla_hsc_modbus_v1` profile and the `wc3_24_44_3`' "$document"
-  grep -Fq 'unknown response shape must cause no send.' "$document"
-  grep -Fq 'nested request message is exactly `32 02 1a 00`; therefore its FC100 PDU is' "$document"
-  grep -Fq 'exactly `04 32 02 1a 00`.' "$document"
-  grep -Fq 'optional FC100 intermediate and may occur no more than once.' "$document"
-  grep -Fq 'A duplicate echo, a second terminal, or any response after a terminal must be quarantined' "$document"
-  grep -Fq 'nested envelope contains WC family `6` and one response tag `4`.' "$document"
-  grep -Fq 'tag-`4` body is a bounded opaque terminal body.' "$document"
-  grep -Fq 'terminal PDU that does not match this success shape is unavailable as a native' "$document"
-  grep -Fq 'nested envelope contains Common family `4` and error tag `1`;' "$document"
-  grep -Fqx '### Qualified WC system-information operation' "$document"
-  local wc_system_information
-  wc_system_information=$(awk '/^### Qualified WC system-information operation$/{keep=1; next} /^### /{keep=0} keep' "$document")
-  printf '%s\n' "$wc_system_information" | grep -Fq 'This version defines a qualified WC system-information operation:'
-  printf '%s\n' "$wc_system_information" | grep -Fq '`tesla.hsc.fc100.wc_system_info.v1`.'
-  printf '%s\n' "$wc_system_information" | grep -Fq 'compatible only with the explicit `tesla_hsc_modbus_v1` profile and the'
-  printf '%s\n' "$wc_system_information" | grep -Fq '`wc3_24_44_3` operation version.'
-  printf '%s\n' "$wc_system_information" | grep -Fq 'unknown response shape must cause no send.'
-  printf '%s\n' "$wc_system_information" | grep -Fq 'nested request message is exactly `32 02 4a 00`; therefore its FC100 PDU is'
-  printf '%s\n' "$wc_system_information" | grep -Fq 'exactly `04 32 02 4a 00`.'
-  printf '%s\n' "$wc_system_information" | grep -Fq 'optional FC100 intermediate and may occur no more than once.'
-  printf '%s\n' "$wc_system_information" | grep -Fq 'A duplicate echo, a second terminal, or any response after a terminal must be quarantined'
-  printf '%s\n' "$wc_system_information" | grep -Fq 'nested envelope contains WC family `6` and one response tag `10`.'
-  printf '%s\n' "$wc_system_information" | grep -Fq 'tag-`10` body is a bounded opaque terminal body.'
-  printf '%s\n' "$wc_system_information" | grep -Fq 'terminal PDU that does not match this success shape is unavailable as a native'
-  printf '%s\n' "$wc_system_information" | grep -Fq 'general application failure is an FC100 normal response whose nested envelope contains Common family `4` and error tag `1`;'
-  grep -Fqx '### Qualified WC load-sharing-state operation' "$document"
-  local wc_load_sharing
-  wc_load_sharing=$(awk '/^### Qualified WC load-sharing-state operation$/{keep=1; next} /^### /{keep=0} keep' "$document")
-  printf '%s\n' "$wc_load_sharing" | grep -Fq 'This version defines a qualified WC load-sharing-state operation:'
-  printf '%s\n' "$wc_load_sharing" | grep -Fq '`tesla.hsc.fc100.wc_load_sharing_state.v1`.'
-  printf '%s\n' "$wc_load_sharing" | grep -Fq 'compatible only with the explicit `tesla_hsc_modbus_v1` profile and the'
-  printf '%s\n' "$wc_load_sharing" | grep -Fq '`wc3_24_44_3` operation version.'
-  printf '%s\n' "$wc_load_sharing" | grep -Fq 'unknown response shape must cause no send.'
-  printf '%s\n' "$wc_load_sharing" | grep -Fq 'nested request message is exactly `32 02 5a 00`; therefore its FC100 PDU is'
-  printf '%s\n' "$wc_load_sharing" | grep -Fq 'exactly `04 32 02 5a 00`.'
-  printf '%s\n' "$wc_load_sharing" | grep -Fq 'optional FC100 intermediate and may occur no more than once.'
-  printf '%s\n' "$wc_load_sharing" | grep -Fq 'A duplicate echo, a second terminal, or any response after a terminal must be quarantined'
-  printf '%s\n' "$wc_load_sharing" | grep -Fq 'nested envelope contains WC family `6` and one response tag `12`.'
-  printf '%s\n' "$wc_load_sharing" | grep -Fq 'tag-`12` body is a bounded opaque terminal body.'
-  printf '%s\n' "$wc_load_sharing" | grep -Fq 'terminal PDU that does not match this success shape is unavailable as a native'
-  printf '%s\n' "$wc_load_sharing" | grep -Fq 'general application failure is an FC100 normal response whose nested envelope contains Common family `4` and error tag `1`;'
-	grep -Fqx '### Qualified WC PPU settings operation' "$document"
-	local wc_ppu_settings
-	wc_ppu_settings=$(awk '/^### Qualified WC PPU settings operation$/{keep=1; next} /^### /{keep=0} keep' "$document")
-	printf '%s\n' "$wc_ppu_settings" | grep -Fq 'This version defines a qualified WC PPU settings operation:'
-	printf '%s\n' "$wc_ppu_settings" | grep -Fq '`tesla.hsc.fc100.wc_ppu_settings.v1`.'
-	printf '%s\n' "$wc_ppu_settings" | grep -Fq 'read-only configuration operation'
-	printf '%s\n' "$wc_ppu_settings" | grep -Fq 'compatible only with the explicit `tesla_hsc_modbus_v1` profile and the'
-	printf '%s\n' "$wc_ppu_settings" | grep -Fq '`wc3_24_44_3` operation version.'
-	printf '%s\n' "$wc_ppu_settings" | grep -Fq 'unknown response shape must cause no send.'
-	printf '%s\n' "$wc_ppu_settings" | grep -Fq 'nested request message is exactly `32 03 ba 01 00`; therefore its FC100 PDU is'
-	printf '%s\n' "$wc_ppu_settings" | grep -Fq 'exactly `05 32 03 ba 01 00`.'
-	printf '%s\n' "$wc_ppu_settings" | grep -Fq 'optional FC100 intermediate and may occur no more than once.'
-	printf '%s\n' "$wc_ppu_settings" | grep -Fq 'A duplicate echo, a second terminal, or any response after a terminal must be quarantined'
-	printf '%s\n' "$wc_ppu_settings" | grep -Fq 'nested envelope contains exactly one WC family `6` member and exactly one response tag `24`, with no additional terminal member.'
-	printf '%s\n' "$wc_ppu_settings" | grep -Fq 'tag-`24` body is a bounded opaque terminal body.'
-	printf '%s\n' "$wc_ppu_settings" | grep -Fq 'no field, identifier, configuration value, or field-presence contract within that body.'
-	printf '%s\n' "$wc_ppu_settings" | grep -Fq 'A real device exchange requires separate action-time laboratory confirmation.'
-	printf '%s\n' "$wc_ppu_settings" | grep -Fq 'general application failure is an FC100 normal response whose nested envelope contains Common family `4` and error tag `1`;'
-	local wc_ppu_response_tags wc_ppu_families wc_ppu_terminal_members
-	wc_ppu_response_tags=$(printf '%s\n' "$wc_ppu_settings" | grep -Eo 'response tag[[:space:]]+`?[0-9]+`?' | wc -l | tr -d '[:space:]')
-	wc_ppu_families=$(printf '%s\n' "$wc_ppu_settings" | grep -Eo 'WC family[[:space:]]+`?6`?' | wc -l | tr -d '[:space:]')
-	wc_ppu_terminal_members=$(printf '%s\n' "$wc_ppu_settings" | grep -Eo 'terminal member' | wc -l | tr -d '[:space:]')
-	if [[ "$wc_ppu_response_tags" != 1 || "$wc_ppu_families" != 1 || "$wc_ppu_terminal_members" != 1 ]]; then
-		echo 'Tesla WC PPU settings contract does not have an exclusive terminal shape' >&2
-		return 1
-	fi
-	if printf '%s\n' "$wc_ppu_settings" | grep -Eqi '\b(exposes|projects|retains|returns|publishes)\b.*\b(configuration values?|identifiers?|raw (body|bytes?))\b|\b(enables|permits|admits|creates|invokes|dispatches)\b.*\b(setter|control|configuration mutation|FC101|FC102|serial endpoint|hardware I/O|gateway automatic dispatch)\b|\b((may|can|will)[[:space:]]+)?fall(s)? back to\b.*\bFC10[12]\b|\b(uses|sends through)\b.*\bFC10[12]\b|\bmay (include|contain)\b.*\b(WC family|response tag)\b|\badditional (WC family|response tag)\b.*\b(accepted|allowed|permitted)\b|\boutbound_allowed\b.*\btrue\b|\breal device exchange\b.*\b(automatic|enabled)\b'; then
-		echo 'Tesla WC PPU settings contract exceeds its opaque replay boundary' >&2
-		return 1
-	fi
-  grep -Fqx '### Qualified Common system-information operation' "$document"
-  grep -Fq 'This version defines a qualified Common system-information operation:' "$document"
-  grep -Fq '`tesla.hsc.fc100.common_system_info.v1`.' "$document"
-  grep -Fq '`tesla_hsc_modbus_v1` profile and the' "$document"
-  grep -Fq '`wc3_24_44_3` operation version. Any other operation version, missing' "$document"
-  grep -Fq 'unknown response shape must cause no send.' "$document"
-  grep -Fq 'nested request message is exactly `22 02 12 00`; therefore its FC100 PDU is' "$document"
-  grep -Fq 'exactly `04 22 02 12 00`.' "$document"
-  grep -Fq 'Common-message response tag `3`.' "$document"
-  grep -Fq 'tag-`3` body is a bounded opaque terminal body.' "$document"
-  grep -Fq 'normal Common error body is a terminal application failure;' "$document"
-
-  if grep -Eq 'raw bytes are not projected by this version|redacted operation failure' "$document"; then
-    echo 'Tesla native-record contract retains superseded runtime redaction wording' >&2
-    return 1
-  fi
-  grep -Fq 'The native HSC MCP status projection accepts only an already-correlated,' "$document" || return 1
-  grep -Fq 'payload exactly, together with its function, compatibility version, and' "$document" || return 1
-  grep -Fq 'The projection preserves the provider' "$document" || return 1
-  grep -Fq 'digest-only format does not limit the native HSC record projection.' "$document" || return 1
-  grep -Fq 'The compact summary does not project raw nested' "$document" || return 1
-  grep -Fq 'payloads without assigning semantics.' "$document" || return 1
-  grep -Fq 'Fixtures and documentation examples use synthetic values.' "$document" || return 1
-  printf '%s\n' "$wc_ppu_settings" | grep -Fq 'The native HSC record projection may retain this terminal body without creating' || return 1
-  printf '%s\n' "$wc_ppu_settings" | grep -Fq 'It does not infer a configuration value or control action.' || return 1
-  printf '%s\n' "$wc_ppu_settings" | grep -Fq 'A real device exchange requires separate action-time laboratory confirmation.' || return 1
-  if grep -Ein "$forbidden" "$document"; then
-    echo 'normative Tesla specification contains forbidden provenance material' >&2
-    return 1
-  fi
-  return 0
+    'Capability and version gates' 'Compatibility and versioning'
+	)
+	for heading in "${evse_required[@]}"; do grep -Fqx "## $heading" "$document"; done
+	grep -Fqx '### FC100 EVSE operation registry' "$document"
+	grep -Fq 'Records retain complete native EVSE payload with version, function, direction, and outcome.' "$document"
+	check_tesla_evse_scope "$document"
 }
 
 check_tesla_generation_contracts() {
@@ -245,6 +94,22 @@ check_tesla_generation_contracts() {
 	grep -Fq 'opaque unless a separate version-scoped operation contract assigns a named' "$gen3"
 	if grep -Eqi '([0-9]+\.[0-9]+\.[0-9]+)[^.]*\b(minimum|or newer|and later|qualifies)\b|\bminimum version\b[^.]*[0-9]' "$gen3"; then
 		echo 'Tesla Gen3 contract introduces a numeric version threshold' >&2
+		return 1
+	fi
+}
+
+check_tesla_evse_scope() {
+	local document="$1"
+	local forbidden='wifi|wi-fi|(^|[^[:alnum:]])AP([^[:alnum:]]|$)|pairing|provision|registration|activat(e|ion)|credential|password|auth(entication|orization)?|OCPP|(^|[^[:alnum:]])LED([^[:alnum:]]|$)|service|debug|eCAN|mailbox|(^|[^[:alnum:]])reset([^[:alnum:]]|$)|factory[[:space:]-]?reset|perform[[:space:]-]?reset|perform[[:space:]-]?update|check[[:space:]-]?for[[:space:]-]?update|clear[[:space:]-]?update|reboot|firmware[[:space:]-]?update|AccessControl|ChargeSchedule|SecurityParameter|CountryCode|Neurio'
+
+	grep -Fqx '### FC100 EVSE operation registry' "$document"
+	grep -Fq 'GetVitals' "$document"
+	grep -Fq 'GetLifetimeStats' "$document"
+	grep -Fq 'GetLoadSharingNetworkState' "$document"
+	grep -Fq 'GetSystemInfo' "$document"
+	grep -Fq 'EVSE charging-current limit control' "$document"
+	if grep -Eqi "$forbidden" "$document"; then
+		echo 'Tesla TEDAPI document exceeds the EVSE interoperability scope' >&2
 		return 1
 	fi
 }
@@ -882,6 +747,7 @@ done
 
 check_tesla_tedapi_contract "$spec"
 check_tesla_generation_contracts "$tesla_legacy_spec" "$tesla_gen3_spec"
+check_tesla_evse_scope "$spec"
 
 check_private_function_contract "$private_spec"
 
