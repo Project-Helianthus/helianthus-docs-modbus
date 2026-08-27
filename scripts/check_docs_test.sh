@@ -43,6 +43,7 @@ tesla_legacy_fixture="$fixture_root/tesla-legacy-wall-connector-rs485.md"
 tesla_gen3_document="$repo_root/protocols/tesla/gen3-hsc-rtu.md"
 tesla_gen3_fixture="$fixture_root/tesla-gen3-hsc-rtu.md"
 "$repo_root/scripts/check_docs.sh" --check-tesla-generation-contracts "$tesla_legacy_document" "$tesla_gen3_document"
+"$repo_root/scripts/check_docs.sh" --check-tesla-legacy-evse-current-contract "$tesla_legacy_document"
 for mutation in \
   's/A legacy command byte `FC` is not a Modbus function code./A legacy command byte `FC` is a Modbus function code./' \
   's/FC100, FC101, and FC102 are not part of this contract./FC100, FC101, and FC102 are part of this contract./' \
