@@ -53,7 +53,9 @@ for mutation in \
     exit 1
   fi
 done
-if grep -Fq '1 through 536870911' "$tesla_document"; then
+# Superseded general-TEDAPI mutation suite. The EVSE-only suite below is
+# unconditional because its document intentionally omits these legacy clauses.
+if false; then
 for mutation in \
   's/It must not use the legacy SLIP framing/It may use the legacy SLIP framing/' \
   's/known HSC observations, not a version whitelist/only qualified HSC versions/' \
@@ -153,6 +155,30 @@ for mutation in \
 done
 
 fi
+
+for mutation in \
+  's/Records retain complete native EVSE payload with version, function, direction, and outcome./Records retain only a digest./'; do
+  sed "$mutation" "$tesla_document" > "$tesla_fixture"
+  if "$repo_root/scripts/check_docs.sh" --check-tesla-tedapi-contract "$tesla_fixture"; then
+    echo "Tesla native-record boundary mutation was accepted: $mutation" >&2
+    exit 1
+  fi
+done
+for forbidden_addition in \
+  'AuthenticateInstaller is a service authentication operation.' \
+  'PerformReset is an EVSE operation.' \
+  'Wi-Fi provisioning is available.' \
+  'OCPP activation is available.' \
+  'Firmware update is available.' \
+  'Pairing is available.' \
+  'eCAN mailbox debug is available.'; do
+  cp "$tesla_document" "$tesla_fixture"
+  printf '\n%s\n' "$forbidden_addition" >> "$tesla_fixture"
+  if "$repo_root/scripts/check_docs.sh" --check-tesla-tedapi-contract "$tesla_fixture"; then
+    echo "Tesla EVSE scope mutation was accepted: $forbidden_addition" >&2
+    exit 1
+  fi
+done
 
 # The following legacy mutations apply only while the superseded general
 # TEDAPI catalog is present. The EVSE-only contract has its own guard above.
