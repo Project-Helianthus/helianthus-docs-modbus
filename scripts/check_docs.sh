@@ -100,7 +100,7 @@ check_tesla_generation_contracts() {
 
 check_tesla_evse_scope() {
 	local document="$1"
-	local forbidden='wifi|wi-fi|(^|[^[:alnum:]])AP([^[:alnum:]]|$)|pairing|provision|registration|activat(e|ion)|credential|password|auth(entication|orization)?|OCPP|(^|[^[:alnum:]])LED([^[:alnum:]]|$)|service|debug|eCAN|mailbox|factory[[:space:]-]?reset|perform[[:space:]-]?reset|perform[[:space:]-]?update|check[[:space:]-]?for[[:space:]-]?update|clear[[:space:]-]?update|reboot|firmware[[:space:]-]?update|AccessControl|ChargeSchedule|SecurityParameter|CountryCode|Neurio'
+	local forbidden='wifi|wi-fi|(^|[^[:alnum:]])AP([^[:alnum:]]|$)|pairing|provision|registration|activat(e|ion)|credential|password|auth(entication|orization)?|OCPP|(^|[^[:alnum:]])LED([^[:alnum:]]|$)|service|debug|eCAN|mailbox|(^|[^[:alnum:]])reset([^[:alnum:]]|$)|factory[[:space:]-]?reset|perform[[:space:]-]?reset|perform[[:space:]-]?update|check[[:space:]-]?for[[:space:]-]?update|clear[[:space:]-]?update|reboot|firmware[[:space:]-]?update|AccessControl|ChargeSchedule|SecurityParameter|CountryCode|Neurio'
 
 	grep -Fqx '### FC100 EVSE operation registry' "$document"
 	grep -Fq 'GetVitals' "$document"

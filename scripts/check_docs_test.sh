@@ -167,6 +167,7 @@ done
 for forbidden_addition in \
   'AuthenticateInstaller is a service authentication operation.' \
   'PerformReset is an EVSE operation.' \
+  'Reset is an EVSE operation.' \
   'Wi-Fi provisioning is available.' \
   'OCPP activation is available.' \
   'Firmware update is available.' \
