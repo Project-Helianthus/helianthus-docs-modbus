@@ -35,6 +35,19 @@ check_tesla_tedapi_contract() {
 	check_tesla_evse_scope "$document"
 }
 
+check_tesla_legacy_evse_current_contract() {
+	local document="$1"
+	grep -Fqx '## EVSE dynamic-current records' "$document"
+	grep -Fq '`FBE0` request and `FDE0`' "$document"
+	grep -Fq 'every Gen2 unit implements these records.' "$document"
+	grep -Fq 'allocation is not the actual' "$document"
+	grep -Fq 'current and neither value is a power setpoint.' "$document"
+	grep -Fq '`0x05` for pre-charge and `0x09` for charging.' "$document"
+	grep -Fq 'big-endian unsigned 16-bit current value in centiamperes.' "$document"
+	grep -Fq '`0x06` and `0x07` are relative changes of 2 A.' "$document"
+	grep -Fq '`0x08` remains unknown and unmapped.' "$document"
+}
+
 check_tesla_generation_contracts() {
 	local legacy="$1"
 	local gen3="$2"
@@ -686,6 +699,9 @@ if [[ $# -gt 0 ]]; then
       fi
       check_tesla_generation_contracts "$2" "$3"
       ;;
+		--check-tesla-legacy-evse-current-contract)
+			check_tesla_legacy_evse_current_contract "$2"
+			;;
     --check-private-function-contract) check_private_function_contract "$2" ;;
     --check-sunspec-v1-model-families-contract) check_sunspec_v1_model_families_contract "$2" ;;
     --check-sunspec-nested-layout-contract) check_sunspec_nested_layout_contract "$2" ;;
@@ -747,6 +763,7 @@ done
 
 check_tesla_tedapi_contract "$spec"
 check_tesla_generation_contracts "$tesla_legacy_spec" "$tesla_gen3_spec"
+check_tesla_legacy_evse_current_contract "$tesla_legacy_spec"
 check_tesla_evse_scope "$spec"
 
 check_private_function_contract "$private_spec"

@@ -42,6 +42,24 @@ The command families are `FB`, `FC`, and `FD`. The known link and heartbeat form
 
 A legacy command byte `FC` is not a Modbus function code. FC100, FC101, and FC102 are not part of this contract. A legacy decoder must not call a Gen3 HSC codec, a Modbus RTU parser, or a TEDAPI envelope parser.
 
+## EVSE dynamic-current records
+
+This candidate legacy-family contract retains the `FBE0` request and `FDE0`
+state records for EVSE energy-management current allocation. It is not an
+assertion that every Gen2 unit implements these records.
+
+`FDE0` retains the reported state byte, the current allocation, and the actual
+measured current as separate native values. The allocation is not the actual
+current and neither value is a power setpoint.
+
+The absolute offer states are `0x05` for pre-charge and `0x09` for charging.
+Each carries a big-endian unsigned 16-bit current value in centiamperes. A
+decoder preserves the state and raw bounded record; capability and device
+limits are not inferred from the wire range alone.
+
+`0x06` and `0x07` are relative changes of 2 A. They remain native-only and do
+not form an absolute EVSE allocation. `0x08` remains unknown and unmapped.
+
 ## Qualification
 
 This profile is selected only by explicit local configuration and a compatible legacy Wall Connector identity. It has two evidence tiers:
