@@ -43,6 +43,24 @@ tesla_legacy_fixture="$fixture_root/tesla-legacy-wall-connector-rs485.md"
 tesla_gen3_document="$repo_root/protocols/tesla/gen3-hsc-rtu.md"
 tesla_gen3_fixture="$fixture_root/tesla-gen3-hsc-rtu.md"
 "$repo_root/scripts/check_docs.sh" --check-tesla-generation-contracts "$tesla_legacy_document" "$tesla_gen3_document"
+"$repo_root/scripts/check_docs.sh" --check-tesla-gen3-evse-current-limit-contract "$tesla_gen3_document"
+for mutation in \
+  's/`wc3_24_44_3`/`wc3_24_28_3`/' \
+  's/FC100 family `6`, request tag `7`, terminal tag `8`/FC100 family `5`, request tag `7`, terminal tag `8`/' \
+  's/request tag `7`, terminal tag `8`/request tag `8`, terminal tag `7`/' \
+  's/integer number of amperes/integer number of watts/' \
+  's/request tag `25`, terminal tag `26`/request tag `25`, terminal tag `27`/' \
+  's/tag-`27` to tag-`28` readback/tag-`27` to tag-`29` readback/' \
+  's/current floor is 6 A/current floor is 5 A/' \
+  's/1 through 86399 seconds/0 through 86400 seconds/' \
+  's/Zero timeout remains unresolved/Zero timeout is interoperable/' \
+  's/without inferring a watt limit or a result for another version/with a watt limit for another version/'; do
+  sed "$mutation" "$tesla_gen3_document" > "$tesla_gen3_fixture"
+  if "$repo_root/scripts/check_docs.sh" --check-tesla-gen3-evse-current-limit-contract "$tesla_gen3_fixture"; then
+    echo "Tesla Gen3 EVSE current-limit mutation was accepted: $mutation" >&2
+    exit 1
+  fi
+done
 "$repo_root/scripts/check_docs.sh" --check-tesla-legacy-evse-current-contract "$tesla_legacy_document"
 for mutation in \
   's/A legacy command byte `FC` is not a Modbus function code./A legacy command byte `FC` is a Modbus function code./' \

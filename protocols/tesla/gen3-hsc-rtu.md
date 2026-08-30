@@ -51,6 +51,14 @@ The Gen3 native operation catalog is defined in the TEDAPI protocol contract.
 Known operation names describe the applicable request and terminal container,
 but unknown fields and values remain part of the native payload. FC101 and FC102 retain the same native record context, while their normal payloads remain opaque unless a separate version-scoped operation contract assigns a named structure.
 
+## EVSE current-limit records
+
+Only the `wc3_24_44_3` operation version qualifies this contract. Persistent current configuration is FC100 family `6`, request tag `7`, terminal tag `8`. Its `settings.maxOutputCurrentAmps` value is an integer number of amperes.
+
+Temporary provisional current configuration is family `6`, request tag `25`, terminal tag `26`. Its native request fields are `limitCurrentMaxAmps` in amperes, `limitTimeoutS`, and `inhibitCharging`. The terminal is an acknowledgement only; correlated family-`6` tag-`27` to tag-`28` readback is required to confirm a retained provisional value.
+
+Persistent and provisional limits remain distinct. For interoperable EVSE requests, the final-pilot current floor is 6 A and the timeout is finite from 1 through 86399 seconds. Zero timeout remains unresolved and is not an interoperable request value. Native records retain the bounded request, terminal, and readback context without inferring a watt limit or a result for another version.
+
 ## Safety boundary
 
 Offline codecs, request construction, and fake or replay dispatch may represent documented read and mutation operations. This contract does not authorize a live transmission, hardware action, deployment, or credential use. A live state-changing command requires action-time operator confirmation.
