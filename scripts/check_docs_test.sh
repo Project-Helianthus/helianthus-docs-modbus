@@ -53,6 +53,9 @@ for mutation in \
   's/constructs no request/constructs a request/' \
   's/Persistent and provisional limits remain distinct\./Persistent and provisional limits may be combined./' \
   's/all four bounded payloads/only the terminal payload/' \
+  's/Each object is validated independently\./Each object is validated collectively./' \
+  's/An invalid object is not projected, but a complete qualified sibling remains available even when the provider reports an error\./An invalid object is projected and suppresses its sibling./' \
+  's/If neither object qualifies, the tool returns no projected data with a structured error\./If neither object qualifies, the tool returns successful projected data./' \
   's/does not define a setter/defines a setter/' \
   's/must not infer a watt limit/may infer a watt limit/' \
   's/does not make zero timeout interoperable/makes zero timeout interoperable/' \

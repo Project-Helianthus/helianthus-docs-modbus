@@ -73,6 +73,9 @@ check_tesla_gen3_evse_current_limit_mcp_projection() {
 	grep -Fq 'integer-A `max_output_current_amps` fact with the bounded family-6 t7 request and t8 terminal payloads.' "$document"
 	grep -Fq '`limit_current_max_amps`, `limit_timeout_s`, and `inhibit_charging` with all four bounded payloads: t25 request, t26 acknowledgement, t27 readback request, and t28 readback terminal.' "$document"
 	grep -Fq 'A provisional object is available only when that complete correlated sequence is retained.' "$document"
+	grep -Fq 'Each object is validated independently.' "$document"
+	grep -Fq 'An invalid object is not projected, but a complete qualified sibling remains available even when the provider reports an error.' "$document"
+	grep -Fq 'If neither object qualifies, the tool returns no projected data with a structured error.' "$document"
 	grep -Fq 'does not define a setter, must not infer a watt limit, and does not make zero timeout interoperable.' "$document"
 	grep -Fq 'does not expose a result for another operation version or assign semantics to FC101 or FC102.' "$document"
 }
