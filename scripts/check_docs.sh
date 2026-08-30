@@ -69,6 +69,7 @@ check_tesla_gen3_evse_current_limit_mcp_projection() {
 	grep -Fq 'only already-injected records for `wc3_24_44_3`.' "$document"
 	grep -Fq 'The projection is `READ_ONLY`:' "$document"
 	grep -Fq 'always reports `outbound_allowed` as `false`, constructs no request, performs no acquisition, and never sends a frame.' "$document"
+	grep -Fq 'Persistent and provisional limits remain distinct.' "$document"
 	grep -Fq 'integer-A `max_output_current_amps` fact with the bounded family-6 t7 request and t8 terminal payloads.' "$document"
 	grep -Fq '`limit_current_max_amps`, `limit_timeout_s`, and `inhibit_charging` with all four bounded payloads: t25 request, t26 acknowledgement, t27 readback request, and t28 readback terminal.' "$document"
 	grep -Fq 'A provisional object is available only when that complete correlated sequence is retained.' "$document"
