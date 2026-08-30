@@ -62,6 +62,20 @@ check_tesla_gen3_evse_current_limit_contract() {
 	grep -Fq 'without inferring a watt limit or a result for another version.' "$document"
 }
 
+check_tesla_gen3_evse_current_limit_mcp_projection() {
+	local document="$1"
+	grep -Fqx '## MCP read-only current-limit projection' "$document"
+	grep -Fq 'The no-argument `modbus.v1.tesla.gen3.evse.current_limit.get` tool' "$document"
+	grep -Fq 'only already-injected records for `wc3_24_44_3`.' "$document"
+	grep -Fq 'The projection is `READ_ONLY`:' "$document"
+	grep -Fq 'always reports `outbound_allowed` as `false`, constructs no request, performs no acquisition, and never sends a frame.' "$document"
+	grep -Fq 'integer-A `max_output_current_amps` fact with the bounded family-6 t7 request and t8 terminal payloads.' "$document"
+	grep -Fq '`limit_current_max_amps`, `limit_timeout_s`, and `inhibit_charging` with all four bounded payloads: t25 request, t26 acknowledgement, t27 readback request, and t28 readback terminal.' "$document"
+	grep -Fq 'A provisional object is available only when that complete correlated sequence is retained.' "$document"
+	grep -Fq 'does not define a setter, must not infer a watt limit, and does not make zero timeout interoperable.' "$document"
+	grep -Fq 'does not expose a result for another operation version or assign semantics to FC101 or FC102.' "$document"
+}
+
 check_tesla_generation_contracts() {
 	local legacy="$1"
 	local gen3="$2"
@@ -719,6 +733,9 @@ if [[ $# -gt 0 ]]; then
 		--check-tesla-gen3-evse-current-limit-contract)
 			check_tesla_gen3_evse_current_limit_contract "$2"
 			;;
+		--check-tesla-gen3-evse-current-limit-mcp-projection)
+			check_tesla_gen3_evse_current_limit_mcp_projection "$2"
+			;;
     --check-private-function-contract) check_private_function_contract "$2" ;;
     --check-sunspec-v1-model-families-contract) check_sunspec_v1_model_families_contract "$2" ;;
     --check-sunspec-nested-layout-contract) check_sunspec_nested_layout_contract "$2" ;;
@@ -782,6 +799,7 @@ check_tesla_tedapi_contract "$spec"
 check_tesla_generation_contracts "$tesla_legacy_spec" "$tesla_gen3_spec"
 check_tesla_legacy_evse_current_contract "$tesla_legacy_spec"
 check_tesla_gen3_evse_current_limit_contract "$tesla_gen3_spec"
+check_tesla_gen3_evse_current_limit_mcp_projection "$tesla_gen3_spec"
 check_tesla_evse_scope "$spec"
 
 check_private_function_contract "$private_spec"
