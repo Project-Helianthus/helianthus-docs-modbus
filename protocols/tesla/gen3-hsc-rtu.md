@@ -65,6 +65,8 @@ The no-argument `modbus.v1.tesla.gen3.evse.current_limit.get` tool projects only
 
 Its optional persistent object retains the integer-A `max_output_current_amps` fact with the bounded family-6 t7 request and t8 terminal payloads. Its optional provisional object retains `limit_current_max_amps`, `limit_timeout_s`, and `inhibit_charging` with all four bounded payloads: t25 request, t26 acknowledgement, t27 readback request, and t28 readback terminal. A provisional object is available only when that complete correlated sequence is retained.
 
+Each object is validated independently. An invalid object is not projected, but a complete qualified sibling remains available even when the provider reports an error. If neither object qualifies, the tool returns no projected data with a structured error.
+
 The projection does not define a setter, must not infer a watt limit, and does not make zero timeout interoperable. It does not expose a result for another operation version or assign semantics to FC101 or FC102.
 
 ## Safety boundary
