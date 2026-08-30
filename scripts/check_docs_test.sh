@@ -44,6 +44,25 @@ tesla_gen3_document="$repo_root/protocols/tesla/gen3-hsc-rtu.md"
 tesla_gen3_fixture="$fixture_root/tesla-gen3-hsc-rtu.md"
 "$repo_root/scripts/check_docs.sh" --check-tesla-generation-contracts "$tesla_legacy_document" "$tesla_gen3_document"
 "$repo_root/scripts/check_docs.sh" --check-tesla-gen3-evse-current-limit-contract "$tesla_gen3_document"
+"$repo_root/scripts/check_docs.sh" --check-tesla-gen3-evse-current-limit-mcp-projection "$tesla_gen3_document"
+for mutation in \
+  's/modbus\.v1\.tesla\.gen3\.evse\.current_limit\.get/modbus.v1.tesla.gen3.evse.current_limit.set/' \
+  's/only already-injected records for `wc3_24_44_3`/all Gen3 versions/' \
+  's/`READ_ONLY`/`MUTATE`/' \
+  's/`outbound_allowed` as `false`/`outbound_allowed` as `true`/' \
+  's/constructs no request/constructs a request/' \
+  's/Persistent and provisional limits remain distinct\./Persistent and provisional limits may be combined./' \
+  's/all four bounded payloads/only the terminal payload/' \
+  's/does not define a setter/defines a setter/' \
+  's/must not infer a watt limit/may infer a watt limit/' \
+  's/does not make zero timeout interoperable/makes zero timeout interoperable/' \
+  's/assign semantics to FC101 or FC102/assigns semantics to FC101 and FC102/'; do
+  sed "$mutation" "$tesla_gen3_document" > "$tesla_gen3_fixture"
+  if "$repo_root/scripts/check_docs.sh" --check-tesla-gen3-evse-current-limit-mcp-projection "$tesla_gen3_fixture"; then
+    echo "Tesla Gen3 current-limit MCP mutation was accepted: $mutation" >&2
+    exit 1
+  fi
+done
 for mutation in \
   's/`wc3_24_44_3`/`wc3_24_28_3`/' \
   's/FC100 family `6`, request tag `7`, terminal tag `8`/FC100 family `5`, request tag `7`, terminal tag `8`/' \

@@ -59,6 +59,14 @@ Temporary provisional current configuration is family `6`, request tag `25`, ter
 
 Persistent and provisional limits remain distinct. For interoperable EVSE requests, the final-pilot current floor is 6 A and the timeout is finite from 1 through 86399 seconds. Zero timeout remains unresolved and is not an interoperable request value. Native records retain the bounded request, terminal, and readback context without inferring a watt limit or a result for another version.
 
+## MCP read-only current-limit projection
+
+The no-argument `modbus.v1.tesla.gen3.evse.current_limit.get` tool projects only already-injected records for `wc3_24_44_3`. The projection is `READ_ONLY`: it always reports `outbound_allowed` as `false`, constructs no request, performs no acquisition, and never sends a frame.
+
+Its optional persistent object retains the integer-A `max_output_current_amps` fact with the bounded family-6 t7 request and t8 terminal payloads. Its optional provisional object retains `limit_current_max_amps`, `limit_timeout_s`, and `inhibit_charging` with all four bounded payloads: t25 request, t26 acknowledgement, t27 readback request, and t28 readback terminal. A provisional object is available only when that complete correlated sequence is retained.
+
+The projection does not define a setter, must not infer a watt limit, and does not make zero timeout interoperable. It does not expose a result for another operation version or assign semantics to FC101 or FC102.
+
 ## Safety boundary
 
 Offline codecs, request construction, and fake or replay dispatch may represent documented read and mutation operations. This contract does not authorize a live transmission, hardware action, deployment, or credential use. A live state-changing command requires action-time operator confirmation.
