@@ -48,6 +48,20 @@ check_tesla_legacy_evse_current_contract() {
 	grep -Fq '`0x08` remains unknown and unmapped.' "$document"
 }
 
+check_tesla_gen3_evse_current_limit_contract() {
+	local document="$1"
+	grep -Fqx '## EVSE current-limit records' "$document"
+	grep -Fq 'Only the `wc3_24_44_3` operation version qualifies this contract.' "$document"
+	grep -Fq 'request tag `7`, terminal tag `8`.' "$document"
+	grep -Fq '`settings.maxOutputCurrentAmps` value is an integer number of amperes.' "$document"
+	grep -Fq 'request tag `25`, terminal tag `26`.' "$document"
+	grep -Fq '`limitCurrentMaxAmps` in amperes, `limitTimeoutS`, and `inhibitCharging`.' "$document"
+	grep -Fq 'tag-`27` to tag-`28` readback' "$document"
+	grep -Fq 'final-pilot current floor is 6 A and the timeout is finite from 1 through 86399 seconds.' "$document"
+	grep -Fq 'Zero timeout remains unresolved' "$document"
+	grep -Fq 'without inferring a watt limit or a result for another version.' "$document"
+}
+
 check_tesla_generation_contracts() {
 	local legacy="$1"
 	local gen3="$2"
@@ -702,6 +716,9 @@ if [[ $# -gt 0 ]]; then
 		--check-tesla-legacy-evse-current-contract)
 			check_tesla_legacy_evse_current_contract "$2"
 			;;
+		--check-tesla-gen3-evse-current-limit-contract)
+			check_tesla_gen3_evse_current_limit_contract "$2"
+			;;
     --check-private-function-contract) check_private_function_contract "$2" ;;
     --check-sunspec-v1-model-families-contract) check_sunspec_v1_model_families_contract "$2" ;;
     --check-sunspec-nested-layout-contract) check_sunspec_nested_layout_contract "$2" ;;
@@ -764,6 +781,7 @@ done
 check_tesla_tedapi_contract "$spec"
 check_tesla_generation_contracts "$tesla_legacy_spec" "$tesla_gen3_spec"
 check_tesla_legacy_evse_current_contract "$tesla_legacy_spec"
+check_tesla_gen3_evse_current_limit_contract "$tesla_gen3_spec"
 check_tesla_evse_scope "$spec"
 
 check_private_function_contract "$private_spec"
