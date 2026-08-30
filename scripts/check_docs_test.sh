@@ -52,6 +52,8 @@ for mutation in \
   's/`outbound_allowed` as `false`/`outbound_allowed` as `true`/' \
   's/constructs no request/constructs a request/' \
   's/Persistent and provisional limits remain distinct\./Persistent and provisional limits may be combined./' \
+  's/Its optional persistent object/Its required persistent object/' \
+  's/Its optional provisional object/Its required provisional object/' \
   's/all four bounded payloads/only the terminal payload/' \
   's/Each object is validated independently\./Each object is validated collectively./' \
   's/An invalid object is not projected, but a complete qualified sibling remains available even when the provider reports an error\./An invalid object is projected and suppresses its sibling./' \
