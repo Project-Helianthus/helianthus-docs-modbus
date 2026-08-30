@@ -44,6 +44,7 @@ tesla_gen3_document="$repo_root/protocols/tesla/gen3-hsc-rtu.md"
 tesla_gen3_fixture="$fixture_root/tesla-gen3-hsc-rtu.md"
 "$repo_root/scripts/check_docs.sh" --check-tesla-generation-contracts "$tesla_legacy_document" "$tesla_gen3_document"
 "$repo_root/scripts/check_docs.sh" --check-tesla-gen3-evse-current-limit-contract "$tesla_gen3_document"
+"$repo_root/scripts/check_docs.sh" --check-tesla-gen3-evse-current-limit-mcp-projection "$tesla_gen3_document"
 for mutation in \
   's/`wc3_24_44_3`/`wc3_24_28_3`/' \
   's/FC100 family `6`, request tag `7`, terminal tag `8`/FC100 family `5`, request tag `7`, terminal tag `8`/' \
