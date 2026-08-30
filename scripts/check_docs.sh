@@ -52,7 +52,7 @@ check_tesla_gen3_evse_current_limit_contract() {
 	local document="$1"
 	grep -Fqx '## EVSE current-limit records' "$document"
 	grep -Fq 'Only the `wc3_24_44_3` operation version qualifies this contract.' "$document"
-	grep -Fq 'request tag `7`, terminal tag `8`.' "$document"
+	grep -Fq 'FC100 family `6`, request tag `7`, terminal tag `8`.' "$document"
 	grep -Fq '`settings.maxOutputCurrentAmps` value is an integer number of amperes.' "$document"
 	grep -Fq 'request tag `25`, terminal tag `26`.' "$document"
 	grep -Fq '`limitCurrentMaxAmps` in amperes, `limitTimeoutS`, and `inhibitCharging`.' "$document"
