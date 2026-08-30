@@ -51,6 +51,7 @@ for mutation in \
   's/`READ_ONLY`/`MUTATE`/' \
   's/`outbound_allowed` as `false`/`outbound_allowed` as `true`/' \
   's/constructs no request/constructs a request/' \
+  's/Persistent and provisional limits remain distinct\./Persistent and provisional limits may be combined./' \
   's/all four bounded payloads/only the terminal payload/' \
   's/does not define a setter/defines a setter/' \
   's/must not infer a watt limit/may infer a watt limit/' \
