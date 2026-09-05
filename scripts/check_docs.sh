@@ -36,6 +36,12 @@ check_tesla_legacy_public_protocol() {
 		echo 'Tesla legacy public protocol contains prohibited material' >&2
 		return 1
 	fi
+	for url in "${allowed_urls[@]}"; do
+		if ! grep -Fq "$url" "$document"; then
+			echo 'Tesla legacy public protocol is missing a required source locator' >&2
+			return 1
+		fi
+	done
 	while IFS= read -r url; do
 		case " ${allowed_urls[*]} " in
 			*" $url "*) ;;
