@@ -381,6 +381,52 @@ check_sunspec_v1_model_families_contract() {
   fi
 }
 
+check_fronius_qualification_readiness() {
+  local document="$1"
+  local contradiction='live_qualified[=: ]+true|automatic_runtime_admission[=: ]+true|write_authority[=: ]+true|support claim is established|partial positive result is permitted'
+
+  check_public_protocol "$document"
+  for heading in \
+    'Scope and evidence state' \
+    'Qualification card' \
+    'Complete-chain replay matrix' \
+    'Typed native facts and retention' \
+    'Sanitized expected result' \
+    'Failure and requalification boundary'; do
+    grep -Fqx "## $heading" "$document"
+  done
+  grep -Fq '`sunspec.qualification.fronius.gen24.float.readonly@1.0.0`' "$document"
+  grep -Fq '`sunspec.flavor.fronius.gen24.float.observed@1.1.0`' "$document"
+  grep -Fq '`1.41.11-1`' "$document"
+  grep -Fq 'The generic three-phase SunSpec monitoring capability is evaluated separately' "$document"
+  grep -Fq 'The initial base-candidate' "$document"
+  grep -Fq 'set is exactly `[40000]`; the maximum chain is 512 words and 64 model' "$document"
+  grep -Fq 'adapter to at most 125 words.' "$document"
+  grep -Fq '| Structurally valid unknown model | retain the opaque occurrence, raw words, order, and source spans; generic capability may remain admitted; exact flavor does not match |' "$document"
+  grep -Fq '| Duplicate known model | retain each occurrence separately; exact flavor does not match |' "$document"
+  grep -Fq '| Known model with an unsupported length | retain it as `unsupported_length`; exact flavor does not match |' "$document"
+  grep -Fq '| Missing payload chunk or terminal chunk | remain incomplete and produce no qualification observation |' "$document"
+  grep -Fq '| Unavailable sentinel in a required Model 113 fact | retain the raw value; reject the generic capability and exact flavor |' "$document"
+  grep -Fq '| Different manufacturer, model, or firmware | generic standard capability may remain admitted; exact Fronius flavor does not match |' "$document"
+  for field in \
+    inverter.ac.current.total inverter.ac.current.phase_a inverter.ac.current.phase_b inverter.ac.current.phase_c \
+    inverter.ac.voltage.phase_a inverter.ac.voltage.phase_b inverter.ac.voltage.phase_c \
+    inverter.ac.power.active inverter.ac.frequency inverter.ac.energy_lifetime \
+    inverter.temperature.cabinet inverter.operating_state inverter.events.1 inverter.events.2; do
+    grep -Fq "\`$field\`" "$document"
+  done
+  grep -Fq 'it is not a promotion or publication decision.' "$document"
+  grep -Fq '`raw_words`, `occurrence_order`, `source_spans`, and' "$document"
+  grep -Fq '"live_qualified": false' "$document"
+  grep -Fq '"automatic_runtime_admission": false' "$document"
+  grep -Fq '"write_authority": false' "$document"
+  grep -Fq 'It does not prove a currently reachable device, a product support claim, a' "$document"
+  if grep -Ein "$contradiction" "$document"; then
+    echo 'Fronius qualification readiness contract exceeds its offline read-only boundary' >&2
+    return 1
+  fi
+}
+
 check_sunspec_nested_layout_contract() {
   local document="$1"
 
@@ -718,7 +764,7 @@ check_outback_axs_contract() {
 
 if [[ $# -gt 0 ]]; then
   if [[ $# -ne 2 ]] && [[ "$1" != '--check-tesla-generation-contracts' || $# -ne 3 ]]; then
-    echo 'usage: check_docs.sh [--check-sdongle-admission|--check-public-protocol|--check-tesla-tedapi-contract|--check-tesla-generation-contracts|--check-private-function-contract|--check-sunspec-v1-model-families-contract|--check-sunspec-nested-layout-contract|--check-sunspec-der-trip-lv-template-v2|--check-sunspec-der-trip-lv-typed-fact-projection-v2|--check-sunspec-dynamic-structural-selection-v2|--check-sunspec-v2-contract|--check-sunspec-v2-licensing|--check-x2-publication|--check-x2-contract|--check-bms-contract|--check-growatt-protocol-ii-identity-projection|--check-wit-matrix-contract document]' >&2
+    echo 'usage: check_docs.sh [--check-sdongle-admission|--check-public-protocol|--check-tesla-tedapi-contract|--check-tesla-generation-contracts|--check-private-function-contract|--check-sunspec-v1-model-families-contract|--check-fronius-qualification-readiness|--check-sunspec-nested-layout-contract|--check-sunspec-der-trip-lv-template-v2|--check-sunspec-der-trip-lv-typed-fact-projection-v2|--check-sunspec-dynamic-structural-selection-v2|--check-sunspec-v2-contract|--check-sunspec-v2-licensing|--check-x2-publication|--check-x2-contract|--check-bms-contract|--check-growatt-protocol-ii-identity-projection|--check-wit-matrix-contract document]' >&2
     exit 2
   fi
   case "$1" in
@@ -742,6 +788,7 @@ if [[ $# -gt 0 ]]; then
 			;;
     --check-private-function-contract) check_private_function_contract "$2" ;;
     --check-sunspec-v1-model-families-contract) check_sunspec_v1_model_families_contract "$2" ;;
+    --check-fronius-qualification-readiness) check_fronius_qualification_readiness "$2" ;;
     --check-sunspec-nested-layout-contract) check_sunspec_nested_layout_contract "$2" ;;
     --check-sunspec-der-trip-lv-template-v2) check_sunspec_der_trip_lv_template_v2 "$2" ;;
     --check-sunspec-der-trip-lv-typed-fact-projection-v2) check_sunspec_der_trip_lv_typed_fact_projection_v2 "$2" ;;
@@ -755,7 +802,7 @@ if [[ $# -gt 0 ]]; then
     --check-wit-matrix-contract) check_wit_matrix_contract "$2" ;;
     --check-outback-axs-contract) check_outback_axs_contract "$2" ;;
     *)
-    echo 'usage: check_docs.sh [--check-sdongle-admission|--check-public-protocol|--check-tesla-tedapi-contract|--check-private-function-contract|--check-sunspec-v1-model-families-contract|--check-sunspec-nested-layout-contract|--check-sunspec-der-trip-lv-template-v2|--check-sunspec-der-trip-lv-typed-fact-projection-v2|--check-sunspec-dynamic-structural-selection-v2|--check-sunspec-v2-contract|--check-sunspec-v2-licensing|--check-x2-publication|--check-x2-contract|--check-bms-contract|--check-growatt-protocol-ii-identity-projection|--check-wit-matrix-contract document]' >&2
+    echo 'usage: check_docs.sh [--check-sdongle-admission|--check-public-protocol|--check-tesla-tedapi-contract|--check-private-function-contract|--check-sunspec-v1-model-families-contract|--check-fronius-qualification-readiness|--check-sunspec-nested-layout-contract|--check-sunspec-der-trip-lv-template-v2|--check-sunspec-der-trip-lv-typed-fact-projection-v2|--check-sunspec-dynamic-structural-selection-v2|--check-sunspec-v2-contract|--check-sunspec-v2-licensing|--check-x2-publication|--check-x2-contract|--check-bms-contract|--check-growatt-protocol-ii-identity-projection|--check-wit-matrix-contract document]' >&2
       exit 2
       ;;
   esac
@@ -776,6 +823,8 @@ der_trip_lv_projection_spec='protocols/sunspec/der-trip-lv-typed-fact-projection
 test -f "$der_trip_lv_projection_spec"
 dynamic_structural_selection_spec='protocols/sunspec/dynamic-structural-selection-v2.md'
 test -f "$dynamic_structural_selection_spec"
+fronius_qualification_spec='protocols/fronius/qualification-readiness-v1.md'
+test -f "$fronius_qualification_spec"
 private_spec='protocols/modbus/private-function-codes.md'
 test -f "$private_spec"
 sdongle_admission='architecture/sdongle-qualification-disposition-v1.md'
@@ -788,6 +837,7 @@ multivendor_specs=(
   'protocols/sunspec/read-only-core-v2.md'
   'protocols/sunspec/nested-layout-contract-v1.md'
   'protocols/fronius/sunspec-float-v1.md'
+  'protocols/fronius/qualification-readiness-v1.md'
   'protocols/huawei/gateway-readonly-v1.md'
   'protocols/growatt/protocol-ii-readonly-v1.md'
   'protocols/growatt/shinewilan-x2-bridge-v1.md'
@@ -817,6 +867,7 @@ check_sunspec_nested_layout_contract "$nested_layout_spec"
 check_sunspec_der_trip_lv_template_v2 "$der_trip_lv_template_spec"
 check_sunspec_v2_licensing 'protocols/applicability-and-licensing.md'
 grep -Fqx '## Exact chain geometry' 'protocols/fronius/sunspec-float-v1.md'
+check_fronius_qualification_readiness "$fronius_qualification_spec"
 grep -Fqx '## SmartLogger candidate' 'protocols/huawei/gateway-readonly-v1.md'
 grep -Fqx '## S-Dongle candidate' 'protocols/huawei/gateway-readonly-v1.md'
 grep -Fqx '## EMMA candidate' 'protocols/huawei/gateway-readonly-v1.md'

@@ -29,6 +29,25 @@ dynamic_structural_selection_document="$repo_root/protocols/sunspec/dynamic-stru
 dynamic_structural_selection_fixture="$fixture_root/sunspec-dynamic-structural-selection-v2.md"
 private_function_document="$repo_root/protocols/modbus/private-function-codes.md"
 private_function_fixture="$fixture_root/private-function-codes.md"
+fronius_qualification_document="$repo_root/protocols/fronius/qualification-readiness-v1.md"
+fronius_qualification_fixture="$fixture_root/fronius-qualification-readiness-v1.md"
+
+"$repo_root/scripts/check_docs.sh" --check-fronius-qualification-readiness "$fronius_qualification_document"
+for mutation in \
+  's/set is exactly `\[40000\]`; the maximum chain is 512 words and 64 model/set is broad; the maximum chain is unbounded and has unlimited model/' \
+  's/retain the opaque occurrence, raw words, order, and source spans/discard the opaque occurrence/' \
+  's/remain incomplete and produce no qualification observation/pad the missing chunk and produce a qualification observation/' \
+  's/retain the raw value; reject the generic capability and exact flavor/convert the sentinel to zero and admit the flavor/' \
+  's/it is not a promotion or publication decision./it is a promotion and publication decision./' \
+  's/"live_qualified": false/"live_qualified": true/' \
+  's/"automatic_runtime_admission": false/"automatic_runtime_admission": true/' \
+  's/"write_authority": false/"write_authority": true/'; do
+  sed "$mutation" "$fronius_qualification_document" > "$fronius_qualification_fixture"
+  if "$repo_root/scripts/check_docs.sh" --check-fronius-qualification-readiness "$fronius_qualification_fixture"; then
+    echo "Fronius qualification readiness mutation was accepted: $mutation" >&2
+    exit 1
+  fi
+done
 
 cp "$source_document" "$fixture_document"
 "$repo_root/scripts/check_docs.sh" --check-sdongle-admission "$fixture_document"
