@@ -762,9 +762,66 @@ check_outback_axs_contract() {
   fi
 }
 
+check_huawei_qualification_readiness() {
+  local document="$1"
+  local contradiction='automatic_runtime_admission[=: ]+true|live_qualified[=: ]+true|support_claim[=: ]+true|write_authority[=: ]+true|automatic_request_count[=: ]+[1-9]|fallback_attempted[=: ]+true|missing or unavailable native values.*numeric zero'
+
+  check_public_protocol "$document"
+  for heading in \
+    'Scope and class outcomes' \
+    'SmartLogger qualification card' \
+    'EMMA qualification card' \
+    'S-Dongle evidence-blocked card' \
+    'Shared resolution and negative overlap' \
+    'Sanitized expected result' \
+    'Integration and hardware boundary'; do
+    grep -Fqx "## $heading" "$document"
+  done
+  grep -Fq '| SmartLogger | `QUALIFICATION_TEST_READY` |' "$document"
+  grep -Fq '| EMMA | `QUALIFICATION_EVIDENCE_BLOCKED` |' "$document"
+  grep -Fq '| S-Dongle | `QUALIFICATION_EVIDENCE_BLOCKED` |' "$document"
+  grep -Fq 'No class is `HARDWARE_TEST_READY`.' "$document"
+  grep -Fq '`huawei.qualification.smartlogger.readonly@1.0.0`' "$document"
+  grep -Fq 'PDU offset 65521, quantity 1' "$document"
+  grep -Fq '15 seconds, 248' "$document"
+  grep -Fq 'pages, 248 objects, 65536 response bytes, and 247 children.' "$document"
+  grep -Fq 'The first record is the self entry and its model must be exactly' "$document"
+  grep -Fq 'counter change, count mismatch, cursor loop, second wrap, or any exhausted limit rejects' "$document"
+  grep -Fq 'An EMMA self entry is a SmartLogger negative control and produces no SmartLogger' "$document"
+  grep -Fq '`huawei.qualification.emma.readonly@1.0.0`' "$document"
+  grep -Fq 'offset 30000' "$document"
+  grep -Fq 'quantity 15 for offering, offset 30222 quantity 20 for model, and offset 30035' "$document"
+  grep -Fq 'R024C00 requires SPC100 or' "$document"
+  grep -Fq 'R025C00 requires SPC102 or greater within R025C00.' "$document"
+  grep -Fq 'No comparison crosses branches.' "$document"
+  grep -Fq 'does not invent a capability acquisition map.' "$document"
+  for evidence in sanitized_readonly_capability_fixture negative_overlap_with_smartlogger model_specific_capability_fixture; do
+    grep -Fq "\`$evidence\`" "$document"
+  done
+  grep -Fq '`huawei.qualification.sdongle.evidence-blocked@1.0.0`' "$document"
+  grep -Fq '`LIVE_STOPPED_PERSISTENT_NON_RESPONSE` at logical unit 100.' "$document"
+  for evidence in gateway_unit_100_topology sanitized_basic_mei_product_model_fixture exact_protocol_version_encoding_fixture completed_search_stable_sequence_capacity_fixture separately_qualified_child_unit_inventory_fixture; do
+    grep -Fq "\`$evidence\`" "$document"
+  done
+  grep -Fq 'Further I/O remains a hard stop.' "$document"
+  grep -Fq 'More than one positive result produces `AMBIGUOUS`,' "$document"
+  grep -Fq 'retains the candidate class names, and selects no class.' "$document"
+  grep -Fq 'A mixed resolution set containing one positive class and any failed class stays' "$document"
+  grep -Fq 'downgrade that hard stop or select another class around it.' "$document"
+  grep -Fq 'zero automatic requests, and `fallback_attempted=false`.' "$document"
+  grep -Fq 'they are never emitted as numeric zero, an empty' "$document"
+  grep -Fq '"automatic_runtime_admission": false' "$document"
+  grep -Fq '`automatic_request_count=0`' "$document"
+  grep -Fq '`native_fact_count=0`' "$document"
+  if grep -Ein "$contradiction" "$document"; then
+    echo 'Huawei qualification readiness contract exceeds its default-denied offline boundary' >&2
+    return 1
+  fi
+}
+
 if [[ $# -gt 0 ]]; then
   if [[ $# -ne 2 ]] && [[ "$1" != '--check-tesla-generation-contracts' || $# -ne 3 ]]; then
-    echo 'usage: check_docs.sh [--check-sdongle-admission|--check-public-protocol|--check-tesla-tedapi-contract|--check-tesla-generation-contracts|--check-private-function-contract|--check-sunspec-v1-model-families-contract|--check-fronius-qualification-readiness|--check-sunspec-nested-layout-contract|--check-sunspec-der-trip-lv-template-v2|--check-sunspec-der-trip-lv-typed-fact-projection-v2|--check-sunspec-dynamic-structural-selection-v2|--check-sunspec-v2-contract|--check-sunspec-v2-licensing|--check-x2-publication|--check-x2-contract|--check-bms-contract|--check-growatt-protocol-ii-identity-projection|--check-wit-matrix-contract document]' >&2
+    echo 'usage: check_docs.sh [--check-sdongle-admission|--check-public-protocol|--check-tesla-tedapi-contract|--check-tesla-generation-contracts|--check-private-function-contract|--check-sunspec-v1-model-families-contract|--check-fronius-qualification-readiness|--check-huawei-qualification-readiness|--check-sunspec-nested-layout-contract|--check-sunspec-der-trip-lv-template-v2|--check-sunspec-der-trip-lv-typed-fact-projection-v2|--check-sunspec-dynamic-structural-selection-v2|--check-sunspec-v2-contract|--check-sunspec-v2-licensing|--check-x2-publication|--check-x2-contract|--check-bms-contract|--check-growatt-protocol-ii-identity-projection|--check-wit-matrix-contract document]' >&2
     exit 2
   fi
   case "$1" in
@@ -789,6 +846,7 @@ if [[ $# -gt 0 ]]; then
     --check-private-function-contract) check_private_function_contract "$2" ;;
     --check-sunspec-v1-model-families-contract) check_sunspec_v1_model_families_contract "$2" ;;
     --check-fronius-qualification-readiness) check_fronius_qualification_readiness "$2" ;;
+    --check-huawei-qualification-readiness) check_huawei_qualification_readiness "$2" ;;
     --check-sunspec-nested-layout-contract) check_sunspec_nested_layout_contract "$2" ;;
     --check-sunspec-der-trip-lv-template-v2) check_sunspec_der_trip_lv_template_v2 "$2" ;;
     --check-sunspec-der-trip-lv-typed-fact-projection-v2) check_sunspec_der_trip_lv_typed_fact_projection_v2 "$2" ;;
@@ -802,7 +860,7 @@ if [[ $# -gt 0 ]]; then
     --check-wit-matrix-contract) check_wit_matrix_contract "$2" ;;
     --check-outback-axs-contract) check_outback_axs_contract "$2" ;;
     *)
-    echo 'usage: check_docs.sh [--check-sdongle-admission|--check-public-protocol|--check-tesla-tedapi-contract|--check-private-function-contract|--check-sunspec-v1-model-families-contract|--check-fronius-qualification-readiness|--check-sunspec-nested-layout-contract|--check-sunspec-der-trip-lv-template-v2|--check-sunspec-der-trip-lv-typed-fact-projection-v2|--check-sunspec-dynamic-structural-selection-v2|--check-sunspec-v2-contract|--check-sunspec-v2-licensing|--check-x2-publication|--check-x2-contract|--check-bms-contract|--check-growatt-protocol-ii-identity-projection|--check-wit-matrix-contract document]' >&2
+    echo 'usage: check_docs.sh [--check-sdongle-admission|--check-public-protocol|--check-tesla-tedapi-contract|--check-private-function-contract|--check-sunspec-v1-model-families-contract|--check-fronius-qualification-readiness|--check-huawei-qualification-readiness|--check-sunspec-nested-layout-contract|--check-sunspec-der-trip-lv-template-v2|--check-sunspec-der-trip-lv-typed-fact-projection-v2|--check-sunspec-dynamic-structural-selection-v2|--check-sunspec-v2-contract|--check-sunspec-v2-licensing|--check-x2-publication|--check-x2-contract|--check-bms-contract|--check-growatt-protocol-ii-identity-projection|--check-wit-matrix-contract document]' >&2
       exit 2
       ;;
   esac
@@ -825,6 +883,8 @@ dynamic_structural_selection_spec='protocols/sunspec/dynamic-structural-selectio
 test -f "$dynamic_structural_selection_spec"
 fronius_qualification_spec='protocols/fronius/qualification-readiness-v1.md'
 test -f "$fronius_qualification_spec"
+huawei_qualification_spec='protocols/huawei/qualification-readiness-v1.md'
+test -f "$huawei_qualification_spec"
 private_spec='protocols/modbus/private-function-codes.md'
 test -f "$private_spec"
 sdongle_admission='architecture/sdongle-qualification-disposition-v1.md'
@@ -839,6 +899,7 @@ multivendor_specs=(
   'protocols/fronius/sunspec-float-v1.md'
   'protocols/fronius/qualification-readiness-v1.md'
   'protocols/huawei/gateway-readonly-v1.md'
+  'protocols/huawei/qualification-readiness-v1.md'
   'protocols/growatt/protocol-ii-readonly-v1.md'
   'protocols/growatt/shinewilan-x2-bridge-v1.md'
   'protocols/growatt/bms-rs485-1xsxxp-v202.md'
@@ -868,6 +929,7 @@ check_sunspec_der_trip_lv_template_v2 "$der_trip_lv_template_spec"
 check_sunspec_v2_licensing 'protocols/applicability-and-licensing.md'
 grep -Fqx '## Exact chain geometry' 'protocols/fronius/sunspec-float-v1.md'
 check_fronius_qualification_readiness "$fronius_qualification_spec"
+check_huawei_qualification_readiness "$huawei_qualification_spec"
 grep -Fqx '## SmartLogger candidate' 'protocols/huawei/gateway-readonly-v1.md'
 grep -Fqx '## S-Dongle candidate' 'protocols/huawei/gateway-readonly-v1.md'
 grep -Fqx '## EMMA candidate' 'protocols/huawei/gateway-readonly-v1.md'

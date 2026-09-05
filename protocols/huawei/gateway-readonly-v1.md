@@ -153,3 +153,7 @@ send and no partial profile.
 Executable inventory parsing, candidate decoding, and pairwise overlap proof
 belong to the consuming profile registry. This page creates no admission by
 itself.
+
+The per-class qualification cards, missing-evidence outcomes, and shared
+no-fallback result are defined in
+[`qualification-readiness-v1.md`](qualification-readiness-v1.md).

@@ -29,6 +29,26 @@ dynamic_structural_selection_document="$repo_root/protocols/sunspec/dynamic-stru
 dynamic_structural_selection_fixture="$fixture_root/sunspec-dynamic-structural-selection-v2.md"
 private_function_document="$repo_root/protocols/modbus/private-function-codes.md"
 private_function_fixture="$fixture_root/private-function-codes.md"
+huawei_qualification_document="$repo_root/protocols/huawei/qualification-readiness-v1.md"
+huawei_qualification_fixture="$fixture_root/huawei-qualification-readiness-v1.md"
+
+"$repo_root/scripts/check_docs.sh" --check-huawei-qualification-readiness "$huawei_qualification_document"
+for mutation in \
+  's/No class is `HARDWARE_TEST_READY`./SmartLogger is `HARDWARE_TEST_READY`./' \
+  's/produces no SmartLogger/produces a SmartLogger/' \
+  's/No comparison crosses branches./R025 is newer than R024./' \
+  's|Further I/O remains a hard stop.|Further I/O resumes automatically.|' \
+  's/selects no class/selects the first class/' \
+  's/any failed class stays/any failed class selects/' \
+  's/zero automatic requests/one automatic request/' \
+  's/"automatic_runtime_admission": false/"automatic_runtime_admission": true/' \
+  's/they are never emitted as numeric zero/they are emitted as numeric zero/'; do
+  sed "$mutation" "$huawei_qualification_document" > "$huawei_qualification_fixture"
+  if "$repo_root/scripts/check_docs.sh" --check-huawei-qualification-readiness "$huawei_qualification_fixture"; then
+    echo "Huawei qualification readiness mutation was accepted: $mutation" >&2
+    exit 1
+  fi
+done
 fronius_qualification_document="$repo_root/protocols/fronius/qualification-readiness-v1.md"
 fronius_qualification_fixture="$fixture_root/fronius-qualification-readiness-v1.md"
 
