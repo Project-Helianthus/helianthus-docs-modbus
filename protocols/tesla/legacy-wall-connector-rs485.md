@@ -52,6 +52,23 @@ assertion that every Gen2 unit implements these records.
 measured current as separate native values. The allocation is not the actual
 current and neither value is a power setpoint.
 
+### Bounded payload layout
+
+The offline typed decoder accepts a complete, checksum-validated `FBE0` request
+only with a seven-byte or nine-byte payload. Bytes `0..1` are the source ID,
+bytes `2..3` are the destination ID, byte `4` is the state, and bytes `5..6`
+are the big-endian unsigned allocated current in centiamperes. The optional
+bytes `7..8` in the nine-byte form remain opaque padding and are retained in
+the complete native frame.
+
+The offline typed decoder accepts a complete, checksum-validated `FDE0`
+response only with a nine-byte payload. It has the same source, destination,
+state, and allocated-current positions; bytes `7..8` are the separate
+big-endian unsigned actual current in centiamperes. A shorter, longer, or
+wrong-direction/command frame does not produce a typed record. The decoder
+retains the complete bounded frame, including any accepted opaque padding,
+without assigning it additional meaning.
+
 The absolute offer states are `0x05` for pre-charge and `0x09` for charging.
 Each carries a big-endian unsigned 16-bit current value in centiamperes. A
 decoder preserves the state and raw bounded record; capability and device
@@ -80,3 +97,9 @@ Offline codecs, request construction, and fake or replay dispatch may represent 
 ## Compatibility
 
 The legacy profile is independent from Gen3 HSC RTU. No common codec, profile, version predicate, operation identifier, or response rule is implied by both protocols.
+
+Typed dynamic-current construction requires the selected legacy profile,
+request/response direction, complete encoded frame, and caller-supplied fields
+to agree. Earlier callers that supplied unvalidated raw bytes or independent
+state/current values must supply this bounded frame context before they can
+obtain a typed native record.
