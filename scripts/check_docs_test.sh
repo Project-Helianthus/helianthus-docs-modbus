@@ -83,6 +83,29 @@ tesla_gen3_document="$repo_root/protocols/tesla/gen3-hsc-rtu.md"
 tesla_gen3_fixture="$fixture_root/tesla-gen3-hsc-rtu.md"
 "$repo_root/scripts/check_docs.sh" --check-tesla-generation-contracts "$tesla_legacy_document" "$tesla_gen3_document"
 "$repo_root/scripts/check_docs.sh" --check-tesla-gen3-evse-current-limit-contract "$tesla_gen3_document"
+"$repo_root/scripts/check_docs.sh" --check-tesla-gen3-evse-current-limit-wire-evidence "$tesla_gen3_document"
+for mutation in \
+  's/signed int32 amperes/unsigned int32 amperes/' \
+  's/t28 additionally carries distinct singular field 2/t28 omits distinct singular field 2/' \
+  's/t26 and t27 have empty bodies/t26 carries a value body/' \
+  's/t8 is getter-populated returned persistent settings state, not an acknowledgement/t8 is an acknowledgement only/' \
+  's/t26 is an acknowledgement only and cannot confirm an applied provisional value/t26 confirms an applied provisional value/' \
+  's/no nonce, timestamp, or generation counter/transaction nonce and generation counter/' \
+  's/duplicate documented singular members are rejected/duplicate documented singular members are accepted/' \
+  's/Zero current and zero timeout remain unknown/Zero current and zero timeout mean unlimited/' \
+  's/No sender, dispatcher, transport activation, operation authorization, or live-device claim follows/A sender and live-device claim follows/'; do
+  sed "$mutation" "$tesla_gen3_document" > "$tesla_gen3_fixture"
+  if "$repo_root/scripts/check_docs.sh" --check-tesla-gen3-evse-current-limit-wire-evidence "$tesla_gen3_fixture"; then
+    echo "Tesla Gen3 wire-evidence mutation was accepted: $mutation" >&2
+    exit 1
+  fi
+done
+cp "$tesla_gen3_document" "$tesla_gen3_fixture"
+printf '\n`0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef`\n' >> "$tesla_gen3_fixture"
+if "$repo_root/scripts/check_docs.sh" --check-tesla-generation-contracts "$tesla_legacy_document" "$tesla_gen3_fixture"; then
+  echo 'Tesla Gen3 arbitrary evidence hash was accepted' >&2
+  exit 1
+fi
 "$repo_root/scripts/check_docs.sh" --check-tesla-gen3-evse-current-limit-mcp-projection "$tesla_gen3_document"
 for mutation in \
   's/modbus\.v1\.tesla\.gen3\.evse\.current_limit\.get/modbus.v1.tesla.gen3.evse.current_limit.set/' \
