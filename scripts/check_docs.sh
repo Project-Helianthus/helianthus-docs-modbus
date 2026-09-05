@@ -21,6 +21,32 @@ check_public_protocol() {
   fi
 }
 
+check_tesla_legacy_public_protocol() {
+	local document="$1"
+	local forbidden='/[Uu]sers/|sha(-?256)?[-:]?[0-9a-f]{8,}|(source|vendor material) (is|are) public domain|sunspec\.inverter\.|canonical facts'
+	local url
+	local allowed_urls=(
+		'https://github.com/dracoventions/TWCManager/blob/7fb019a6838c9d15ba3b27f27458fa76c5e482d2/TWCManager.py#L1690-L1706'
+		'https://github.com/dracoventions/TWCManager/blob/7fb019a6838c9d15ba3b27f27458fa76c5e482d2/TWCManager.py#L3207-L3213'
+		'https://github.com/dracoventions/TWCManager/blob/7fb019a6838c9d15ba3b27f27458fa76c5e482d2/TWCManager.py#L3344-L3351'
+		'https://github.com/craigpeacock/TWC/blob/593b722c117e310076572b4c5ff644c3f2e56865/TWC.c#L114-L157'
+	)
+
+	if grep -Ein "$forbidden" "$document"; then
+		echo 'Tesla legacy public protocol contains prohibited material' >&2
+		return 1
+	fi
+	while IFS= read -r url; do
+		case " ${allowed_urls[*]} " in
+			*" $url "*) ;;
+			*)
+				echo 'Tesla legacy public protocol contains an unapproved source locator' >&2
+				return 1
+				;;
+		esac
+	done < <(grep -Eo 'https://[^)]+' "$document" || true)
+}
+
 check_tesla_gen3_public_protocol() {
 	local document="$1"
 	local forbidden='https?://|/[Uu]sers/|(source|vendor material) (is|are) public domain|sunspec\.inverter\.|canonical facts|private capture|decompiler'
@@ -139,7 +165,7 @@ check_tesla_generation_contracts() {
 	local legacy="$1"
 	local gen3="$2"
 
-	check_public_protocol "$legacy"
+	check_tesla_legacy_public_protocol "$legacy"
 	check_tesla_gen3_public_protocol "$gen3"
 
 	for heading in \
@@ -163,6 +189,8 @@ check_tesla_generation_contracts() {
 	grep -Fq 'sum(message_without_checksum[1:]) & 0xff' "$legacy"
 	grep -Fq 'The family-compatible tier accepts a locally declared legacy protocol family without claiming a firmware build.' "$legacy"
 	grep -Fq 'Native runtime records retain bounded decoded frames and unknown command payloads exactly.' "$legacy"
+	grep -Fqx '### Evidence and confidence' "$legacy"
+	grep -Fq 'community-observed/correlated' "$legacy"
 
 	for heading in \
 		'Scope and separation' \
