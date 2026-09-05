@@ -117,8 +117,7 @@ match or mismatch without claiming causal confirmation.
 
 Unknown members remain retained as raw evidence; malformed encodings and duplicate documented singular members are rejected by Helianthus decoder policy.
 An omitted scalar is retained as absent at wire and zero at the firmware default;
-it is not assigned an `unlimited`, disabled, or expiry meaning. Zero current and
-zero timeout remain unknown.
+it is not assigned an `unlimited`, disabled, or expiry meaning. Zero current and zero timeout remain unknown.
 
 No sender, dispatcher, transport activation, operation authorization, or live-device claim follows from this decoder contract.
 
