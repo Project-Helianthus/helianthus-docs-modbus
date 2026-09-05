@@ -21,6 +21,44 @@ check_public_protocol() {
   fi
 }
 
+check_tesla_gen3_public_protocol() {
+	local document="$1"
+	local forbidden='https?://|/[Uu]sers/|(source|vendor material) (is|are) public domain|sunspec\.inverter\.|canonical facts|private capture|decompiler'
+	local hash
+	local allowed_hashes=(
+		a7c9104450879a8f0943f83dda76c865c2bb5de1cfca3d6afc1a328ea1633806
+		41863115905a67530956526df456439e72fdafc4a81afdf6129521aa94da4b67
+		79f28d7d613b6bd83dfbe0682d045cf2da95a03109d7dfc95fe03e06393a419f
+		27e8ac77bd8f14aa9400567d273d29618a56832f0241dec2285a145d19d097da
+		b80f647be57fa7c44c38878895d1f5527c778e34ec0df74503a0684878c54b88
+		2a5fc2d9d93deea774467c7cdd900274a95f1bba1ca5d1b71323e402052133b4
+		4fff4964cdf246200ccd9d477b2350b505d211bffc66686d827140a41dca11b8
+		f20e2a1b3076fe646e0590c4f789e4e15f086c8895b39384b50643a90d385d9c
+		259b801526162e10c9a25b1d9ad910a708496802150207c4ce26aa0c24137942
+		5ed96649b6e57e5dca5ff8609aad42cb9f96fabace3531a1c41fb3ef1af050e7
+		d8a01e37163023537bce557f6144b457d97780a16b1cb567392c04cb72ac65f8
+		dbc8f5730047a6d3078275408b8608bef7250c570814cb92d4f04b711c637923
+		a818d9e08fbd11f438fad710afd189d06adce12f2f5496851578cf19e0aeb614
+		b0e30bc93c3af943ea572b4320c0355a570ebd4f5aeed0790b196c6b81c9eb59
+		212af65c444a0a3ccba72fc69334c9ec09648839fa6130dab97678734bcfe394
+		3bd43ed16ffe6f06eab4e08ab9f23c33397989ca523c4b98d928a246cd5ad48a
+	)
+
+	if grep -Ein "$forbidden" "$document"; then
+		echo 'Tesla Gen3 public contract contains a prohibited locator or private analysis material' >&2
+		return 1
+	fi
+	while IFS= read -r hash; do
+		case " ${allowed_hashes[*]} " in
+			*" $hash "*) ;;
+			*)
+				echo 'Tesla Gen3 public contract contains an unapproved evidence hash' >&2
+				return 1
+				;;
+		esac
+	done < <(grep -Eo '[[:xdigit:]]{64}' "$document" || true)
+}
+
 check_tesla_tedapi_contract() {
 	local document="$1"
 	local evse_required=(
@@ -62,6 +100,23 @@ check_tesla_gen3_evse_current_limit_contract() {
 	grep -Fq 'without inferring a watt limit or a result for another version.' "$document"
 }
 
+check_tesla_gen3_evse_current_limit_wire_evidence() {
+	local document="$1"
+	grep -Fqx '### Exact 24.44.3 body and evidence contract' "$document"
+	grep -Fq 'Artifact SHA-256: `a7c9104450879a8f0943f83dda76c865c2bb5de1cfca3d6afc1a328ea1633806`.' "$document"
+	grep -Fq 'Descriptor-tree SHA-256: `41863115905a67530956526df456439e72fdafc4a81afdf6129521aa94da4b67`.' "$document"
+	grep -Fq 't7/t8 use singular field 1 (wire type 2) containing settings field 1 (wire type 0, signed int32 amperes).' "$document"
+	grep -Fq 't25/t28 use singular field 1 (wire type 2) containing provisional fields 1 and 2 (wire type 0, uint32) and field 3 (wire type 0, bool).' "$document"
+	grep -Fq 't28 additionally carries distinct singular field 2 (wire type 0, uint32) for configured current.' "$document"
+	grep -Fq 't26 and t27 have empty bodies.' "$document"
+	grep -Fq 't8 is getter-populated returned persistent settings state, not an acknowledgement.' "$document"
+	grep -Fq 't26 is an acknowledgement only and cannot confirm an applied provisional value.' "$document"
+	grep -Fq 'A t28 body has no nonce, timestamp, or generation counter.' "$document"
+	grep -Fq 'Unknown members remain retained as raw evidence; malformed encodings and duplicate documented singular members are rejected by Helianthus decoder policy.' "$document"
+	grep -Fq 'Zero current and zero timeout remain unknown.' "$document"
+	grep -Fq 'No sender, dispatcher, transport activation, operation authorization, or live-device claim follows from this decoder contract.' "$document"
+}
+
 check_tesla_gen3_evse_current_limit_mcp_projection() {
 	local document="$1"
 	grep -Fqx '## MCP read-only current-limit projection' "$document"
@@ -85,7 +140,7 @@ check_tesla_generation_contracts() {
 	local gen3="$2"
 
 	check_public_protocol "$legacy"
-	check_public_protocol "$gen3"
+	check_tesla_gen3_public_protocol "$gen3"
 
 	for heading in \
 		'Scope and identification' \
@@ -840,6 +895,9 @@ if [[ $# -gt 0 ]]; then
 		--check-tesla-gen3-evse-current-limit-contract)
 			check_tesla_gen3_evse_current_limit_contract "$2"
 			;;
+		--check-tesla-gen3-evse-current-limit-wire-evidence)
+			check_tesla_gen3_evse_current_limit_wire_evidence "$2"
+			;;
 		--check-tesla-gen3-evse-current-limit-mcp-projection)
 			check_tesla_gen3_evse_current_limit_mcp_projection "$2"
 			;;
@@ -914,6 +972,7 @@ check_tesla_tedapi_contract "$spec"
 check_tesla_generation_contracts "$tesla_legacy_spec" "$tesla_gen3_spec"
 check_tesla_legacy_evse_current_contract "$tesla_legacy_spec"
 check_tesla_gen3_evse_current_limit_contract "$tesla_gen3_spec"
+check_tesla_gen3_evse_current_limit_wire_evidence "$tesla_gen3_spec"
 check_tesla_gen3_evse_current_limit_mcp_projection "$tesla_gen3_spec"
 check_tesla_evse_scope "$spec"
 

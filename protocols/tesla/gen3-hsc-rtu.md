@@ -59,6 +59,69 @@ Temporary provisional current configuration is family `6`, request tag `25`, ter
 
 Persistent and provisional limits remain distinct. For interoperable EVSE requests, the final-pilot current floor is 6 A and the timeout is finite from 1 through 86399 seconds. Zero timeout remains unresolved and is not an interoperable request value. Native records retain the bounded request, terminal, and readback context without inferring a watt limit or a result for another version.
 
+### Exact 24.44.3 body and evidence contract
+
+This table qualifies body decoding only for `wc3_24_44_3`. It records newly
+authored field metadata from the exact signed 24.44.3 artifact; it does not
+reproduce a source schema, implementation, capture, or sender recipe.
+
+Artifact SHA-256: `a7c9104450879a8f0943f83dda76c865c2bb5de1cfca3d6afc1a328ea1633806`.
+Descriptor-tree SHA-256: `41863115905a67530956526df456439e72fdafc4a81afdf6129521aa94da4b67`.
+Complete descriptor-row SHA-256: `79f28d7d613b6bd83dfbe0682d045cf2da95a03109d7dfc95fe03e06393a419f`.
+
+Wire type 0 is a varint and wire type 2 is a nested length-delimited message.
+t7/t8 use singular field 1 (wire type 2) containing settings field 1 (wire type 0, signed int32 amperes).
+t25/t28 use singular field 1 (wire type 2) containing provisional fields 1 and 2 (wire type 0, uint32) and field 3 (wire type 0, bool).
+t28 additionally carries distinct singular field 2 (wire type 0, uint32) for configured current.
+t26 and t27 have empty bodies.
+
+| Body | Exact 24.44.3 interpretation |
+| --- | --- |
+| t7 ConfigureSettings request | The nested settings current is the requested persistent integer-ampere value. Other settings members remain raw native evidence. |
+| t8 ConfigureSettings terminal | t8 is getter-populated returned persistent settings state, not an acknowledgement. Its nested current is a returned persistent integer-ampere value. |
+| t25 SetProvisional request | The nested values are requested provisional current in integer amperes, timeout in seconds, and inhibit-charging boolean. |
+| t26 terminal | t26 is an acknowledgement only and cannot confirm an applied provisional value. |
+| t27 request | Empty readback request. |
+| t28 terminal | The nested values are returned provisional current, timeout, and inhibit state. Its distinct outer field 2 is returned configured current in integer amperes. |
+
+The exact descriptor records are bounded static evidence. Addresses are main
+image virtual addresses; offsets are in the signed container.
+
+| Descriptor | VA / offset | SHA-256 |
+| --- | --- | --- |
+| t7 request | `0x1f107a90` / `0x107bac` | `27e8ac77bd8f14aa9400567d273d29618a56832f0241dec2285a145d19d097da` |
+| shared settings | `0x1f108754` / `0x108870` | `b80f647be57fa7c44c38878895d1f5527c778e34ec0df74503a0684878c54b88` |
+| t8 response | `0x1f107abc` / `0x107bd8` | `2a5fc2d9d93deea774467c7cdd900274a95f1bba1ca5d1b71323e402052133b4` |
+| t25 request | `0x1f10810c` / `0x108228` | `4fff4964cdf246200ccd9d477b2350b505d211bffc66686d827140a41dca11b8` |
+| shared provisional values | `0x1f108710` / `0x10882c` | `f20e2a1b3076fe646e0590c4f789e4e15f086c8895b39384b50643a90d385d9c` |
+| t26 empty response | `0x1f108130` / `0x10824c` | `259b801526162e10c9a25b1d9ad910a708496802150207c4ce26aa0c24137942` |
+| t27 empty request | `0x1f107d88` / `0x107ea4` | `5ed96649b6e57e5dca5ff8609aad42cb9f96fabace3531a1c41fb3ef1af050e7` |
+| t28 response | `0x1f107db4` / `0x107ed0` | `d8a01e37163023537bce557f6144b457d97780a16b1cb567392c04cb72ac65f8` |
+
+The handler/readback evidence keeps persistent, provisional, configured, and
+effective/pilot current distinct. No t7--t28 body is an effective/pilot-current
+fact.
+
+| Evidence role | VA / offset | SHA-256 |
+| --- | --- | --- |
+| WC family-6 handler | `0x1f037d9c` / `0x37eb8` | `dbc8f5730047a6d3078275408b8608bef7250c570814cb92d4f04b711c637923` |
+| t8 settings-state builder | `0x1f037c14` / `0x37d30` | `a818d9e08fbd11f438fad710afd189d06adce12f2f5496851578cf19e0aeb614` |
+| t25 three-value enqueue | `0x1f03d510` / `0x3d62c` | `b0e30bc93c3af943ea572b4320c0355a570ebd4f5aeed0790b196c6b81c9eb59` |
+| selector-20 snapshot update | `0x1f03ccd0` / `0x3cdec` | `212af65c444a0a3ccba72fc69334c9ec09648839fa6130dab97678734bcfe394` |
+| t28 four-word readback copy | `0x1f03cf6c` / `0x3d088` | `3bd43ed16ffe6f06eab4e08ab9f23c33397989ca523c4b98d928a246cd5ad48a` |
+
+A t28 body has no nonce, timestamp, or generation counter. It cannot establish
+that no intervening actor changed provisional state. An offline decoder must
+retain t25 requested values and t28 returned values independently and report a
+match or mismatch without claiming causal confirmation.
+
+Unknown members remain retained as raw evidence; malformed encodings and duplicate documented singular members are rejected by Helianthus decoder policy.
+An omitted scalar is retained as absent at wire and zero at the firmware default;
+it is not assigned an `unlimited`, disabled, or expiry meaning. Zero current and
+zero timeout remain unknown.
+
+No sender, dispatcher, transport activation, operation authorization, or live-device claim follows from this decoder contract.
+
 ## MCP read-only current-limit projection
 
 The no-argument `modbus.v1.tesla.gen3.evse.current_limit.get` tool projects only already-injected records for `wc3_24_44_3`. The projection is `READ_ONLY`: it always reports `outbound_allowed` as `false`, constructs no request, performs no acquisition, and never sends a frame.
