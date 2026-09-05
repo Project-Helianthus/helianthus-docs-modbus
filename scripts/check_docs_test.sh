@@ -753,6 +753,34 @@ for mutation in \
 done
 rm -f "$protocol_ii_fixture"
 
+protocol_ii_fc04_fixture="$(mktemp)"
+"$repo_root/scripts/check_docs.sh" --check-growatt-protocol-ii-fc04-contract "$protocol_ii_document"
+for mutation in \
+  's/offsets 0 through 58 inclusive (59 words)/offsets 0 through 57 inclusive (58 words)/' \
+  's/only 0, 1, 3/only 0, 1, 2, 3/' \
+  's/unsigned 32-bit integers, high word first/unsigned 32-bit integers, low word first/' \
+  's/this contract invents none/this contract uses 65535 as a sentinel/' \
+  's/aggregate PV input power/aggregate DC input power/' \
+  's/0.01 Hz/0.1 Hz/' \
+  's/0.5 s/1 s/' \
+  's/raw only | an exact feature requirement/typed | an exact feature requirement/' \
+  's/evidence needed | signedness/raw only | signedness/' \
+  's/raw only or unknown | a field-specific/typed | a field-specific/' \
+  's/selection\. It does not close the broader `NATIVE-07-GROWATT-II` monitoring/selection. It closes `NATIVE-07-GROWATT-II` monitoring/' \
+  's/Typed FC04 monitoring requires a separate immutable exact applicability/Typed FC04 monitoring requires a shared caller profile/' \
+  's/agreement with the caller-selected raw identity profile/agreement with any caller profile/' \
+  's/alone is insufficient/alone is sufficient/' \
+  's/Modbus exception, missing exact/Modbus exception, optional exact/' \
+  's/Concrete source-backed mapping evidence must populate/Manual revision evidence may populate/' \
+  's/its revision `1.24` is not treated/its revision `1.24` is treated/'; do
+  sed "$mutation" "$protocol_ii_document" > "$protocol_ii_fc04_fixture"
+  if "$repo_root/scripts/check_docs.sh" --check-growatt-protocol-ii-fc04-contract "$protocol_ii_fc04_fixture"; then
+    echo "Growatt Protocol II FC04 contract mutation was accepted: $mutation" >&2
+    exit 1
+  fi
+done
+rm -f "$protocol_ii_fc04_fixture"
+
 "$repo_root/scripts/check_docs.sh" --check-bms-contract "$bms_document"
 
 for mutation in \
