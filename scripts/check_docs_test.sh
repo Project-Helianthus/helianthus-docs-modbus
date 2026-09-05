@@ -763,15 +763,16 @@ for mutation in \
   's/aggregate PV input power/aggregate DC input power/' \
   's/0.01 Hz/0.1 Hz/' \
   's/0.5 s/1 s/' \
-  's/raw only | an exact feature requirement/typed | an exact feature requirement/' \
+  's/unadmitted synthetic fixture only/typed and publicly admitted/' \
   's/evidence needed | signedness/raw only | signedness/' \
   's/raw only or unknown | a field-specific/typed | a field-specific/' \
-  's/selection\. It does not close the broader `NATIVE-07-GROWATT-II` monitoring/selection. It closes `NATIVE-07-GROWATT-II` monitoring/' \
-  's/Typed FC04 monitoring requires a separate immutable exact applicability/Typed FC04 monitoring requires a shared caller profile/' \
-  's/agreement with the caller-selected raw identity profile/agreement with any caller profile/' \
-  's/alone is insufficient/alone is sufficient/' \
-  's/Modbus exception, missing exact/Modbus exception, optional exact/' \
-  's/Concrete source-backed mapping evidence must populate/Manual revision evidence may populate/' \
+  's/does not currently admit a typed profile/does publicly admit a typed profile/' \
+  's/no public successful constructor/a public successful constructor/' \
+  's/externally constructible forms fail closed/externally constructible forms admit telemetry/' \
+  's/cannot establish real-build qualification/establishes real-build qualification/' \
+  's/an owning source must establish/manual revision evidence may establish/' \
+  's/fail closed and create no typed telemetry or observer/admit telemetry and create an observer/' \
+  's/Modbus exception, missing/Modbus exception, optional/' \
   's/its revision `1.24` is not treated/its revision `1.24` is treated/'; do
   sed "$mutation" "$protocol_ii_document" > "$protocol_ii_fc04_fixture"
   if "$repo_root/scripts/check_docs.sh" --check-growatt-protocol-ii-fc04-contract "$protocol_ii_fc04_fixture"; then

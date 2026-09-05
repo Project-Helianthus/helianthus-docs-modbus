@@ -39,15 +39,17 @@ telemetry. Unknown device type, malformed ASCII, a protocol value outside the
 selected schema, or disagreement among identity fields remains
 `insufficient_evidence` for typed monitoring.
 
-Typed FC04 monitoring requires a separate immutable exact applicability
-selection. That selection names one schema, family, device type, model-build
-pair, and protocol value, plus a source-backed mapping reference accepted by
-the caller's owning profile. The inspected manual identifies the TL3-X
-MAX/MID/MAC family and register range, but does not publish a device-type,
-model-build, and protocol-value mapping. It therefore provides no built-in
-allowlist here, and its revision `1.24` is not treated as a device-reported
-protocol-register value. Concrete source-backed mapping evidence must populate
-the selection before real-build typed admission.
+There is no current publicly admitted typed FC04 profile. The exported opaque
+applicability value has no public successful constructor; its zero value and all
+externally constructible forms fail closed. Only an unexported synthetic
+in-package fixture helper may exercise the source-backed FC04 schema and
+mechanics. That helper cannot establish real-build qualification. The inspected
+manual identifies the TL3-X MAX/MID/MAC family and register range, but does not
+publish a device-type, model-build, and protocol-value mapping. It therefore
+provides no built-in allowlist here, and its revision `1.24` is not treated as a
+device-reported protocol-register value. Before enabling public typed admission,
+an owning source must establish one exact device-type, model-build, and
+protocol-value tuple tied to the FC04 schema.
 
 ## Native identity capability
 
@@ -83,13 +85,10 @@ construction and fake execution without making a real-device write automatic.
 
 ## FC04 monitoring foundation
 
-An FC04 decoder or observer requires both the raw FC03 identity and its separate
-immutable exact applicability selection before it may acquire exactly one
-input-register slice: zero-based offsets 0 through 58 inclusive (59 words).
-The selection must match schema, family, device type, model-build pair, and
-protocol value exactly; agreement with the caller-selected raw identity profile
-alone is insufficient. It is an all-or-nothing acquisition: wrong function,
-offset, word count, table/provenance, timeout, Modbus exception, missing exact
+Because no public FC04 profile is admitted, the public FC04 decoder and observer
+fail closed and create no typed telemetry or observer. The unexported synthetic
+fixture exercises exactly one input-register slice: zero-based offsets 0 through 58 inclusive (59 words). It is an all-or-nothing fixture decode: wrong function,
+offset, word count, table/provenance, timeout, Modbus exception, missing
 admission, identity/applicability mismatch, malformed response, or an unlisted
 inverter-state value yields no typed record. The complete 59-word slice remains
 native raw evidence where the owning runtime contract permits retention; no
@@ -113,13 +112,13 @@ manual does not state a sentinel for these rows, so this contract invents none.
 
 ### Monitoring feature inventory
 
-This foundation implements only the rows above for the exact current profile
-selection. It does not close the broader `NATIVE-07-GROWATT-II` monitoring
-feature.
+This foundation retains only the source-backed schema and synthetic fixture
+mechanics for the rows below. It does not currently admit a typed profile or
+close the broader `NATIVE-07-GROWATT-II` monitoring feature.
 
 | Requested monitoring area | Current disposition | Evidence needed before typed promotion |
 | --- | --- | --- |
-| inverter status; aggregate PV and output power; grid frequency; phase 1-3 grid voltage/current; generated today/total energy; total work time | implemented | qualified identity plus exact FC04 offsets 0-58 response |
+| inverter status; aggregate PV and output power; grid frequency; phase 1-3 grid voltage/current; generated today/total energy; total work time | unadmitted synthetic fixture only | an owning source must establish an exact device-type, model-build, and protocol-value tuple tied to the FC04 schema |
 | per-PV voltage, current, and power | raw only | an exact feature requirement and source-backed per-family applicability, signedness where relevant, and bounded acquisition contract |
 | per-phase output power and line-to-line voltage | raw only | exact semantics and a source-backed composition/units decision for the selected profile |
 | inverter temperature (offset 93) | evidence needed | signedness, documented invalid/sentinel handling, and selected-family applicability; the manual supplies 0.1 C but not those facts |
