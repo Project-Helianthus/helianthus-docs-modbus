@@ -82,6 +82,17 @@ tesla_legacy_fixture="$fixture_root/tesla-legacy-wall-connector-rs485.md"
 tesla_gen3_document="$repo_root/protocols/tesla/gen3-hsc-rtu.md"
 tesla_gen3_fixture="$fixture_root/tesla-gen3-hsc-rtu.md"
 "$repo_root/scripts/check_docs.sh" --check-tesla-generation-contracts "$tesla_legacy_document" "$tesla_gen3_document"
+for locator in \
+  'https://github.com/dracoventions/TWCManager/blob/7fb019a6838c9d15ba3b27f27458fa76c5e482d2/TWCManager.py#L1690-L1706' \
+  'https://github.com/dracoventions/TWCManager/blob/7fb019a6838c9d15ba3b27f27458fa76c5e482d2/TWCManager.py#L3207-L3213' \
+  'https://github.com/dracoventions/TWCManager/blob/7fb019a6838c9d15ba3b27f27458fa76c5e482d2/TWCManager.py#L3344-L3351' \
+  'https://github.com/craigpeacock/TWC/blob/593b722c117e310076572b4c5ff644c3f2e56865/TWC.c#L114-L157'; do
+  sed "s|$locator||" "$tesla_legacy_document" > "$tesla_legacy_fixture"
+  if "$repo_root/scripts/check_docs.sh" --check-tesla-generation-contracts "$tesla_legacy_fixture" "$tesla_gen3_document"; then
+    echo "Tesla legacy required source locator was accepted when removed: $locator" >&2
+    exit 1
+  fi
+done
 "$repo_root/scripts/check_docs.sh" --check-tesla-gen3-evse-current-limit-contract "$tesla_gen3_document"
 "$repo_root/scripts/check_docs.sh" --check-tesla-gen3-evse-current-limit-wire-evidence "$tesla_gen3_document"
 for mutation in \

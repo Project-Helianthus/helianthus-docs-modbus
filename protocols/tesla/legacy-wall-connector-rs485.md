@@ -52,6 +52,51 @@ assertion that every Gen2 unit implements these records.
 measured current as separate native values. The allocation is not the actual
 current and neither value is a power setpoint.
 
+### Bounded payload layout
+
+The post-command payload retained by this contract includes the two-byte source
+ID and two-byte destination ID. The heartbeat data after those IDs is seven
+bytes in protocol 1 or nine bytes in protocol 2. Therefore a typed decoder
+accepts only an eleven-byte or thirteen-byte post-command payload, after the
+complete frame has passed delimiter, escape, size, and checksum validation.
+
+For `FBE0`, bytes `0..1` are the source ID, bytes `2..3` are the destination
+ID, byte `4` is the state, and bytes `5..6` are the big-endian unsigned
+allocated current in centiamperes. The remaining heartbeat bytes, `7..10` in
+the protocol-1 form or `7..12` in the protocol-2 form, remain opaque and are
+retained in the complete native frame.
+
+The offline typed decoder accepts a complete, checksum-validated `FDE0`
+response only with the same eleven-byte or thirteen-byte post-command payload
+lengths. It has the same source, destination, state, and allocated-current
+positions; bytes `7..8` are the separate big-endian unsigned actual current in
+centiamperes. The remaining bytes, `9..10` in the protocol-1 form or `9..12`
+in the protocol-2 form, remain opaque. A shorter, longer, or
+wrong-direction/command frame does not produce a typed record. The decoder
+retains the complete bounded frame, including every accepted opaque byte,
+without assigning it additional meaning.
+
+### Evidence and confidence
+
+The portable layout and its field roles are **community-observed/correlated**,
+not an exact-build proof. At pinned revision
+[`7fb019a`](https://github.com/dracoventions/TWCManager/blob/7fb019a6838c9d15ba3b27f27458fa76c5e482d2/TWCManager.py#L1690-L1706),
+TWCManager constructs `FDE0` from command, two IDs, and seven or nine
+heartbeat-data bytes. Its pinned `FBE0` and `FDE0` parsers separately capture
+the two IDs before the heartbeat data at
+[`FBE0`](https://github.com/dracoventions/TWCManager/blob/7fb019a6838c9d15ba3b27f27458fa76c5e482d2/TWCManager.py#L3207-L3213)
+and
+[`FDE0`](https://github.com/dracoventions/TWCManager/blob/7fb019a6838c9d15ba3b27f27458fa76c5e482d2/TWCManager.py#L3344-L3351).
+At pinned revision
+[`593b722`](https://github.com/craigpeacock/TWC/blob/593b722c117e310076572b4c5ff644c3f2e56865/TWC.c#L114-L157),
+the `M_HEARTBEAT` and `S_HEARTBEAT` records identify the address, state,
+allocated-current, actual-current, and remaining-byte roles used here.
+
+These public community implementations support the bounded offline layout but
+do not promote it to universal device support, an exact firmware/build claim,
+or a live behavioral guarantee. The separate `build_confirmed` tier remains
+the only exact-build evidence tier in this contract.
+
 The absolute offer states are `0x05` for pre-charge and `0x09` for charging.
 Each carries a big-endian unsigned 16-bit current value in centiamperes. A
 decoder preserves the state and raw bounded record; capability and device
@@ -80,3 +125,9 @@ Offline codecs, request construction, and fake or replay dispatch may represent 
 ## Compatibility
 
 The legacy profile is independent from Gen3 HSC RTU. No common codec, profile, version predicate, operation identifier, or response rule is implied by both protocols.
+
+Typed dynamic-current construction requires the selected legacy profile,
+request/response direction, complete encoded frame, and caller-supplied fields
+to agree. Earlier callers that supplied unvalidated raw bytes or independent
+state/current values must supply this bounded frame context before they can
+obtain a typed native record.
