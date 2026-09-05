@@ -51,3 +51,7 @@ support publication require separate runtime evidence.
 
 Executable fixture decoding and negative-overlap proof belong to the consuming
 profile registry. This page creates no profile admission by itself.
+
+The bounded read-only experiment, complete-chain negative controls, retained
+native evidence, and sanitized expected result are defined in
+[`qualification-readiness-v1.md`](qualification-readiness-v1.md).
