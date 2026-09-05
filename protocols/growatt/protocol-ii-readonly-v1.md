@@ -32,11 +32,24 @@ An offline candidate fixture must contain one coherent FC03 snapshot with:
 Manufacturer text, unit readability, one firmware field, or register range
 alone is insufficient.
 
-The initial exact family gate accepts only a fixture declared as Protocol II
-v1.24 TL3-X MAX/MID/MAC with a device type and model tuple explicitly mapped by
-that fixture. Unknown device type, malformed ASCII, a protocol value outside
-the selected schema, or disagreement among identity fields remains
-`insufficient_evidence`.
+The FC03 observation is raw native candidate evidence. It accepts only a
+fixture declared as Protocol II v1.24 TL3-X MAX/MID/MAC whose FC03 fields agree
+with the caller-selected identity profile. It does not itself admit typed FC04
+telemetry. Unknown device type, malformed ASCII, a protocol value outside the
+selected schema, or disagreement among identity fields remains
+`insufficient_evidence` for typed monitoring.
+
+There is no current publicly admitted typed FC04 profile. The exported opaque
+applicability value has no public successful constructor; its zero value and all
+externally constructible forms fail closed. Only an unexported synthetic
+in-package fixture helper may exercise the source-backed FC04 schema and
+mechanics. That helper cannot establish real-build qualification. The inspected
+manual identifies the TL3-X MAX/MID/MAC family and register range, but does not
+publish a device-type, model-build, and protocol-value mapping. It therefore
+provides no built-in allowlist here, and its revision `1.24` is not treated as a
+device-reported protocol-register value. Before enabling public typed admission,
+an owning source must establish one exact device-type, model-build, and
+protocol-value tuple tied to the FC04 schema.
 
 ## Native identity capability
 
@@ -69,6 +82,47 @@ The currently enumerated operation is FC03 identity acquisition. This contract
 does not define an FC06 or FC16 control operation, so no control command is
 constructed from it. A later exact operation contract may add command
 construction and fake execution without making a real-device write automatic.
+
+## FC04 monitoring foundation
+
+Because no public FC04 profile is admitted, the public FC04 decoder and observer
+fail closed and create no typed telemetry or observer. The unexported synthetic
+fixture exercises exactly one input-register slice: zero-based offsets 0 through 58 inclusive (59 words). It is an all-or-nothing fixture decode: wrong function,
+offset, word count, table/provenance, timeout, Modbus exception, missing
+admission, identity/applicability mismatch, malformed response, or an unlisted
+inverter-state value yields no typed record. The complete 59-word slice remains
+native raw evidence where the owning runtime contract permits retention; no
+unlisted word is typed by this document.
+
+Multiword values below are unsigned 32-bit integers, high word first. The
+manual does not state a sentinel for these rows, so this contract invents none.
+
+| Offset(s) | Native fact | Width and scale | Typed result |
+| --- | --- | --- | --- |
+| 0 | inverter run state | one unsigned word; only 0, 1, 3 | waiting, normal, fault |
+| 1-2 | aggregate PV input power | unsigned 32-bit, high word first, 0.1 W | watts |
+| 35-36 | aggregate output power | unsigned 32-bit, high word first, 0.1 W | watts |
+| 37 | grid frequency | one unsigned word, 0.01 Hz | hertz |
+| 38, 39 | phase 1 grid voltage and output current | one unsigned word each, 0.1 V and 0.1 A | volts and amperes |
+| 42, 43 | phase 2 grid voltage and output current | one unsigned word each, 0.1 V and 0.1 A | volts and amperes |
+| 46, 47 | phase 3 grid voltage and output current | one unsigned word each, 0.1 V and 0.1 A | volts and amperes |
+| 53-54 | generated energy today | unsigned 32-bit, high word first, 0.1 kWh | kWh |
+| 55-56 | generated energy total | unsigned 32-bit, high word first, 0.1 kWh | kWh |
+| 57-58 | total work time | unsigned 32-bit, high word first, 0.5 s | seconds |
+
+### Monitoring feature inventory
+
+This foundation retains only the source-backed schema and synthetic fixture
+mechanics for the rows below. It does not currently admit a typed profile or
+close the broader `NATIVE-07-GROWATT-II` monitoring feature.
+
+| Requested monitoring area | Current disposition | Evidence needed before typed promotion |
+| --- | --- | --- |
+| inverter status; aggregate PV and output power; grid frequency; phase 1-3 grid voltage/current; generated today/total energy; total work time | unadmitted synthetic fixture only | an owning source must establish an exact device-type, model-build, and protocol-value tuple tied to the FC04 schema |
+| per-PV voltage, current, and power | raw only | an exact feature requirement and source-backed per-family applicability, signedness where relevant, and bounded acquisition contract |
+| per-phase output power and line-to-line voltage | raw only | exact semantics and a source-backed composition/units decision for the selected profile |
+| inverter temperature (offset 93) | evidence needed | signedness, documented invalid/sentinel handling, and selected-family applicability; the manual supplies 0.1 C but not those facts |
+| internal IPM/boost temperatures, power factor, derating, fault/warning, storage/battery fields, and every offset 59-124 | raw only or unknown | a field-specific source-backed definition, exact selected-family applicability, and bounded decoder/acquisition tests |
 
 ## Offline telemetry candidate
 

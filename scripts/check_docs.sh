@@ -778,6 +778,52 @@ check_growatt_protocol_ii_identity_projection() {
   grep -Fq 'partial publication. This version enumerates no control operation.' "$document"
 }
 
+check_growatt_protocol_ii_fc04_contract() {
+  local document="$1"
+
+  check_public_protocol "$document"
+  grep -Fqx '## FC04 monitoring foundation' "$document"
+  grep -Fqx '### Monitoring feature inventory' "$document"
+  grep -Fq 'There is no current publicly admitted typed FC04 profile.' "$document"
+  grep -Fq 'The exported opaque' "$document"
+  grep -Fq 'applicability value has no public successful constructor;' "$document"
+  grep -Fq 'externally constructible forms fail closed.' "$document"
+  grep -Fq 'Only an unexported synthetic' "$document"
+  grep -Fq 'in-package fixture helper may exercise the source-backed FC04 schema and' "$document"
+  grep -Fq 'mechanics. That helper cannot establish real-build qualification.' "$document"
+  grep -Fq 'Before enabling public typed admission,' "$document"
+  grep -Fq 'an owning source must establish one exact device-type, model-build, and' "$document"
+  grep -Fq 'protocol-value tuple tied to the FC04 schema.' "$document"
+  grep -Fq 'its revision `1.24` is not treated as a' "$document"
+  grep -Fq 'protocol-register value.' "$document"
+  grep -Fq 'Because no public FC04 profile is admitted, the public FC04 decoder and observer' "$document"
+  grep -Fq 'fail closed and create no typed telemetry or observer.' "$document"
+  grep -Fq 'fixture exercises exactly one input-register slice: zero-based offsets 0 through 58 inclusive (59 words).' "$document"
+  grep -Fq 'offset, word count, table/provenance, timeout, Modbus exception, missing' "$document"
+  grep -Fq 'admission, identity/applicability mismatch, malformed response,' "$document"
+  grep -Fq 'Multiword values below are unsigned 32-bit integers, high word first.' "$document"
+  grep -Fq 'manual does not state a sentinel for these rows, so this contract invents none.' "$document"
+  for row in \
+    '| 0 | inverter run state | one unsigned word; only 0, 1, 3 | waiting, normal, fault |' \
+    '| 1-2 | aggregate PV input power | unsigned 32-bit, high word first, 0.1 W | watts |' \
+    '| 35-36 | aggregate output power | unsigned 32-bit, high word first, 0.1 W | watts |' \
+    '| 37 | grid frequency | one unsigned word, 0.01 Hz | hertz |' \
+    '| 38, 39 | phase 1 grid voltage and output current | one unsigned word each, 0.1 V and 0.1 A | volts and amperes |' \
+    '| 42, 43 | phase 2 grid voltage and output current | one unsigned word each, 0.1 V and 0.1 A | volts and amperes |' \
+    '| 46, 47 | phase 3 grid voltage and output current | one unsigned word each, 0.1 V and 0.1 A | volts and amperes |' \
+    '| 53-54 | generated energy today | unsigned 32-bit, high word first, 0.1 kWh | kWh |' \
+    '| 55-56 | generated energy total | unsigned 32-bit, high word first, 0.1 kWh | kWh |' \
+    '| 57-58 | total work time | unsigned 32-bit, high word first, 0.5 s | seconds |'; do
+    grep -Fqx "$row" "$document"
+  done
+  grep -Fqx '| inverter status; aggregate PV and output power; grid frequency; phase 1-3 grid voltage/current; generated today/total energy; total work time | unadmitted synthetic fixture only | an owning source must establish an exact device-type, model-build, and protocol-value tuple tied to the FC04 schema |' "$document"
+  grep -Fqx '| per-PV voltage, current, and power | raw only | an exact feature requirement and source-backed per-family applicability, signedness where relevant, and bounded acquisition contract |' "$document"
+  grep -Fqx '| inverter temperature (offset 93) | evidence needed | signedness, documented invalid/sentinel handling, and selected-family applicability; the manual supplies 0.1 C but not those facts |' "$document"
+  grep -Fqx '| internal IPM/boost temperatures, power factor, derating, fault/warning, storage/battery fields, and every offset 59-124 | raw only or unknown | a field-specific source-backed definition, exact selected-family applicability, and bounded decoder/acquisition tests |' "$document"
+  grep -Fq 'It does not currently admit a typed profile or' "$document"
+  grep -Fq 'close the broader `NATIVE-07-GROWATT-II` monitoring feature.' "$document"
+}
+
 check_wit_matrix_contract() {
   local document="$1"
   local expected_rows actual_rows
@@ -949,6 +995,7 @@ if [[ $# -gt 0 ]]; then
     --check-x2-contract) check_x2_contract "$2" ;;
     --check-bms-contract) check_bms_contract "$2" ;;
     --check-growatt-protocol-ii-identity-projection) check_growatt_protocol_ii_identity_projection "$2" ;;
+    --check-growatt-protocol-ii-fc04-contract) check_growatt_protocol_ii_fc04_contract "$2" ;;
     --check-wit-matrix-contract) check_wit_matrix_contract "$2" ;;
     --check-outback-axs-contract) check_outback_axs_contract "$2" ;;
     *)
@@ -1033,6 +1080,7 @@ grep -Fq '`EMMA-A02` are the only admitted exact model values.' 'protocols/huawe
 grep -Fq 'EMMA-A01 never inherits an EMMA-A02-only capability.' 'protocols/huawei/gateway-readonly-v1.md'
 grep -Fq 'Basic and extended MEI are optional enrichment, never initial EMMA identification.' 'protocols/huawei/gateway-readonly-v1.md'
 check_growatt_protocol_ii_identity_projection 'protocols/growatt/protocol-ii-readonly-v1.md'
+check_growatt_protocol_ii_fc04_contract 'protocols/growatt/protocol-ii-readonly-v1.md'
 grep -Fqx '## Request mapping' 'protocols/growatt/shinewilan-x2-bridge-v1.md'
 grep -Fqx '## Response mapping' 'protocols/growatt/shinewilan-x2-bridge-v1.md'
 grep -Fqx '## Read-only boundary' 'protocols/growatt/shinewilan-x2-bridge-v1.md'
