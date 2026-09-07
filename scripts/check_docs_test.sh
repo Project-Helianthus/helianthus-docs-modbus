@@ -869,24 +869,37 @@ done
 "$repo_root/scripts/check_docs.sh" --check-x2-contract "$x2_document"
 
 test -f "$repo_root/protocols/outback/axs-port-sunspec-readonly-v1.md"
+test -f "$repo_root/protocols/outback/axs-port-source-profile-matrix-v1.md"
 
 outback_document="$repo_root/protocols/outback/axs-port-sunspec-readonly-v1.md"
+outback_matrix="$repo_root/protocols/outback/axs-port-source-profile-matrix-v1.md"
 outback_fixture="$fixture_root/outback-axs.md"
+outback_matrix_fixture="$fixture_root/outback-axs-matrix.md"
 "$repo_root/scripts/check_docs.sh" --check-outback-axs-contract "$outback_document"
 
 for mutation in \
-  's/declared length 282/declared length 281/' \
-  's/length 23\./length 24./' \
-  's/vendor-scoped observed state/standard observed state/' \
-  's/does not convert an OutBack device into a generic inverter profile./converts an OutBack device into a generic inverter profile./' \
-  's/complete caller-supplied Model 64110 raw word/selected raw word/' \
-  's/observation data when supplied; they do not become typed facts or an operation/observation data becomes typed facts and an operation/' \
+  's/finite selector is therefore `NO_GO`/finite selector is qualified/' \
+  's/owner manual revision C declares `64110\/282`/owner manual revision C declares `64110\/281`/' \
+  's/64111 remains opaque\./64111 is typed./' \
   's/Every write or control operation remains `NO_SEND` until an operation-specific/Every write or control operation is enabled/' \
-  's/function in this contract writes a register/function in this contract permits a register write/' \
-  's/does not identify a network endpoint, unit identifier, installation,/identifies a network endpoint, unit identifier, installation,/'; do
+  's/immutable request and response bytes/mutable request and response bytes/' \
+  's/unresolved source conflict produces `NO_GO` and no partial typed output\./unresolved source conflict produces a match./'; do
   sed "$mutation" "$outback_document" > "$outback_fixture"
   if "$repo_root/scripts/check_docs.sh" --check-outback-axs-contract "$outback_fixture"; then
-    echo "OutBack AXS mutation was accepted: $mutation" >&2
+    echo "OutBack AXS contract mutation was accepted: $mutation" >&2
+    exit 1
+  fi
+done
+
+for mutation in \
+  's/2b770dadd723c2288f3cbd73ec93807cbaf4611fe3a27653dd256572ac155b88/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/' \
+  's/explicit conflict `64110\/282` versus `64110\/420`/one resolved layout/' \
+  's/no function, address, quantity, response bound, timeout or retry is inferred\./function and address may be inferred./' \
+  's/| 64111 values | `MISSING_EVIDENCE` |/| 64111 values | specified |/' \
+  's/Every write, control, configuration, password, network and firmware-update path/Some write path/'; do
+  sed "$mutation" "$outback_matrix" > "$outback_matrix_fixture"
+  if OUTBACK_AXS_MATRIX="$outback_matrix_fixture" "$repo_root/scripts/check_docs.sh" --check-outback-axs-contract "$outback_document"; then
+    echo "OutBack AXS matrix mutation was accepted: $mutation" >&2
     exit 1
   fi
 done
