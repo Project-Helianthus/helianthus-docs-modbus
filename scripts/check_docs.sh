@@ -871,30 +871,37 @@ check_wit_matrix_contract() {
 
 check_outback_axs_contract() {
   local document="$1"
+  local root
+  root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+  local default_matrix="$root/protocols/outback/axs-port-source-profile-matrix-v1.md"
+  local matrix="${OUTBACK_AXS_MATRIX:-$default_matrix}"
 
   check_public_protocol "$document"
-  for heading in 'Scope' 'Chain selection' 'Observed state' 'Excluded fields and operations' 'Failure and ambiguity'; do
+  test -f "$matrix"
+  for heading in 'Scope' 'Source-pinned qualification' 'Chain selection' 'Observed state and requested-output dependencies' 'Read operations and provenance' 'Excluded fields and operations' 'Failure and ambiguity'; do
     grep -Fqx "## $heading" "$document"
   done
-  grep -Fq 'vendor Model 64110 with declared length 282' "$document"
-  grep -Fq 'OutBack charge-controller Model 64111 with declared' "$document"
-  grep -Fq 'length 23.' "$document"
-  grep -Fq 'Its values remain vendor-scoped observed state under this contract.' "$document"
-  grep -Fq 'does not convert an OutBack device into a generic inverter profile.' "$document"
-  grep -Fq 'All other Model 64110 words, all unknown models, and every wrong-length model' "$document"
-  grep -Fq 'An implementation may expose the complete caller-supplied Model 64110 raw word' "$document"
-  grep -Fq 'block and its exact source spans as native observation data.' "$document"
-  grep -Fq 'preserves its supplied order and must not acquire typed field labels, a profile' "$document"
-  grep -Fq 'Configuration-like, network, address, hardware-address, credential, password,' "$document"
-  grep -Fq 'mail, time, logging-control, and other untyped raw words remain native' "$document"
-  grep -Fq 'observation data when supplied; they do not become typed facts or an operation' "$document"
+  grep -Fq 'owner manual revision C declares `64110/282`' "$document"
+  grep -Fq 'application note revision 5 declares `64110/420`' "$document"
+  grep -Fq 'finite selector is therefore `NO_GO`' "$document"
+  grep -Fq '64111 remains opaque.' "$document"
+  grep -Fq 'function, table, absolute address, quantity, response-size bound, timeout or retry bound' "$document"
+  grep -Fq 'immutable request and response bytes' "$document"
   grep -Fq 'Every write or control operation remains `NO_SEND` until an operation-specific' "$document"
-  grep -Fq 'function in this contract writes a register' "$document"
-  grep -Fq 'does not identify a network endpoint, unit identifier, installation,' "$document"
-  if grep -Ein 'write method is enabled|automatic acquisition is enabled|runtime activation is enabled|converts an OutBack device into a generic inverter profile|control capability is derived|raw word block is excluded from output' "$document"; then
-    echo 'OutBack AXS protocol specification exceeds the read-only boundary' >&2
-    return 1
-  fi
+  grep -Fq 'unresolved source conflict produces `NO_GO` and no partial typed output.' "$document"
+
+  for heading in 'Purpose and publication boundary' 'Pinned public sources' 'Finite profile selector' 'Read-only operation matrix' 'Requested native-output and evidence inventory' 'Qualification, replay and provenance outcomes'; do
+    grep -Fqx "## $heading" "$matrix"
+  done
+  grep -Fq 'outback.axs.owner-manual.rev-c' "$matrix"
+  grep -Fq '2b770dadd723c2288f3cbd73ec93807cbaf4611fe3a27653dd256572ac155b88' "$matrix"
+  grep -Fq 'outback.axs.application-note.rev-5' "$matrix"
+  grep -Fq '9daf21413ea2c8bb1eeebe4eadc5f1c02da2337ccfc818f86fb3602109e76230' "$matrix"
+  grep -Fq 'explicit conflict `64110/282` versus `64110/420`' "$matrix"
+  grep -Fq 'no function, address, quantity, response bound, timeout or retry is inferred.' "$matrix"
+  grep -Fq '| 64111 values | `MISSING_EVIDENCE` |' "$matrix"
+  grep -Fq 'wrong product, unknown firmware, wrong source revision, wrong 64110 or 64111 length' "$matrix"
+  grep -Fq 'Every write, control, configuration, password, network and firmware-update path' "$matrix"
 }
 
 check_huawei_qualification_readiness() {

@@ -30,7 +30,7 @@ documentation.
 | `growatt.shinewilan-x2.bridge.v1` | ShineWiLan-X2 transparent Modbus TCP to downstream Modbus RTU bridge boundary | vendor-copyright-inspection-only | transport contract only; no semantic profile or downstream admission |
 | `growatt.bms.rs485.1xsxxp.v2_02.readonly.v1` | exact 1xSxxP ESS tuple: Rev2.01 file family, V2.0 header, cumulative changes through 2.02 | vendor-copyright-inspection-only | protocol specified; registry NO_GO pending an exact permitted clean-room fixture |
 | `growatt.wit.family-protocol-matrix.v1` | exact WIT commercial family rows plus the isolated WIT 100KTL3-H / DTC 5601 VPP V2.01 tuple | vendor-copyright-inspection-only | qualification matrix only; all operations NO_SEND and registry NO_GO |
-| `outback.axs.sunspec.readonly.v1` | AXS Port SunSpec chain containing vendor block 64110 with declared length 282 and standard charge-controller block 64111 with declared length 23 | vendor-copyright-inspection-only | read-only vendor candidate; control and runtime admission remain separate |
+| `outback.axs.sunspec.readonly.v1` | OutBack AXS public sources conflict: owner manual Rev C gives 64110/282 and 64111/23; application note Rev 5 gives 64110/420 and 64111/26 | vendor-copyright-inspection-only | `NO_GO`; no product/firmware-qualified read operation or provider admission until a source-pinned compatibility and operation contract exists |
 
 No disposition in this table proves a particular installation, firmware image,
 endpoint, or live support state. `Offline candidate` is not registered for
