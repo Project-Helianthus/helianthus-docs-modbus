@@ -460,11 +460,11 @@ done
 
 for mutation in \
   's/admits only FC03 and FC04 requests/admits FC03, FC04, and FC06 requests/' \
-  's/incremented before a replacement or recovery successor admits a request/incremented after a replacement admits a request/' \
-  's/valid RTU integrity, and response shape/response shape only/' \
+  's/Each endpoint instance has a nonzero lifecycle generation, incremented before/Endpoint generation is optional/' \
+  's/unfenced generation and has the matching unit, function, valid RTU integrity,/unfenced generation accepts any response/' \
   's/never satisfy a later request/may satisfy a later request/' \
-  's/never a local serial path/a local serial path/' \
-  's/historical only and/historical current evidence and/'; do
+  's/stable configured endpoint label, never a local serial path./local serial path/' \
+  's/generation is historical only and/generation is current evidence and/'; do
   sed "$mutation" "$private_function_document" > "$private_function_fixture"
   if "$repo_root/scripts/check_docs.sh" --check-private-function-contract "$private_function_fixture"; then
     echo "production RTU contract mutation was accepted: $mutation" >&2
