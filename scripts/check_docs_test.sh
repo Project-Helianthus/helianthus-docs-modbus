@@ -458,6 +458,38 @@ for mutation in \
   fi
 done
 
+for mutation in \
+  's/admits only FC03 and FC04 requests/admits FC03, FC04, and FC06 requests/' \
+  's/Each endpoint instance has a nonzero lifecycle generation, incremented before/Endpoint generation is optional/' \
+  's/unfenced generation and has the matching unit, function, valid RTU integrity,/unfenced generation accepts any response/' \
+  's/never satisfy a later request/may satisfy a later request/' \
+  's/stable configured endpoint label, never a local serial path./local serial path/' \
+  's/generation is historical only and/generation is current evidence and/'; do
+  sed "$mutation" "$private_function_document" > "$private_function_fixture"
+  if "$repo_root/scripts/check_docs.sh" --check-private-function-contract "$private_function_fixture"; then
+    echo "production RTU contract mutation was accepted: $mutation" >&2
+    exit 1
+  fi
+done
+
+for mutation in \
+  's/Accepted baud rates are 9600, 19200, 38400, 57600, 115200, and 230400; data bits are exactly eight; parity is none, even, or odd; and stop bits are one or two./Any serial format is accepted./' \
+  's/The response timeout is greater than zero and no more than 30 seconds./Any finite timeout is accepted./' \
+  's/Recovery has one bounded attempt and completes within the response timeout plus t3.5, with an absolute maximum of 60 seconds./Recovery may continue without a bound./' \
+  's/An exchange has exactly one send attempt; no retry is admitted by this contract./An exchange may retry indefinitely./' \
+  's/FC03 and FC04 permit a zero-based offset from 0 through 65535 and a quantity from 1 through 125 registers./FC03 and FC04 permit any quantity./' \
+  's/Admission must calculate offset + quantity without 16-bit wrap and require it to be no greater than 65536; otherwise it is NO_SEND before transmission./Address addition may wrap./' \
+  's/Offset 65535 with quantity 1 and offset 65411 with quantity 125 are admitted exact-boundary requests; offset 65535 with quantity 2 is NO_SEND./Offset 65535 with quantity 2 is admitted./' \
+  's/The normal response byte-count is exactly two times the requested quantity; its RTU ADU is exactly 5 + (2 × quantity) bytes and never exceeds 255 bytes./Any normal response payload is accepted./' \
+  's/A structurally valid, correlated Modbus exception is terminal evidence for its request but does not fence the endpoint generation or require recovery./A structurally valid exception fences the endpoint generation./' \
+  's/A malformed, CRC-failed, late, unrelated, or prior-generation exception is a transport fault and enters quarantine./Every malformed exception is accepted./'; do
+  sed "$mutation" "$private_function_document" > "$private_function_fixture"
+  if "$repo_root/scripts/check_docs.sh" --check-private-function-contract "$private_function_fixture"; then
+    echo "bounded RTU contract mutation was accepted: $mutation" >&2
+    exit 1
+  fi
+done
+
 "$repo_root/scripts/check_docs.sh" --check-sunspec-v1-model-families-contract "$sunspec_v1_families_document"
 for mutation in \
   's/29 exact decoder tuples/30 exact decoder tuples/' \

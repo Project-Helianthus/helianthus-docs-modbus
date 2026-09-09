@@ -262,6 +262,7 @@ check_private_function_contract() {
     'Response correlation and exceptions' \
     'RTU serialization' \
 		'Configured serial boundary' \
+		'Configured production read endpoint' \
     'Validation and compatibility'; do
     grep -Fqx "## $heading" "$document"
   done
@@ -279,6 +280,30 @@ check_private_function_contract() {
 	grep -Fq 'must quarantine and recover before it accepts a successor request.' "$document"
 	grep -Fq 'lifecycle close ends the local stream without creating a successor request or' "$document"
 	grep -Fq 'classifying itself as a failed exchange.' "$document"
+	grep -Fq 'A production read endpoint is opt-in and admits only FC03 and FC04 requests' "$document"
+	grep -Fq 'that have already passed the standard read-operation admission boundary.' "$document"
+	grep -Fq 'Each endpoint instance has a nonzero lifecycle generation, incremented before' "$document"
+	grep -Fq 'a replacement or recovery successor admits a request.' "$document"
+	grep -Fq 'Accepted baud rates are 9600, 19200, 38400, 57600, 115200, and 230400; data bits are exactly eight; parity is none, even, or odd; and stop bits are one or two.' "$document"
+	grep -Fq 'The response timeout is greater than zero and no more than 30 seconds.' "$document"
+	grep -Fq 'Recovery has one bounded attempt and completes within the response timeout plus t3.5, with an absolute maximum of 60 seconds.' "$document"
+	grep -Fq 'An exchange has exactly one send attempt; no retry is admitted by this contract.' "$document"
+	grep -Fq 'FC03 and FC04 permit a zero-based offset from 0 through 65535 and a quantity from 1 through 125 registers.' "$document"
+	grep -Fq 'Admission must calculate offset + quantity without 16-bit wrap and require it to be no greater than 65536; otherwise it is NO_SEND before transmission.' "$document"
+	grep -Fq 'Offset 65535 with quantity 1 and offset 65411 with quantity 125 are admitted exact-boundary requests; offset 65535 with quantity 2 is NO_SEND.' "$document"
+	grep -Fq 'The normal response byte-count is exactly two times the requested quantity; its RTU ADU is exactly 5 + (2 × quantity) bytes and never exceeds 255 bytes.' "$document"
+	grep -Fq 'The correlation identity binds endpoint generation, request identifier, unit' "$document"
+	grep -Fq 'unfenced generation and has the matching unit, function, valid RTU integrity,' "$document"
+	grep -Fq 'or prior-generation frames enter quarantine and never satisfy a later request.' "$document"
+	grep -Fq 'A structurally valid, correlated Modbus exception is terminal evidence for its request but does not fence the endpoint generation or require recovery.' "$document"
+	grep -Fq 'A malformed, CRC-failed, late, unrelated, or prior-generation exception is a transport fault and enters quarantine.' "$document"
+	grep -Fq 'Every terminal exchange retains immutable request and response ADU bytes,' "$document"
+	grep -Fq 'integrity result, endpoint generation, correlation identifier, unit identifier,' "$document"
+	grep -Fq 'function, monotonic send and receipt bounds, retry disposition, and terminal' "$document"
+	grep -Fq 'outcome. Failed exchanges retain their available request and transport evidence' "$document"
+	grep -Fq 'stable configured endpoint label, never a local serial path.' "$document"
+	grep -Fq 'closed, replaced, fenced, or quarantined generation is historical only and' "$document"
+	grep -Fq 'cannot authorize, correlate, or be rebound to a successor request.' "$document"
 }
 
 check_sunspec_v2_contract() {
