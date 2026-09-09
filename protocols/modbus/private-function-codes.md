@@ -125,11 +125,13 @@ unbounded timeout, or an unqualified operation is `NO_SEND`. Configuration
 does not discover an endpoint, select a unit, select a profile, or infer a
 register map.
 
+Accepted baud rates are 9600, 19200, 38400, 57600, 115200, and 230400; data bits are exactly eight; parity is none, even, or odd; and stop bits are one or two. The response timeout is greater than zero and no more than 30 seconds. Recovery has one bounded attempt and completes within the response timeout plus t3.5, with an absolute maximum of 60 seconds. An exchange has exactly one send attempt; no retry is admitted by this contract. FC03 and FC04 permit a zero-based offset from 0 through 65535 and a quantity from 1 through 125 registers. The normal response byte-count is exactly two times the requested quantity; its RTU ADU is exactly 5 + (2 × quantity) bytes and never exceeds 255 bytes. Any configuration, request, normal response, timeout, or recovery result outside these bounds is `NO_SEND` before transmission or a terminal transport fault after possible transmission.
+
 Each endpoint instance has a nonzero lifecycle generation, incremented before
 a replacement or recovery successor admits a request. Close, endpoint loss,
 cancellation after possible transmission, timeout after possible transmission,
-short write, malformed length or CRC, exception response, and unexpected or
-late frame fence the affected generation. A fenced or quarantined endpoint
+short write, malformed length or CRC, and unexpected or late frame fence the
+affected generation. A fenced or quarantined endpoint
 admits no successor until its bounded recovery completes; a replacement starts
 only in its successor generation. One endpoint has exactly one in-flight read;
 there is no batching, scan, broadcast, write/control function, or implicit
@@ -140,8 +142,7 @@ identifier, FC03 or FC04 function, request offset, quantity, and the exact
 request ADU. A response satisfies a read only when it arrives in the same
 unfenced generation and has the matching unit, function, valid RTU integrity,
 and response shape. A Modbus exception is terminal evidence for that request;
-it is never successful data. Late, duplicate, unrelated, malformed, CRC-failed,
-or prior-generation frames enter quarantine and never satisfy a later request.
+it is never successful data. A structurally valid, correlated Modbus exception is terminal evidence for its request but does not fence the endpoint generation or require recovery. A malformed, CRC-failed, late, unrelated, or prior-generation exception is a transport fault and enters quarantine. Late, duplicate, unrelated, malformed, CRC-failed, or prior-generation frames enter quarantine and never satisfy a later request.
 
 Every terminal exchange retains immutable request and response ADU bytes,
 integrity result, endpoint generation, correlation identifier, unit identifier,
