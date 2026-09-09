@@ -458,6 +458,20 @@ for mutation in \
   fi
 done
 
+for mutation in \
+  's/admits only FC03 and FC04 requests/admits FC03, FC04, and FC06 requests/' \
+  's/incremented before a replacement or recovery successor admits a request/incremented after a replacement admits a request/' \
+  's/valid RTU integrity, and response shape/response shape only/' \
+  's/never satisfy a later request/may satisfy a later request/' \
+  's/never a local serial path/a local serial path/' \
+  's/historical only and/historical current evidence and/'; do
+  sed "$mutation" "$private_function_document" > "$private_function_fixture"
+  if "$repo_root/scripts/check_docs.sh" --check-private-function-contract "$private_function_fixture"; then
+    echo "production RTU contract mutation was accepted: $mutation" >&2
+    exit 1
+  fi
+done
+
 "$repo_root/scripts/check_docs.sh" --check-sunspec-v1-model-families-contract "$sunspec_v1_families_document"
 for mutation in \
   's/29 exact decoder tuples/30 exact decoder tuples/' \
