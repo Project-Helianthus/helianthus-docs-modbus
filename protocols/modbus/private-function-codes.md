@@ -127,6 +127,8 @@ register map.
 
 Accepted baud rates are 9600, 19200, 38400, 57600, 115200, and 230400; data bits are exactly eight; parity is none, even, or odd; and stop bits are one or two. The response timeout is greater than zero and no more than 30 seconds. Recovery has one bounded attempt and completes within the response timeout plus t3.5, with an absolute maximum of 60 seconds. An exchange has exactly one send attempt; no retry is admitted by this contract. FC03 and FC04 permit a zero-based offset from 0 through 65535 and a quantity from 1 through 125 registers. The normal response byte-count is exactly two times the requested quantity; its RTU ADU is exactly 5 + (2 × quantity) bytes and never exceeds 255 bytes. Any configuration, request, normal response, timeout, or recovery result outside these bounds is `NO_SEND` before transmission or a terminal transport fault after possible transmission.
 
+Admission must calculate offset + quantity without 16-bit wrap and require it to be no greater than 65536; otherwise it is NO_SEND before transmission. Offset 65535 with quantity 1 and offset 65411 with quantity 125 are admitted exact-boundary requests; offset 65535 with quantity 2 is NO_SEND.
+
 Each endpoint instance has a nonzero lifecycle generation, incremented before
 a replacement or recovery successor admits a request. Close, endpoint loss,
 cancellation after possible transmission, timeout after possible transmission,
