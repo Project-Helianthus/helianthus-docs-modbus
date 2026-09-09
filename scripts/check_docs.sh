@@ -262,6 +262,7 @@ check_private_function_contract() {
     'Response correlation and exceptions' \
     'RTU serialization' \
 		'Configured serial boundary' \
+		'Configured production read endpoint' \
     'Validation and compatibility'; do
     grep -Fqx "## $heading" "$document"
   done
@@ -279,6 +280,10 @@ check_private_function_contract() {
 	grep -Fq 'must quarantine and recover before it accepts a successor request.' "$document"
 	grep -Fq 'lifecycle close ends the local stream without creating a successor request or' "$document"
 	grep -Fq 'classifying itself as a failed exchange.' "$document"
+	grep -Fq 'A production read endpoint is opt-in and admits only FC03 and FC04 requests that have already passed the standard read-operation admission boundary.' "$document"
+	grep -Fq 'Each endpoint instance has a nonzero lifecycle generation, incremented before a replacement or recovery successor admits a request.' "$document"
+	grep -Fq 'Every terminal exchange retains immutable request and response ADU bytes, integrity result, endpoint generation, correlation identifier, unit identifier, function, monotonic send and receipt bounds, retry disposition, and terminal outcome.' "$document"
+	grep -Fq 'Evidence from a closed, replaced, fenced, or quarantined generation is historical only and cannot authorize, correlate, or be rebound to a successor request.' "$document"
 }
 
 check_sunspec_v2_contract() {
