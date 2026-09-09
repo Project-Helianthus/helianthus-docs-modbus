@@ -289,6 +289,8 @@ check_private_function_contract() {
 	grep -Fq 'Recovery has one bounded attempt and completes within the response timeout plus t3.5, with an absolute maximum of 60 seconds.' "$document"
 	grep -Fq 'An exchange has exactly one send attempt; no retry is admitted by this contract.' "$document"
 	grep -Fq 'FC03 and FC04 permit a zero-based offset from 0 through 65535 and a quantity from 1 through 125 registers.' "$document"
+	grep -Fq 'Admission must calculate offset + quantity without 16-bit wrap and require it to be no greater than 65536; otherwise it is NO_SEND before transmission.' "$document"
+	grep -Fq 'Offset 65535 with quantity 1 and offset 65411 with quantity 125 are admitted exact-boundary requests; offset 65535 with quantity 2 is NO_SEND.' "$document"
 	grep -Fq 'The normal response byte-count is exactly two times the requested quantity; its RTU ADU is exactly 5 + (2 × quantity) bytes and never exceeds 255 bytes.' "$document"
 	grep -Fq 'The correlation identity binds endpoint generation, request identifier, unit' "$document"
 	grep -Fq 'unfenced generation and has the matching unit, function, valid RTU integrity,' "$document"
