@@ -795,9 +795,6 @@ for mutation in \
   's/aggregate PV input power/aggregate DC input power/' \
   's/0.01 Hz/0.1 Hz/' \
   's/0.5 s/1 s/' \
-  's/unadmitted synthetic fixture only/typed and publicly admitted/' \
-  's/evidence needed | signedness/raw only | signedness/' \
-  's/raw only or unknown | a field-specific/typed | a field-specific/' \
   's/does not currently admit a typed profile/does publicly admit a typed profile/' \
   's/no public successful constructor/a public successful constructor/' \
   's/externally constructible forms fail closed/externally constructible forms admit telemetry/' \
@@ -813,6 +810,31 @@ for mutation in \
   fi
 done
 rm -f "$protocol_ii_fc04_fixture"
+
+protocol_ii_matrix="$repo_root/protocols/growatt/protocol-ii-source-profile-matrix-v1.md"
+protocol_ii_matrix_fixture="$(mktemp)"
+"$repo_root/scripts/check_docs.sh" --check-growatt-protocol-ii-source-matrix "$protocol_ii_matrix"
+for mutation in \
+  's/growatt-rtu-v1\.24/growatt-rtu-v1.25/' \
+  's/fac88d609d74ff6b3c9c31ed65370d166d1fb17461e91b4b4855018fe232a320/0000000000000000000000000000000000000000000000000000000000000000/' \
+  's/NO_ADMISSIBLE_PROFILE/ADMISSIBLE_PROFILE/' \
+  's/there is no exact device-type, model-build, and/there is one exact device-type, model-build, and/' \
+  's/every otherwise unlisted offset 59-124/every remaining offset 59-124/' \
+  's/| per-PV voltage | unknown/| per-PV voltage | implemented/' \
+  's/| FC06, FC16, and every other control operation | unsupported/| FC06, FC16, and every other control operation | implemented/' \
+  's/selected-tuple applicability and signedness, and bounded acquisition\/decoder tests/selected-tuple applicability and bounded acquisition\/decoder tests/' \
+  's/signedness and invalid handling, selected-tuple applicability/selected-tuple applicability/' \
+  's/selected-tuple applicability, units\/composition, and bounded acquisition\/decoder tests/selected-tuple applicability and bounded acquisition\/decoder tests/' \
+  's/selected-tuple applicability, enum\/bitfield\/sentinel handling, and bounded acquisition\/decoder tests/selected-tuple applicability and bounded acquisition\/decoder tests/' \
+  's/an exact overlay contract with selected-tuple applicability/an exact overlay contract/' \
+  's/bounded acquisition\/decoder tests for each offset/bounded acquisition\/decoder tests/'; do
+  sed "$mutation" "$protocol_ii_matrix" > "$protocol_ii_matrix_fixture"
+  if "$repo_root/scripts/check_docs.sh" --check-growatt-protocol-ii-source-matrix "$protocol_ii_matrix_fixture"; then
+    echo "Growatt Protocol II source matrix mutation was accepted: $mutation" >&2
+    exit 1
+  fi
+done
+rm -f "$protocol_ii_matrix_fixture"
 
 "$repo_root/scripts/check_docs.sh" --check-bms-contract "$bms_document"
 

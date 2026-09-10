@@ -21,6 +21,7 @@ Current protocol contracts:
 - [Fronius SunSpec float flavor](protocols/fronius/sunspec-float-v1.md)
 - [Huawei gateway read-only candidates](protocols/huawei/gateway-readonly-v1.md)
 - [Growatt Protocol II read-only candidate](protocols/growatt/protocol-ii-readonly-v1.md)
+- [Growatt Protocol II source and profile evidence matrix](protocols/growatt/protocol-ii-source-profile-matrix-v1.md)
 - [ShineWiLan-X2 transparent Modbus bridge](protocols/growatt/shinewilan-x2-bridge-v1.md)
 - [Growatt 1xSxxP ESS BMS RS485 read-only candidate](protocols/growatt/bms-rs485-1xsxxp-v202.md)
 - [Growatt WIT family and protocol qualification matrix](protocols/growatt/wit-family-protocol-matrix-v1.md)
