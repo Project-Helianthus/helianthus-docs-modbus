@@ -39,7 +39,8 @@ telemetry. Unknown device type, malformed ASCII, a protocol value outside the
 selected schema, or disagreement among identity fields remains
 `insufficient_evidence` for typed monitoring.
 
-There is no current publicly admitted typed FC04 profile. The exported opaque
+The bounded result is `NO_ADMISSIBLE_PROFILE`: there is no exact tuple and no
+typed field. There is no current publicly admitted typed FC04 profile. The exported opaque
 applicability value has no public successful constructor; its zero value and all
 externally constructible forms fail closed. Only an unexported synthetic
 in-package fixture helper may exercise the source-backed FC04 schema and
@@ -112,17 +113,12 @@ manual does not state a sentinel for these rows, so this contract invents none.
 
 ### Monitoring feature inventory
 
-This foundation retains only the source-backed schema and synthetic fixture
-mechanics for the rows below. It does not currently admit a typed profile or
+The exhaustive source and requested-field disposition is in the
+[Growatt Protocol II source and profile evidence matrix](protocol-ii-source-profile-matrix-v1.md).
+Its bounded result is `NO_ADMISSIBLE_PROFILE`: there is no exact tuple and no
+typed field. This foundation retains only the source-backed schema and
+synthetic fixture mechanics. It does not currently admit a typed profile or
 close the broader `NATIVE-07-GROWATT-II` monitoring feature.
-
-| Requested monitoring area | Current disposition | Evidence needed before typed promotion |
-| --- | --- | --- |
-| inverter status; aggregate PV and output power; grid frequency; phase 1-3 grid voltage/current; generated today/total energy; total work time | unadmitted synthetic fixture only | an owning source must establish an exact device-type, model-build, and protocol-value tuple tied to the FC04 schema |
-| per-PV voltage, current, and power | raw only | an exact feature requirement and source-backed per-family applicability, signedness where relevant, and bounded acquisition contract |
-| per-phase output power and line-to-line voltage | raw only | exact semantics and a source-backed composition/units decision for the selected profile |
-| inverter temperature (offset 93) | evidence needed | signedness, documented invalid/sentinel handling, and selected-family applicability; the manual supplies 0.1 C but not those facts |
-| internal IPM/boost temperatures, power factor, derating, fault/warning, storage/battery fields, and every offset 59-124 | raw only or unknown | a field-specific source-backed definition, exact selected-family applicability, and bounded decoder/acquisition tests |
 
 ## Offline telemetry candidate
 

@@ -841,12 +841,56 @@ check_growatt_protocol_ii_fc04_contract() {
     '| 57-58 | total work time | unsigned 32-bit, high word first, 0.5 s | seconds |'; do
     grep -Fqx "$row" "$document"
   done
-  grep -Fqx '| inverter status; aggregate PV and output power; grid frequency; phase 1-3 grid voltage/current; generated today/total energy; total work time | unadmitted synthetic fixture only | an owning source must establish an exact device-type, model-build, and protocol-value tuple tied to the FC04 schema |' "$document"
-  grep -Fqx '| per-PV voltage, current, and power | raw only | an exact feature requirement and source-backed per-family applicability, signedness where relevant, and bounded acquisition contract |' "$document"
-  grep -Fqx '| inverter temperature (offset 93) | evidence needed | signedness, documented invalid/sentinel handling, and selected-family applicability; the manual supplies 0.1 C but not those facts |' "$document"
-  grep -Fqx '| internal IPM/boost temperatures, power factor, derating, fault/warning, storage/battery fields, and every offset 59-124 | raw only or unknown | a field-specific source-backed definition, exact selected-family applicability, and bounded decoder/acquisition tests |' "$document"
+  grep -Fq 'The bounded result is `NO_ADMISSIBLE_PROFILE`: there is no exact tuple and no' "$document"
+  grep -Fq 'typed field. There is no current publicly admitted typed FC04 profile.' "$document"
+  grep -Fq '[Growatt Protocol II source and profile evidence matrix](protocol-ii-source-profile-matrix-v1.md).' "$document"
   grep -Fq 'It does not currently admit a typed profile or' "$document"
   grep -Fq 'close the broader `NATIVE-07-GROWATT-II` monitoring feature.' "$document"
+}
+
+check_growatt_protocol_ii_source_matrix() {
+  local document="$1"
+  local forbidden='https?://|/[Uu]sers/|([0-9]{1,3}\.){3}[0-9]{1,3}|([[:alnum:]][[:alnum:].-]*):([0-9]{1,5}|[[:alpha:]][[:alnum:].-]*)|[Pp]ort[[:space:]]+[0-9]{1,5}'
+
+  if grep -Ein "$forbidden" "$document"; then
+    echo 'Growatt Protocol II source matrix contains a private locator or endpoint' >&2
+    return 1
+  fi
+  grep -Fqx '# Growatt Protocol II Source and Profile Evidence Matrix V1' "$document"
+  grep -Fqx '| `growatt-rtu-v1.24` | *Growatt Inverter Modbus RTU Protocol V1.24* | 85 pages | `fac88d609d74ff6b3c9c31ed65370d166d1fb17461e91b4b4855018fe232a320` | `vendor-copyright-inspection-only`; non-redistributed |' "$document"
+  grep -Fq 'It does not redistribute the source or vendor schema text.' "$document"
+  grep -Fq '`NO_ADMISSIBLE_PROFILE`: there is no exact device-type, model-build, and' "$document"
+  grep -Fq 'device-reported protocol-value tuple, and there is no typed field.' "$document"
+  grep -Fq '`implemented` would require a publicly admitted exact tuple and is absent.' "$document"
+  for row in \
+    '| exact device type, model-build pair, and device-reported protocol value | evidence-needed | the source identifies the TL3-X MAX/MID/MAC map but does not map these three values together | publishable provider-owned evidence that binds one exact tuple to this FC04 schema |' \
+    '| inverter run state | evidence-needed | schema-only synthetic fixture mechanics at offset 0 | the exact tuple plus an admitted bounded FC04 acquisition and decoder test |' \
+    '| aggregate PV input power | evidence-needed | schema-only synthetic fixture mechanics at offsets 1-2 | the exact tuple plus an admitted bounded FC04 acquisition and decoder test |' \
+    '| aggregate output power | evidence-needed | schema-only synthetic fixture mechanics at offsets 35-36 | the exact tuple plus an admitted bounded FC04 acquisition and decoder test |' \
+    '| grid frequency | evidence-needed | schema-only synthetic fixture mechanics at offset 37 | the exact tuple plus an admitted bounded FC04 acquisition and decoder test |' \
+    '| phase 1 grid voltage and output current | evidence-needed | schema-only synthetic fixture mechanics at offsets 38-39 | the exact tuple plus an admitted bounded FC04 acquisition and decoder test |' \
+    '| phase 2 grid voltage and output current | evidence-needed | schema-only synthetic fixture mechanics at offsets 42-43 | the exact tuple plus an admitted bounded FC04 acquisition and decoder test |' \
+    '| phase 3 grid voltage and output current | evidence-needed | schema-only synthetic fixture mechanics at offsets 46-47 | the exact tuple plus an admitted bounded FC04 acquisition and decoder test |' \
+    '| generated energy today | evidence-needed | schema-only synthetic fixture mechanics at offsets 53-54 | the exact tuple plus an admitted bounded FC04 acquisition and decoder test |' \
+    '| generated energy total | evidence-needed | schema-only synthetic fixture mechanics at offsets 55-56 | the exact tuple plus an admitted bounded FC04 acquisition and decoder test |' \
+    '| total work time | evidence-needed | schema-only synthetic fixture mechanics at offsets 57-58 | the exact tuple plus an admitted bounded FC04 acquisition and decoder test |' \
+    '| per-PV voltage | unknown | no selected-tuple applicability or bounded acquisition is established | an exact field definition, selected-tuple applicability, and bounded acquisition/decoder tests |' \
+    '| per-PV current | unknown | no selected-tuple applicability, signedness, or bounded acquisition is established | an exact field definition, selected-tuple applicability and signedness, and bounded acquisition/decoder tests |' \
+    '| per-PV power | unknown | no selected-tuple applicability or bounded acquisition is established | an exact field definition, selected-tuple applicability, and bounded acquisition/decoder tests |' \
+    '| per-phase output power | unknown | no selected-tuple semantics, units, or composition are established | an exact field definition, selected-tuple applicability, units/composition, and bounded acquisition/decoder tests |' \
+    '| line-to-line voltage | unknown | no selected-tuple semantics, units, or composition are established | an exact field definition, selected-tuple applicability, units/composition, and bounded acquisition/decoder tests |' \
+    '| inverter temperature | evidence-needed | the source supplies 0.1 C at offset 93, but not signedness, invalid handling, or selected-tuple applicability | an exact field definition with signedness and invalid handling, selected-tuple applicability, and bounded acquisition/decoder tests |' \
+    '| internal IPM temperature | unknown | no field-specific selected-tuple definition is established | an exact field definition, selected-tuple applicability, and bounded acquisition/decoder tests |' \
+    '| boost temperature | unknown | no field-specific selected-tuple definition is established | an exact field definition, selected-tuple applicability, and bounded acquisition/decoder tests |' \
+    '| power factor | unknown | no field-specific selected-tuple definition is established | an exact field definition, selected-tuple applicability, and bounded acquisition/decoder tests |' \
+    '| derating | unknown | no field-specific selected-tuple definition is established | an exact field definition, selected-tuple applicability, enum/sentinel handling, and bounded acquisition/decoder tests |' \
+    '| fault facts | unknown | no field-specific selected-tuple definition is established | an exact field definition, selected-tuple applicability, enum/bitfield/sentinel handling, and bounded acquisition/decoder tests |' \
+    '| warning facts | unknown | no field-specific selected-tuple definition is established | an exact field definition, selected-tuple applicability, enum/bitfield/sentinel handling, and bounded acquisition/decoder tests |' \
+    '| storage or battery overlays | unknown | no selected-tuple overlay definition is established | an exact overlay contract with selected-tuple applicability, bounded acquisition, and decoder tests |' \
+    '| every otherwise unlisted offset 59-124 | unknown | no field-specific selected-tuple definition is established | an exact field definition, selected-tuple applicability, and bounded acquisition/decoder tests for each offset |' \
+    '| FC06, FC16, and every other control operation | unsupported | this read-only version enumerates no control operation | a separate exact operation contract; this matrix does not authorize a real-device write |'; do
+    grep -Fqx "$row" "$document"
+  done
 }
 
 check_wit_matrix_contract() {
@@ -988,7 +1032,7 @@ check_huawei_qualification_readiness() {
 
 if [[ $# -gt 0 ]]; then
   if [[ $# -ne 2 ]] && [[ "$1" != '--check-tesla-generation-contracts' || $# -ne 3 ]]; then
-    echo 'usage: check_docs.sh [--check-sdongle-admission|--check-public-protocol|--check-tesla-tedapi-contract|--check-tesla-generation-contracts|--check-private-function-contract|--check-sunspec-v1-model-families-contract|--check-fronius-qualification-readiness|--check-huawei-qualification-readiness|--check-sunspec-nested-layout-contract|--check-sunspec-der-trip-lv-template-v2|--check-sunspec-der-trip-lv-typed-fact-projection-v2|--check-sunspec-dynamic-structural-selection-v2|--check-sunspec-v2-contract|--check-sunspec-v2-licensing|--check-x2-publication|--check-x2-contract|--check-bms-contract|--check-growatt-protocol-ii-identity-projection|--check-wit-matrix-contract document]' >&2
+    echo 'usage: check_docs.sh [--check-sdongle-admission|--check-public-protocol|--check-tesla-tedapi-contract|--check-tesla-generation-contracts|--check-private-function-contract|--check-sunspec-v1-model-families-contract|--check-fronius-qualification-readiness|--check-huawei-qualification-readiness|--check-sunspec-nested-layout-contract|--check-sunspec-der-trip-lv-template-v2|--check-sunspec-der-trip-lv-typed-fact-projection-v2|--check-sunspec-dynamic-structural-selection-v2|--check-sunspec-v2-contract|--check-sunspec-v2-licensing|--check-x2-publication|--check-x2-contract|--check-bms-contract|--check-growatt-protocol-ii-identity-projection|--check-growatt-protocol-ii-fc04-contract|--check-growatt-protocol-ii-source-matrix|--check-wit-matrix-contract document]' >&2
     exit 2
   fi
   case "$1" in
@@ -1028,6 +1072,7 @@ if [[ $# -gt 0 ]]; then
     --check-bms-contract) check_bms_contract "$2" ;;
     --check-growatt-protocol-ii-identity-projection) check_growatt_protocol_ii_identity_projection "$2" ;;
     --check-growatt-protocol-ii-fc04-contract) check_growatt_protocol_ii_fc04_contract "$2" ;;
+    --check-growatt-protocol-ii-source-matrix) check_growatt_protocol_ii_source_matrix "$2" ;;
     --check-wit-matrix-contract) check_wit_matrix_contract "$2" ;;
     --check-outback-axs-contract) check_outback_axs_contract "$2" ;;
     *)
@@ -1113,6 +1158,7 @@ grep -Fq 'EMMA-A01 never inherits an EMMA-A02-only capability.' 'protocols/huawe
 grep -Fq 'Basic and extended MEI are optional enrichment, never initial EMMA identification.' 'protocols/huawei/gateway-readonly-v1.md'
 check_growatt_protocol_ii_identity_projection 'protocols/growatt/protocol-ii-readonly-v1.md'
 check_growatt_protocol_ii_fc04_contract 'protocols/growatt/protocol-ii-readonly-v1.md'
+check_growatt_protocol_ii_source_matrix 'protocols/growatt/protocol-ii-source-profile-matrix-v1.md'
 grep -Fqx '## Request mapping' 'protocols/growatt/shinewilan-x2-bridge-v1.md'
 grep -Fqx '## Response mapping' 'protocols/growatt/shinewilan-x2-bridge-v1.md'
 grep -Fqx '## Read-only boundary' 'protocols/growatt/shinewilan-x2-bridge-v1.md'
