@@ -726,7 +726,17 @@ check_x2_contract() {
 check_bms_contract() {
   local document="$1"
   local private_material='(^|[^[:xdigit:]])[[:xdigit:]]{40}([^[:xdigit:]]|$)|(^|[^[:xdigit:]])[[:xdigit:]]{64}([^[:xdigit:]]|$)|([0-9]{1,3}\.){3}[0-9]{1,3}|([[:alnum:]][[:alnum:].-]*):([0-9]{1,5}|[[:alpha:]][[:alnum:].-]*)|[Pp]ort[[:space:]]+[0-9]{1,5}'
-  local expected_slices actual_slices
+  local public_forbidden='(/[Uu]sers/|sha(-?256)?[-:]?[0-9a-f]{8,}|(source|vendor material) (is|are) public domain|sunspec\.inverter\.|canonical facts)'
+  local expected_slices actual_slices expected_diagnostic_slices actual_diagnostic_slices url
+  local allowed_urls=(
+    'https://www.amosplanet.org/wp-content/uploads/2022/04/Growatt_BMS_RS485_protocal_1xSxxP_ESS_V2.02-1.pdf#page=1'
+    'https://www.amosplanet.org/wp-content/uploads/2022/04/Growatt_BMS_RS485_protocal_1xSxxP_ESS_V2.02-1.pdf#page=2'
+    'https://www.amosplanet.org/wp-content/uploads/2022/04/Growatt_BMS_RS485_protocal_1xSxxP_ESS_V2.02-1.pdf#page=12'
+    'https://www.amosplanet.org/wp-content/uploads/2022/04/Growatt_BMS_RS485_protocal_1xSxxP_ESS_V2.02-1.pdf#page=14'
+    'https://www.amosplanet.org/wp-content/uploads/2022/04/Growatt_BMS_RS485_protocal_1xSxxP_ESS_V2.02-1.pdf#page=15'
+    'https://www.amosplanet.org/wp-content/uploads/2022/04/Growatt_BMS_RS485_protocal_1xSxxP_ESS_V2.02-1.pdf#page=19'
+    'https://www.amosplanet.org/wp-content/uploads/2022/04/Growatt_BMS_RS485_protocal_1xSxxP_ESS_V2.02-1.pdf#page=20'
+  )
 
   expected_slices=$(printf '%s\n' \
     'offset 0x0001, quantity 7' \
@@ -734,14 +744,44 @@ check_bms_contract() {
     'offset 0x0100, quantity 12' \
     'offset 0x010D, quantity 2')
   actual_slices=$(sed -n \
-    '/An offline fixture may contain these/,/The two extension slices remain/p' \
+    '/An offline fixture may contain these/,/Only the typed extension words listed below are decoded/p' \
     "$document" | sed -nE 's/^- (offset 0x[[:xdigit:]]+, quantity [0-9]+).*/\1/p')
   if [[ "$actual_slices" != "$expected_slices" ]]; then
     echo 'BMS FC03 slice allowlist is not exact' >&2
     return 1
   fi
 
-  check_public_protocol "$document"
+  expected_diagnostic_slices=$(printf '%s\n' \
+    'offset 0x0070, quantity 1' \
+    'offset 0x0071, quantity 16' \
+    'offset 0x0081, quantity 16')
+  actual_diagnostic_slices=$(sed -n \
+    '/It adds exactly these three FC03 slices/,/The two cell blocks are exactly/p' \
+    "$document" | sed -nE 's/^- (offset 0x[[:xdigit:]]+, quantity [0-9]+).*/\1/p')
+  if [[ "$actual_diagnostic_slices" != "$expected_diagnostic_slices" ]]; then
+    echo 'BMS diagnostic FC03 slice allowlist is not exact' >&2
+    return 1
+  fi
+
+  if grep -Ein "$public_forbidden" "$document"; then
+    echo 'BMS protocol specification contains prohibited public-contract material' >&2
+    return 1
+  fi
+  for url in "${allowed_urls[@]}"; do
+    if ! grep -Fq "$url" "$document"; then
+      echo 'BMS protocol specification is missing a required public source page' >&2
+      return 1
+    fi
+  done
+  while IFS= read -r url; do
+    case " ${allowed_urls[*]} " in
+      *" $url "*) ;;
+      *)
+        echo 'BMS protocol specification contains an unapproved source locator' >&2
+        return 1
+        ;;
+    esac
+  done < <(grep -Eo 'https://[^)]+' "$document" || true)
   if grep -Ein "$private_material" "$document"; then
     echo 'BMS protocol specification contains private endpoint or source revision material' >&2
     return 1
@@ -754,8 +794,24 @@ check_bms_contract() {
   grep -Fq 'function is FC03 Read Holding Registers.' "$document"
   grep -Fq 'offset 0x0001, quantity 7' "$document"
   grep -Fq 'offset 0x000D, quantity 29' "$document"
+  grep -Fq 'The base observation remains complete with its four FC03 slices.' "$document"
+  grep -Fq 'multi-group diagnostic may be evaluated only after that base observation and' "$document"
+  grep -Fq 'It adds exactly these three FC03 slices, in' "$document"
   grep -Fq 'offset 0x0100, quantity 12' "$document"
   grep -Fq 'offset 0x010D, quantity 2' "$document"
+  grep -Fq 'The two cell blocks are exactly 0x0071 through 0x0080 and 0x0081 through' "$document"
+  grep -Fq '0x0090. They are fixed bounds, not an example from which another group, block,' "$document"
+  grep -Fq 'At offset 0x001F, bits 8 through 13 are the reported Battery ID; bits 14 and' "$document"
+  grep -Fq '15 are reserved.' "$document"
+  grep -Fq 'At offset 0x0070, the whole raw word is the reported' "$document"
+  grep -Fq 'Neither value is a Modbus unit identifier, an address' "$document"
+  grep -Fq 'Offset 0x0109 is a native, revision-scoped balance-state word.' "$document"
+  grep -Fq 'Bits 0 through 15 retain the documented per-cell off/on states in native bit order.' "$document"
+  grep -Fq 'Offset 0x010C is excluded from every admitted slice.' "$document"
+  grep -Fq 'This contract defines no selector, scan, broadcast, handshake, write, or read-modify-write operation.' "$document"
+  grep -Fq 'Missing, contradictory, malformed, or reserved-bit-invalid identity evidence;' "$document"
+  grep -Fq '`insufficient_evidence`, with no repeated diagnostic facts and no diagnostic' "$document"
+  grep -Fq 'send. It does not erase qualified base status telemetry.' "$document"
   grep -Fq 'Only the typed extension words listed below are decoded.' "$document"
   grep -Fq '## Typed read-only fields' "$document"
   grep -Fq 'The typed subset is limited to the fields listed below.' "$document"
@@ -772,7 +828,10 @@ check_bms_contract() {
   grep -Fq 'A bounded decoder is permitted only for an externally declared' "$document"
   grep -Fqx '## MCP native observation projection' "$document"
   grep -Fq 'For a qualified observation, an MCP status result must return the selected' "$document"
-  grep -Fq 'observation. It must preserve every retained word at its native offset, in the' "$document"
+  grep -Fq 'base observation. It must preserve every retained word at its native offset, in' "$document"
+  grep -Fq 'all four exact FC03 slices that formed the bounded' "$document"
+  grep -Fq 'A failed diagnostic evaluation emits no repeated diagnostic facts and' "$document"
+  grep -Fq 'does not erase qualified base status telemetry.' "$document"
   grep -Fq 'No bounded decoder creates catalog registration, executable detection,' "$document"
   grep -Fq 'synthetic identity assembled from the document is not a substitute for a' "$document"
   grep -Fq 'does not automatically apply the contract to any commercial battery' "$document"
@@ -1194,5 +1253,8 @@ grep -Fq 'Each retry began after at least five seconds of idle time.' "$sdongle_
 check_sdongle_admission "$sdongle_admission"
 
 for multivendor_spec in "${multivendor_specs[@]}"; do
+  if [[ "$multivendor_spec" == 'protocols/growatt/bms-rs485-1xsxxp-v202.md' ]]; then
+    continue
+  fi
   check_public_protocol "$multivendor_spec"
 done

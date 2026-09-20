@@ -27,6 +27,16 @@ version aliases and do not establish an ordering against another Growatt
 protocol. No wire register in the admitted read set proves this document
 revision.
 
+## Public evidence and source boundary
+
+This contract paraphrases only the identified pages of the inspection-only
+source. It does not reproduce its register tables or create a control recipe.
+
+- The revision tuple and cumulative history are bounded by [page 1](https://www.amosplanet.org/wp-content/uploads/2022/04/Growatt_BMS_RS485_protocal_1xSxxP_ESS_V2.02-1.pdf#page=1) and [page 2](https://www.amosplanet.org/wp-content/uploads/2022/04/Growatt_BMS_RS485_protocal_1xSxxP_ESS_V2.02-1.pdf#page=2).
+- The Battery ID field treatment is bounded by [page 12](https://www.amosplanet.org/wp-content/uploads/2022/04/Growatt_BMS_RS485_protocal_1xSxxP_ESS_V2.02-1.pdf#page=12).
+- The reported group word and two fixed cell blocks are bounded by [page 14](https://www.amosplanet.org/wp-content/uploads/2022/04/Growatt_BMS_RS485_protocal_1xSxxP_ESS_V2.02-1.pdf#page=14) and [page 15](https://www.amosplanet.org/wp-content/uploads/2022/04/Growatt_BMS_RS485_protocal_1xSxxP_ESS_V2.02-1.pdf#page=15).
+- The `0x0109` listing and the `0x010C` exclusion are bounded by [page 15](https://www.amosplanet.org/wp-content/uploads/2022/04/Growatt_BMS_RS485_protocal_1xSxxP_ESS_V2.02-1.pdf#page=15); the native per-cell balance mapping is bounded by [page 19](https://www.amosplanet.org/wp-content/uploads/2022/04/Growatt_BMS_RS485_protocal_1xSxxP_ESS_V2.02-1.pdf#page=19) and [page 20](https://www.amosplanet.org/wp-content/uploads/2022/04/Growatt_BMS_RS485_protocal_1xSxxP_ESS_V2.02-1.pdf#page=20).
+
 The `1xSxxP` label describes this protocol topology.
 It does not automatically apply the contract to any commercial battery,
 inverter, logger, or later
@@ -51,7 +61,7 @@ One request is in flight on one RTU session at a time.
 
 All documented addresses are zero-based PDU offsets. The only admitted
 function is FC03 Read Holding Registers. An offline fixture may contain these
-bounded slices:
+bounded base-observation slices:
 
 - offset 0x0001, quantity 7, for bounded firmware and gauge-version context;
 - offset 0x000D, quantity 29, for company/generation, capability, status,
@@ -65,6 +75,40 @@ Only the typed extension words listed below are decoded. Every other extension
 word remains opaque until an exact, versioned field definition establishes its
 distinct byte and word encoding. Reserved or unknown fields inside an admitted
 slice stay opaque and retain their position.
+
+## Opt-in fixed multi-group diagnostic observation
+
+The base observation remains complete with its four FC03 slices. An opt-in
+multi-group diagnostic may be evaluated only after that base observation and
+its exact revision tuple qualify. It adds exactly these three FC03 slices, in
+this order, to the caller-selected unicast unit. They neither select a battery
+nor select a group:
+
+- offset 0x0070, quantity 1, for the reported battery-group ID word;
+- offset 0x0071, quantity 16, for the first fixed cell-voltage word block;
+- offset 0x0081, quantity 16, for the second fixed cell-voltage word block;
+
+The two cell blocks are exactly 0x0071 through 0x0080 and 0x0081 through
+0x0090. They are fixed bounds, not an example from which another group, block,
+cell count, offset, or coalesced request may be inferred. Each retained word is
+an unsigned native millivolt word for this revision. A decoder preserves the
+raw word, offset, and block membership even when it additionally exposes that
+fixed unit.
+
+At offset 0x001F, bits 8 through 13 are the reported Battery ID; bits 14 and
+15 are reserved. At offset 0x0070, the whole raw word is the reported
+battery-group ID. Neither value is a Modbus unit identifier, an address
+selector, a discovery key, or evidence that a request to another battery or
+group is permitted. This contract does not assign a broader numeric domain to
+the group word.
+
+Offset 0x0109 is a native, revision-scoped balance-state word. Bits 0 through 15 retain the documented per-cell off/on states in native bit order. The raw word remains available with that view; the view does not claim active-balancer actuation, health, control authority, or a meaning for another revision.
+
+Offset 0x010C is excluded from every admitted slice. This contract defines no selector, scan, broadcast, handshake, write, or read-modify-write operation.
+Missing, contradictory, malformed, or reserved-bit-invalid identity evidence;
+an incomplete diagnostic slice set; or a malformed cell or balance response is
+`insufficient_evidence`, with no repeated diagnostic facts and no diagnostic
+send. It does not erase qualified base status telemetry.
 
 Offsets 0x0009 through 0x000C contain barcode material and are not read,
 retained, or used for identity. A larger coalesced read that includes those
@@ -93,10 +137,10 @@ fields are coherent with that declaration.
 ## Pack topology and repeated data
 
 The protocol can describe more than one pack or box by repeated register
-regions and pack identifiers. The initial candidate does not infer a second
-pack layout from the first one. Every repeated region requires an exact extent,
-an explicit pack identity, duplicate detection, and a fixture proving the
-mapping.
+regions and pack identifiers. The fixed multi-group diagnostic observation
+above does not infer a second pack layout from the first one. Every repeated
+region requires an exact extent, an explicit pack identity, duplicate
+detection, and a fixture proving the mapping.
 
 Missing, duplicate, changing, or contradictory pack identity is
 `insufficient_evidence`. Disappearance does not cause a remaining pack to be
@@ -116,8 +160,8 @@ or reject the candidate. They never become guessed telemetry.
 ## Typed read-only fields
 
 The typed subset is limited to the fields listed below. It is decoded only
-after the complete four-slice observation and exact revision tuple pass their
-existing validation; no individual slice produces a partial typed result.
+after the complete four-slice base observation and exact revision tuple pass
+their existing validation; no individual slice produces a partial typed result.
 
 - `0x0001` and `0x0002` are version byte pairs: the high byte precedes the low
   byte for the MCU and gauge versions, respectively.
@@ -148,9 +192,15 @@ only and cannot authorize a request or control action.
 
 For a qualified observation, an MCP status result must return the selected
 unit, revision tuple, and all four exact FC03 slices that formed the bounded
-observation. It must preserve every retained word at its native offset, in the
-same slice order, alongside any typed identity, status, or telemetry view.
+base observation. It must preserve every retained word at its native offset, in
+the same slice order, alongside any typed identity, status, or telemetry view.
 Typed values supplement the native observation; they do not replace it.
+
+When the opt-in diagnostic qualifies, its result additionally retains its three
+exact FC03 slices and the raw words at their native offsets. It is a separate
+diagnostic view, not an extension that changes the qualified base status
+result. A failed diagnostic evaluation emits no repeated diagnostic facts and
+does not erase qualified base status telemetry.
 
 Missing, malformed, or contradictory slices produce no qualified projection.
 An admitted observation does not authorize FC05, FC06, FC0F, FC10, FC17, a
@@ -174,8 +224,7 @@ operations.
 
 A bounded decoder is permitted only for an externally declared
 revision tuple, one explicitly selected unicast unit, and the exact FC03 slices
-listed above. Runtime observations retain the selected unit, transport context, and exact
-FC03 slices. Public fixtures use synthetic values and do not publish installation data.
+listed above. Runtime observations retain the selected unit, transport context, and exact FC03 slices. Public fixtures use synthetic values and do not publish installation data.
 Every decoded field needs an exact versioned
 byte-order, word-order, signedness, and scaling definition; otherwise it stays
 opaque. Repeated-pack data requires an exact extent and explicit pack identity;
