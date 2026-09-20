@@ -847,6 +847,9 @@ for mutation in \
   's/function is FC03/function is FC10/' \
   's/offset 0x0001, quantity 7/offset 0x0001, quantity 9/' \
   's/offset 0x000D, quantity 29/offset 0x000D, quantity 30/' \
+  's/offset 0x0070, quantity 1/offset 0x0070, quantity 2/' \
+  's/offset 0x0071, quantity 16/offset 0x0071, quantity 17/' \
+  's/offset 0x0081, quantity 16/offset 0x0081, quantity 17/' \
   's/offset 0x0100, quantity 12/offset 0x0100, quantity 13/' \
   's/offset 0x010D, quantity 2/offset 0x010D, quantity 3/' \
   's/Only the typed extension words listed below are decoded/Every extension word is decoded telemetry/' \
@@ -864,6 +867,38 @@ for mutation in \
 done
 
 for mutation in \
+  's/0x0071 through 0x0080 and 0x0081 through/0x0071 through 0x0081 and 0x0081 through/' \
+  's/0x0090. They are fixed bounds/0x0091. They are fixed bounds/' \
+  's/not an example from which another group, block,/an example from which another group, block,/' \
+  's/bits 8 through 13 are the reported Battery ID/bits 7 through 13 are the reported Battery ID/' \
+  's/15 are reserved/15 select the unit/' \
+  's/Neither value is a Modbus unit identifier, an address/Each value is a Modbus unit identifier, an address/' \
+  's/native, revision-scoped balance-state word/generic balance-state word/' \
+  's/Bits 0 through 15 retain the documented per-cell off\/on states/Bits 0 through 15 select cell-control states/' \
+  's/Offset 0x010C is excluded from every admitted slice/Offset 0x010C is included in an admitted slice/' \
+  's/no selector, scan, broadcast, handshake, write, or read-modify-write operation/all selectors, scans, broadcasts, handshakes, and writes are permitted/' \
+  's/Missing, contradictory, malformed, or reserved-bit-invalid identity evidence/Missing identity evidence is accepted/' \
+  's/no repeated diagnostic facts and no diagnostic/repeated diagnostic facts and a diagnostic/' \
+  's/does not erase qualified base status telemetry/erases qualified base status telemetry/'; do
+  sed "$mutation" "$bms_document" > "$bms_fixture"
+  if "$repo_root/scripts/check_docs.sh" --check-bms-contract "$bms_fixture"; then
+    echo "BMS multi-group safety mutation was accepted: $mutation" >&2
+    exit 1
+  fi
+done
+
+awk '
+  /^- offset 0x0081, quantity 16,/ {
+    print "- offset 0x0091, quantity 16, for an inferred third cell-voltage word block;"
+  }
+  { print }
+' "$bms_document" > "$bms_fixture"
+if "$repo_root/scripts/check_docs.sh" --check-bms-contract "$bms_fixture"; then
+  echo 'BMS inferred third cell block was accepted' >&2
+  exit 1
+fi
+
+for mutation in \
   's/does not automatically apply the contract/automatically applies the contract/' \
   's/revision-declared tuple remains required/revision-declared tuple is optional/' \
   's/is ambiguous and produces no match/is ranked and selects the first match/' \
@@ -876,7 +911,7 @@ for mutation in \
 done
 
 awk '
-  /^Only the typed extension words listed below are decoded/ {
+  /^- offset 0x010D, quantity 2,/ {
     print "- offset 0x0200, quantity 1, for an unqualified extra slice;"
   }
   { print }
