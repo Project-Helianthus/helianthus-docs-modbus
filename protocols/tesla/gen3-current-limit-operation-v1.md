@@ -50,8 +50,8 @@ the reason retained. Admission is scoped to exactly one
 | Action authority | Explicit authority binds the selected target, operation, values, and validity interval. Offline fake/replay authority cannot authorize live I/O. Live authority includes operator confirmation at action time; a cached read, configured endpoint, or document is insufficient. |
 | Profile and version | Explicit Gen3 identity, exact HSC profile compatibility, `wc3_24_44_3` operation schema, and independently qualified capability for the selected operation. Unknown, conflicting, legacy, or unenumerated operation versions deny dispatch. |
 | Endpoint and generation | Explicit unicast node and configured endpoint, current nonzero lifecycle generation, compatible HSC activation state, and no fence/quarantine. No discovery, broadcast, profile fallback, or inferred default target. |
-| Single-flight ownership | One serialized initiator and one in-flight exchange per endpoint. The mutation and its readback remain bound to one operation identity; no competing local mutation may interleave. This does not exclude an external actor. |
-| Values and scope | Explicit persistent or provisional intent; integer amperes; current at least 6 A and no greater than the supplied qualified device/installation limit or the exact wire field bound. Provisional timeout is 1 through 86399 seconds and `inhibitCharging` is explicit. Unknown upper limit, zero/absent current, zero timeout, or unsupported field semantics deny dispatch. |
+| Single-flight ownership | One serialized initiator and one in-flight exchange per endpoint. The mutation and its readback remain bound to one operation identity and the same lifecycle generation; no competing local mutation may interleave. This does not exclude an external actor. |
+| Values and scope | Explicit persistent or provisional intent; integer amperes; current at least 6 A and no greater than the lesser of the supplied qualified device/installation limit and the exact wire field bound. Provisional timeout is 1 through 86399 seconds and `inhibitCharging` is explicit. Unknown upper limit, zero/absent current, zero timeout, or unsupported field semantics deny dispatch. |
 | Interlocks | A supplied version-aware policy enumerates the required interlocks, their evidence, freshness limits, and permitted states. Missing, stale, contradictory, or unsafe state denies dispatch. This contract supplies no fault register, bit mask, or charging-state inference. |
 | Timing and response policy | A finite monotonic operation deadline covers mutation and any required readback. Each exchange has an explicit positive timeout, finite response-count/byte bound, and recovery budget. Remaining time must cover the next admitted phase. Mutation retries are zero; read retries require an explicit read-only allowlist and finite budget. |
 | Evidence and duplicate guard | The retained-record owner can freeze the admitted intent and correlate every phase. A local idempotency identity and bounded duplicate-retention policy are supplied before transmission. Missing retention capacity or duplicate ambiguity denies dispatch. |
@@ -71,7 +71,7 @@ and generic response policy. It owns RTU framing and CRC; the registry owns the
 length envelope, operation family/tags, exact body, and normal-response policy.
 No raw external request may bypass operation admission.
 
-The [configured production endpoint contract](../modbus/private-function-codes.md#configured-production-read-endpoint)
+The [configured production endpoint contract](../modbus/private-function-codes.md#configured-production-read-and-private-function-endpoint)
 defines the opt-in private exchange, shared read/private single-flight and
 generation fence, per-frame bounds, caller classifier, and separate immutable
 raw evidence. FC100 is within its user-defined function-code range; that
@@ -87,7 +87,7 @@ the corresponding terminal. This is a framing contract, not a sender recipe.
 | Intent / phase | Request and terminal | Meaning and boundary |
 | --- | --- | --- |
 | Persistent mutation | Family 6, t7 ConfigureSettings → t8 returned settings | Request carries `settings.maxOutputCurrentAmps` as signed int32 integer amperes. t8 returns persistent settings state; it is not an ACK. The exact current-only mutation scope must be qualified so unrelated settings are not changed. |
-| Provisional mutation | Family 6, t25 SetProvisional → t26 ACK | Request carries `limitCurrentMaxAmps`, `limitTimeoutS` (uint32), and `inhibitCharging` (bool). t26 has an empty body and acknowledges only. |
+| Provisional mutation | Family 6, t25 SetProvisional → t26 ACK | Request carries `limitCurrentMaxAmps` (uint32), `limitTimeoutS` (uint32), and `inhibitCharging` (bool). t26 has an empty body and acknowledges only. |
 | Provisional readback | Family 6, t27 GetProvisional → t28 returned state | t27 has an empty body. t28 returns the provisional triple and a separate configured-current value. It does not return effective/pilot current. |
 
 The linked exact body contract is the field-metadata authority. A generic
@@ -116,16 +116,22 @@ success flag. Earlier ACK evidence remains available if a later readback fails.
 | --- | --- | --- |
 | `ACK` | Valid correlated t26 after t25 | Acknowledgement received; no applied-value confirmation. This may be an intermediate phase while required readback is pending. |
 | `READBACK` | Valid correlated t8, or t28 linked to retained t25/t26/t27 | Returned settings/provisional state, with requested and returned values separate and explicit match/mismatch/unknown comparison. A mismatch remains readback evidence and is not confirmed requested state. |
-| `TIMEOUT` | Deadline expired without the required terminal/readback; available send/receipt evidence retained | No completion within the admitted deadline. If the mutation may have been sent, effect is indeterminate even if no response arrived. |
+| `TIMEOUT` | An admitted exchange timeout or the operation deadline expired without the required terminal/readback; available send/receipt evidence retained | No completion within the applicable time bound. If the mutation may have been sent, effect is indeterminate even if no response arrived. |
 | `INDETERMINATE` | Possible mutation transmission plus cancellation, short write, endpoint loss, invalid correlation, or other failure preventing reliable completion | The device may have changed state. No success, safe rollback, or automatic resend follows. |
 | `REJECTED` | Failed admission before send, or a valid correlated exception/application-error terminal | Record rejection source and numeric status where present. Only a proven pre-send rejection establishes that this attempt did not transmit. An error terminal does not by itself prove absence of side effects. |
 
 If the transport proves that no transmission occurred, cancellation or deadline
 exhaustion before dispatch is a pre-send rejection. If transmission cannot be
-excluded, record possible transmission and indeterminate effect. A readback timeout after ACK
-is `TIMEOUT` with the ACK retained; a readback transport failure is
-`INDETERMINATE` with the ACK retained. An explicit readback error retains its
-rejection evidence without implying that the preceding mutation was rejected.
+excluded, record possible transmission and indeterminate effect. A readback
+timeout after ACK is `TIMEOUT` with the ACK retained; a readback transport
+failure is `INDETERMINATE` with the ACK retained.
+
+Implementers must apply these operation rules; they are requirements, not
+validated runtime results:
+
+- A readback exception or application error after ACK is overall `INDETERMINATE`, with readback-phase `REJECTED` evidence and the ACK retained. It does not reject the preceding mutation or prove absence of its effect.
+- An exchange timeout before the operation deadline is `TIMEOUT`, not the `INDETERMINATE` outcome class; preserve the earlier timeout cause and any ACK. Effect remains indeterminate if mutation transmission cannot be excluded.
+- Mutation and confirmation readback must use the same lifecycle generation. The retained owner must reject cross-generation completion; reads after recovery are reconciliation evidence and cannot complete the original operation.
 
 t28 has no nonce, timestamp, or generation counter. Even a matching readback
 reports returned values; it cannot prove causal application or exclusion of an

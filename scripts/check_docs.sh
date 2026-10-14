@@ -116,6 +116,9 @@ check_tesla_current_limit_operation() {
     'Unknown upper limit, zero/absent current,' \
     'registry must require qualified inputs for those gaps;' \
     'it cannot prove causal application' \
+    'A readback exception or application error after ACK is overall `INDETERMINATE`' \
+    'An exchange timeout before the operation deadline is `TIMEOUT`' \
+    'Mutation and confirmation readback must use the same lifecycle generation.' \
     'Freeze the admitted request and context before any possible transmission.' \
     'never invent response bytes' \
     'successor exchange while fenced or quarantined.' \
@@ -304,7 +307,7 @@ check_private_function_contract() {
     'Response correlation and exceptions' \
     'RTU serialization' \
 		'Configured serial boundary' \
-		'Configured production read endpoint' \
+		'Configured production read and private-function endpoint' \
     'Validation and compatibility'; do
     grep -Fqx "## $heading" "$document"
   done
@@ -362,6 +365,10 @@ check_private_function_contract() {
     'generation until `Recover` succeeds' \
     'including a failing final frame or partial bytes' \
     '`RTUPrivateFunctionEvidence` receipt, not an FC03/FC04 read receipt.' \
+    'It reports `Current=false` once its generation is fenced, recovered, or closed.' \
+    'Success at receipt time is recorded by `TerminalOutcome=success`, not by `Current`.' \
+    'Cancellation observed after a frame is classified `Terminal` still fences the endpoint and returns no responses.' \
+    'Unit identifiers above 247 are also rejected before transmission.' \
     'order, terminal rule, and read-only classification remain registry-owned.'; do
     grep -Fq "$required" "$document" || return 1
   done

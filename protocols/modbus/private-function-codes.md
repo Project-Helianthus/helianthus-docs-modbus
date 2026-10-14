@@ -114,7 +114,7 @@ must quarantine and recover before it accepts a successor request. A normal
 lifecycle close ends the local stream without creating a successor request or
 classifying itself as a failed exchange.
 
-## Configured production read endpoint
+## Configured production read and private-function endpoint
 
 A production endpoint is opt-in. The standard read path admits only FC03 and FC04 requests
 that have already passed the standard read-operation admission boundary. Its
@@ -142,6 +142,7 @@ Protocol Specification V1.1b3, section 5). Codes outside those ranges, including
 standard read and write function codes, cannot use this path. Admission receives
 a defensive payload copy and cannot change the request bytes to be sent.
 Pre-send rejection is `NO_SEND`; it does not start or fence an exchange.
+Unit identifiers above 247 are also rejected before transmission.
 
 Accepted baud rates are 9600, 19200, 38400, 57600, 115200, and 230400; data bits are exactly eight; parity is none, even, or odd; and stop bits are one or two. The response timeout is greater than zero and no more than 30 seconds. Recovery has one bounded attempt and completes within the response timeout plus t3.5, with an absolute maximum of 60 seconds. An exchange has exactly one send attempt; no retry is admitted by this contract. FC03 and FC04 permit a zero-based offset from 0 through 65535 and a quantity from 1 through 125 registers. The normal response byte-count is exactly two times the requested quantity; its RTU ADU is exactly 5 + (2 × quantity) bytes and never exceeds 255 bytes. Any configuration, request, normal response, timeout, or recovery result outside these bounds is `NO_SEND` before transmission or a terminal transport fault after possible transmission.
 
@@ -187,6 +188,7 @@ cancellation, read fault, malformed/CRC-failed/unit- or function-mismatched
 frame, classifier error or panic, invalid disposition, or response-bound
 exhaustion. Returned normal responses exist only on success; on an exception
 or failure they are nil and received frames remain available as evidence.
+Cancellation observed after a frame is classified `Terminal` still fences the endpoint and returns no responses.
 
 The correlation identity binds endpoint generation, request identifier, unit
 identifier, FC03 or FC04 function, request offset, quantity, and the exact
@@ -215,18 +217,18 @@ unit/function, monotonic send/receipt offsets, integrity result, terminal
 outcome, currentness, receipt wall time, and clock epoch. Input/output byte
 slices are defensively copied. Integrity is not operation success: valid
 earlier frames remain evidence even if a subsequent timeout or classifier
-failure ends the exchange. At receipt creation, private evidence is current
-only for a successful exchange in the current unfenced generation.
-`LastPrivateFunctionEvidence`
-returns a copied historical receipt, separately from `LastEvidence` for reads.
-Its stored currentness flag is a receipt-time snapshot, not fresh authority
-after fencing or generation replacement. Neither receipt can be rebound to a
-successor exchange.
+failure ends the exchange. The receipt returned by `ExchangePrivateFunction`
+keeps its receipt-time `Current`, true only for success in the then-current
+unfenced, unclosed generation. `LastPrivateFunctionEvidence` returns a copied
+historical receipt, separately from `LastEvidence` for reads, but derives
+`Current` from the live lifecycle: stored `Current` AND matching endpoint
+generation AND not closed AND not fenced. It reports `Current=false` once its generation is fenced, recovered, or closed.
+Success at receipt time is recorded by `TerminalOutcome=success`, not by `Current`.
+Neither receipt can be rebound to a successor exchange.
 
-The [Tesla Gen3 current-limit operation contract](../tesla/gen3-current-limit-operation-v1.md#registry-owned-request-and-response-framing)
-is a separately scoped consumer of this generic FC100 framing boundary. It
-supplies additional operation requirements, not transport authority or live
-write qualification.
+The [operation-specific current-limit contract](../tesla/gen3-current-limit-operation-v1.md#registry-owned-request-and-response-framing)
+describes a separately scoped consumer. Operation contracts supply additional
+requirements, not transport authority or live write qualification.
 
 This contract is offline-validated production-path documentation, not a device
 compatibility, physical qualification, support, deployment, or live-I/O claim.

@@ -36,6 +36,9 @@ tesla_current_limit_fixture="$fixture_root/tesla-current-limit.md"
 for mutation in \
   's/state-changing operations require explicit operator confirmation at action time\./state-changing operations use cached permission./' \
   's/Mutation retries are zero;/Mutation retries are unlimited;/' \
+  's/A readback exception or application error after ACK is overall `INDETERMINATE`/A readback error after ACK is overall `REJECTED`/' \
+  's/An exchange timeout before the operation deadline is `TIMEOUT`/An exchange timeout before the operation deadline is `INDETERMINATE`/' \
+  's/Mutation and confirmation readback must use the same lifecycle generation./Mutation and confirmation readback may use different generations./' \
   's/Unknown upper limit, zero\/absent current,/An inferred upper limit, zero\/absent current,/' \
   's/it cannot prove causal application/it proves causal application/' \
   's/never invent response bytes/invent response bytes/' \
@@ -527,6 +530,9 @@ done
 
 for mutation in \
   's/from 1 through 8, both or/from 1 through 9, both or/' \
+  's/It reports `Current=false` once its generation is fenced, recovered, or closed./It reports a receipt-time snapshot./' \
+  's/Cancellation observed after a frame is classified `Terminal` still fences the endpoint and returns no responses./Cancellation after a terminal frame returns success./' \
+  's/Unit identifiers above 247 are also rejected before transmission./Unit identifiers above 247 are admitted./' \
   's/the policy allows exactly one attempt/the policy permits retries/' \
   's/65–72 or 100–110/1–127/' \
   's/exchange, shared by FC03\/FC04 reads and private-function exchanges./exchange per path, permitting concurrent reads and private exchanges./' \
