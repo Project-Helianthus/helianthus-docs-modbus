@@ -1162,6 +1162,105 @@ check_wit_matrix_contract() {
   grep -Fq 'Missing or conflicting evidence produces `INSUFFICIENT_EVIDENCE`, no match, and no send.' "$document"
 }
 
+check_huawei_inverter_battery_disposition() {
+  local document="$1"
+  local heading required row actual expected
+
+  check_public_protocol "$document" || return 1
+  if grep -Ein '([0-9]{1,3}\.){3}[0-9]{1,3}|[[:alnum:].-]+:[0-9]{1,5}|0x[0-9A-Fa-f]{4,}|(^|[^[:xdigit:]])[[:xdigit:]]{40}([^[:xdigit:]]|$)|(^|[^[:xdigit:]])[[:xdigit:]]{64}([^[:xdigit:]]|$)' "$document"; then
+    echo 'Huawei inverter and battery disposition contains coordinates, fingerprints, or register numbers' >&2
+    return 1
+  fi
+  if grep -Ein '(register|address|holding|input)[[:alpha:]]*[[:space:]:#=]+([[:alpha:]]+[[:space:]]+){0,2}[0-9]{3,}|(^|[^[:alpha:]])port[[:space:]]*[:=#]?[[:space:]]*[0-9]{2,5}' "$document"; then
+    echo 'Huawei inverter and battery disposition contains a decimal register address or port number' >&2
+    return 1
+  fi
+  for heading in 'Scope' 'Evidence status' 'Disposition' 'Reopen requirements' \
+    'Detection contract' 'SUN2000 decision rows' 'LUNA2000 decision rows' \
+    'Optional groups' 'Safety'; do
+    grep -Eq "^#{2,3} $heading$" "$document" || return 1
+  done
+  for required in \
+    '| SUN2000 | `unknown`; nothing is observed, inferred, or qualified | none covered; all unsupported | none covered; all unsupported | all unknown |' \
+    '| LUNA2000 | `unknown`; nothing is observed, inferred, or qualified | none covered; all unsupported | none covered; all unsupported | all unknown |' \
+    'ordering or priority rule. Every row selects no profile and emits zero native' \
+    'facts. The table is a decision contract only; it is not executable detection.' \
+    'The existence of this page satisfies only the registry'"'"'s companion-page' \
+    'requirement. It satisfies none of the four requirements above, and reopening' \
+    'also requires a revision of this page that replaces the disposition with an' \
+    'exact applicability contract.' \
+    'Both classes have the outcome `NO_ADMISSIBLE_PROFILE` in this revision.' \
+    '`Huawei SUN2000 MODBUS Interface Definitions`. It is' \
+    '`vendor-copyright-inspection-only` and no exact version is pinned, so no' \
+    'register address, scale, unit, access mode, or string is published here or in' \
+    'the registry. No model family and no firmware range is covered.' \
+    '`catalog_registered=false`,' \
+    '`automatic_runtime_admission=false`, `support_claim=false`, and' \
+    '`write_authority=false`. No live qualification has been performed.' \
+    'They are not SunSpec' \
+    'profiles and do not fall back to SmartLogger, EMMA, S-Dongle, or each other.' \
+    'They are never inferred from another Huawei class.' \
+    '- a pinned vendor document name and version;' \
+    '- a clean-room sanitized identity fixture;' \
+    '- a clean-room sanitized monitoring fixture; and' \
+    '- executable negative overlap against SmartLogger, EMMA, and S-Dongle.' \
+    'A future profile selection requires all of: exact model identity, exact' \
+    'firmware identity, unit identity, and a pinned register map.' \
+    'Not identity: serial number, ESN, writable alias, register readability, a model' \
+    'string in a SmartLogger or EMMA child inventory, or a prefix or wildcard model' \
+    'The default outcome is `INSUFFICIENT_EVIDENCE`. More than one positive' \
+    'candidate for one endpoint and unit is `AMBIGUOUS` with no selection and no' \
+    'ordering or priority rule. Every row selects no profile and emits zero native' \
+    'does not make either class a candidate of that gateway and does not select' \
+    'optional groups. An absent group yields unknown values, never numeric zero. A' \
+    'read exception on an optional group does not negate an already identified unit' \
+    'and retains last-known-good values where a future profile permits.' \
+    'All writes and control paths are default denied. Huawei FC0x41 and FC0x17 are' \
+    '`NO_SEND` for both classes, consistent with the profile-scoped rule in'; do
+    grep -Fq -- "$required" "$document" || return 1
+  done
+
+  expected=$(printf '%s\n' \
+    '| `no_identity_evidence` | `INSUFFICIENT_EVIDENCE` |' \
+    '| `gateway_inventory_child_model_only` | `INSUFFICIENT_EVIDENCE` |' \
+    '| `model_without_firmware` | `INSUFFICIENT_EVIDENCE` |' \
+    '| `serial_or_esn_only` | `INSUFFICIENT_EVIDENCE` |' \
+    '| `firmware_without_model` | `INSUFFICIENT_EVIDENCE` |' \
+    '| `register_readability_only` | `INSUFFICIENT_EVIDENCE` |' \
+    '| `battery_group_absent` | `INSUFFICIENT_EVIDENCE` |' \
+    '| `battery_group_exception` | `INSUFFICIENT_EVIDENCE` |' \
+    '| `multiple_positive_candidates` | `AMBIGUOUS` |' \
+    '| `exact_identity_with_pinned_register_map` | `NO_ADMISSIBLE_PROFILE` |')
+  actual=$(sed -n '/^### SUN2000 decision rows$/,/^### LUNA2000 decision rows$/p' "$document" \
+    | sed -n 's/^\(| `[a-z_]*` | `[A-Z_]*` |\).*/\1/p')
+  if [[ "$actual" != "$expected" ]]; then
+    echo 'Huawei SUN2000 decision rows are not exact' >&2
+    return 1
+  fi
+  expected=$(printf '%s\n' \
+    '| `no_identity_evidence` | `INSUFFICIENT_EVIDENCE` |' \
+    '| `gateway_inventory_child_model_only` | `INSUFFICIENT_EVIDENCE` |' \
+    '| `parent_inverter_unidentified` | `INSUFFICIENT_EVIDENCE` |' \
+    '| `model_without_firmware` | `INSUFFICIENT_EVIDENCE` |' \
+    '| `serial_or_esn_only` | `INSUFFICIENT_EVIDENCE` |' \
+    '| `register_readability_only` | `INSUFFICIENT_EVIDENCE` |' \
+    '| `battery_group_absent` | `INSUFFICIENT_EVIDENCE` |' \
+    '| `battery_group_exception` | `INSUFFICIENT_EVIDENCE` |' \
+    '| `multiple_positive_candidates` | `AMBIGUOUS` |' \
+    '| `exact_identity_with_pinned_register_map` | `NO_ADMISSIBLE_PROFILE` |')
+  actual=$(sed -n '/^### LUNA2000 decision rows$/,/^## Optional groups$/p' "$document" \
+    | sed -n 's/^\(| `[a-z_]*` | `[A-Z_]*` |\).*/\1/p')
+  if [[ "$actual" != "$expected" ]]; then
+    echo 'Huawei LUNA2000 decision rows are not exact' >&2
+    return 1
+  fi
+
+  if grep -Ein 'registers? (is|are) (inferred|assumed) from|(is|are) (supported|qualified|admitted)\.|FC0x(41|17) (is|are) (permitted|allowed|enabled)|absent group (yields|reports) (numeric )?zero' "$document"; then
+    echo 'Huawei inverter and battery disposition contradicts its fail-closed boundary' >&2
+    return 1
+  fi
+}
+
 check_outback_axs_contract() {
   local document="$1"
   local root
@@ -1256,7 +1355,7 @@ check_huawei_qualification_readiness() {
 
 if [[ $# -gt 0 ]]; then
   if [[ $# -ne 2 ]] && [[ "$1" != '--check-tesla-generation-contracts' || $# -ne 3 ]]; then
-    echo 'usage: check_docs.sh [--check-tesla-current-limit-operation|--check-tesla-read-acquisition|--check-sdongle-admission|--check-public-protocol|--check-tesla-tedapi-contract|--check-tesla-generation-contracts|--check-private-function-contract|--check-sunspec-v1-model-families-contract|--check-fronius-qualification-readiness|--check-huawei-qualification-readiness|--check-sunspec-nested-layout-contract|--check-sunspec-der-trip-lv-template-v2|--check-sunspec-der-trip-lv-typed-fact-projection-v2|--check-sunspec-dynamic-structural-selection-v2|--check-sunspec-v2-contract|--check-sunspec-v2-licensing|--check-x2-publication|--check-x2-contract|--check-bms-contract|--check-growatt-protocol-ii-identity-projection|--check-growatt-protocol-ii-fc04-contract|--check-growatt-protocol-ii-source-matrix|--check-wit-matrix-contract document]' >&2
+    echo 'usage: check_docs.sh [--check-tesla-current-limit-operation|--check-tesla-read-acquisition|--check-sdongle-admission|--check-public-protocol|--check-tesla-tedapi-contract|--check-tesla-generation-contracts|--check-private-function-contract|--check-sunspec-v1-model-families-contract|--check-fronius-qualification-readiness|--check-huawei-qualification-readiness|--check-huawei-inverter-battery-disposition|--check-sunspec-nested-layout-contract|--check-sunspec-der-trip-lv-template-v2|--check-sunspec-der-trip-lv-typed-fact-projection-v2|--check-sunspec-dynamic-structural-selection-v2|--check-sunspec-v2-contract|--check-sunspec-v2-licensing|--check-x2-publication|--check-x2-contract|--check-bms-contract|--check-growatt-protocol-ii-identity-projection|--check-growatt-protocol-ii-fc04-contract|--check-growatt-protocol-ii-source-matrix|--check-wit-matrix-contract document]' >&2
     exit 2
   fi
   case "$1" in
@@ -1287,6 +1386,7 @@ if [[ $# -gt 0 ]]; then
     --check-sunspec-v1-model-families-contract) check_sunspec_v1_model_families_contract "$2" ;;
     --check-fronius-qualification-readiness) check_fronius_qualification_readiness "$2" ;;
     --check-huawei-qualification-readiness) check_huawei_qualification_readiness "$2" ;;
+    --check-huawei-inverter-battery-disposition) check_huawei_inverter_battery_disposition "$2" ;;
     --check-sunspec-nested-layout-contract) check_sunspec_nested_layout_contract "$2" ;;
     --check-sunspec-der-trip-lv-template-v2) check_sunspec_der_trip_lv_template_v2 "$2" ;;
     --check-sunspec-der-trip-lv-typed-fact-projection-v2) check_sunspec_der_trip_lv_typed_fact_projection_v2 "$2" ;;
@@ -1302,7 +1402,7 @@ if [[ $# -gt 0 ]]; then
     --check-wit-matrix-contract) check_wit_matrix_contract "$2" ;;
     --check-outback-axs-contract) check_outback_axs_contract "$2" ;;
     *)
-    echo 'usage: check_docs.sh [--check-tesla-current-limit-operation|--check-tesla-read-acquisition|--check-sdongle-admission|--check-public-protocol|--check-tesla-tedapi-contract|--check-private-function-contract|--check-sunspec-v1-model-families-contract|--check-fronius-qualification-readiness|--check-huawei-qualification-readiness|--check-sunspec-nested-layout-contract|--check-sunspec-der-trip-lv-template-v2|--check-sunspec-der-trip-lv-typed-fact-projection-v2|--check-sunspec-dynamic-structural-selection-v2|--check-sunspec-v2-contract|--check-sunspec-v2-licensing|--check-x2-publication|--check-x2-contract|--check-bms-contract|--check-growatt-protocol-ii-identity-projection|--check-wit-matrix-contract document]' >&2
+    echo 'usage: check_docs.sh [--check-tesla-current-limit-operation|--check-tesla-read-acquisition|--check-sdongle-admission|--check-public-protocol|--check-tesla-tedapi-contract|--check-private-function-contract|--check-sunspec-v1-model-families-contract|--check-fronius-qualification-readiness|--check-huawei-qualification-readiness|--check-huawei-inverter-battery-disposition|--check-sunspec-nested-layout-contract|--check-sunspec-der-trip-lv-template-v2|--check-sunspec-der-trip-lv-typed-fact-projection-v2|--check-sunspec-dynamic-structural-selection-v2|--check-sunspec-v2-contract|--check-sunspec-v2-licensing|--check-x2-publication|--check-x2-contract|--check-bms-contract|--check-growatt-protocol-ii-identity-projection|--check-wit-matrix-contract document]' >&2
       exit 2
       ;;
   esac
@@ -1346,6 +1446,7 @@ multivendor_specs=(
   'protocols/fronius/qualification-readiness-v1.md'
   'protocols/huawei/gateway-readonly-v1.md'
   'protocols/huawei/qualification-readiness-v1.md'
+  'protocols/huawei/inverter-battery-readonly-v1.md'
   'protocols/growatt/protocol-ii-readonly-v1.md'
   'protocols/growatt/shinewilan-x2-bridge-v1.md'
   'protocols/growatt/bms-rs485-1xsxxp-v202.md'
@@ -1379,6 +1480,8 @@ check_sunspec_v2_licensing 'protocols/applicability-and-licensing.md'
 grep -Fqx '## Exact chain geometry' 'protocols/fronius/sunspec-float-v1.md'
 check_fronius_qualification_readiness "$fronius_qualification_spec"
 check_huawei_qualification_readiness "$huawei_qualification_spec"
+check_huawei_inverter_battery_disposition 'protocols/huawei/inverter-battery-readonly-v1.md'
+grep -Fq '| `huawei.sun2000.readonly.v1` / `huawei.luna2000.readonly.v1` | no covered model family or firmware range; SUN2000 inverter and optional LUNA2000 battery | vendor-copyright-inspection-only | `NO_ADMISSIBLE_PROFILE`; default denied, no register map, no decoder |' 'protocols/applicability-and-licensing.md'
 grep -Fqx '## SmartLogger candidate' 'protocols/huawei/gateway-readonly-v1.md'
 grep -Fqx '## S-Dongle candidate' 'protocols/huawei/gateway-readonly-v1.md'
 grep -Fqx '## EMMA candidate' 'protocols/huawei/gateway-readonly-v1.md'

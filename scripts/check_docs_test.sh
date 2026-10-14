@@ -927,6 +927,94 @@ for contradiction in \
   fi
 done
 
+huawei_inverter_battery_document="$repo_root/protocols/huawei/inverter-battery-readonly-v1.md"
+huawei_inverter_battery_fixture="$fixture_root/huawei-inverter-battery-readonly-v1.md"
+
+"$repo_root/scripts/check_docs.sh" --check-huawei-inverter-battery-disposition "$huawei_inverter_battery_document"
+for mutation in \
+  's/Both classes have the outcome `NO_ADMISSIBLE_PROFILE` in this revision\./Both classes have the outcome `PROFILE_ADMITTED` in this revision./' \
+  's/no exact version is pinned/an exact version is pinned/' \
+  's/No model family and no firmware range is covered\./Every model family and firmware range is covered./' \
+  's/`support_claim=false`/`support_claim=true`/' \
+  's/`write_authority=false`/`write_authority=true`/' \
+  's/`catalog_registered=false`/`catalog_registered=true`/' \
+  's/`automatic_runtime_admission=false`/`automatic_runtime_admission=true`/' \
+  's/do not fall back to SmartLogger, EMMA, S-Dongle, or each other/fall back to SmartLogger when needed/' \
+  's/never inferred from another Huawei class/inferred from another Huawei class/' \
+  '/^- a pinned vendor document name and version;$/d' \
+  '/^- a clean-room sanitized identity fixture;$/d' \
+  '/^- a clean-room sanitized monitoring fixture; and$/d' \
+  's/^- executable negative overlap against SmartLogger, EMMA, and S-Dongle\.$/- negative overlap review./' \
+  's/exact model identity, exact/exact model identity or exact/' \
+  's/firmware identity, unit identity, and a pinned register map\./firmware identity, unit identity, or a pinned register map./' \
+  's/Not identity: serial number, ESN, writable alias, register readability, a model/Identity: serial number, ESN, writable alias, register readability, a model/' \
+  's/string in a SmartLogger or EMMA child inventory/string in a SmartLogger or EMMA child inventory is identity/' \
+  's/The default outcome is `INSUFFICIENT_EVIDENCE`\./The default outcome is `PROFILE_ADMITTED`./' \
+  's/is `AMBIGUOUS` with no selection and no/is `AMBIGUOUS` with the first selection and no/' \
+  's/ordering or priority rule\./ordering rule by priority./' \
+  's/^| `multiple_positive_candidates` | `AMBIGUOUS` |/| `multiple_positive_candidates` | `INSUFFICIENT_EVIDENCE` |/' \
+  's/^| `exact_identity_with_pinned_register_map` | `NO_ADMISSIBLE_PROFILE` |/| `exact_identity_with_pinned_register_map` | `PROFILE_ADMITTED` |/' \
+  's/^| `battery_group_absent` | `INSUFFICIENT_EVIDENCE` |/| `battery_group_absent` | `PROFILE_ADMITTED` |/' \
+  's/^| `parent_inverter_unidentified` | `INSUFFICIENT_EVIDENCE` |/| `parent_inverter_unidentified` | `AMBIGUOUS` |/' \
+  '/^| `firmware_without_model` /d' \
+  '/^| `parent_inverter_unidentified` /d' \
+  's/does not make either class a candidate of that gateway/makes either class a candidate of that gateway/' \
+  's/An absent group yields unknown values, never numeric zero\./An absent group yields numeric zero./' \
+  's/read exception on an optional group does not negate an already identified unit/read exception on an optional group negates an already identified unit/' \
+  's/and retains last-known-good values/and discards last-known-good values/' \
+  's/FC0x41 and FC0x17 are$/FC0x41 and FC0x17 are permitted for/' \
+  's/^`NO_SEND` for both classes/`SEND` for both classes/' \
+  's/^## Reopen requirements$/## Notes/' \
+  '/^| SUN2000 | `unknown`; nothing is observed/d' \
+  '/^| LUNA2000 | `unknown`; nothing is observed/d' \
+  '/^facts. The table is a decision contract only; it is not executable detection\.$/d' \
+  '/^The existence of this page satisfies only the registry/d' \
+  '/^requirement. It satisfies none of the four requirements above, and reopening$/d' \
+  '/^also requires a revision of this page that replaces the disposition with an$/d' \
+  '/^exact applicability contract\.$/d' \
+  's/^### LUNA2000 decision rows$/### Battery rows/'; do
+  sed "$mutation" "$huawei_inverter_battery_document" > "$huawei_inverter_battery_fixture"
+  if "$repo_root/scripts/check_docs.sh" --check-huawei-inverter-battery-disposition "$huawei_inverter_battery_fixture"; then
+    echo "Huawei inverter and battery disposition mutation was accepted: $mutation" >&2
+    exit 1
+  fi
+done
+
+for leak in \
+  'https://example.invalid/vendor-manual' \
+  '/Users/example/private-capture' \
+  'sha256-deadbeef01234567' \
+  '192.0.2.1' \
+  'gateway.example.internal:1502' \
+  'register 0x7530' \
+  'Register address 30000.' \
+  'Registers 30000 through 30015.' \
+  'Holding register: 40000' \
+  'Input address 32016' \
+  'Port 502.' \
+  'port: 1502' \
+  '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef' \
+  '0123456789abcdef0123456789abcdef01234567'; do
+  cp "$huawei_inverter_battery_document" "$huawei_inverter_battery_fixture"
+  printf '\n%s\n' "$leak" >> "$huawei_inverter_battery_fixture"
+  if "$repo_root/scripts/check_docs.sh" --check-huawei-inverter-battery-disposition "$huawei_inverter_battery_fixture"; then
+    echo "Huawei inverter and battery disposition leak was accepted: $leak" >&2
+    exit 1
+  fi
+done
+
+for contradiction in \
+  'SUN2000 is supported.' \
+  'FC0x41 is permitted.' \
+  'An absent group yields zero.'; do
+  cp "$huawei_inverter_battery_document" "$huawei_inverter_battery_fixture"
+  printf '\n%s\n' "$contradiction" >> "$huawei_inverter_battery_fixture"
+  if "$repo_root/scripts/check_docs.sh" --check-huawei-inverter-battery-disposition "$huawei_inverter_battery_fixture"; then
+    echo "Huawei inverter and battery disposition contradiction was accepted: $contradiction" >&2
+    exit 1
+  fi
+done
+
 protocol_ii_document="$repo_root/protocols/growatt/protocol-ii-readonly-v1.md"
 protocol_ii_fixture="$(mktemp)"
 for mutation in \
