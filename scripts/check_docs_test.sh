@@ -254,9 +254,6 @@ for forbidden_addition in \
   'AuthenticateInstaller is a service authentication operation.' \
   'PerformReset is a service operation.' \
   'Wi-Fi provisioning is available.' \
-  'Network provisioning is available.' \
-  'A provisional mode is available.' \
-  'Provisional credentials are available.' \
   'OCPP activation is available.' \
   'Firmware update is available.' \
   'Pairing is available.' \
@@ -360,6 +357,9 @@ for forbidden_addition in \
   'PerformReset is an EVSE operation.' \
   'Reset is an EVSE operation.' \
   'Wi-Fi provisioning is available.' \
+  'Network provisioning is available.' \
+  'A provisional mode is available.' \
+  'Provisional credentials are available.' \
   'OCPP activation is available.' \
   'Firmware update is available.' \
   'Pairing is available.' \
