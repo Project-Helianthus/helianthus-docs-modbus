@@ -92,6 +92,20 @@ for mutation in \
   's/No mutation path\./A mutation path./' \
   's/The contract covers only the exact `wc3_24_44_3` operation version\./The contract covers every Gen3 operation version./' \
   's/| `indeterminate` |/| `unknown` |/' \
+  's/at most five minutes\./at most one hour./' \
+  's/positive and at most thirty seconds\./positive and at most ten minutes./' \
+  's/applies per received response frame/applies to the whole exchange/' \
+  's/accepts at most eight response frames/accepts at most sixty response frames/' \
+  's/at most sixty seconds/at most one hour/' \
+  's/twenty-four hours/seven days/' \
+  's/configuration maxima/defaults/' \
+  's/not defaults and not minimums\./defaults and minimums./' \
+  's/an exchange as a whole\. The overall bound of/an exchange as a whole. The overall bound is not/' \
+  's/error without a populated record\./error with a populated record./' \
+  's/returns a closed error, while a repeated Close returns/returns a closed error, while a repeated Close fails/' \
+  's/per loop iteration\./per interval, exactly./' \
+  's/Buffered ticks do not guarantee/Buffered ticks guarantee/' \
+  's/`7120ebc4`/`50090dc4`/' \
   's/^## Falsifiers$/## Notes/'; do
   sed "$mutation" "$tesla_read_acquisition_document" > "$tesla_read_acquisition_fixture"
   if "$repo_root/scripts/check_docs.sh" --check-tesla-read-acquisition "$tesla_read_acquisition_fixture"; then

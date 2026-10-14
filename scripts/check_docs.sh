@@ -172,6 +172,19 @@ check_tesla_read_acquisition() {
     'a concurrent call fails fast with a busy error' \
     'Each transport exchange has exactly one send attempt.' \
     '`MaxAttempts` is 1 through 3 exchanges per acquisition.' \
+    'It is at least one response timeout and at most five minutes.' \
+    'positive and at most thirty seconds. It applies per received response frame' \
+    'An exchange accepts at most eight response frames.' \
+    'positive activation timeout of at most sixty seconds' \
+    'twenty-four hours' \
+    'configuration maxima' \
+    'enforced by the implementation, not defaults and not minimums.' \
+    'The overall bound of an exchange, and of the acquisition that contains it, is the acquisition deadline.' \
+    'return an error without a populated record.' \
+    'while a repeated Close returns success' \
+    'at most one Restart of an `unavailable` lifecycle per loop iteration.' \
+    'Buffered ticks do not guarantee a full interval between two Restart attempts.' \
+    '`7120ebc4`' \
     'it is a classifier fault that fences the transport generation' \
     'Recovery and re-activation run inside the acquisition deadline.' \
     'A failed attempt, whatever its evidence state, never replaces the last' \

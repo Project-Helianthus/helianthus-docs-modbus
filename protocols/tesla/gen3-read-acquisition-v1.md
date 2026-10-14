@@ -72,7 +72,9 @@ An open failure at Start or Restart leaves the lifecycle `unavailable`. A
 success receipt that is not current for the owned endpoint epoch is
 `indeterminate` evidence (see the evidence section) and does not by itself
 change the state, because a closed or retired lifecycle is already outside
-`ready`. `closed` is terminal: every later call returns a closed error.
+`ready`. `closed` is terminal: every later operational call (Start, Restart,
+Acquire, PollOnce) returns a closed error, while a repeated Close returns
+success and the lifecycle state and retained historical records stay readable.
 
 Every successful activation opens a new lifecycle epoch, numbered in
 increasing order. An epoch binds exactly one transport generation: the first
@@ -126,22 +128,30 @@ serialization guarantee and does not exclude an external actor on the bus.
 PollOnce acquires, in configured order and once each, every configured
 operation whose retained last-known-good record is not both fresh and current,
 and stops on a lifecycle error. A continuous poller repeats PollOnce on a
-configured interval and may attempt Restart of an `unavailable` lifecycle at
-most once per interval.
+ticker-paced configured interval and performs at most one Restart of an
+`unavailable` lifecycle per loop iteration. Buffered ticks do not guarantee a
+full interval between two Restart attempts.
 
 ## Retry, deadline, and recovery budgets
 
 Each transport exchange has exactly one send attempt. An acquisition is bounded
-by the following; each value is configured explicitly, and a missing or
-out-of-range value is `NO_SEND`.
+by the following. Each value is configured explicitly, and a missing or
+out-of-range value is `NO_SEND`. The numeric limits are configuration maxima
+enforced by the implementation, not defaults and not minimums.
 
 | Budget | Rule |
 |---|---|
 | Attempts | `MaxAttempts` is 1 through 3 exchanges per acquisition. |
 | Acquisition deadline | One deadline covers all attempts, recovery, and re-activation of the acquisition. It is at least one response timeout and at most five minutes. |
-| Response timeout | Each exchange has a positive timeout of at most thirty seconds and a finite response-count bound. |
+| Response timeout | The response timeout is positive and at most thirty seconds. It applies per received response frame, not to the whole exchange: the transport restarts it for each frame. |
+| Response count | An exchange accepts at most eight response frames. |
 | Activation timeout | Each activation is bounded by a positive activation timeout of at most sixty seconds, within the acquisition deadline when it runs inside an acquisition. |
 | Recovery | The transport's recovery call is bounded by one response timeout plus one inter-frame interval and also by the acquisition deadline. |
+
+Because the response timeout restarts per frame, the response timeout and the
+response-count ceiling do not bound an exchange as a whole. The overall bound of
+an exchange, and of the acquisition that contains it, is the acquisition
+deadline.
 
 A retry happens only when all hold: the previous attempt ended `timeout` or
 `indeterminate` after possible transmission, transport recovery succeeded, a
@@ -188,8 +198,11 @@ from the operation.
 
 ## Evidence record
 
-Every acquisition outcome returns one immutable record with independent copies
-of its byte fields:
+Every exchange outcome returns one immutable record with independent copies
+of its byte fields. Lifecycle and pre-exchange refusals (an unsupported or
+unconfigured operation, a busy, unavailable, or closed lifecycle) return an
+error without a populated record.
+A record carries:
 
 - Native identity: configured endpoint label, node, operation, and its family
   and request/terminal tag pair.
@@ -312,11 +325,11 @@ is observed:
 
 The reference implementation is the `TeslaGen3ReadAcquisition` lifecycle in
 helianthus-modbusreg, pull request 209 (issue 208, plan item M3), at revision
-`50090dc4` of its branch, together with the review fixes applied after that
-revision for the five points this page states explicitly: exact-tag
-correlation that fences on a wrong-tag response, binding to the exact version
-`wc3_24_44_3`, no promotion of a retired receipt, recovery inside the
-acquisition deadline, and no readiness from an expired activation context. The
+`7120ebc4` of its branch. That revision contains the five points this page
+states explicitly: exact-tag correlation that fences on a wrong-tag response,
+binding to the exact version `wc3_24_44_3`, no promotion of a retired receipt,
+recovery inside the acquisition deadline, and no readiness from an expired
+activation context. The
 revision is a pre-merge citation; it is replaced by the merged revision when
 the pull request merges. The implementation is evidence of one conforming
 design, not an observation of device behavior.
