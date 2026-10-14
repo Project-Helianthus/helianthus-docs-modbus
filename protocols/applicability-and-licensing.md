@@ -26,6 +26,7 @@ documentation.
 | `huawei.smartlogger.readonly.v1` | SmartLogger with exact firmware `V300R024C10SPC191` or `V300R024C10SPC210` | vendor-copyright-inspection-only | offline candidate, default denied |
 | `huawei.sdongle.readonly.v1` | SDongleA-05, SDongleB-03, or SDongleB-06 with exact firmware `V200R025C00SPC120` and protocol D5.0 | vendor-copyright-inspection-only | offline candidate, default denied |
 | `huawei.emma.readonly.v1` | SmartHEMS `EMMA-A01` or `EMMA-A02`, with R024C00 SPC100+ or R025C00 SPC102+ in the same branch | vendor-copyright-inspection-only | offline candidate, default denied |
+| `huawei.sun2000.readonly.v1` / `huawei.luna2000.readonly.v1` | no covered model family or firmware range; SUN2000 inverter and optional LUNA2000 battery | vendor-copyright-inspection-only | `NO_ADMISSIBLE_PROFILE`; default denied, no register map, no decoder |
 | `growatt.protocol2.tl3x.readonly.v1` | Growatt Protocol II v1.24 TL3-X class covering MAX, MID, and MAC register ranges | vendor-copyright-inspection-only | offline candidate, default denied |
 | `growatt.shinewilan-x2.bridge.v1` | ShineWiLan-X2 transparent Modbus TCP to downstream Modbus RTU bridge boundary | vendor-copyright-inspection-only | transport contract only; no semantic profile or downstream admission |
 | `growatt.bms.rs485.1xsxxp.v2_02.readonly.v1` | exact 1xSxxP ESS tuple: Rev2.01 file family, V2.0 header, cumulative changes through 2.02 | vendor-copyright-inspection-only | protocol specified; registry NO_GO pending an exact permitted clean-room fixture |
