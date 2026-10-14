@@ -290,19 +290,23 @@ check_tesla_evse_scope() {
 	grep -Fqx '### FC100 EVSE operation numbers' "$document"
 	local number_row
 	for number_row in \
-		'| Common system information | 4 | 2 → 3 |' \
-		'| WC vitals (GetVitals) | 6 | 1 → 2 |' \
-		'| WC lifetime statistics (GetLifetimeStats) | 6 | 3 → 4 |' \
-		'| WC system information (GetSystemInfo) | 6 | 9 → 10 |' \
-		'| WC load-sharing state (GetLoadSharingNetworkState) | 6 | 11 → 12 |' \
-		'| WC persistent settings, current limit only | 6 | 7 → 8 |' \
-		'| WC temporary current limit | 6 | 25 → 26 |' \
-		'| WC temporary readback | 6 | 27 → 28 |'; do
-		grep -Fq "$number_row" "$document" || { echo "Tesla EVSE operation number row missing: $number_row" >&2; return 1; }
+		'| Common system information | 4 | 2 → 3 | exact empty | registry fact, see below |' \
+		'| WC vitals (GetVitals) | 6 | 1 → 2 | exact empty | registry fact, see below |' \
+		'| WC lifetime statistics (GetLifetimeStats) | 6 | 3 → 4 | exact empty | registry fact, see below |' \
+		'| WC system information (GetSystemInfo) | 6 | 9 → 10 | exact empty | registry fact, see below |' \
+		'| WC load-sharing state (GetLoadSharingNetworkState) | 6 | 11 → 12 | exact empty | registry fact, see below |' \
+		'| WC persistent settings, current limit only | 6 | 7 → 8 | structurally validated | [exact 24.44.3 body and evidence contract](gen3-hsc-rtu.md#exact-24443-body-and-evidence-contract) |' \
+		'| WC provisional current limit | 6 | 25 → 26 | structurally validated | [exact 24.44.3 body and evidence contract](gen3-hsc-rtu.md#exact-24443-body-and-evidence-contract) |' \
+		'| WC provisional readback | 6 | 27 → 28 | exact empty | [exact 24.44.3 body and evidence contract](gen3-hsc-rtu.md#exact-24443-body-and-evidence-contract) |'; do
+		grep -Fxq "$number_row" "$document" || { echo "Tesla EVSE operation number row missing: $number_row" >&2; return 1; }
 	done
+	grep -Fq 'Basis for the current-limit pairs is the bounded static evidence for `wc3_24_44_3` published in the linked Gen3 HSC contract.' "$document" || return 1
+	grep -Fq 'They are recorded as Helianthus operation-registry facts for the `wc3_24_44_3` operation version, restored from the named operation registry published in this page at commit `9fa7cd8` (section "FC100 named operation registry for WC3 24.44.3", first added in commit `d9352f2`), and are not additional observations of firmware behavior.' "$document" || return 1
+	grep -Fq 'They carry no independent body qualification, and a family/tag match grants no live capability or control.' "$document" || return 1
+	grep -Fq 'The six observation and readback requests have exact empty bodies.' "$document" || return 1
 	grep -Fq 'are Helianthus recovered labels' "$document" || return 1
 	grep -Fq 'They are not vendor-published names' "$document" || return 1
-	if grep -Eqi "$forbidden" "$document"; then
+	if sed -e 's/provisional current//g' -e 's/provisional readback//g' "$document" | grep -Eqi "$forbidden"; then
 		echo 'Tesla TEDAPI document exceeds the EVSE interoperability scope' >&2
 		return 1
 	fi

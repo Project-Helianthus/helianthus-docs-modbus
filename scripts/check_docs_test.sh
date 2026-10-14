@@ -254,6 +254,9 @@ for forbidden_addition in \
   'AuthenticateInstaller is a service authentication operation.' \
   'PerformReset is a service operation.' \
   'Wi-Fi provisioning is available.' \
+  'Network provisioning is available.' \
+  'A provisional mode is available.' \
+  'Provisional credentials are available.' \
   'OCPP activation is available.' \
   'Firmware update is available.' \
   'Pairing is available.' \
@@ -327,6 +330,19 @@ for mutation in \
   's/| 6 | 7 → 8 |/| 4 | 7 → 8 |/' \
   's/| 6 | 25 → 26 |/| 6 | 25 → 27 |/' \
   's/| 6 | 27 → 28 |/| 6 | 27 → 29 |/' \
+  '/^| Common system information |/s/| exact empty |/| arbitrary bytes |/' \
+  '/^| WC vitals /s/| exact empty |/| arbitrary bytes |/' \
+  '/^| WC lifetime statistics /s/| exact empty |/| arbitrary bytes |/' \
+  '/^| WC system information /s/| exact empty |/| arbitrary bytes |/' \
+  '/^| WC load-sharing state /s/| exact empty |/| arbitrary bytes |/' \
+  '/^| WC persistent settings/s/| structurally validated |/| exact empty |/' \
+  '/^| WC provisional current limit/s/| structurally validated |/| exact empty |/' \
+  '/^| WC provisional readback/s/| exact empty |/| structurally validated |/' \
+  's/| registry fact, see below |/| observed firmware behavior |/' \
+  's/commit `9fa7cd8`/the current revision/' \
+  's/They carry no independent body qualification/They carry independent body qualification/' \
+  's/The six observation and readback requests have exact empty bodies./The observation requests carry caller bodies./' \
+  's/WC provisional current limit/WC temporary current limit/' \
   's/are Helianthus recovered labels/are vendor-published names/' \
   's/### FC100 EVSE operation numbers/### FC100 operation numbers/'; do
   sed "$mutation" "$tesla_document" > "$tesla_fixture"
