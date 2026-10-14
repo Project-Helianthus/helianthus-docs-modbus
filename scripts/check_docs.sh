@@ -1167,8 +1167,12 @@ check_huawei_inverter_battery_disposition() {
   local heading required row actual expected
 
   check_public_protocol "$document" || return 1
-  if grep -Ein '([0-9]{1,3}\.){3}[0-9]{1,3}|[[:alnum:].-]+:[0-9]{1,5}|0x[0-9A-Fa-f]{4,}|(^|[^[:xdigit:]])[[:xdigit:]]{40}([^[:xdigit:]]|$)' "$document"; then
+  if grep -Ein '([0-9]{1,3}\.){3}[0-9]{1,3}|[[:alnum:].-]+:[0-9]{1,5}|0x[0-9A-Fa-f]{4,}|(^|[^[:xdigit:]])[[:xdigit:]]{40}([^[:xdigit:]]|$)|(^|[^[:xdigit:]])[[:xdigit:]]{64}([^[:xdigit:]]|$)' "$document"; then
     echo 'Huawei inverter and battery disposition contains coordinates, fingerprints, or register numbers' >&2
+    return 1
+  fi
+  if grep -Ein '(register|address|holding|input)[[:alpha:]]*[[:space:]:#=]+([[:alpha:]]+[[:space:]]+){0,2}[0-9]{3,}|(^|[^[:alpha:]])port[[:space:]]*[:=#]?[[:space:]]*[0-9]{2,5}' "$document"; then
+    echo 'Huawei inverter and battery disposition contains a decimal register address or port number' >&2
     return 1
   fi
   for heading in 'Scope' 'Evidence status' 'Disposition' 'Reopen requirements' \
@@ -1177,6 +1181,14 @@ check_huawei_inverter_battery_disposition() {
     grep -Eq "^#{2,3} $heading$" "$document" || return 1
   done
   for required in \
+    '| SUN2000 | `unknown`; nothing is observed, inferred, or qualified | none covered; all unsupported | none covered; all unsupported | all unknown |' \
+    '| LUNA2000 | `unknown`; nothing is observed, inferred, or qualified | none covered; all unsupported | none covered; all unsupported | all unknown |' \
+    'ordering or priority rule. Every row selects no profile and emits zero native' \
+    'facts. The table is a decision contract only; it is not executable detection.' \
+    'The existence of this page satisfies only the registry'"'"'s companion-page' \
+    'requirement. It satisfies none of the four requirements above, and reopening' \
+    'also requires a revision of this page that replaces the disposition with an' \
+    'exact applicability contract.' \
     'Both classes have the outcome `NO_ADMISSIBLE_PROFILE` in this revision.' \
     '`Huawei SUN2000 MODBUS Interface Definitions`. It is' \
     '`vendor-copyright-inspection-only` and no exact version is pinned, so no' \

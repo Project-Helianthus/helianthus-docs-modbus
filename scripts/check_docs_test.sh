@@ -965,6 +965,13 @@ for mutation in \
   's/FC0x41 and FC0x17 are$/FC0x41 and FC0x17 are permitted for/' \
   's/^`NO_SEND` for both classes/`SEND` for both classes/' \
   's/^## Reopen requirements$/## Notes/' \
+  '/^| SUN2000 | `unknown`; nothing is observed/d' \
+  '/^| LUNA2000 | `unknown`; nothing is observed/d' \
+  '/^facts. The table is a decision contract only; it is not executable detection\.$/d' \
+  '/^The existence of this page satisfies only the registry/d' \
+  '/^requirement. It satisfies none of the four requirements above, and reopening$/d' \
+  '/^also requires a revision of this page that replaces the disposition with an$/d' \
+  '/^exact applicability contract\.$/d' \
   's/^### LUNA2000 decision rows$/### Battery rows/'; do
   sed "$mutation" "$huawei_inverter_battery_document" > "$huawei_inverter_battery_fixture"
   if "$repo_root/scripts/check_docs.sh" --check-huawei-inverter-battery-disposition "$huawei_inverter_battery_fixture"; then
@@ -980,6 +987,13 @@ for leak in \
   '192.0.2.1' \
   'gateway.example.internal:1502' \
   'register 0x7530' \
+  'Register address 30000.' \
+  'Registers 30000 through 30015.' \
+  'Holding register: 40000' \
+  'Input address 32016' \
+  'Port 502.' \
+  'port: 1502' \
+  '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef' \
   '0123456789abcdef0123456789abcdef01234567'; do
   cp "$huawei_inverter_battery_document" "$huawei_inverter_battery_fixture"
   printf '\n%s\n' "$leak" >> "$huawei_inverter_battery_fixture"
