@@ -5,11 +5,20 @@ on:
   push:
     branches: [main]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   structural:
-    runs-on: ubuntu-latest
+    # fork pull requests never run on the persistent runners
+    runs-on: ${{ (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository) && 'ubuntu-latest' || 'synology' }}
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          clean: true
       - run: |
           ./scripts/check_docs.sh
           ./scripts/check_docs_test.sh
