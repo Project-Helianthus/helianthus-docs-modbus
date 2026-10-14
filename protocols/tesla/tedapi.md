@@ -49,6 +49,10 @@ Terminals retain their complete bounded native body and unknown fields. Per-phas
 
 EVSE charging-current limit control, enable, and disable require an independently qualified request shape, unit and range where applicable, acknowledgement, and post-command confirmation. This version has no qualified Gen3 control setter.
 
+The separate [current-limit operation contract V1](gen3-current-limit-operation-v1.md)
+defines the offline admission and outcome requirements for that path. Its
+publication does not change this live-control qualification boundary.
+
 ## Functions 101 and 102
 
 FC101 and FC102 use bounded native payloads but have no EVSE operation mapping in this version.
