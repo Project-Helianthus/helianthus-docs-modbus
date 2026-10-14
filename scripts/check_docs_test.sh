@@ -67,6 +67,70 @@ for leak in \
   fi
 done
 
+tesla_read_acquisition_document="$repo_root/protocols/tesla/gen3-read-acquisition-v1.md"
+tesla_read_acquisition_fixture="$fixture_root/tesla-read-acquisition.md"
+
+"$repo_root/scripts/check_docs.sh" --check-tesla-read-acquisition "$tesla_read_acquisition_document"
+for mutation in \
+  's/a lifecycle conforming to this page has no mutation path\./a lifecycle conforming to this page may add a mutation path./' \
+  's/| WC vitals | 6 | 1 → 2 |/| WC vitals | 6 | 1 → 4 |/' \
+  's/| WC load-sharing state | 6 | 11 → 12 |/| WC load-sharing state | 6 | 11 → 28 |/' \
+  's/`MaxAttempts` is 1 through 3 exchanges per acquisition\./`MaxAttempts` is 1 through 30 exchanges per acquisition./' \
+  's/Each transport exchange has exactly one send attempt\./Each transport exchange may resend until a response arrives./' \
+  's/a concurrent call fails fast with a busy error/a concurrent call waits in a queue/' \
+  's/admits nothing; this lifecycle never reads registers\./admits register reads; this lifecycle reads registers./' \
+  's/A retired or replaced endpoint instance refuses every candidate\./A retired or replaced endpoint instance admits candidates./' \
+  's/it is a classifier fault that fences the transport generation/it is accepted as a terminal in the same generation/' \
+  's/Recovery and re-activation run inside the acquisition deadline\./Recovery and re-activation run outside the acquisition deadline./' \
+  's/A failed attempt, whatever its evidence state, never replaces the last/A failed attempt replaces the last/' \
+  's/is never promoted to `ack`/is promoted to `ack`/' \
+  's/never carry a value, even when response frames were received\./carry a value when response frames were received./' \
+  's/never establishes readiness/establishes readiness/' \
+  's/A configuration without a witness is `NO_SEND`\./A configuration without a witness is accepted./' \
+  's/helianthus-docs-modbus issue 158/an unrelated issue/' \
+  's/helianthus-modbus issue 38/an unrelated hook/' \
+  's/No mutation path\./A mutation path./' \
+  's/The contract covers only the exact `wc3_24_44_3` operation version\./The contract covers every Gen3 operation version./' \
+  's/| `indeterminate` |/| `unknown` |/' \
+  's/at most five minutes\./at most one hour./' \
+  's/positive and at most thirty seconds\./positive and at most ten minutes./' \
+  's/applies per received response frame/applies to the whole exchange/' \
+  's/accepts at most eight response frames/accepts at most sixty response frames/' \
+  's/at most sixty seconds/at most one hour/' \
+  's/twenty-four hours/seven days/' \
+  's/configuration maxima/defaults/' \
+  's/not defaults and not minimums\./defaults and minimums./' \
+  's/an exchange as a whole\. The overall bound of/an exchange as a whole. The overall bound is not/' \
+  's/error without a populated record\./error with a populated record./' \
+  's/returns a closed error, while a repeated Close returns/returns a closed error, while a repeated Close fails/' \
+  's/per loop iteration\./per interval, exactly./' \
+  's/Buffered ticks do not guarantee/Buffered ticks guarantee/' \
+  's/`51db865a`/`50090dc4`/' \
+  's/returned at or after that deadline is rejected regardless of whether the/returned at or after that deadline is accepted when the/' \
+  's/from the lifecycle clock before the witness is called\. A witness report/from the context timer after the witness is called. A witness report/' \
+  's/^Cancellation is re-checked inside/Cancellation is not re-checked inside/' \
+  's/^## Falsifiers$/## Notes/'; do
+  sed "$mutation" "$tesla_read_acquisition_document" > "$tesla_read_acquisition_fixture"
+  if "$repo_root/scripts/check_docs.sh" --check-tesla-read-acquisition "$tesla_read_acquisition_fixture"; then
+    echo "Tesla read acquisition contract mutation was accepted: $mutation" >&2
+    exit 1
+  fi
+done
+
+for leak in \
+  'https://example.invalid/control' \
+  '/Users/example/installation-capture' \
+  '192.0.2.1' \
+  'gateway.example.internal:1502' \
+  '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef'; do
+  cp "$tesla_read_acquisition_document" "$tesla_read_acquisition_fixture"
+  printf '\n%s\n' "$leak" >> "$tesla_read_acquisition_fixture"
+  if "$repo_root/scripts/check_docs.sh" --check-tesla-read-acquisition "$tesla_read_acquisition_fixture"; then
+    echo "Tesla read acquisition publication leak was accepted: $leak" >&2
+    exit 1
+  fi
+done
+
 huawei_qualification_document="$repo_root/protocols/huawei/qualification-readiness-v1.md"
 huawei_qualification_fixture="$fixture_root/huawei-qualification-readiness-v1.md"
 

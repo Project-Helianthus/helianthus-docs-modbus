@@ -136,6 +136,84 @@ check_tesla_current_limit_operation() {
   done
 }
 
+check_tesla_read_acquisition() {
+  local document="$1"
+  local required
+  local flat
+
+  flat=$(tr '\n' ' ' < "$document" | tr -s ' ')
+  check_public_protocol "$document" || return 1
+  if grep -Ein '([0-9]{1,3}\.){3}[0-9]{1,3}|[[:alnum:].-]+:[0-9]{1,5}|(^|[^[:xdigit:]])[[:xdigit:]]{40}([^[:xdigit:]]|$)|(^|[^[:xdigit:]])[[:xdigit:]]{64}([^[:xdigit:]]|$)' "$document"; then
+    echo 'Tesla read acquisition contract contains coordinates or fingerprint material' >&2
+    return 1
+  fi
+  for required in \
+    'Scope and evidence status' 'Operations in scope' \
+    'Lifecycle states and transitions' 'Admission rules' \
+    'Scheduling and single-flight' 'Retry, deadline, and recovery budgets' \
+    'Freshness and retention' 'Evidence record' \
+    'Activation prerequisite and the current NO_SEND gate' \
+    'What this contract does not claim' 'Compatibility and versioning' \
+    'Falsifiers' 'Implementation evidence'; do
+    grep -Fqx "## $required" "$document" || return 1
+  done
+  for required in \
+    'The contract covers only the exact `wc3_24_44_3` operation version.' \
+    '| Common system information | 4 | 2 → 3 |' \
+    '| WC vitals | 6 | 1 → 2 |' \
+    '| WC lifetime statistics | 6 | 3 → 4 |' \
+    '| WC system information | 6 | 9 → 10 |' \
+    '| WC load-sharing state | 6 | 11 → 12 |' \
+    'a lifecycle conforming to this page has no mutation path.' \
+    'Every successful activation opens a new lifecycle epoch' \
+    'The standard register-read admission of the owned endpoint (FC03 and FC04)' \
+    'admits nothing; this lifecycle never reads registers.' \
+    'A retired or replaced endpoint instance refuses every candidate.' \
+    'a concurrent call fails fast with a busy error' \
+    'Each transport exchange has exactly one send attempt.' \
+    '`MaxAttempts` is 1 through 3 exchanges per acquisition.' \
+    'It is at least one response timeout and at most five minutes.' \
+    'positive and at most thirty seconds. It applies per received response frame' \
+    'An exchange accepts at most eight response frames.' \
+    'positive activation timeout of at most sixty seconds' \
+    'twenty-four hours' \
+    'configuration maxima' \
+    'enforced by the implementation, not defaults and not minimums.' \
+    'The overall bound of an exchange, and of the acquisition that contains it, is the acquisition deadline.' \
+    'return an error without a populated record.' \
+    'while a repeated Close returns success' \
+    'at most one Restart of an `unavailable` lifecycle per loop iteration.' \
+    'Buffered ticks do not guarantee a full interval between two Restart attempts.' \
+    '`51db865a`' \
+    'it is a classifier fault that fences the transport generation' \
+    'Recovery and re-activation run inside the acquisition deadline.' \
+    'A failed attempt, whatever its evidence state, never replaces the last' \
+    'A receipt retired by Close' \
+    'is never promoted to `ack`' \
+    'never carry a value, even when response frames were received.' \
+    'A report delivered after the' \
+    'never establishes readiness' \
+    'is rejected regardless of whether the context timer has fired.' \
+    'The activation deadline is taken from the lifecycle clock before the witness is called.' \
+    'Cancellation is re-checked inside the readiness commit, under the lifecycle mutex' \
+    'A configuration without a witness is `NO_SEND`.' \
+    'helianthus-docs-modbus issue 158' \
+    'helianthus-modbus issue 38' \
+    'No mutation path.' \
+    'No support, hardware, or live-qualification claim.' \
+    'This is version 1 of the read-path acquisition contract.' \
+    'Later revisions may' \
+    'only add:'; do
+    grep -Fq -- "$required" <<<"$flat" || return 1
+  done
+  for required in ack rejected timeout indeterminate no_send; do
+    grep -Fq "| \`$required\` |" "$document" || return 1
+  done
+  for required in stopped activating ready recovering unavailable closed; do
+    grep -Fq "\`$required\`" "$document" || return 1
+  done
+}
+
 check_tesla_tedapi_contract() {
 	local document="$1"
 	local evse_required=(
@@ -1178,11 +1256,12 @@ check_huawei_qualification_readiness() {
 
 if [[ $# -gt 0 ]]; then
   if [[ $# -ne 2 ]] && [[ "$1" != '--check-tesla-generation-contracts' || $# -ne 3 ]]; then
-    echo 'usage: check_docs.sh [--check-tesla-current-limit-operation|--check-sdongle-admission|--check-public-protocol|--check-tesla-tedapi-contract|--check-tesla-generation-contracts|--check-private-function-contract|--check-sunspec-v1-model-families-contract|--check-fronius-qualification-readiness|--check-huawei-qualification-readiness|--check-sunspec-nested-layout-contract|--check-sunspec-der-trip-lv-template-v2|--check-sunspec-der-trip-lv-typed-fact-projection-v2|--check-sunspec-dynamic-structural-selection-v2|--check-sunspec-v2-contract|--check-sunspec-v2-licensing|--check-x2-publication|--check-x2-contract|--check-bms-contract|--check-growatt-protocol-ii-identity-projection|--check-growatt-protocol-ii-fc04-contract|--check-growatt-protocol-ii-source-matrix|--check-wit-matrix-contract document]' >&2
+    echo 'usage: check_docs.sh [--check-tesla-current-limit-operation|--check-tesla-read-acquisition|--check-sdongle-admission|--check-public-protocol|--check-tesla-tedapi-contract|--check-tesla-generation-contracts|--check-private-function-contract|--check-sunspec-v1-model-families-contract|--check-fronius-qualification-readiness|--check-huawei-qualification-readiness|--check-sunspec-nested-layout-contract|--check-sunspec-der-trip-lv-template-v2|--check-sunspec-der-trip-lv-typed-fact-projection-v2|--check-sunspec-dynamic-structural-selection-v2|--check-sunspec-v2-contract|--check-sunspec-v2-licensing|--check-x2-publication|--check-x2-contract|--check-bms-contract|--check-growatt-protocol-ii-identity-projection|--check-growatt-protocol-ii-fc04-contract|--check-growatt-protocol-ii-source-matrix|--check-wit-matrix-contract document]' >&2
     exit 2
   fi
   case "$1" in
     --check-tesla-current-limit-operation) check_tesla_current_limit_operation "$2" ;;
+    --check-tesla-read-acquisition) check_tesla_read_acquisition "$2" ;;
     --check-sdongle-admission) check_sdongle_admission "$2" ;;
     --check-public-protocol) check_public_protocol "$2" ;;
     --check-tesla-tedapi-contract) check_tesla_tedapi_contract "$2" ;;
@@ -1223,7 +1302,7 @@ if [[ $# -gt 0 ]]; then
     --check-wit-matrix-contract) check_wit_matrix_contract "$2" ;;
     --check-outback-axs-contract) check_outback_axs_contract "$2" ;;
     *)
-    echo 'usage: check_docs.sh [--check-tesla-current-limit-operation|--check-sdongle-admission|--check-public-protocol|--check-tesla-tedapi-contract|--check-private-function-contract|--check-sunspec-v1-model-families-contract|--check-fronius-qualification-readiness|--check-huawei-qualification-readiness|--check-sunspec-nested-layout-contract|--check-sunspec-der-trip-lv-template-v2|--check-sunspec-der-trip-lv-typed-fact-projection-v2|--check-sunspec-dynamic-structural-selection-v2|--check-sunspec-v2-contract|--check-sunspec-v2-licensing|--check-x2-publication|--check-x2-contract|--check-bms-contract|--check-growatt-protocol-ii-identity-projection|--check-wit-matrix-contract document]' >&2
+    echo 'usage: check_docs.sh [--check-tesla-current-limit-operation|--check-tesla-read-acquisition|--check-sdongle-admission|--check-public-protocol|--check-tesla-tedapi-contract|--check-private-function-contract|--check-sunspec-v1-model-families-contract|--check-fronius-qualification-readiness|--check-huawei-qualification-readiness|--check-sunspec-nested-layout-contract|--check-sunspec-der-trip-lv-template-v2|--check-sunspec-der-trip-lv-typed-fact-projection-v2|--check-sunspec-dynamic-structural-selection-v2|--check-sunspec-v2-contract|--check-sunspec-v2-licensing|--check-x2-publication|--check-x2-contract|--check-bms-contract|--check-growatt-protocol-ii-identity-projection|--check-wit-matrix-contract document]' >&2
       exit 2
       ;;
   esac
@@ -1238,6 +1317,8 @@ tesla_current_limit_spec='protocols/tesla/gen3-current-limit-operation-v1.md'
 test -f "$tesla_legacy_spec"
 test -f "$tesla_gen3_spec"
 test -f "$tesla_current_limit_spec"
+tesla_read_acquisition_spec='protocols/tesla/gen3-read-acquisition-v1.md'
+test -f "$tesla_read_acquisition_spec"
 nested_layout_spec='protocols/sunspec/nested-layout-contract-v1.md'
 test -f "$nested_layout_spec"
 der_trip_lv_template_spec='protocols/sunspec/der-trip-lv-template-v2.md'
@@ -1282,6 +1363,7 @@ check_tesla_gen3_evse_current_limit_contract "$tesla_gen3_spec"
 check_tesla_gen3_evse_current_limit_wire_evidence "$tesla_gen3_spec"
 check_tesla_gen3_evse_current_limit_mcp_projection "$tesla_gen3_spec"
 check_tesla_current_limit_operation "$tesla_current_limit_spec"
+check_tesla_read_acquisition "$tesla_read_acquisition_spec"
 check_tesla_evse_scope "$spec"
 
 check_private_function_contract "$private_spec"

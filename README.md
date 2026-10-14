@@ -11,6 +11,7 @@ Current protocol contracts:
 - [Tesla legacy Wall Connector RS-485 contract](protocols/tesla/legacy-wall-connector-rs485.md)
 - [Tesla Wall Connector Gen3 HSC RTU contract](protocols/tesla/gen3-hsc-rtu.md)
 - [Tesla Gen3 current-limit admission and outcome contract V1](protocols/tesla/gen3-current-limit-operation-v1.md)
+- [Tesla Gen3 read-path acquisition lifecycle contract V1](protocols/tesla/gen3-read-acquisition-v1.md)
 - [Protocol applicability and licensing](protocols/applicability-and-licensing.md)
 - [SunSpec read-only core V1](protocols/sunspec/read-only-core-v1.md)
 - [SunSpec read-only core V1 model families](protocols/sunspec/read-only-core-v1-model-families.md)
