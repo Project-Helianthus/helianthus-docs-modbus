@@ -318,6 +318,27 @@ for mutation in \
     exit 1
   fi
 done
+for mutation in \
+  's/| 4 | 2 → 3 |/| 4 | 2 → 4 |/' \
+  's/| 6 | 1 → 2 |/| 6 | 1 → 3 |/' \
+  's/| 6 | 3 → 4 |/| 6 | 3 → 5 |/' \
+  's/| 6 | 9 → 10 |/| 6 | 9 → 11 |/' \
+  's/| 6 | 11 → 12 |/| 6 | 11 → 13 |/' \
+  's/| 6 | 7 → 8 |/| 4 | 7 → 8 |/' \
+  's/| 6 | 25 → 26 |/| 6 | 25 → 27 |/' \
+  's/| 6 | 27 → 28 |/| 6 | 27 → 29 |/' \
+  's/are Helianthus recovered labels/are vendor-published names/' \
+  's/### FC100 EVSE operation numbers/### FC100 operation numbers/'; do
+  sed "$mutation" "$tesla_document" > "$tesla_fixture"
+  if cmp -s "$tesla_document" "$tesla_fixture"; then
+    echo "Tesla EVSE operation-number mutation did not change the document: $mutation" >&2
+    exit 1
+  fi
+  if "$repo_root/scripts/check_docs.sh" --check-tesla-tedapi-contract "$tesla_fixture"; then
+    echo "Tesla EVSE operation-number mutation was accepted: $mutation" >&2
+    exit 1
+  fi
+done
 for forbidden_addition in \
   'AuthenticateInstaller is a service authentication operation.' \
   'PerformReset is an EVSE operation.' \

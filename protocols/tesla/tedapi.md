@@ -47,6 +47,29 @@ An FC100 PDU is `length:u8 | message[length]`, with exact length equality.
 
 Terminals retain their complete bounded native body and unknown fields. Per-phase values remain native when present.
 
+### FC100 EVSE operation numbers
+
+Each retained operation is one FC100 family number and one request tag paired with one terminal tag. The numbers apply to the `wc3_24_44_3` operation version only.
+
+| Operation | Family | Request tag → terminal tag | Request body | Basis |
+|---|---|---|---|---|
+| Common system information | 4 | 2 → 3 | exact empty | registry fact, see below |
+| WC vitals (GetVitals) | 6 | 1 → 2 | exact empty | registry fact, see below |
+| WC lifetime statistics (GetLifetimeStats) | 6 | 3 → 4 | exact empty | registry fact, see below |
+| WC system information (GetSystemInfo) | 6 | 9 → 10 | exact empty | registry fact, see below |
+| WC load-sharing state (GetLoadSharingNetworkState) | 6 | 11 → 12 | exact empty | registry fact, see below |
+| WC persistent settings, current limit only | 6 | 7 → 8 | structurally validated | [exact 24.44.3 body and evidence contract](gen3-hsc-rtu.md#exact-24443-body-and-evidence-contract) |
+| WC temporary current limit | 6 | 25 → 26 | structurally validated | [exact 24.44.3 body and evidence contract](gen3-hsc-rtu.md#exact-24443-body-and-evidence-contract) |
+| WC temporary readback | 6 | 27 → 28 | exact empty | [exact 24.44.3 body and evidence contract](gen3-hsc-rtu.md#exact-24443-body-and-evidence-contract) |
+
+Common system information carries identity and firmware/version provenance and is distinct from WC system information, which carries hardware identity and capability provenance. Neither establishes new field semantics.
+
+The six observation and readback requests have exact empty bodies. The two mutation requests keep only the structural validation documented in the [Gen3 HSC contract](gen3-hsc-rtu.md#evse-current-limit-records); a structurally valid body or a generic request builder is not a qualified setter, and the [current-limit operation contract V1](gen3-current-limit-operation-v1.md) governs admission.
+
+Basis for the current-limit pairs is the bounded static evidence for `wc3_24_44_3` published in the linked Gen3 HSC contract. For the five other pairs this page publishes no artifact hash, descriptor record, or body evidence. They are recorded as Helianthus operation-registry facts for the `wc3_24_44_3` operation version, restored from the earlier public revision of this page, and are not additional observations of firmware behavior. They carry no independent body qualification, and a family/tag match grants no live capability or control.
+
+Terminal field labels used by Helianthus, for example `device_id`, `din`, `firmware_version`, `device_type`, `uptime_s`, and `contactor_cycles`, are Helianthus recovered labels. They are not vendor-published names, and no unit, scale, range, or other semantic qualification is implied by a label. Unknown terminal members stay in the complete bounded native body.
+
 EVSE charging-current limit control, enable, and disable require an independently qualified request shape, unit and range where applicable, acknowledgement, and post-command confirmation. This version has no qualified Gen3 control setter.
 
 The separate [current-limit operation contract V1](gen3-current-limit-operation-v1.md)

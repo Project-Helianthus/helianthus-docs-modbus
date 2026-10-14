@@ -287,6 +287,21 @@ check_tesla_evse_scope() {
 	grep -Fq 'GetLoadSharingNetworkState' "$document"
 	grep -Fq 'GetSystemInfo' "$document"
 	grep -Fq 'EVSE charging-current limit control' "$document"
+	grep -Fqx '### FC100 EVSE operation numbers' "$document"
+	local number_row
+	for number_row in \
+		'| Common system information | 4 | 2 → 3 |' \
+		'| WC vitals (GetVitals) | 6 | 1 → 2 |' \
+		'| WC lifetime statistics (GetLifetimeStats) | 6 | 3 → 4 |' \
+		'| WC system information (GetSystemInfo) | 6 | 9 → 10 |' \
+		'| WC load-sharing state (GetLoadSharingNetworkState) | 6 | 11 → 12 |' \
+		'| WC persistent settings, current limit only | 6 | 7 → 8 |' \
+		'| WC temporary current limit | 6 | 25 → 26 |' \
+		'| WC temporary readback | 6 | 27 → 28 |'; do
+		grep -Fq "$number_row" "$document" || { echo "Tesla EVSE operation number row missing: $number_row" >&2; return 1; }
+	done
+	grep -Fq 'are Helianthus recovered labels' "$document" || return 1
+	grep -Fq 'They are not vendor-published names' "$document" || return 1
 	if grep -Eqi "$forbidden" "$document"; then
 		echo 'Tesla TEDAPI document exceeds the EVSE interoperability scope' >&2
 		return 1
