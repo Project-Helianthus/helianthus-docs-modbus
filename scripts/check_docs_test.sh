@@ -105,7 +105,10 @@ for mutation in \
   's/returns a closed error, while a repeated Close returns/returns a closed error, while a repeated Close fails/' \
   's/per loop iteration\./per interval, exactly./' \
   's/Buffered ticks do not guarantee/Buffered ticks guarantee/' \
-  's/`7120ebc4`/`50090dc4`/' \
+  's/`51db865a`/`50090dc4`/' \
+  's/returned at or after that deadline is rejected regardless of whether the/returned at or after that deadline is accepted when the/' \
+  's/from the lifecycle clock before the witness is called\. A witness report/from the context timer after the witness is called. A witness report/' \
+  's/^Cancellation is re-checked inside/Cancellation is not re-checked inside/' \
   's/^## Falsifiers$/## Notes/'; do
   sed "$mutation" "$tesla_read_acquisition_document" > "$tesla_read_acquisition_fixture"
   if "$repo_root/scripts/check_docs.sh" --check-tesla-read-acquisition "$tesla_read_acquisition_fixture"; then

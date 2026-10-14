@@ -245,8 +245,14 @@ lifecycle obtains the observed bytes only from an injected activation witness
 and compares them byte for byte with that sequence within the activation
 timeout. A witness error, a timeout, a reset error, any other byte sequence, or
 an activation context that is already cancelled or expired when the report
-arrives leaves the lifecycle `unavailable`. A report delivered after the
+arrives leaves the lifecycle `unavailable`. The activation deadline is taken
+from the lifecycle clock before the witness is called. A witness report
+returned at or after that deadline is rejected regardless of whether the
+context timer has fired. A report delivered after the
 activation deadline never establishes readiness, even when its bytes match.
+Cancellation is re-checked inside the readiness commit, under the lifecycle
+mutex that Close also takes, so a Close or cancellation cannot be overtaken by
+a late report.
 Activation is required again after every recovery and every restart.
 
 The witness never admits an exchange by itself; it only gates readiness.
@@ -325,7 +331,7 @@ is observed:
 
 The reference implementation is the `TeslaGen3ReadAcquisition` lifecycle in
 helianthus-modbusreg, pull request 209 (issue 208, plan item M3), at revision
-`7120ebc4` of its branch. That revision contains the five points this page
+`51db865a` of its branch. That revision contains the five points this page
 states explicitly: exact-tag correlation that fences on a wrong-tag response,
 binding to the exact version `wc3_24_44_3`, no promotion of a retired receipt,
 recovery inside the acquisition deadline, and no readiness from an expired

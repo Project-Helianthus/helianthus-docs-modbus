@@ -184,7 +184,7 @@ check_tesla_read_acquisition() {
     'while a repeated Close returns success' \
     'at most one Restart of an `unavailable` lifecycle per loop iteration.' \
     'Buffered ticks do not guarantee a full interval between two Restart attempts.' \
-    '`7120ebc4`' \
+    '`51db865a`' \
     'it is a classifier fault that fences the transport generation' \
     'Recovery and re-activation run inside the acquisition deadline.' \
     'A failed attempt, whatever its evidence state, never replaces the last' \
@@ -193,6 +193,9 @@ check_tesla_read_acquisition() {
     'never carry a value, even when response frames were received.' \
     'A report delivered after the' \
     'never establishes readiness' \
+    'is rejected regardless of whether the context timer has fired.' \
+    'The activation deadline is taken from the lifecycle clock before the witness is called.' \
+    'Cancellation is re-checked inside the readiness commit, under the lifecycle mutex' \
     'A configuration without a witness is `NO_SEND`.' \
     'helianthus-docs-modbus issue 158' \
     'helianthus-modbus issue 38' \
