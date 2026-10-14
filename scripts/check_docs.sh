@@ -1,6 +1,31 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+check_license_texts() {
+  local root="$1"
+  local relative_path expected_hash actual_hash
+  if [[ -L "$root/LICENSES" ]]; then
+    echo 'LICENSES: license directory must not be a symlink' >&2
+    return 1
+  fi
+  while read -r expected_hash relative_path; do
+    if [[ ! -f "$root/$relative_path" || -L "$root/$relative_path" ]]; then
+      echo "$relative_path: missing regular license file" >&2
+      return 1
+    fi
+    actual_hash=$(shasum -a 256 "$root/$relative_path") || return 1
+    actual_hash=${actual_hash%% *}
+    if [[ "$actual_hash" != "$expected_hash" ]]; then
+      echo "$relative_path: content differs from the pinned license text or policy" >&2
+      return 1
+    fi
+  done <<'LICENSE_HASHES'
+76409c31ca70e24aea929ddb55cf7f17b952a967815bc340b53d2fcd657dbcb3 LICENSE
+e0456cbab4f7b5e7203e678faff37eadbdfef02e822db3b7a52a1dd9d3dc514a LICENSES/CC0-1.0.txt
+d8a6cc31abc16b6748c7a21f21611f5a1ec33f67d22ca23d7da1c19b95496bee LICENSES/AGPL-3.0-only.txt
+LICENSE_HASHES
+}
+
 check_sdongle_admission() {
   local document="$1"
   local forbidden='https?://|/[Uu]sers/|([0-9]{1,3}\.){3}[0-9]{1,3}|([[:alnum:]][[:alnum:].-]*):([0-9]{1,5}|[[:alpha:]][[:alnum:].-]*)|[Pp]ort[[:space:]]+[0-9]{1,5}|(^|[^[:xdigit:]])[[:xdigit:]]{40}([^[:xdigit:]]|$)|(^|[^[:xdigit:]])[[:xdigit:]]{64}([^[:xdigit:]]|$)|TCP reachability was established'
@@ -1158,6 +1183,14 @@ check_huawei_qualification_readiness() {
 }
 
 if [[ $# -gt 0 ]]; then
+  if [[ "$1" == '--check-license-texts' ]]; then
+    if [[ $# -ne 2 ]]; then
+      echo 'usage: check_docs.sh --check-license-texts repository-directory' >&2
+      exit 2
+    fi
+    check_license_texts "$2"
+    exit $?
+  fi
   if [[ $# -ne 2 ]] && [[ "$1" != '--check-tesla-generation-contracts' || $# -ne 3 ]]; then
     echo 'usage: check_docs.sh [--check-tesla-current-limit-operation|--check-sdongle-admission|--check-public-protocol|--check-tesla-tedapi-contract|--check-tesla-generation-contracts|--check-private-function-contract|--check-sunspec-v1-model-families-contract|--check-fronius-qualification-readiness|--check-huawei-qualification-readiness|--check-sunspec-nested-layout-contract|--check-sunspec-der-trip-lv-template-v2|--check-sunspec-der-trip-lv-typed-fact-projection-v2|--check-sunspec-dynamic-structural-selection-v2|--check-sunspec-v2-contract|--check-sunspec-v2-licensing|--check-x2-publication|--check-x2-contract|--check-bms-contract|--check-growatt-protocol-ii-identity-projection|--check-growatt-protocol-ii-fc04-contract|--check-growatt-protocol-ii-source-matrix|--check-wit-matrix-contract document]' >&2
     exit 2
@@ -1210,6 +1243,8 @@ if [[ $# -gt 0 ]]; then
   esac
   exit $?
 fi
+
+check_license_texts '.'
 
 spec='protocols/tesla/tedapi.md'
 test -f "$spec"
