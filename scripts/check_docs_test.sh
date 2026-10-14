@@ -29,6 +29,41 @@ dynamic_structural_selection_document="$repo_root/protocols/sunspec/dynamic-stru
 dynamic_structural_selection_fixture="$fixture_root/sunspec-dynamic-structural-selection-v2.md"
 private_function_document="$repo_root/protocols/modbus/private-function-codes.md"
 private_function_fixture="$fixture_root/private-function-codes.md"
+tesla_current_limit_document="$repo_root/protocols/tesla/gen3-current-limit-operation-v1.md"
+tesla_current_limit_fixture="$fixture_root/tesla-current-limit.md"
+
+"$repo_root/scripts/check_docs.sh" --check-tesla-current-limit-operation "$tesla_current_limit_document"
+for mutation in \
+  's/state-changing operations require explicit operator confirmation at action time\./state-changing operations use cached permission./' \
+  's/Mutation retries are zero;/Mutation retries are unlimited;/' \
+  's/Unknown upper limit, zero\/absent current,/An inferred upper limit, zero\/absent current,/' \
+  's/it cannot prove causal application/it proves causal application/' \
+  's/never invent response bytes/invent response bytes/' \
+  's/successor exchange while fenced or quarantined\./successor exchange only while closed./' \
+  's/Local generation numbers are not wire transaction identifiers\./Local generation numbers prove wire correlation./' \
+  's/Recovery never resends the mutation/Recovery resends the mutation/' \
+  's/| `ACK` |/| `SUCCESS` |/'; do
+  sed "$mutation" "$tesla_current_limit_document" > "$tesla_current_limit_fixture"
+  if "$repo_root/scripts/check_docs.sh" --check-tesla-current-limit-operation "$tesla_current_limit_fixture"; then
+    echo "Tesla current-limit safety mutation was accepted: $mutation" >&2
+    exit 1
+  fi
+done
+
+for leak in \
+  'https://example.invalid/control' \
+  '/Users/example/installation-capture' \
+  '192.0.2.1' \
+  'gateway.example.internal:1502' \
+  '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef'; do
+  cp "$tesla_current_limit_document" "$tesla_current_limit_fixture"
+  printf '\n%s\n' "$leak" >> "$tesla_current_limit_fixture"
+  if "$repo_root/scripts/check_docs.sh" --check-tesla-current-limit-operation "$tesla_current_limit_fixture"; then
+    echo "Tesla current-limit publication leak was accepted: $leak" >&2
+    exit 1
+  fi
+done
+
 huawei_qualification_document="$repo_root/protocols/huawei/qualification-readiness-v1.md"
 huawei_qualification_fixture="$fixture_root/huawei-qualification-readiness-v1.md"
 
@@ -486,6 +521,23 @@ for mutation in \
   sed "$mutation" "$private_function_document" > "$private_function_fixture"
   if "$repo_root/scripts/check_docs.sh" --check-private-function-contract "$private_function_fixture"; then
     echo "bounded RTU contract mutation was accepted: $mutation" >&2
+    exit 1
+  fi
+done
+
+for mutation in \
+  's/from 1 through 8, both or/from 1 through 9, both or/' \
+  's/the policy allows exactly one attempt/the policy permits retries/' \
+  's/65–72 or 100–110/1–127/' \
+  's/exchange, shared by FC03\/FC04 reads and private-function exchanges./exchange per path, permitting concurrent reads and private exchanges./' \
+  's/Without a classifier, the first good normal frame is terminal./Without a classifier, collect every frame./' \
+  's/transport does not bound classifier/transport bounds classifier/' \
+  's/without fencing. Every other failure of a started private exchange fences the/with fencing. Every other failure of a started private exchange fences the/' \
+  's/including a failing final frame or partial bytes/excluding a failing final frame or partial bytes/' \
+  's/order, terminal rule, and read-only classification remain registry-owned./order, terminal rule, and read-only classification are transport defaults./'; do
+  sed "$mutation" "$private_function_document" > "$private_function_fixture"
+  if "$repo_root/scripts/check_docs.sh" --check-private-function-contract "$private_function_fixture"; then
+    echo "private production RTU contract mutation was accepted: $mutation" >&2
     exit 1
   fi
 done

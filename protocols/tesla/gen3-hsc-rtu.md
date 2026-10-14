@@ -53,6 +53,11 @@ but unknown fields and values remain part of the native payload. FC101 and FC102
 
 ## EVSE current-limit records
 
+The [current-limit operation contract V1](gen3-current-limit-operation-v1.md)
+defines offline admission, outcome, evidence, quarantine, and idempotency
+requirements. The body evidence below does not independently qualify a live
+setter or grant operation authority.
+
 Only the `wc3_24_44_3` operation version qualifies this contract. Persistent current configuration is FC100 family `6`, request tag `7`, terminal tag `8`. Its `settings.maxOutputCurrentAmps` value is an integer number of amperes.
 
 Temporary provisional current configuration is family `6`, request tag `25`, terminal tag `26`. Its native request fields are `limitCurrentMaxAmps` in amperes, `limitTimeoutS`, and `inhibitCharging`. The terminal is an acknowledgement only; correlated family-`6` tag-`27` to tag-`28` readback is required to confirm a retained provisional value.

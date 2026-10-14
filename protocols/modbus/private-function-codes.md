@@ -116,7 +116,7 @@ classifying itself as a failed exchange.
 
 ## Configured production read endpoint
 
-A production read endpoint is opt-in and admits only FC03 and FC04 requests
+A production endpoint is opt-in. The standard read path admits only FC03 and FC04 requests
 that have already passed the standard read-operation admission boundary. Its
 configuration names exactly one local endpoint and one complete serial format:
 baud rate, eight data bits, parity, and one or two stop bits. Empty endpoint
@@ -124,6 +124,24 @@ identity, incomplete format, unsupported format, broadcast unit identifier,
 unbounded timeout, or an unqualified operation is `NO_SEND`. Configuration
 does not discover an endpoint, select a unit, select a profile, or infer a
 register map.
+
+The same endpoint has a separate opt-in private-function path through
+`RTUProductionConfig.PrivateFunction`: an upstream
+`RTUPrivateFunctionAdmission` and `MaxResponses` from 1 through 8, both or
+neither. The zero value (no admission and zero maximum responses) disables
+private exchanges; a partial configuration or an out-of-range bound is
+invalid. Endpoint construction still requires the standard read admission.
+Private opt-in does not grant profile selection, operation qualification, or
+read-only classification.
+
+`ExchangePrivateFunction` sends nothing unless that path is enabled, upstream
+admission approves the endpoint/generation/unit/function/payload candidate,
+the policy allows exactly one attempt, the unit is not broadcast, and the
+function code is in the user-defined ranges 65–72 or 100–110 (Modbus Application
+Protocol Specification V1.1b3, section 5). Codes outside those ranges, including
+standard read and write function codes, cannot use this path. Admission receives
+a defensive payload copy and cannot change the request bytes to be sent.
+Pre-send rejection is `NO_SEND`; it does not start or fence an exchange.
 
 Accepted baud rates are 9600, 19200, 38400, 57600, 115200, and 230400; data bits are exactly eight; parity is none, even, or odd; and stop bits are one or two. The response timeout is greater than zero and no more than 30 seconds. Recovery has one bounded attempt and completes within the response timeout plus t3.5, with an absolute maximum of 60 seconds. An exchange has exactly one send attempt; no retry is admitted by this contract. FC03 and FC04 permit a zero-based offset from 0 through 65535 and a quantity from 1 through 125 registers. The normal response byte-count is exactly two times the requested quantity; its RTU ADU is exactly 5 + (2 × quantity) bytes and never exceeds 255 bytes. Any configuration, request, normal response, timeout, or recovery result outside these bounds is `NO_SEND` before transmission or a terminal transport fault after possible transmission.
 
@@ -135,9 +153,40 @@ cancellation after possible transmission, timeout after possible transmission,
 short write, malformed length or CRC, and unexpected or late frame fence the
 affected generation. A fenced or quarantined endpoint
 admits no successor until its bounded recovery completes; a replacement starts
-only in its successor generation. One endpoint has exactly one in-flight read;
-there is no batching, scan, broadcast, write/control function, or implicit
-retry admission.
+only in its successor generation. One endpoint has exactly one in-flight
+exchange, shared by FC03/FC04 reads and private-function exchanges. Both paths
+share lifecycle generation, request identifier allocation, and the same fence
+and `Recover` boundary. There is no batching, scan, broadcast, or implicit
+retry admission. The standard read path admits no standard write/control
+function; whether an admitted private operation changes state remains the
+owning registry's responsibility.
+
+Each private response frame must complete within `ResponseTimeout`, including
+first-byte receipt and the t3.5 frame end. RTU framing enforces t1.5 between
+bytes and t3.5 frame separation; the frame decoder bounds frame size and checks
+CRC before unit, function, and exception-shape correlation. A correlated
+exception has the requested function OR 0x80 and exactly one status byte.
+No normal payload format is inferred by transport.
+
+An optional caller-supplied `RTUPrivateFunctionResponseClassifier` sees only
+correlated normal frames, in arrival order, and marks each `Continue` or
+`Terminal`. Without a classifier, the first good normal frame is terminal.
+Reaching `MaxResponses` while still `Continue` is a `response_bound` failure;
+a terminal frame at the bound is accepted. Each next frame gets a new response
+timeout. Response collection allows at most `MaxResponses` frame timeouts plus
+caller classification time; transport does not bound classifier
+execution time. Request writing uses the caller context. The caller must supply
+and enforce any whole-operation deadline, including callback bounds.
+The request payload format, operation-specific frame count,
+order, terminal rule, and read-only classification remain registry-owned.
+
+A correlated private-function exception ends the exchange with an error
+without fencing. Every other failure of a started private exchange fences the
+generation until `Recover` succeeds: write fault or short write, timeout,
+cancellation, read fault, malformed/CRC-failed/unit- or function-mismatched
+frame, classifier error or panic, invalid disposition, or response-bound
+exhaustion. Returned normal responses exist only on success; on an exception
+or failure they are nil and received frames remain available as evidence.
 
 The correlation identity binds endpoint generation, request identifier, unit
 identifier, FC03 or FC04 function, request offset, quantity, and the exact
@@ -157,10 +206,32 @@ cannot authorize, correlate, or be rebound to a successor request. Current
 read evidence exists only for a successful, integrity-valid response in the
 endpoint's current unfenced generation.
 
+Private exchanges retain a separate immutable-by-value
+`RTUPrivateFunctionEvidence` receipt, not an FC03/FC04 read receipt. It contains
+the exact request ADU and all received response frames in arrival order,
+including a failing final frame or partial bytes; no response bytes means no
+invented response frame. It also retains endpoint, generation, request ID,
+unit/function, monotonic send/receipt offsets, integrity result, terminal
+outcome, currentness, receipt wall time, and clock epoch. Input/output byte
+slices are defensively copied. Integrity is not operation success: valid
+earlier frames remain evidence even if a subsequent timeout or classifier
+failure ends the exchange. At receipt creation, private evidence is current
+only for a successful exchange in the current unfenced generation.
+`LastPrivateFunctionEvidence`
+returns a copied historical receipt, separately from `LastEvidence` for reads.
+Its stored currentness flag is a receipt-time snapshot, not fresh authority
+after fencing or generation replacement. Neither receipt can be rebound to a
+successor exchange.
+
+The [Tesla Gen3 current-limit operation contract](../tesla/gen3-current-limit-operation-v1.md#registry-owned-request-and-response-framing)
+is a separately scoped consumer of this generic FC100 framing boundary. It
+supplies additional operation requirements, not transport authority or live
+write qualification.
+
 This contract is offline-validated production-path documentation, not a device
 compatibility, physical qualification, support, deployment, or live-I/O claim.
 The transport owns endpoint lifecycle, raw evidence, framing, and correlation.
-The registry still owns profile qualification and read-operation admission;
+The registry still owns profile qualification and read/private-operation admission;
 vendor codecs own decoding; semantic projection, gateway composition, and
 persistence policy remain outside this contract.
 

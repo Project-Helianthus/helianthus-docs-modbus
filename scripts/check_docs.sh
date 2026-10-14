@@ -91,6 +91,48 @@ check_tesla_gen3_public_protocol() {
 	done < <(grep -Eo '[[:xdigit:]]{64}' "$document" || true)
 }
 
+check_tesla_current_limit_operation() {
+  local document="$1"
+  local required
+
+  check_public_protocol "$document" || return 1
+  if grep -Ein '([0-9]{1,3}\.){3}[0-9]{1,3}|[[:alnum:].-]+:[0-9]{1,5}|(^|[^[:xdigit:]])[[:xdigit:]]{40}([^[:xdigit:]]|$)|(^|[^[:xdigit:]])[[:xdigit:]]{64}([^[:xdigit:]]|$)' "$document"; then
+    echo 'Tesla current-limit operation contains coordinates or fingerprint material' >&2
+    return 1
+  fi
+  for required in \
+    'Scope and evidence status' 'Ownership and consumers' \
+    'Admission preconditions' 'Registry-owned request and response framing' \
+    'Outcomes and confirmation limits' 'Immutable correlated evidence' \
+    'Quarantine and recovery' 'Idempotency and retry boundary' \
+    'Read-only and state-changing boundary'; do
+    grep -Fqx "## $required" "$document" || return 1
+  done
+  for required in \
+    'state-changing operations require explicit operator confirmation at action time.' \
+    'Body interpretation is limited to `wc3_24_44_3`.' \
+    'unknown precondition is `REJECTED`, `NO_SEND`' \
+    'Mutation retries are zero;' \
+    'Unknown upper limit, zero/absent current,' \
+    'registry must require qualified inputs for those gaps;' \
+    'it cannot prove causal application' \
+    'Freeze the admitted request and context before any possible transmission.' \
+    'never invent response bytes' \
+    'successor exchange while fenced or quarantined.' \
+    'Local generation numbers are not wire transaction identifiers.' \
+    'Recovery never resends the mutation' \
+    'No automatic mutation retry is admitted' \
+    '`outbound_allowed=false`' \
+    '`helianthus-modbus` T2a/T2b' \
+    '`helianthus-modbusreg` M3/M4, issues #200/#202' \
+    'gateway G7b/G12'; do
+    grep -Fq "$required" "$document" || return 1
+  done
+  for required in ACK READBACK TIMEOUT INDETERMINATE REJECTED; do
+    grep -Fq "| \`$required\` |" "$document" || return 1
+  done
+}
+
 check_tesla_tedapi_contract() {
 	local document="$1"
 	local evse_required=(
@@ -280,7 +322,7 @@ check_private_function_contract() {
 	grep -Fq 'must quarantine and recover before it accepts a successor request.' "$document"
 	grep -Fq 'lifecycle close ends the local stream without creating a successor request or' "$document"
 	grep -Fq 'classifying itself as a failed exchange.' "$document"
-	grep -Fq 'A production read endpoint is opt-in and admits only FC03 and FC04 requests' "$document"
+	grep -Fq 'The standard read path admits only FC03 and FC04 requests' "$document"
 	grep -Fq 'that have already passed the standard read-operation admission boundary.' "$document"
 	grep -Fq 'Each endpoint instance has a nonzero lifecycle generation, incremented before' "$document"
 	grep -Fq 'a replacement or recovery successor admits a request.' "$document"
@@ -304,6 +346,25 @@ check_private_function_contract() {
 	grep -Fq 'stable configured endpoint label, never a local serial path.' "$document"
 	grep -Fq 'closed, replaced, fenced, or quarantined generation is historical only and' "$document"
 	grep -Fq 'cannot authorize, correlate, or be rebound to a successor request.' "$document"
+  for required in \
+    '`RTUProductionConfig.PrivateFunction`' \
+    '`RTUPrivateFunctionAdmission` and `MaxResponses` from 1 through 8, both or' \
+    'neither. The zero value (no admission and zero maximum responses) disables' \
+    'the policy allows exactly one attempt, the unit is not broadcast' \
+    'function code is in the user-defined ranges 65–72 or 100–110' \
+    'exchange, shared by FC03/FC04 reads and private-function exchanges.' \
+    'first-byte receipt and the t3.5 frame end.' \
+    'CRC before unit, function, and exception-shape correlation.' \
+    'Without a classifier, the first good normal frame is terminal.' \
+    'a terminal frame at the bound is accepted.' \
+    'transport does not bound classifier' \
+    'without fencing. Every other failure of a started private exchange fences the' \
+    'generation until `Recover` succeeds' \
+    'including a failing final frame or partial bytes' \
+    '`RTUPrivateFunctionEvidence` receipt, not an FC03/FC04 read receipt.' \
+    'order, terminal rule, and read-only classification remain registry-owned.'; do
+    grep -Fq "$required" "$document" || return 1
+  done
 }
 
 check_sunspec_v2_contract() {
@@ -1091,10 +1152,11 @@ check_huawei_qualification_readiness() {
 
 if [[ $# -gt 0 ]]; then
   if [[ $# -ne 2 ]] && [[ "$1" != '--check-tesla-generation-contracts' || $# -ne 3 ]]; then
-    echo 'usage: check_docs.sh [--check-sdongle-admission|--check-public-protocol|--check-tesla-tedapi-contract|--check-tesla-generation-contracts|--check-private-function-contract|--check-sunspec-v1-model-families-contract|--check-fronius-qualification-readiness|--check-huawei-qualification-readiness|--check-sunspec-nested-layout-contract|--check-sunspec-der-trip-lv-template-v2|--check-sunspec-der-trip-lv-typed-fact-projection-v2|--check-sunspec-dynamic-structural-selection-v2|--check-sunspec-v2-contract|--check-sunspec-v2-licensing|--check-x2-publication|--check-x2-contract|--check-bms-contract|--check-growatt-protocol-ii-identity-projection|--check-growatt-protocol-ii-fc04-contract|--check-growatt-protocol-ii-source-matrix|--check-wit-matrix-contract document]' >&2
+    echo 'usage: check_docs.sh [--check-tesla-current-limit-operation|--check-sdongle-admission|--check-public-protocol|--check-tesla-tedapi-contract|--check-tesla-generation-contracts|--check-private-function-contract|--check-sunspec-v1-model-families-contract|--check-fronius-qualification-readiness|--check-huawei-qualification-readiness|--check-sunspec-nested-layout-contract|--check-sunspec-der-trip-lv-template-v2|--check-sunspec-der-trip-lv-typed-fact-projection-v2|--check-sunspec-dynamic-structural-selection-v2|--check-sunspec-v2-contract|--check-sunspec-v2-licensing|--check-x2-publication|--check-x2-contract|--check-bms-contract|--check-growatt-protocol-ii-identity-projection|--check-growatt-protocol-ii-fc04-contract|--check-growatt-protocol-ii-source-matrix|--check-wit-matrix-contract document]' >&2
     exit 2
   fi
   case "$1" in
+    --check-tesla-current-limit-operation) check_tesla_current_limit_operation "$2" ;;
     --check-sdongle-admission) check_sdongle_admission "$2" ;;
     --check-public-protocol) check_public_protocol "$2" ;;
     --check-tesla-tedapi-contract) check_tesla_tedapi_contract "$2" ;;
@@ -1135,7 +1197,7 @@ if [[ $# -gt 0 ]]; then
     --check-wit-matrix-contract) check_wit_matrix_contract "$2" ;;
     --check-outback-axs-contract) check_outback_axs_contract "$2" ;;
     *)
-    echo 'usage: check_docs.sh [--check-sdongle-admission|--check-public-protocol|--check-tesla-tedapi-contract|--check-private-function-contract|--check-sunspec-v1-model-families-contract|--check-fronius-qualification-readiness|--check-huawei-qualification-readiness|--check-sunspec-nested-layout-contract|--check-sunspec-der-trip-lv-template-v2|--check-sunspec-der-trip-lv-typed-fact-projection-v2|--check-sunspec-dynamic-structural-selection-v2|--check-sunspec-v2-contract|--check-sunspec-v2-licensing|--check-x2-publication|--check-x2-contract|--check-bms-contract|--check-growatt-protocol-ii-identity-projection|--check-wit-matrix-contract document]' >&2
+    echo 'usage: check_docs.sh [--check-tesla-current-limit-operation|--check-sdongle-admission|--check-public-protocol|--check-tesla-tedapi-contract|--check-private-function-contract|--check-sunspec-v1-model-families-contract|--check-fronius-qualification-readiness|--check-huawei-qualification-readiness|--check-sunspec-nested-layout-contract|--check-sunspec-der-trip-lv-template-v2|--check-sunspec-der-trip-lv-typed-fact-projection-v2|--check-sunspec-dynamic-structural-selection-v2|--check-sunspec-v2-contract|--check-sunspec-v2-licensing|--check-x2-publication|--check-x2-contract|--check-bms-contract|--check-growatt-protocol-ii-identity-projection|--check-wit-matrix-contract document]' >&2
       exit 2
       ;;
   esac
@@ -1146,8 +1208,10 @@ spec='protocols/tesla/tedapi.md'
 test -f "$spec"
 tesla_legacy_spec='protocols/tesla/legacy-wall-connector-rs485.md'
 tesla_gen3_spec='protocols/tesla/gen3-hsc-rtu.md'
+tesla_current_limit_spec='protocols/tesla/gen3-current-limit-operation-v1.md'
 test -f "$tesla_legacy_spec"
 test -f "$tesla_gen3_spec"
+test -f "$tesla_current_limit_spec"
 nested_layout_spec='protocols/sunspec/nested-layout-contract-v1.md'
 test -f "$nested_layout_spec"
 der_trip_lv_template_spec='protocols/sunspec/der-trip-lv-template-v2.md'
@@ -1191,6 +1255,7 @@ check_tesla_legacy_evse_current_contract "$tesla_legacy_spec"
 check_tesla_gen3_evse_current_limit_contract "$tesla_gen3_spec"
 check_tesla_gen3_evse_current_limit_wire_evidence "$tesla_gen3_spec"
 check_tesla_gen3_evse_current_limit_mcp_projection "$tesla_gen3_spec"
+check_tesla_current_limit_operation "$tesla_current_limit_spec"
 check_tesla_evse_scope "$spec"
 
 check_private_function_contract "$private_spec"
