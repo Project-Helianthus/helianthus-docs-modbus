@@ -13,16 +13,16 @@ check_license_texts() {
       echo "$relative_path: missing regular license file" >&2
       return 1
     fi
-    actual_hash=$(shasum -a 256 "$root/$relative_path") || return 1
-    actual_hash=${actual_hash%% *}
+    # Store SHA-256 digests in standard unpadded Base64 for publication.
+    actual_hash=$(perl -MDigest::SHA -e 'print Digest::SHA->new(256)->addfile($ARGV[0])->b64digest' "$root/$relative_path") || return 1
     if [[ "$actual_hash" != "$expected_hash" ]]; then
       echo "$relative_path: content differs from the pinned license text or policy" >&2
       return 1
     fi
   done <<'LICENSE_HASHES'
-76409c31ca70e24aea929ddb55cf7f17b952a967815bc340b53d2fcd657dbcb3 LICENSE
-e0456cbab4f7b5e7203e678faff37eadbdfef02e822db3b7a52a1dd9d3dc514a LICENSES/CC0-1.0.txt
-d8a6cc31abc16b6748c7a21f21611f5a1ec33f67d22ca23d7da1c19b95496bee LICENSES/AGPL-3.0-only.txt
+dkCcMcpw4krqkp3bVc9/F7lSqWeBW8NAtT0vzWV9vLM LICENSE
+4EVsurT3tecgPmePr/N+rb3+8C6CLbO3pSod2dPcUUo LICENSES/CC0-1.0.txt
+2KbMMavBa2dIx6IfIWEfWh7DP2fSLKI9faHBm5VJa+4 LICENSES/AGPL-3.0-only.txt
 LICENSE_HASHES
 }
 
