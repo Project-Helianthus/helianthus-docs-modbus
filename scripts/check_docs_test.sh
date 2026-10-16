@@ -5,6 +5,39 @@ repo_root=$(cd "$(dirname "$0")/.." && pwd)
 fixture_root=$(mktemp -d)
 trap 'rm -rf "$fixture_root"' EXIT
 
+license_fixture="$fixture_root/licensing"
+mkdir -p "$license_fixture/LICENSES"
+cp "$repo_root/LICENSE" "$license_fixture/LICENSE"
+cp "$repo_root/LICENSES/"*.txt "$license_fixture/LICENSES/"
+"$repo_root/scripts/check_docs.sh" --check-license-texts "$license_fixture"
+for relative_path in LICENSE LICENSES/CC0-1.0.txt LICENSES/AGPL-3.0-only.txt; do
+  rm "$license_fixture/$relative_path"
+  if "$repo_root/scripts/check_docs.sh" --check-license-texts "$license_fixture"; then
+    echo "Missing license file was accepted: $relative_path" >&2
+    exit 1
+  fi
+  cp "$repo_root/$relative_path" "$license_fixture/$relative_path"
+  printf '\nchanged\n' >> "$license_fixture/$relative_path"
+  if "$repo_root/scripts/check_docs.sh" --check-license-texts "$license_fixture"; then
+    echo "Altered license file was accepted: $relative_path" >&2
+    exit 1
+  fi
+  rm "$license_fixture/$relative_path"
+  ln -s "$repo_root/$relative_path" "$license_fixture/$relative_path"
+  if "$repo_root/scripts/check_docs.sh" --check-license-texts "$license_fixture"; then
+    echo "Symlinked license file was accepted: $relative_path" >&2
+    exit 1
+  fi
+  rm "$license_fixture/$relative_path"
+  cp "$repo_root/$relative_path" "$license_fixture/$relative_path"
+done
+mv "$license_fixture/LICENSES" "$license_fixture/license-target"
+ln -s "$license_fixture/license-target" "$license_fixture/LICENSES"
+if "$repo_root/scripts/check_docs.sh" --check-license-texts "$license_fixture"; then
+  echo 'Symlinked license directory was accepted' >&2
+  exit 1
+fi
+
 source_document="$repo_root/architecture/sdongle-qualification-disposition-v1.md"
 fixture_document="$fixture_root/admission.md"
 x2_document="$repo_root/protocols/growatt/shinewilan-x2-bridge-v1.md"
