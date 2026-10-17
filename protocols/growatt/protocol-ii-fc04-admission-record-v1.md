@@ -11,8 +11,8 @@ before Helianthus 1.0.
 
 The native evidence contracts precede this proposal:
 
-- [Protocol II read-only candidate](https://github.com/Project-Helianthus/helianthus-docs-modbus/blob/main/protocols/growatt/protocol-ii-readonly-v1.md)
-- [Protocol II source and profile evidence matrix](https://github.com/Project-Helianthus/helianthus-docs-modbus/blob/main/protocols/growatt/protocol-ii-source-profile-matrix-v1.md)
+- [Protocol II read-only candidate](protocol-ii-readonly-v1.md)
+- [Protocol II source and profile evidence matrix](protocol-ii-source-profile-matrix-v1.md)
 
 | Evidence status | Claim | Separate qualification/admission consequence |
 | --- | --- | --- |
