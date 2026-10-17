@@ -4,15 +4,15 @@
 
 This is a proposed, implementable offline interface, not an executable detector
 or a successful device tuple. The current native
-[SUN2000 disposition](https://github.com/Project-Helianthus/helianthus-docs-modbus/blob/main/protocols/huawei/inverter-battery-readonly-v1.md)
+[SUN2000 disposition](inverter-battery-readonly-v1.md)
 comes first: `NO_ADMISSIBLE_PROFILE`, no covered model family or firmware range,
 no register map, no decoder, and no acquisition. Its decision rows remain
 current; the field names, validation and detailed reasons below are proposed.
 The historical V1 name conveys no stability before Helianthus 1.0.
 
-The [evidence checklist](https://github.com/Project-Helianthus/helianthus-docs-modbus/blob/main/protocols/huawei/qualification-evidence-checklist.md)
+The [evidence checklist](qualification-evidence-checklist.md)
 separates Proven, Hypothesis and Unknown from admission and qualification.
-The [qualification cards](https://github.com/Project-Helianthus/helianthus-docs-modbus/blob/main/protocols/huawei/qualification-readiness-v1.md)
+The [qualification cards](qualification-readiness-v1.md)
 keep gateway, inverter and battery evidence independent. This page adds no wire
 addresses, read procedure, positive profile, supported model, or firmware rule.
 The inspection-only vendor document has no pinned exact version here; its name
