@@ -24,9 +24,9 @@ adds no authorization gate; it preserves existing trust and admission boundaries
 
 The protocol facts come from the existing public native contracts first:
 
-- [Gateway read-only candidates](https://github.com/Project-Helianthus/helianthus-docs-modbus/blob/main/protocols/huawei/gateway-readonly-v1.md): SmartLogger identity, encoding, counter guard, pagination, native child evidence, and no-send private functions.
-- [Qualification readiness](https://github.com/Project-Helianthus/helianthus-docs-modbus/blob/main/protocols/huawei/qualification-readiness-v1.md): caller-run bracket, exact self entry and firmware tuples, child encoding, ceilings, and offline qualification limits.
-- [Qualification evidence checklist](https://github.com/Project-Helianthus/helianthus-docs-modbus/blob/main/protocols/huawei/qualification-evidence-checklist.md): current disposition, missing evidence, last-known-good retention, and separate family acceptance.
+- [Gateway read-only candidates](gateway-readonly-v1.md): SmartLogger identity, encoding, counter guard, pagination, native child evidence, and no-send private functions.
+- [Qualification readiness](qualification-readiness-v1.md): caller-run bracket, exact self entry and firmware tuples, child encoding, ceilings, and offline qualification limits.
+- [Qualification evidence checklist](qualification-evidence-checklist.md): current disposition, missing evidence, last-known-good retention, and separate family acceptance.
 
 The following ownership rules are proposed provider requirements, not newly
 observed wire facts. They do not relax any source predicate. An unresolved
