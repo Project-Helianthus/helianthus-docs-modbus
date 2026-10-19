@@ -103,8 +103,12 @@ The concrete method algorithms are:
 3. `I17Close` serializes with lifecycle admission, sets the permanent closed
    flag and calls native `Close()` before releasing that mutex. Repeated close
    succeeds without new work. It must be callable while the reader is pending.
-4. `I17Retire` serializes with lifecycle admission. For an open adapter it calls
-   native `Retire(i17Successor)` under that short mutex. Invalid or non-newer
+4. `I17Retire` serializes with lifecycle admission. Under the same mutex used
+   to claim `i17Busy`, it rejects busy state before calling native retirement,
+   with no native call, context change or terminal flag change. There is no
+   queue or deferred retry; the caller may explicitly retry after refresh
+   returns. For an open, idle adapter it calls native `Retire(i17Successor)`
+   under that short mutex. Invalid or non-newer
    context returns the native error without changing adapter state. A successful
    call sets the permanent retired flag before releasing the mutex. This adapter
    accepts no successor refresh; a successor requires its own newly constructed
@@ -116,9 +120,13 @@ Delegating it preserves native active-attempt fencing and historical
 `Current=false`; the wrapper must not expose the resulting internal successor
 as a mutable port context. Close after retirement may still close that owner.
 
-Never hold the lifecycle mutex during `Cycle` or caller code. Close or retirement
-that wins before native `Begin` causes refusal; if `Begin` already won, the
-native publication fence decides the immutable terminal outcome. Busy ownership
+Never hold the lifecycle mutex during `Cycle` or caller code. Retirement and
+refresh admission form an atomic fence: successful retirement sets the terminal
+flag before a refresh can claim busy; a refresh that claims busy first excludes
+native retirement through its synchronous return, including the interval before
+native `Begin`. Thus this adapter can never cycle the installed successor.
+Close that wins before native `Begin` causes refusal; if `Begin` already won,
+the native publication fence decides the immutable terminal outcome. Busy ownership
 lasts until the synchronous call returns, even if its attempt becomes terminal
 earlier. No goroutine, poller, scheduler, transport, device access, active
 acquisition, registration or background cleanup is introduced.
@@ -156,9 +164,10 @@ context errors use the cycle's failure path. A prior close/retirement terminal
 result stays immutable even when an accompanying error reflects a later reader
 or context error. Consumers inspect both outcome and error. The callback has no
 context argument and cannot be forcibly interrupted: cancellation is observed
-after it returns. Close/retirement can fence publication while it is pending,
-but neither proves callback preemption. Do not claim stronger cancellation or
-bounded execution for an arbitrary blocking function.
+after it returns. Close can fence publication while it is pending; adapter
+retirement instead refuses busy. Neither proves callback preemption. Do not
+claim stronger cancellation or bounded execution for an arbitrary blocking
+function.
 
 ## Synthetic transition and identity acceptance
 
@@ -178,7 +187,9 @@ Every row preserves denied admission, `NO_GO` and zero network/device work.
 | i17Success, then i17Expired | Caller deadline exceeded during callback: no replacement; native failure path or already terminal outcome, not a promised `cancelled` label. Deadline equality cannot publish. |
 | i17Pending, then i17Concurrent | Second refresh refuses busy with zero additional reader calls. No queue or second cycle; original slot remains owned until return. |
 | i17Success, then i17CloseDuringPending | Close fences pending publication; late return has `closed` if close won before commit. i17S is historical with `Current=false`; later refresh refuses and repeated close is harmless. A commit that won first remains historical `complete`. |
-| i17Success, then i17RetireDuringPending | Valid newer successor retires the native attempt; late return has `retired` if retirement won. i17S keeps old context and `Current=false`; this adapter permanently refuses refresh. A new adapter starts without transferred history. |
+| i17Success, then i17RetireBeforeBegin | Pause refresh after its busy claim and mutex release but before native `Begin`; retirement refuses busy with zero native retirement calls and no state change. Resume: the reader runs once under the original context and cannot publish successor inventory. After refresh returns, an explicit valid retirement succeeds; later refresh refuses with zero reader calls. |
+| i17Success, then i17RetireDuringPending | Retirement while the reader is pending refuses busy without changing the active attempt or i17S. After refresh returns, explicit valid retirement succeeds; retained inventory keeps its original context with `Current=false`, and this adapter permanently refuses refresh. A new adapter starts without transferred history. |
+| i17Success, then i17RetireBeforeAdmission | Idle retirement wins the lifecycle mutex and installs a valid newer successor before refresh admission. The retired flag prevents any later `Cycle` or reader call; i17S remains historical with `Current=false`, and no successor inventory is published. |
 | i17Success, then i17InvalidRetirement | Invalid or equal/older generation returns error; no retirement flag, no context replacement and no loss of i17S. Open adapter may still refresh. |
 | i17Success, then i17MutateView | Mutate returned native bytes, objects and child slices after return; a second view still equals original i17S. Separately mutate fake-reader buffers after completion: same expectation. |
 | i17InvalidCreation or i17InvalidDeadline | Bad identity/limits/reader refuses creation; bad per-call deadline refuses before callback. No snapshot is fabricated and no work occurs. |
