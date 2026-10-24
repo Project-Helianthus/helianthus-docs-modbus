@@ -70,6 +70,11 @@ gateway-unit probe: it applies only to a separately qualified child unit in the
 range 1 through 247. A gateway-unit timeout never authorizes a child-unit scan
 or an extended-MEI fallback.
 
+The candidate's own tuple has not been observed. A separate observed
+single-inverter tuple is defined in the S-Dongle subsection below and recorded on
+the [S-Dongle observation](sdongle-observed-identity-v1.md). It neither admits
+nor changes the candidate.
+
 ## EMMA candidate
 
 The canonical family class is `EMMA`. The candidate targets unit 0 and begins
@@ -150,7 +155,7 @@ and are separate from admission and qualification.
 | SmartLogger, documentary branch | self-entry model `SmartLogger`, firmware `V300R024C10SPC210` | vendor-document inspection only; no observation | defined by the candidate above; unobserved (Unknown) |
 | SmartLogger, observed branch | gateway unit 0, self-entry model `Smart Logger`, firmware `V300R023C10SPC620`, self-entry unit `0` | sanitized read-only observation | exact entry; Proven for the observed installation |
 | EMMA | none | no connected observation | Unknown placeholder |
-| S-Dongle | none | no connected observation | Unknown placeholder |
+| S-Dongle, observed single-inverter branch | gateway unit 100 and child unit 1, the tuple of the S-Dongle subsection below, with no gateway model variant | sanitized read-only observation | exact entry; Proven for the observed installation; the gateway's model variant is Unknown |
 
 `SmartLogger` and `Smart Logger` are different strings, and neither is an alias
 of the other. The three SmartLogger entries are independent branches with no
@@ -158,7 +163,10 @@ order between them. The observed branch is a defined exact entry; whether and
 when a registry admits it is the registry's decision, and the entry carries no
 qualification, support claim, or write authority. The observed branch is read
 through the extended inventory self entry. The basic identification reply
-(vendor `HUAWEI`, product, and version) is optional corroboration only. These
+(vendor `HUAWEI`, product, and version) is optional corroboration only. The
+S-Dongle entry follows the same rules. It is separate from the documentary
+S-Dongle tuple and from the offline candidate, it is read at two units of one
+endpoint and not through a listing, and it names no gateway model. These
 sections promise no stability before Helianthus 1.0.
 
 ### SmartLogger
@@ -179,18 +187,19 @@ sections promise no stability before Helianthus 1.0.
 | Required tuple | Unknown. No exact EMMA tuple has been observed, so no observed EMMA entry exists. The candidate above stays documentary and unobserved. An observed EMMA tuple would be a separate exact entry; the candidate's within-branch floors are a numeric comparison that this section's exact-value semantics do not use. |
 | Forbidden identity | Serial number or ESN, the serial register, a model-register read without the complete tuple, a `SmartHEMS` prefix without an admitted model, optional MEI alone, child listing, writable alias, readability, and a prefix or wildcard match. |
 | Multiple-positive outcome | No selection; `AMBIGUOUS` in the qualification card and `insufficient_evidence` in the collision rule, with no order or priority. |
-| Negative-overlap obligations | Against SmartLogger: EMMA probes at the SmartLogger endpoint are rejected (Proven); SmartLogger probes at an EMMA endpoint are Unknown. Against S-Dongle: Unknown in both directions. |
+| Negative-overlap obligations | Against SmartLogger: EMMA probes at the SmartLogger endpoint are rejected (Proven); SmartLogger probes at an EMMA endpoint are Unknown. Against S-Dongle: EMMA probes at the S-Dongle path do not return an EMMA tuple, because the offering and software offsets answer the child's own identity texts, the model offset answers non-text data, and unit 0 is silent (Proven); S-Dongle probes at an EMMA endpoint are Unknown. |
 | Evidence state | Two bounded read-only attempts received no Modbus response of any kind: connections were accepted and then closed by the peer on the first request. The cause is Unknown; Modbus TCP disabled on the device, a client allowlist, and a session held by another client are candidates that were not tested. Identity, children, and capability are Unknown. |
 
 ### S-Dongle
 
 | Field | Contract |
 | --- | --- |
-| Required tuple | Unknown. No S-Dongle was observed. The executable candidate above and the separate documentary tuple both stay unobserved, and they stay distinct from each other. |
-| Forbidden identity | Serial number or ESN, a writable alias, readability of logical unit 100, search status alone, a child listing, and a prefix or wildcard match. |
+| Required tuple, observed single-inverter branch | All of the following at the stated units on one connection generation. Gateway unit 100: basic identification (FC2B / MEI 0x0e, read code 1) is answered with exception 1; FC03 offset 37411, quantity 1, reads 0; FC03 offset 30068, quantity 2, reads 50 then 0, compared as words and never decoded; FC03 offset 37410, quantity 3, has type word 4 and state word 0 (the equality of the sequence across the child identification reads was not observed, SD-08, and is not part of the tuple); FC03 offset 37429, quantity 1, reads at least 1. Child unit 1: the model block (FC03 offset 30000, quantity 15) is a printable non-empty model text of the SUN2000 family, a NUL, optional printable residue, and NUL padding over the full 30 bytes; basic identification (read code 1) carries vendor exactly `Huawei`, product exactly `SUN2000`, and a present version object, each object once; the extended inventory from object 0x87 (read code 3) is one page with conformity 0x03, no continuation, count object value 1, and one entry object 0x88 whose keys are exactly 1 through 6, each once, whose key 1 equals the model text, and whose key 5 is exactly `1`. No specific child model token is a discriminator of the tuple. The gateway names no product, so there is no gateway model variant. The full contract and the tolerances are on the [S-Dongle observation](sdongle-observed-identity-v1.md). |
+| Required tuple, other branches | Unknown. The executable candidate above and the separate documentary tuple both stay unobserved, and they stay distinct from each other and from the observed branch. |
+| Forbidden identity | Serial number or ESN, a writable alias, readability of any register (including the S-Dongle's own search and capacity registers answered at the child, the EMMA offsets, and the SunSpec offset), readability of logical unit 100 or search status alone, basic identification alone, a child listing, the unit identifier of a request, and a prefix, wildcard, case-folded, or whitespace-normalized match. |
 | Multiple-positive outcome | No selection; `AMBIGUOUS` in the qualification card and `insufficient_evidence` in the collision rule, with no order or priority. |
-| Negative-overlap obligations | Against SmartLogger: S-Dongle probes at the SmartLogger endpoint are exceptions and its basic reply is the gateway's own (Proven); SmartLogger probes at an S-Dongle endpoint are Unknown. Against EMMA: Unknown in both directions. |
-| Evidence state | Not attempted. The recorded persistent non-response hard stop stays in force, and any new request needs action-time operator approval with confirmed connection context. Gateway-unit topology, completed search, stable sequence, capacity, protocol encoding, and child routing are Unknown. |
+| Negative-overlap obligations | Against SmartLogger: the counter read at the child is an exception and unit 0 is silent, the basic reply at the child is its own SUN2000 identity, and S-Dongle probes at the SmartLogger endpoint are exceptions with the gateway's own basic reply (all Proven); the counter read at unit 100 is Unknown. Against EMMA: EMMA probes at the S-Dongle path do not return an EMMA tuple (Proven); S-Dongle probes at an EMMA endpoint are Unknown. Against SunSpec: no marker at the child (Proven). Growatt is Unknown. |
+| Evidence state | Two bounded read-only runs on one S-Dongle fronting one inverter, taken with the operator's approval at action time, observed the branch above (Proven for the observed installation). The recorded persistent non-response did not reproduce at unit 100, and it is superseded for the identity of the observed branch only by a run of the same class that matches the whole exact tuple on one connection generation, as the [readiness contract](qualification-readiness-v1.md) states; the two observation runs used separate connections and did not. Any further request needs action-time operator approval with confirmed connection context. The gateway's product, the encoding of the protocol words, the child unit without a scan, and every unit other than 0, 1, 2, 3, and 100 are Unknown. |
 
 ## Evidence gaps after observation
 
@@ -210,11 +219,13 @@ companion's work, and no gap closure is a qualification or support claim.
 | `sanitized_readonly_capability_fixture` | EMMA | Open | Unknown |
 | `negative_overlap_with_smartlogger` | EMMA | Partly closed: one direction only | Proven and Unknown |
 | `model_specific_capability_fixture` | EMMA | Open | Unknown |
-| `gateway_unit_100_topology` | S-Dongle | Open; not attempted | Unknown |
-| `sanitized_basic_mei_product_model_fixture` | S-Dongle | Open; not attempted | Unknown |
-| `exact_protocol_version_encoding_fixture` | S-Dongle | Open; not attempted | Unknown |
-| `completed_search_stable_sequence_capacity_fixture` | S-Dongle | Open; not attempted | Unknown |
-| `separately_qualified_child_unit_inventory_fixture` | S-Dongle | Open; not attempted | Unknown |
+| `gateway_unit_100_topology` | S-Dongle | Closed by observation for the observed tuple: unit 100 is the gateway and unit 1 is the child | Proven |
+| `sanitized_basic_mei_product_model_fixture` | S-Dongle | Partly closed: the gateway refuses basic identification and the child returns vendor and family; the gateway's product string was not obtained | Proven and Unknown |
+| `exact_protocol_version_encoding_fixture` | S-Dongle | Partly closed: the protocol words are recorded as read at the gateway and the child; their encoding is open | Proven and Unknown |
+| `completed_search_stable_sequence_capacity_fixture` | S-Dongle | Closed for the observed tuple by one before and after pair; the coding of the state value and the bracket around the child inventory are open | Proven, Hypothesis, and Unknown |
+| `separately_qualified_child_unit_inventory_fixture` | S-Dongle | Closed for the observed tuple: child unit 1, one page, one entry | Proven |
+| `pairwise_negative_overlap_with_emma_fixture` | S-Dongle | Partly closed: EMMA probes at the S-Dongle path do not return an EMMA tuple; S-Dongle probes at an EMMA endpoint are open | Proven and Unknown |
+| Connected identity at the candidate's tuple and the documentary tuple | S-Dongle | Open; the observed gateway named no product or firmware | Unknown |
 
 ## Child routing
 
@@ -224,6 +235,13 @@ disagree. The same rules are the contract for an EMMA inventory, but no EMMA
 inventory has been observed and this section creates no EMMA admission. The
 observation behind each rule is in the
 [SmartLogger observation](smartlogger-observed-inventory-v1.md).
+
+The S-Dongle path does not use these rules as written. The gateway unit's
+listing is never read, because extended inventory is not addressed to the
+gateway unit, and the one inventory read at the child lists only that child (SD-23
+to SD-25 on the [S-Dongle observation](sdongle-observed-identity-v1.md)). How a
+provider learns the child unit without a scan is Unknown. A scan and an inferred
+address are never permitted.
 
 ### Routing rules
 

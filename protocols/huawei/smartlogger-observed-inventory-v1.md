@@ -202,12 +202,21 @@ unit 100; the routed-unit rows show how a SUN2000 child answers those probes.
 | SunSpec signature read | gateway unit 0 and routed unit 1 | two words that are not the SunSpec marker at unit 0, two zero words at unit 1 | Proven |
 | Growatt probes | any | not issued | Unknown |
 | SmartLogger probes at an EMMA endpoint | EMMA endpoint | no Modbus response in two bounded attempts; connections were accepted and then closed by the peer on the first request | Unknown |
-| SmartLogger probes at an S-Dongle endpoint | S-Dongle endpoint | not attempted | Unknown |
-| EMMA probes at an S-Dongle endpoint, and S-Dongle probes at an EMMA endpoint | either | not attempted | Unknown |
+| SmartLogger counter read | S-Dongle path, child unit 1 | exception 2 | Proven |
+| SmartLogger counter read | S-Dongle path, unit 0 | no response on four attempts | Proven |
+| SmartLogger counter read | S-Dongle path, gateway unit 100 | not probed | Unknown |
+| EMMA offering, model, and software reads | S-Dongle path, child unit 1 | the offering and software reads answer the child's own identity texts, and the model read answers 20 words that are not ASCII text | Proven |
+| EMMA offering, model, and software reads | S-Dongle path, unit 0 | no response on all three | Proven |
+| S-Dongle probes at an EMMA endpoint | EMMA endpoint | the EMMA endpoint returned no Modbus response to the reads it was sent | Unknown |
 
-The negative overlap with EMMA and S-Dongle is therefore shown in one
-direction only, at the SmartLogger endpoint. The reverse directions are
-Unknown and stay open obligations.
+The negative overlap with EMMA and S-Dongle is shown at the SmartLogger
+endpoint. The rows that read at an S-Dongle path come from a separate
+observation of one S-Dongle, recorded on the
+[S-Dongle observation](sdongle-observed-identity-v1.md); their grades apply to
+that installation. They show the SmartLogger and EMMA probes in the reverse
+direction at that path's child unit and at unit 0, and not at its gateway unit
+100. For EMMA the reverse direction at an EMMA endpoint stays Unknown, and the
+Growatt probes were not issued. Those stay open obligations.
 
 ## Open questions
 
@@ -226,8 +235,10 @@ Unknown and stay open obligations.
    timed out.
 6. Whether units outside the probed set exist without a listing entry is
    Unknown; the contract never probes them.
-7. EMMA and S-Dongle listings, tuples, and negative overlap in the reverse
-   direction have no evidence. The EMMA endpoint did not answer, and the
-   S-Dongle endpoint was not attempted. The causes of the EMMA non-response are
-   Unknown; candidates not tested are Modbus TCP disabled on the device, a
-   client allowlist, and a session held by another client.
+7. EMMA listings and tuples, and negative overlap with an EMMA endpoint in the
+   reverse direction, have no evidence. The EMMA endpoint did not answer. The
+   S-Dongle path was observed separately (see the
+   [S-Dongle observation](sdongle-observed-identity-v1.md)), and its listing, if
+   any, was never read. The causes of the EMMA non-response are Unknown;
+   candidates not tested are Modbus TCP disabled on the device, a client
+   allowlist, and a session held by another client.
