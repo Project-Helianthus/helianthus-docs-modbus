@@ -130,6 +130,180 @@ S-Dongle child unit permits at most 121 pages, 121 objects, and 32768 response
 bytes. These S-Dongle bounds never authorize extended MEI at logical unit 100.
 Limit exhaustion is insufficient evidence, never partial success.
 
+## Observed exact tuples
+
+The entries below are exact values, observed or defined for the gateway
+families. Every entry is compared field by field, byte for byte, and
+case-sensitively, after only terminal NUL or space padding is stripped. There is
+no wildcard, prefix, range, ordering, alias, case folding, whitespace
+normalization, or inheritance between entries, and matching one entry never
+implies another. A firmware identity is compared only as a complete string; its
+V, R, C, and SPC fields are not parsed into numbers for comparison in this
+section. The EMMA branch-floor rule above is an existing candidate rule that
+this section does not extend. The Proven, Hypothesis, and Unknown grades are
+defined in the [SmartLogger observation](smartlogger-observed-inventory-v1.md)
+and are separate from admission and qualification.
+
+| Family | Exact tuple | Basis | Status |
+| --- | --- | --- | --- |
+| SmartLogger, documentary branch | self-entry model `SmartLogger`, firmware `V300R024C10SPC191` | vendor-document inspection only; no observation | defined by the candidate above; unobserved (Unknown) |
+| SmartLogger, documentary branch | self-entry model `SmartLogger`, firmware `V300R024C10SPC210` | vendor-document inspection only; no observation | defined by the candidate above; unobserved (Unknown) |
+| SmartLogger, observed branch | gateway unit 0, self-entry model `Smart Logger`, firmware `V300R023C10SPC620`, self-entry unit `0` | sanitized read-only observation | exact entry; Proven for the observed installation |
+| EMMA | none | no connected observation | Unknown placeholder |
+| S-Dongle | none | no connected observation | Unknown placeholder |
+
+`SmartLogger` and `Smart Logger` are different strings, and neither is an alias
+of the other. The three SmartLogger entries are independent branches with no
+order between them. The observed branch is a defined exact entry; whether and
+when a registry admits it is the registry's decision, and the entry carries no
+qualification, support claim, or write authority. The observed branch is read
+through the extended inventory self entry. The basic identification reply
+(vendor `HUAWEI`, product, and version) is optional corroboration only. These
+sections promise no stability before Helianthus 1.0.
+
+### SmartLogger
+
+| Field | Contract |
+| --- | --- |
+| Required tuple, observed branch | Gateway unit 0. The counter (FC03 offset 65521, quantity 1) is equal before and after one complete extended inventory (FC2B / MEI 0x0e / ReadDevId 0x03, start object 0x87). The first entry, the self entry, has attribute 1 exactly `Smart Logger`, attribute 2 exactly `V300R023C10SPC620`, and attribute 5 exactly `0`. The inventory is valid under the child-inventory rules above and the tolerance requirements of the observation. |
+| Required tuple, documentary branches | As the candidate section above: the model and one of the two firmware values in the table. |
+| Optional corroboration | A decodable basic read shows vendor `HUAWEI`, product `Smart Logger`, and the same firmware. A disagreement with the self entry is a conflicting detector and produces `insufficient_evidence`. Absence or a decode failure of the basic read changes nothing. |
+| Forbidden identity | Serial number or ESN (attribute 4 and the serial-like basic object), the writable device name, readability of any register, a child listing, a basic reply alone, the product string without the firmware string, a prefix, wildcard, case-folded, or whitespace-normalized match, and the unit identifier of an MEI request. The gateway answers a basic read with its own identity for every unit identifier tried. |
+| Multiple-positive outcome | No selection. Two matching Huawei candidates, or a Huawei candidate that collides with SunSpec/Fronius or Growatt, is `AMBIGUOUS` in the qualification card and `insufficient_evidence` in the collision rule below. Both select nothing and send nothing, and no order or priority applies. |
+| Negative-overlap obligations | Executable fixtures against EMMA, S-Dongle, SunSpec/Fronius, and Growatt. Evidence so far: EMMA probes at the SmartLogger endpoint are exceptions (Proven); S-Dongle probes at logical unit 100 are exceptions and the basic reply is the gateway's own (Proven); no SunSpec marker (Proven); Growatt not probed (Unknown); every reverse direction Unknown. |
+
+### EMMA
+
+| Field | Contract |
+| --- | --- |
+| Required tuple | Unknown. No exact EMMA tuple has been observed, so no observed EMMA entry exists. The candidate above stays documentary and unobserved. An observed EMMA tuple would be a separate exact entry; the candidate's within-branch floors are a numeric comparison that this section's exact-value semantics do not use. |
+| Forbidden identity | Serial number or ESN, the serial register, a model-register read without the complete tuple, a `SmartHEMS` prefix without an admitted model, optional MEI alone, child listing, writable alias, readability, and a prefix or wildcard match. |
+| Multiple-positive outcome | No selection; `AMBIGUOUS` in the qualification card and `insufficient_evidence` in the collision rule, with no order or priority. |
+| Negative-overlap obligations | Against SmartLogger: EMMA probes at the SmartLogger endpoint are rejected (Proven); SmartLogger probes at an EMMA endpoint are Unknown. Against S-Dongle: Unknown in both directions. |
+| Evidence state | Two bounded read-only attempts received no Modbus response of any kind: connections were accepted and then closed by the peer on the first request. The cause is Unknown; Modbus TCP disabled on the device, a client allowlist, and a session held by another client are candidates that were not tested. Identity, children, and capability are Unknown. |
+
+### S-Dongle
+
+| Field | Contract |
+| --- | --- |
+| Required tuple | Unknown. No S-Dongle was observed. The executable candidate above and the separate documentary tuple both stay unobserved, and they stay distinct from each other. |
+| Forbidden identity | Serial number or ESN, a writable alias, readability of logical unit 100, search status alone, a child listing, and a prefix or wildcard match. |
+| Multiple-positive outcome | No selection; `AMBIGUOUS` in the qualification card and `insufficient_evidence` in the collision rule, with no order or priority. |
+| Negative-overlap obligations | Against SmartLogger: S-Dongle probes at the SmartLogger endpoint are exceptions and its basic reply is the gateway's own (Proven); SmartLogger probes at an S-Dongle endpoint are Unknown. Against EMMA: Unknown in both directions. |
+| Evidence state | Not attempted. The recorded persistent non-response hard stop stays in force, and any new request needs action-time operator approval with confirmed connection context. Gateway-unit topology, completed search, stable sequence, capacity, protocol encoding, and child routing are Unknown. |
+
+## Evidence gaps after observation
+
+The gap names are those of the registry dispositions and the qualification
+cards. Closing a gap here means the evidence exists and is described; the
+registry fixture and the reconciliation of its disposition remain the registry
+companion's work, and no gap closure is a qualification or support claim.
+
+| Gap | Family | State | Grade |
+| --- | --- | --- | --- |
+| `sanitized_extended_mei_self_entry_fixture` | SmartLogger | Closed by observation for the observed branch | Proven |
+| `exact_child_attribute_encoding_fixture`, structure | SmartLogger | Closed for the observed key set | Proven |
+| `exact_child_attribute_encoding_fixture`, meaning of keys 3, 6, 9, and 10 | SmartLogger | Open | Unknown |
+| `pairwise_negative_overlap_with_emma_fixture` | SmartLogger | Partly closed: EMMA probes at the SmartLogger endpoint are rejected; the reverse direction is open | Proven and Unknown |
+| Connected identity at the two documentary firmware values | SmartLogger | Open; never observed | Unknown |
+| Connected FC03 identity tuple | EMMA | Open; no Modbus response | Unknown |
+| `sanitized_readonly_capability_fixture` | EMMA | Open | Unknown |
+| `negative_overlap_with_smartlogger` | EMMA | Partly closed: one direction only | Proven and Unknown |
+| `model_specific_capability_fixture` | EMMA | Open | Unknown |
+| `gateway_unit_100_topology` | S-Dongle | Open; not attempted | Unknown |
+| `sanitized_basic_mei_product_model_fixture` | S-Dongle | Open; not attempted | Unknown |
+| `exact_protocol_version_encoding_fixture` | S-Dongle | Open; not attempted | Unknown |
+| `completed_search_stable_sequence_capacity_fixture` | S-Dongle | Open; not attempted | Unknown |
+| `separately_qualified_child_unit_inventory_fixture` | S-Dongle | Open; not attempted | Unknown |
+
+## Child routing
+
+This section defines how a child listed in a SmartLogger inventory maps to a
+routed unit, and what happens when the listing and an operator allowlist
+disagree. The same rules are the contract for an EMMA inventory, but no EMMA
+inventory has been observed and this section creates no EMMA admission. The
+observation behind each rule is in the
+[SmartLogger observation](smartlogger-observed-inventory-v1.md).
+
+### Routing rules
+
+1. **Address.** A child entry names exactly one candidate routed unit: the
+   decimal value of its attribute 5. The value must be an unsigned decimal
+   integer from 1 through 247, distinct from every other entry and from the
+   gateway unit. A malformed, zero, out-of-range, or repeated value rejects the
+   whole inventory. The self entry's attribute 5 must equal the gateway unit the
+   inventory was read on.
+2. **Position is not routing.** Object position, listing order, the count, the
+   model string, the product type, and the sensitive identity attribute never
+   map an entry to a unit. The observed listing order is not unit order.
+3. **A listing is never identity.** The model, firmware, product type, and unit
+   in an entry are native listing evidence. They are retained, and they never
+   select a class or profile, admit a child, or supply an element of a tuple.
+   Identity is read at the routed unit under the class contract, and all
+   identity reads of one tuple are taken at the same routed unit on one
+   connection generation. A provider may use the listing to limit which
+   read-only identity requests it sends to a listed and allowed unit, never to
+   supply the answer.
+4. **Effective set.** The operator allowlist is an explicit per-endpoint set of
+   routed units, owned by configuration and not by this contract. Routed reads
+   go only to units in the intersection of the validated listing and the
+   allowlist. The listing never adds a unit to the allowlist, and the allowlist
+   never causes a read to an unlisted unit. A provider never scans, infers an
+   address, or probes a unit outside the intersection.
+5. **Agreement check.** Where a class contract compares a listing value with a
+   routed read, it uses exact equality, and a mismatch withholds the child and
+   retains both readings. The listing's firmware text is not compared with a
+   routed firmware text unless a class contract defines an exact comparison.
+6. **Failure isolation.** A failure of one child never rejects the listing, fails
+   a sibling, or authorizes a scan, a retry storm, or a fallback. A failure of
+   the gateway-unit reads (counter or inventory) affects the whole endpoint.
+7. **Retention.** A withheld child emits no native facts for the cycle. Native
+   listing evidence, failure evidence, and any earlier valid last-known-good
+   observation of that child are retained with their original age. A rejected
+   inventory never yields a partial child list.
+
+### Decision table
+
+Reason labels are descriptive, not a public interface. The last column grades
+the evidence that the case occurs and behaves as stated; the outcomes
+themselves are contract.
+
+| Case | Condition | Outcome | Effect on siblings and gateway | Evidence for the premise |
+| --- | --- | --- | --- | --- |
+| Listed and allowed, routed identity exact | the unit is in the listing and the allowlist, and the class contract's routed identity request is exact | identity is established by the routed read under the class contract, with the listing as corroboration only; the observed SUN2000 tuple still leaves profile selection at `NO_ADMISSIBLE_PROFILE` | none | Proven (eight units) |
+| Listed and allowed, routed identity not exact | the routed read is an exception, not exact, not ASCII, or unpadded | `INSUFFICIENT_EVIDENCE`; the child is withheld as `identity_insufficient`; the failed read is retained | none | Proven for exceptions at two units; other causes Unknown |
+| Listed but not allowed | the unit is in the listing and not in the allowlist | withheld as `not_allowlisted`; no routed read; the entry stays as listing evidence; the allowlist is not extended | none | Unknown (no allowlist was in force) |
+| Allowed but not listed | the unit is in the allowlist and not in the listing | withheld as `not_listed`; no read and no probe, even if the unit would answer | none | Unknown |
+| Listing changed during enumeration | the counter differs before and after, or a page is malformed, repeated, miscounted, or loops | the whole enumeration is rejected as `listing_unstable`; no partial list; every child of the endpoint is withheld; a committed listing from an earlier enumeration is stale history only | all children of this gateway; other endpoints unaffected | Unknown (the counter never changed) |
+| One child times out while siblings answer | a routed read for one unit times out | that child is withheld for the cycle as `child_timeout`, with its last-known-good observation and age retained; no re-enumeration, scan, or sibling retry; repeated timeouts back off that child only | siblings and the gateway unaffected | Unknown (no child read timed out) |
+| Gateway-unit read fails | the counter or inventory read at the gateway unit times out, is an exception, or is malformed | the endpoint is `INSUFFICIENT_EVIDENCE`; no child read; no child-unit scan and no extended-MEI fallback | all children of this endpoint | Unknown |
+| Listing and routed model disagree | the listing's model differs from the model read at the routed unit | withheld as `identity_mismatch`; both readings are retained; the unit is not reassigned | none | Unknown (all eight agreed) |
+| Listed class has no class contract | a listed and allowed unit labeled PLC or PowerMeter | withheld as `no_class_contract`; no routed read | none | Proven (the entries exist) |
+| Allowlist empty | no unit is allowed | every child is withheld as `not_allowlisted`; the enumeration itself may still run | the whole endpoint | Unknown |
+
+### Guard-counter re-read rule
+
+1. A committed listing is bound to the counter value read after its
+   enumeration, which equals the value read before it.
+2. Each routed read cycle starts with a counter re-read at the gateway unit. If
+   it equals the bound value, the cycle may read the intersection of the
+   listing and the allowlist. If it differs, no routed read is sent in that
+   cycle, a fresh enumeration under the full counter bracket is required, and
+   every child must be identified again at its routed unit before it counts as
+   identified. Observations that came from the stale listing remain
+   last-known-good history with their original age.
+3. A counter re-read that fails (exception, timeout, or malformed reply) leaves
+   the listing unconfirmed: no routed read in that cycle, no fallback, no scan.
+4. Equality is a guard, not proof that nothing changed between two reads, and a
+   16-bit counter can wrap.
+5. How often the counter is re-read, and any cap on re-enumeration, belong to
+   the pacing contract. This rule fixes only the order: counter first, then
+   routed reads.
+
+The counter read answered within tens of milliseconds and returned one value on
+six reads (Proven). That the counter moves when the listing changes is Unknown,
+so the rule fails closed on any difference or any failed re-read.
+
 ## Private function codes
 
 Huawei-defined FC0x41 and the Huawei-specific use of FC0x17 are profile-scoped

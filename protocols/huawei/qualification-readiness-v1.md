@@ -49,6 +49,37 @@ selection. A successful synthetic card proves only that the bounded qualificatio
 procedure and retention logic are ready. The connected read-only identity and
 inventory capture remains missing.
 
+## SmartLogger observed-tuple status
+
+The residual evidence listed for SmartLogger in the table above, one connected
+read-only identity and inventory capture, is closed for one observed tuple and
+stays open for the card's two documentary tuples, which were never observed.
+The observed tuple is a separate exact entry in the
+[gateway contract](gateway-readonly-v1.md); its evidence and grades are in the
+[SmartLogger observation](smartlogger-observed-inventory-v1.md).
+
+Applied to the observed gateway, the card above returns
+`INSUFFICIENT_EVIDENCE`, because the gateway's self-entry model and firmware are
+outside the card's two exact tuples. That is the card working as written, not a
+failure of the gateway. The observed tuple needs its own card in the registry
+companion, and this page defines no card identity for it. Such a card must
+accommodate what the observation showed:
+
+- responses of at least 263 bytes with one object each, and a declared-object
+  field that differs from the objects present; the "count mismatch" rejection
+  above compares the count object with the number of entries and does not
+  refer to that field;
+- a count object that includes the self entry;
+- attribute keys 9 and 10 as known opaque keys, and attribute order that is
+  not numeric; and
+- a basic reply that carries more than the basic category, which is optional
+  corroboration only.
+
+A counter that stays equal across the bracket, a complete valid inventory, and
+the exact self-entry values are the observed tuple's qualification inputs. None
+of this changes the statuses in the table above, the rule that no class is
+`HARDWARE_TEST_READY`, or any default-denied field.
+
 ## EMMA qualification card
 
 The card identity is `huawei.qualification.emma.readonly@1.0.0`. It applies only
