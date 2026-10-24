@@ -7,6 +7,7 @@ provider, qualification, or support claim. The native contracts come first:
 [inverter/battery disposition](inverter-battery-readonly-v1.md). The observation
 record and the contracts derived from it are the
 [SmartLogger observation](smartlogger-observed-inventory-v1.md), the
+[S-Dongle observation](sdongle-observed-identity-v1.md), the
 [SUN2000 identity contract](sun2000-observed-identity-v1.md), and the
 [power-meter contract](gateway-power-meter-v1.md).
 This protocol evidence summary follows the [CC0 publication lane](../../LICENSE).
@@ -23,7 +24,7 @@ it cannot prove that an installation has that identity or capability.
 | --- | --- | --- | --- | --- | --- |
 | SmartLogger | Bounded gateway candidate and qualification card | Stable inventory and rejection cases; card is `QUALIFICATION_TEST_READY` | Defined by the gateway contract, including one exact observed tuple; connected evidence exists for that tuple only, and the two documentary tuples are unobserved | Registry disposition `NO_ADMISSIBLE_PROFILE`; unregistered, no decoder keys | Denied; no live qualification or support claim |
 | EMMA | Independent FC03 identity and qualification card | Finite identity aliases, branch floors, inventory rejection cases | `OFFLINE_IDENTITY_ADMITTED` only; complete tuple required; no connected observation (no Modbus response) | Capability evidence blocked; unregistered, no telemetry decoder keys | Denied; identity matching supplies no native telemetry facts |
-| S-Dongle | Separate gateway and child contracts | Exact candidate tuple evaluation only; positive synthetic input cannot replace stopped qualification | Documentary tuple and offline candidate remain distinct; actual identity insufficient; not attempted | `PRE_LIVE_INSUFFICIENT_EVIDENCE`; unregistered, no decoder keys | Denied; `LIVE_STOPPED_PERSISTENT_NON_RESPONSE`, further I/O hard stopped |
+| S-Dongle | Separate gateway and child contracts, plus one observed single-inverter tuple | Exact candidate tuple evaluation; a positive synthetic input for the candidate cannot replace the recorded stop; the observed tuple has its own card in the registry companion | Documentary tuple and offline candidate remain distinct and unobserved; one observed exact tuple (gateway unit 100, child unit 1) exists, and the gateway's product is Unknown | `PRE_LIVE_INSUFFICIENT_EVIDENCE`; unregistered, no decoder keys | Denied; the recorded `LIVE_STOPPED_PERSISTENT_NON_RESPONSE` is superseded for the observed identity only, and further I/O needs the operator's approval at action time |
 | SUN2000 | Fail-closed disposition only | Decision rows are documentary, not executable detection | One observed exact identity tuple in the identity contract; admissible pinned map absent | `NO_ADMISSIBLE_PROFILE`; no decoder | None admitted; no live qualification |
 | LUNA2000 | Separate fail-closed battery disposition | Decision rows are documentary, not executable detection | Unknown; no observed tuple; battery identity cannot be inherited from parent or gateway | `NO_ADMISSIBLE_PROFILE`; no decoder | None admitted; no live qualification |
 | Power meter | Class and listing facts only, with the role as configuration | Not applicable; no meter read was issued | Unknown; make, model, firmware, and exposure path are not established | No meter class contract; every meter is `INSUFFICIENT_EVIDENCE` | None admitted; no live qualification |
@@ -83,22 +84,36 @@ so none of the items below is closed. The cause is Unknown.
 
 ## S-Dongle closure
 
-Observation status: not attempted, so none of the items below is closed.
+Observation status: two bounded read-only runs on one S-Dongle fronting one
+inverter exist, and the persistent non-response did not reproduce at unit 100.
+The items below are closed for the observed tuple only, or stay open.
 
-- [ ] Preserve the persistent non-response hard stop. Any future run needs new
-  action-time operator approval and confirmed gateway/child connection context;
-  this checklist authorizes no request or retry.
-- [ ] Close `sanitized_basic_mei_product_model_fixture`,
-  `exact_protocol_version_encoding_fixture`, and
-  `separately_qualified_child_unit_inventory_fixture`.
-- [ ] Also satisfy the qualification card's `gateway_unit_100_topology` and
-  `completed_search_stable_sequence_capacity_fixture` requirements. Keep the
-  documentary default-denied firmware tuple distinct from the offline candidate
-  and its independent protocol baseline.
-- [ ] Qualify one exact child routing context before extended inventory. A
-  gateway timeout permits no child scan, inferred address, or extended-MEI
-  fallback. Reconcile the disposition before native-profile admission and
-  separately establish production acquisition.
+- [x] The recorded hard stop is superseded for the identity of the observed
+  tuple by a result of the same class, and for nothing else. Any future run needs
+  new action-time operator approval and confirmed gateway/child connection
+  context; this checklist authorizes no request or retry.
+- [ ] `sanitized_basic_mei_product_model_fixture`: partly closed. The gateway
+  refuses basic identification with exception 1 and the child returns vendor and
+  family; the gateway's product string was not obtained.
+- [ ] `exact_protocol_version_encoding_fixture`: partly closed. The words are
+  recorded as read at the gateway and the child; their encoding is Unknown.
+- [x] `separately_qualified_child_unit_inventory_fixture`: closed for the
+  observed tuple (child unit 1, one page, one entry).
+- [x] `gateway_unit_100_topology`: closed for the observed tuple.
+- [x] `completed_search_stable_sequence_capacity_fixture`: closed for the
+  observed tuple by one before and after pair. The coding of the state value is
+  a Hypothesis, and the bracket around the child inventory is Unknown.
+- [ ] `pairwise_negative_overlap_with_emma_fixture`: EMMA probes at the
+  S-Dongle path do not return an EMMA tuple; S-Dongle probes at an EMMA endpoint
+  stay open until an EMMA answers.
+- [ ] Connected identity at the candidate's tuple and the documentary tuple,
+  which the observed gateway did not name. Keep the documentary default-denied
+  firmware tuple distinct from the offline candidate and its independent protocol
+  baseline.
+- [ ] Name the child unit without a scan, and establish the product string of
+  the gateway. A gateway timeout permits no child scan, inferred address, or
+  extended-MEI fallback. Reconcile the disposition before native-profile
+  admission and separately establish production acquisition.
 
 Non-response proves neither absence nor incompatibility. Private functions
 remain no-send under the native contract; the

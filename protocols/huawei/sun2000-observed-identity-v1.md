@@ -16,10 +16,12 @@ offsets this identity contract needs are published here.
 
 Every statement rests on the sanitized observation record described in the
 [SmartLogger observation](smartlogger-observed-inventory-v1.md), which also
-defines the Proven, Hypothesis, and Unknown grades used below. Each read used
-here is one that the public [gateway contract](gateway-readonly-v1.md) already
-defines for another Huawei family; the observation shows what a routed SUN2000
-unit returns at those offsets. No offset or string is taken from the vendor
+defines the Proven, Hypothesis, and Unknown grades used below. SU-10 to SU-12
+rest on the [S-Dongle observation](sdongle-observed-identity-v1.md) instead.
+Each read used here is one that the public
+[gateway contract](gateway-readonly-v1.md) already defines for another Huawei
+family; the observation shows what a routed SUN2000 unit returns at those
+offsets. No offset or string is taken from the vendor
 interface definition, which stays inspection-only. Grades are separate from
 admission, qualification, and support, and `catalog_registered=false`,
 `automatic_runtime_admission=false`, `live_qualified=false`,
@@ -83,7 +85,10 @@ bytes, which is the basis for that rule (Hypothesis).
 | SU-06 | Reads to units 1 through 8 are served at the gateway's endpoint under their own unit identifiers. The physical path behind the gateway is not established. | Proven |
 | SU-07 | The model read at the PLC unit (9) and at a meter unit (11) answered exception 3, so the SUN2000 tuple fails there. Unit 19 was not read. | Proven |
 | SU-08 | A battery group is attached to any observed inverter. | Unknown |
-| SU-09 | Other SUN2000 model tokens, other firmware text, or another gateway family report these forms. | Unknown |
+| SU-09 | Other SUN2000 model tokens, other firmware text, or another gateway family report these forms, apart from the one S-Dongle child that SU-10 to SU-12 record. | Unknown |
+| SU-10 | A SUN2000-family child behind an S-Dongle (unit 1) answers the model read with a model token other than `SUN2000-50KTL-M3`, so the tuple of this page does not match it. Its own tuple is on the [S-Dongle observation](sdongle-observed-identity-v1.md). | Proven |
+| SU-11 | That model block holds printable residue after the first NUL, whereas the model block of units 1 through 8 holds 14 NUL padding bytes after the text (read table above), so the form differs apart from the token. | Proven |
+| SU-12 | The protocol words at that child read 5 then 0, as at units 1 through 8, so the protocol words separate neither the gateway family nor the model. | Proven |
 
 The firmware component of the tuple is the value read at the routed unit, not
 the listing's longer value, and the listing value gates nothing. Two builds that
@@ -118,7 +123,8 @@ listing proves neither inverter nor battery identity.
    cannot be identity, so a second routed read of the full text would have to
    be found. Its existence is Unknown.
 2. Which other SUN2000 model tokens and firmware texts exist behind this and
-   other gateway families? Each needs its own exact tuple and observation.
+   other gateway families? Each needs its own exact tuple and observation. One
+   further child behind an S-Dongle has its own tuple (SU-10).
 3. What does the protocol-word pair encode, and should it become a gate? Its
    encoding is Unknown.
 4. Does a PLC or meter unit answer any SUN2000-shaped read other than an

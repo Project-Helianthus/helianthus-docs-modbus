@@ -130,6 +130,52 @@ The timeout does not prove device absence or incompatibility and never
 authorizes a unit scan, child-address inference, extended-MEI fallback, private
 function, or retry. A future run requires action-time operator approval.
 
+This section describes the retained card as recorded. A subsequent observation
+supersedes the stop for the identity of one observed tuple only, as the next
+section and the shared-resolution rule state.
+
+## S-Dongle observed-tuple status
+
+Two bounded, read-only runs, taken with the operator's approval at action time,
+read one S-Dongle at gateway unit 100 and child unit 1. The evidence and its
+grades are in the [S-Dongle observation](sdongle-observed-identity-v1.md), and
+the exact tuple is in the [gateway contract](gateway-readonly-v1.md).
+
+Applied to the observed path, the evidence-blocked card above still returns
+`QUALIFICATION_EVIDENCE_BLOCKED`: it keeps its identity, its retained outcome,
+and its missing-evidence names, and it is the record of the stopped run. The
+observed tuple needs its own card in the registry companion (helianthus-modbusreg
+issue 351 and pull request 352), and this page defines no card identity for it.
+Such a card must accommodate what the observation showed:
+
+- the model block holds printable residue after its first NUL, a next object
+  identifier set next to a zero continuation, a declared-object field that is
+  not compared, a basic reply with objects beyond the basic category, and one
+  inventory entry that is not NUL padded;
+- basic identification at the gateway unit is a required exception 1 and not a
+  failure, and extended inventory is addressed to the child unit only;
+- the card consumes answered replies only, so an unanswered first attempt can
+  neither be required nor forged; and
+- the gateway names no product, so the selected class carries no model variant,
+  and the child's model never becomes the gateway's.
+
+The residual evidence listed for S-Dongle in the table above stands as follows
+for the observed tuple.
+
+| Residual evidence | State | Grade |
+| --- | --- | --- |
+| Gateway and child topology | closed for the observed tuple | Proven |
+| Stable search and capacity | closed by one before and after pair; the state coding is not read independently | Proven and Hypothesis |
+| Separately qualified child inventory | closed for the observed tuple | Proven |
+| Exact identity | the child's family identity is observed; the gateway's product is not | Proven and Unknown |
+| Protocol encoding | the words are recorded as read; their encoding is open | Proven and Unknown |
+| Connection context | not recorded on this page; required again for every further run | Unknown |
+
+The persistent non-response did not reproduce at unit 100 (Proven). Why the
+recorded requests went unanswered is Unknown. None of this changes the statuses
+in the table at the top of this page, the rule that no class is
+`HARDWARE_TEST_READY`, or any default-denied field.
+
 ## Shared resolution and negative overlap
 
 Each class result is evaluated independently. Zero positive results produce
@@ -140,9 +186,29 @@ cause a SmartLogger inventory request. S-Dongle non-response does not cause a
 child scan.
 
 A mixed resolution set containing one positive class and any failed class stays
-`INSUFFICIENT_EVIDENCE` with no selected class. A retained S-Dongle persistent
-non-response keeps `QUALIFICATION_EVIDENCE_BLOCKED`; shared resolution cannot
-downgrade that hard stop or select another class around it.
+`INSUFFICIENT_EVIDENCE` with no selected class. A retained persistent
+non-response record of a class keeps that class `QUALIFICATION_EVIDENCE_BLOCKED`
+and its hard stop in force. The record is superseded only by an observation of
+the same class: a result of that class that matched its exact tuple. No other
+result can downgrade that hard stop or select another class around it. That
+holds for a match of another class, however many classes match; for a failed,
+partial, or absent result of the same class; and for the readability of any
+register, which is never identity.
+
+When a same-class match supersedes the record, shared resolution drops the
+record from the set and resolves the class like any other result: alone it
+selects the class, next to a positive result of another class the set is
+`AMBIGUOUS`, and next to a failed class the set stays `INSUFFICIENT_EVIDENCE`.
+The supersession is of the record's status for the identity that matched and of
+nothing more. The record stays on record with its attempts, the profile outcome
+is unchanged, monitoring is not admitted, the default-denied fields are
+unchanged, and any further live request needs the operator's approval at action
+time and a confirmed connection context. Supersession does not say that the
+recorded requests should have been answered, and their cause is Unknown.
+
+The rule compares classes and not installations. The sanitized record names no
+installation, so whether a superseding match came from the installation that
+recorded the stop is not stated by the record (Unknown).
 
 Failed and ambiguous results have an empty selected class, zero native facts,
 zero automatic requests, and `fallback_attempted=false`. Missing or unavailable

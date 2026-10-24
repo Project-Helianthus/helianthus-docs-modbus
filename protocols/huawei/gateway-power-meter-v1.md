@@ -8,10 +8,12 @@ meter's electrical role is configuration. It defines no register, scale, unit,
 decoder, or acquisition, and it creates no admission. The historical V1 name
 implies no stability before Helianthus 1.0.
 
-The only evidence is the child listing of one SmartLogger-family gateway,
-described in the [SmartLogger observation](smartlogger-observed-inventory-v1.md),
-which also defines the Proven, Hypothesis, and Unknown grades used below. No
-register of any meter unit was read for electrical values. The vendor interface
+The evidence is the child listing of one SmartLogger-family gateway, described
+in the [SmartLogger observation](smartlogger-observed-inventory-v1.md), which
+also defines the Proven, Hypothesis, and Unknown grades used below, and, for
+PM-08 only, the one inventory read on an S-Dongle path recorded on the
+[S-Dongle observation](sdongle-observed-identity-v1.md). No register of any
+meter unit was read for electrical values. The vendor interface
 definition stays inspection-only and supplies nothing here. Grades are separate
 from admission, qualification, and support, and `catalog_registered=false`,
 `automatic_runtime_admission=false`, `live_qualified=false`,
@@ -28,6 +30,8 @@ from admission, qualification, and support, and `catalog_registered=false`,
 | PM-05 | Unit 11 answered the SUN2000 model read with exception 3, the answer that listed units give to an unserved read. Unit 19 was never read. | Proven |
 | PM-06 | A meter unit serves an identity read or electrical values at its routed unit. | Unknown |
 | PM-07 | Meter values are exposed at the gateway level, at unit 0, instead of or in addition to routed units. | Unknown |
+| PM-08 | The one inventory read on an S-Dongle path lists a single inverter entry and no meter, and no meter unit was addressed there. | Proven |
+| PM-09 | An S-Dongle fronts a power meter, or lists one at any unit. | Unknown |
 
 Until the operator confirms the make and model, no meter identity exists.
 
@@ -79,5 +83,5 @@ exposure would need its own gateway contract, which does not exist.
 3. Whether unit 19 answers any read, since it lies outside the probed range.
 4. Which identity read, if any, a meter unit serves, and its exact extents and
    padding.
-5. Whether meters appear in an EMMA listing or behind a hybrid system. No EMMA
-   listing was observed.
+5. Whether meters appear in an EMMA listing, behind an S-Dongle (PM-09), or
+   behind a hybrid system. No EMMA listing was observed.
