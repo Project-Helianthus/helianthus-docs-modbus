@@ -23,10 +23,12 @@ documentation.
 | `sunspec.core.readonly.v1` | SunSpec model chains using the explicitly listed model identifiers and lengths | public interoperability standard facts | specified; downstream qualification required |
 | `sunspec.der.readonly.v2` | Common 1/66 plus Models 701/153, 702/50, 703/17, 713/7, 714 variable geometry, 715/7, 802/62, 803 variable geometry, and 804 variable geometry at the exact pinned V2 schema revision | public Apache-2.0 model catalogue and independently stated interoperability facts | offline decoder contract; runtime, vendor, and catalog admission default denied |
 | `fronius.sunspec.float.v1` | manufacturer `Fronius`, model `Symo GEN24 10.0`, version `1.41.11-1`, and the exact V1.1 chain | vendor-copyright-inspection-only plus sanitized interoperability facts | specified flavor; downstream qualification required |
-| `huawei.smartlogger.readonly.v1` | SmartLogger with exact firmware `V300R024C10SPC191` or `V300R024C10SPC210` | vendor-copyright-inspection-only | offline candidate, default denied |
-| `huawei.sdongle.readonly.v1` | SDongleA-05, SDongleB-03, or SDongleB-06 with exact firmware `V200R025C00SPC120` and protocol D5.0 | vendor-copyright-inspection-only | offline candidate, default denied |
-| `huawei.emma.readonly.v1` | SmartHEMS `EMMA-A01` or `EMMA-A02`, with R024C00 SPC100+ or R025C00 SPC102+ in the same branch | vendor-copyright-inspection-only | offline candidate, default denied |
+| `huawei.smartlogger.readonly.v1` | SmartLogger with three exact tuples and no range, prefix, or ordering between them: model `SmartLogger` with firmware `V300R024C10SPC191`, model `SmartLogger` with firmware `V300R024C10SPC210`, and model `Smart Logger` with firmware `V300R023C10SPC620` at gateway unit 0 | vendor-copyright-inspection-only plus sanitized interoperability facts from observation | exact identity contract for the observed tuple; the two other tuples remain offline candidates with no observation; default denied |
+| `huawei.sdongle.readonly.v1` | SDongleA-05, SDongleB-03, or SDongleB-06 with exact firmware `V200R025C00SPC120` and protocol D5.0 | vendor-copyright-inspection-only | offline candidate, default denied; no connected observation, so identity is Unknown |
+| `huawei.emma.readonly.v1` | SmartHEMS `EMMA-A01` or `EMMA-A02`, with R024C00 SPC100+ or R025C00 SPC102+ in the same branch | vendor-copyright-inspection-only | offline candidate, default denied; no connected observation, so identity is Unknown |
 | `huawei.sun2000.readonly.v1` / `huawei.luna2000.readonly.v1` | no covered model family or firmware range; SUN2000 inverter and optional LUNA2000 battery | vendor-copyright-inspection-only | `NO_ADMISSIBLE_PROFILE`; default denied, no register map, no decoder |
+| `huawei.sun2000.identity.observed.v1` | SUN2000 behind a SmartLogger-family gateway: model `SUN2000-50KTL-M3` with firmware `V200R023` read at one routed unit, with no range, prefix, or ordering; the LUNA2000 optional group has no observed tuple and stays Unknown | vendor-copyright-inspection-only plus sanitized interoperability facts from observation | exact identity applicability only; profile selection stays `NO_ADMISSIBLE_PROFILE` because no register map is pinned; default denied |
+| `huawei.gateway.power-meter.v1` | power meters listed as children of a Huawei gateway; make, model, firmware, and exposure path are Unknown, and the electrical role is configuration | vendor-copyright-inspection-only plus sanitized interoperability facts from observation | listing and class facts only; every meter is `INSUFFICIENT_EVIDENCE`; no admitted meter tuple; default denied |
 | `growatt.protocol2.tl3x.readonly.v1` | Growatt Protocol II v1.24 TL3-X class covering MAX, MID, and MAC register ranges | vendor-copyright-inspection-only | offline candidate, default denied |
 | `growatt.shinewilan-x2.bridge.v1` | ShineWiLan-X2 transparent Modbus TCP to downstream Modbus RTU bridge boundary | vendor-copyright-inspection-only | transport contract only; no semantic profile or downstream admission |
 | `growatt.bms.rs485.1xsxxp.v2_02.readonly.v1` | exact 1xSxxP ESS tuple: Rev2.01 file family, V2.0 header, cumulative changes through 2.02 | vendor-copyright-inspection-only | protocol specified; registry NO_GO pending an exact permitted clean-room fixture |
@@ -36,6 +38,20 @@ documentation.
 No disposition in this table proves a particular installation, firmware image,
 endpoint, or live support state. `Offline candidate` is not registered for
 automatic detection or acquisition.
+
+Rows with sanitized interoperability facts from observation state what one
+operator-owned installation returned to bounded read-only requests that the
+public gateway contract already defines. Each exact tuple in them is an exact
+value: no range, prefix, wildcard, ordering, or inheritance links two tuples,
+and a tuple observed on one installation is not a family-wide claim. Their
+evidence is graded Proven, Hypothesis, or Unknown on the linked pages, and
+that grade is separate from the disposition column, from qualification, and
+from support. The vendor interface definition stays inspection-only: no
+vendor text, table, label, or screenshot is copied, and no offset or string in
+these rows is taken from it. The linked pages are the
+[SmartLogger observation](huawei/smartlogger-observed-inventory-v1.md), the
+[SUN2000 identity contract](huawei/sun2000-observed-identity-v1.md), and the
+[power-meter contract](huawei/gateway-power-meter-v1.md).
 
 The SunSpec V2 offline contract is pinned to the public Apache-2.0 SunSpec model
 catalogue at commit

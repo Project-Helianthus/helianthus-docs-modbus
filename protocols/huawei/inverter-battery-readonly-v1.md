@@ -112,3 +112,17 @@ catalog registration is created, and no support claim exists.
 The SmartLogger, EMMA, and S-Dongle candidates are defined in
 [`gateway-readonly-v1.md`](gateway-readonly-v1.md) and
 [`qualification-readiness-v1.md`](qualification-readiness-v1.md).
+
+## Observed identity applicability
+
+Bounded read-only observation of a SmartLogger-family gateway has since
+provided identity facts for one SUN2000 tuple. They are recorded, with their
+grades and the exact tuple, in the
+[SUN2000 identity contract](sun2000-observed-identity-v1.md). That page
+supersedes the identity rows of the evidence-status table above for identity
+only. It publishes the register offsets that this page deliberately omits, and
+it states no register map. The statements above about covered families and
+firmware describe profile admission with a pinned register map and are
+unchanged: both classes keep the outcome `NO_ADMISSIBLE_PROFILE`, and the
+LUNA2000 class has no observed tuple. The gateway-side rules for a child
+listing are in the [gateway contract](gateway-readonly-v1.md).
