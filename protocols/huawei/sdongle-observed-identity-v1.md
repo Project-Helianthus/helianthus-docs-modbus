@@ -141,7 +141,7 @@ a routed unit, and the gateway candidate reads at unit 100.
 | Multiple-positive outcome | `AMBIGUOUS`: another Huawei class contract that is also positive at the same endpoint produces no selection, and no order or priority breaks the tie. The collision rule of the gateway contract gives `insufficient_evidence`. |
 | Negative-overlap obligations | Executable fixtures against SmartLogger (the counter read at the child is an exception and at unit 0 is silent; the basic reply at the child is its own SUN2000 identity), EMMA (the model gate fails on non-text data and unit 0 is silent), SunSpec (no marker), and the SUN2000 identity contract (a different model-block form). Growatt probes are Unknown, and S-Dongle probes at an EMMA endpoint are Unknown. The evidence is in the overlap table above. |
 | Failure outcome | A missing element, an exception other than the required refusal at the gateway unit, a request unanswered after its bounded attempts, or a contradictory element produces `INSUFFICIENT_EVIDENCE`, no selected class, and zero native monitoring facts. |
-| Outcome when every element is exact | Identity applicability holds for this tuple. The selected class is S-Dongle with no model variant, the one entry is native listing evidence and no child list is retained, the profile outcome stays `PRE_LIVE_INSUFFICIENT_EVIDENCE`, and zero monitoring facts are emitted. Applied to a run, every element must match on one connection generation. The two observation runs used separate connections, one for the gateway unit and one for the child unit, so the complete tuple was not matched on a single connection generation by them; a future approved run must match it whole. The recorded persistent non-response is superseded for this identity only by the matched gateway-unit result on its own connection (SD-36), as the [qualification readiness contract](qualification-readiness-v1.md) states, and not by the child result. |
+| Outcome when every element is exact | Identity applicability holds for this tuple. The selected class is S-Dongle with no model variant, the one entry is native listing evidence and no child list is retained, the profile outcome stays `PRE_LIVE_INSUFFICIENT_EVIDENCE`, and zero monitoring facts are emitted. Applied to a run, every element must match on one connection generation. The two observation runs used separate connections, one for the gateway unit and one for the child unit, so the complete tuple was not matched on a single connection generation by them; a future approved run must match it whole. The recorded persistent non-response is superseded for this identity only by a run in which this whole tuple matched on one connection generation, as the [qualification readiness contract](qualification-readiness-v1.md) states; neither the gateway-unit result alone nor the child result alone supersedes it. |
 
 A provider addresses only unit 100 and unit 1 for this tuple. It never reads
 unit 0, units 2 and 3, or any other unit, never scans, and never infers a child
@@ -193,16 +193,23 @@ is set by that approval and is bounded.
 
 ## Hard-stop status
 
-The recorded stop was a persistent non-response at unit 100. The supersession rests only on the gateway-unit result, which was read on one connection in the first run and is not combined with the child result from the separate connection of the second run: SD-36 shows that
+The recorded stop was a persistent non-response at unit 100. SD-36 shows that
 requests of the kinds that expired were answered at unit 100 in this
-observation, and the observed gateway-unit reads match the gateway part of the tuple above. The sequence bracket around the child identification reads (SD-08) is not part of that basis and stays Unknown. The
+observation, so the non-response did not reproduce. The two observation runs
+used separate connections, one for the gateway unit and one for the child unit,
+and so did not match the complete tuple on one connection generation. They
+therefore leave the stop in force: a consumer clears it for the identity of this
+tuple only when a future approved run matches every element of the required
+tuple on one connection generation. The gateway-unit result alone, however
+exact, is a result of the same class that did not match the complete tuple, and
+supersedes nothing. The sequence bracket around the child identification reads
+(SD-08) is not part of the tuple and stays Unknown. The
 [qualification readiness contract](qualification-readiness-v1.md) states the
-rule that follows: a recorded persistent non-response is superseded only by an
-observation of the same class. This page is that observation for the S-Dongle
-class and for the identity of this tuple only. The record stays on record, the
-profile outcome and the default-denied fields are unchanged, monitoring is not
-admitted, and any further live request needs the operator's approval at action
-time and a confirmed connection context.
+rule: a recorded persistent non-response is superseded only by an observation of
+the same class that matched its exact tuple. Once such a run exists, the record
+stays on record, the profile outcome and the default-denied fields are
+unchanged, monitoring is not admitted, and any further live request needs the
+operator's approval at action time and a confirmed connection context.
 
 ## Open questions
 

@@ -88,8 +88,10 @@ Observation status: two bounded read-only runs on one S-Dongle fronting one
 inverter exist, and the persistent non-response did not reproduce at unit 100.
 The items below are closed for the observed tuple only, or stay open.
 
-- [x] The recorded hard stop is superseded for the identity of the observed
-  tuple by a result of the same class, and for nothing else. Any future run needs
+- [ ] The recorded hard stop is superseded for the identity of the observed
+  tuple only by a same-class run that matches the whole tuple on one connection
+  generation; the two observation runs used separate connections and did not,
+  so it stays in force until such a run exists. Any future run needs
   new action-time operator approval and confirmed gateway/child connection
   context; this checklist authorizes no request or retry.
 - [ ] `sanitized_basic_mei_product_model_fixture`: partly closed. The gateway

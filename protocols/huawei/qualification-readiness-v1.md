@@ -130,9 +130,10 @@ The timeout does not prove device absence or incompatibility and never
 authorizes a unit scan, child-address inference, extended-MEI fallback, private
 function, or retry. A future run requires action-time operator approval.
 
-This section describes the retained card as recorded. A subsequent observation
-supersedes the stop for the identity of one observed tuple only, as the next
-section and the shared-resolution rule state.
+This section describes the retained card as recorded. A same-class run that
+matches the whole exact tuple of one observed path on one connection generation
+supersedes the stop for that identity only, as the next section and the
+shared-resolution rule state.
 
 ## S-Dongle observed-tuple status
 
@@ -159,8 +160,11 @@ Such a card must accommodate what the observation showed:
 - the gateway names no product, so the selected class carries no model variant,
   and the child's model never becomes the gateway's.
 
-The residual evidence listed for S-Dongle in the table above stands as follows
-for the observed tuple.
+The two observation runs read the gateway unit and the child unit on separate
+connections, so neither matched the complete tuple on one connection generation
+and neither alone supersedes the stop; a future approved run must match it
+whole. The residual evidence listed for S-Dongle in the table above stands as
+follows for the observed tuple.
 
 | Residual evidence | State | Grade |
 | --- | --- | --- |

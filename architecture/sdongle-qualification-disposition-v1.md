@@ -43,11 +43,14 @@ allocation operation.
 
 A subsequent bounded read-only observation, taken with the operator's approval
 at action time, answered at the gateway unit the requests that this record shows
-as expired, and it matched the exact tuple of one observed single-inverter path.
+as expired, and it read the elements of one observed single-inverter path, on separate
+connections for the gateway unit and the child unit.
 Under the
 [qualification readiness contract](../protocols/huawei/qualification-readiness-v1.md),
 the persistent non-response recorded above is superseded for the identity of that
-tuple only, and only because the matching result is of the same S-Dongle class.
+tuple only by a later run of the same S-Dongle class that matches the whole tuple
+on one connection generation; that observation did not, so the stop stands until
+such a run exists.
 The record stays on file with its attempts. The disposition outcome stays
 `PRE_LIVE_INSUFFICIENT_EVIDENCE`, the profile stays default denied and
 unregistered, monitoring is not admitted, and any further live request needs the
