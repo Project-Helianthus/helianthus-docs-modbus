@@ -7,6 +7,7 @@ interoperability material.
 Current protocol contracts:
 
 - [Generic private function-code transport](protocols/modbus/private-function-codes.md)
+- [Tolerant TCP framing and device-identification modes](protocols/modbus/tolerant-tcp-modes-v1.md)
 - [Tesla TEDAPI over Modbus RTU](protocols/tesla/tedapi.md)
 - [Tesla legacy Wall Connector RS-485 contract](protocols/tesla/legacy-wall-connector-rs485.md)
 - [Tesla Wall Connector Gen3 HSC RTU contract](protocols/tesla/gen3-hsc-rtu.md)
