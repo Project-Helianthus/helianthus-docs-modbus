@@ -17,7 +17,8 @@ offsets this identity contract needs are published here.
 Every statement rests on the sanitized observation record described in the
 [SmartLogger observation](smartlogger-observed-inventory-v1.md), which also
 defines the Proven, Hypothesis, and Unknown grades used below. SU-10 to SU-12
-rest on the [S-Dongle observation](sdongle-observed-identity-v1.md) instead.
+rest on the [S-Dongle observation](sdongle-observed-identity-v1.md) instead, and
+SU-13 to SU-16 rest on the [EMMA observation](emma-observed-identity-v1.md).
 Each read used here is one that the public
 [gateway contract](gateway-readonly-v1.md) already defines for another Huawei
 family; the observation shows what a routed SUN2000 unit returns at those
@@ -85,10 +86,14 @@ bytes, which is the basis for that rule (Hypothesis).
 | SU-06 | Reads to units 1 through 8 are served at the gateway's endpoint under their own unit identifiers. The physical path behind the gateway is not established. | Proven |
 | SU-07 | The model read at the PLC unit (9) and at a meter unit (11) answered exception 3, so the SUN2000 tuple fails there. Unit 19 was not read. | Proven |
 | SU-08 | A battery group is attached to any observed inverter. | Unknown |
-| SU-09 | Other SUN2000 model tokens, other firmware text, or another gateway family report these forms, apart from the one S-Dongle child that SU-10 to SU-12 record. | Unknown |
+| SU-09 | Other SUN2000 model tokens, other firmware text, or another gateway family report these forms, apart from the one S-Dongle child that SU-10 to SU-12 record and the two EMMA children that SU-13 to SU-16 record. | Unknown |
 | SU-10 | A SUN2000-family child behind an S-Dongle (unit 1) answers the model read with a model token other than `SUN2000-50KTL-M3`, so the tuple of this page does not match it. Its own tuple is on the [S-Dongle observation](sdongle-observed-identity-v1.md). | Proven |
 | SU-11 | That model block holds printable residue after the first NUL, whereas the model block of units 1 through 8 holds 14 NUL padding bytes after the text (read table above), so the form differs apart from the token. | Proven |
 | SU-12 | The protocol words at that child read 5 then 0, as at units 1 through 8, so the protocol words separate neither the gateway family nor the model. | Proven |
+| SU-13 | Two SUN2000-family children behind an EMMA (units 3 and 4) answer the model read with one model token, the same at both units and other than `SUN2000-50KTL-M3`, so the tuple of this page does not match them. Their own contract is on the [EMMA observation](emma-observed-identity-v1.md). | Proven |
+| SU-14 | That model block holds NUL bytes and then printable residue that reaches the end of the extent with no trailing NUL padding, whereas the model block of units 1 through 8 holds 14 NUL padding bytes after the text (read table above), and the S-Dongle child's residue is followed by NUL padding (SU-11). | Proven |
+| SU-15 | The protocol words at both EMMA children read 5 then 0, as at units 1 through 8 and at the S-Dongle child (SU-12). | Proven |
+| SU-16 | The firmware text at the EMMA children is not the 8 characters read at units 1 through 8: it shares its leading part with key 2 of its listing entry and differs after that part, so it is not a prefix of key 2, which SU-03 found at units 1 through 8. SU-04, the statement that the routed read carries only the leading part of the version, is therefore a statement about the SmartLogger path only. | Proven |
 
 The firmware component of the tuple is the value read at the routed unit, not
 the listing's longer value, and the listing value gates nothing. Two builds that
@@ -124,7 +129,8 @@ listing proves neither inverter nor battery identity.
    be found. Its existence is Unknown.
 2. Which other SUN2000 model tokens and firmware texts exist behind this and
    other gateway families? Each needs its own exact tuple and observation. One
-   further child behind an S-Dongle has its own tuple (SU-10).
+   further child behind an S-Dongle has its own tuple (SU-10), and the two behind
+   an EMMA have theirs (SU-13).
 3. What does the protocol-word pair encode, and should it become a gate? Its
    encoding is Unknown.
 4. Does a PLC or meter unit answer any SUN2000-shaped read other than an

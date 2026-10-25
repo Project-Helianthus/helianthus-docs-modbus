@@ -12,7 +12,9 @@ The evidence is the child listing of one SmartLogger-family gateway, described
 in the [SmartLogger observation](smartlogger-observed-inventory-v1.md), which
 also defines the Proven, Hypothesis, and Unknown grades used below, and, for
 PM-08 only, the one inventory read on an S-Dongle path recorded on the
-[S-Dongle observation](sdongle-observed-identity-v1.md). No register of any
+[S-Dongle observation](sdongle-observed-identity-v1.md), and, for PM-10 and
+PM-11 only, the one inventory read on an EMMA path recorded on the
+[EMMA observation](emma-observed-identity-v1.md). No register of any
 meter unit was read for electrical values. The vendor interface
 definition stays inspection-only and supplies nothing here. Grades are separate
 from admission, qualification, and support, and `catalog_registered=false`,
@@ -32,6 +34,8 @@ from admission, qualification, and support, and `catalog_registered=false`,
 | PM-07 | Meter values are exposed at the gateway level, at unit 0, instead of or in addition to routed units. | Unknown |
 | PM-08 | The one inventory read on an S-Dongle path lists a single inverter entry and no meter, and no meter unit was addressed there. | Proven |
 | PM-09 | An S-Dongle fronts a power meter, or lists one at any unit. | Unknown |
+| PM-10 | The one inventory read on an EMMA path lists the EMMA, a backup-box entry, and two inverter entries, and no meter, and no meter unit was addressed there. | Proven |
+| PM-11 | An EMMA fronts a power meter that its listing omits. | Unknown |
 
 Until the operator confirms the make and model, no meter identity exists.
 
@@ -83,5 +87,6 @@ exposure would need its own gateway contract, which does not exist.
 3. Whether unit 19 answers any read, since it lies outside the probed range.
 4. Which identity read, if any, a meter unit serves, and its exact extents and
    padding.
-5. Whether meters appear in an EMMA listing, behind an S-Dongle (PM-09), or
-   behind a hybrid system. No EMMA listing was observed.
+5. Whether meters appear in an EMMA listing (PM-11), behind an S-Dongle (PM-09),
+   or behind a hybrid system. The one EMMA listing observed held no meter
+   (PM-10).

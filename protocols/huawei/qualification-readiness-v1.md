@@ -105,6 +105,44 @@ does not invent a capability acquisition map. Its missing evidence is named exac
 EMMA-A01 and EMMA-A02 remain distinct capability variants. Neither identity
 token creates a load, charger, control, or other telemetry capability.
 
+## EMMA observed-tuple status
+
+One bounded, read-only run, taken after the operator allowed the capture host on
+the gateway, read one EMMA at unit 0 and two inverters behind it at units 3 and
+4, on one connection. The evidence and its grades are in the
+[EMMA observation](emma-observed-identity-v1.md), and the exact entry is in the
+[gateway contract](gateway-readonly-v1.md).
+
+Applied to the observed gateway, the EMMA card above returns
+`QUALIFICATION_EVIDENCE_BLOCKED` with zero native telemetry facts: the offering,
+model, and software reads answered at unit 0, the model is one of the two exact
+values, and the software form meets the floor of its own branch (Proven for the
+observed installation). The card keeps its identity and its missing-evidence
+names, and the executable replay of the observed tuple is the registry
+companion's work (helianthus-modbusreg issue 353). The model value, software
+branch, and suffix are withheld on the published pages. An EMMA self entry is
+now observed: the SmartLogger counter is refused at the EMMA, and the entry's
+model is not a SmartLogger model, so it selects no SmartLogger (Proven). The
+residual evidence listed for EMMA in the table at the top of this page stands as
+follows for the observed installation.
+
+| Residual evidence | State | Grade |
+| --- | --- | --- |
+| Connected FC03 identity tuple | closed for the observed installation; the other model value and the other branch are not observed | Proven and Unknown |
+| `negative_overlap_with_smartlogger` | closed in both directions for the probes issued: the counter read is exception 3 at the EMMA unit and at one inverter, and the EMMA reads are rejected at the SmartLogger endpoint | Proven |
+| `sanitized_readonly_capability_fixture` | open; no capability or monitoring block was read | Unknown |
+| `model_specific_capability_fixture` | open; the capability of the observed model variant is not established | Unknown |
+| Battery addressing | open; no battery is listed or found | Unknown |
+
+The refused runs recorded before the answered run are superseded for the
+identity of the observed tuple only, under the same-class rule of the shared
+resolution section below: the answered run matched the whole gateway tuple at
+unit 0 on one connection and addressed the same endpoint. The refused runs stay
+on record, and their cause is a Hypothesis (a gateway that resets the requests
+of a client it does not allow). None of this changes the statuses in the table
+at the top of this page, the rule that no class is `HARDWARE_TEST_READY`, or any
+default-denied field.
+
 ## S-Dongle evidence-blocked card
 
 The card identity is

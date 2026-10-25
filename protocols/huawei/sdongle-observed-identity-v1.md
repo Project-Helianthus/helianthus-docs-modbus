@@ -120,7 +120,10 @@ a routed unit, and the gateway candidate reads at unit 100.
 | S-Dongle capacity read (offset 37429, quantity 1) | child unit 1 | data, equal to the gateway's word | Proven |
 | Basic identification | unit 100 and unit 1 | exception 1 at unit 100, and the SUN2000 identity of SD-18 at unit 1 | Proven |
 | Growatt probes | any | not issued | Unknown |
-| S-Dongle probes at an EMMA endpoint | EMMA endpoint | the EMMA endpoint returned no Modbus response to the reads it was sent | Unknown |
+| S-Dongle protocol-version, search, and capacity reads | EMMA path, unit 100 | exception 4 on all three ([EMMA observation](emma-observed-identity-v1.md)) | Proven |
+| S-Dongle search and capacity reads | EMMA path, routed inverter unit 3 | exception 3 on both | Proven |
+| S-Dongle basic identification | EMMA path, unit 100 | the EMMA's own identity with product `HEMS`, where the S-Dongle gateway gives exception 1 | Proven |
+| S-Dongle status reads | EMMA path, unit 0 | not probed | Unknown |
 
 | ID | Statement | Grade |
 | --- | --- | --- |
@@ -139,7 +142,7 @@ a routed unit, and the gateway candidate reads at unit 100.
 | Recorded, not gating | The child's firmware text and protocol words, entry keys 2, 3, 4, and 6, the version object of the basic reply, objects beyond the basic category, the capacity value beyond the lower bound above, the residue after the model text, the declared-object field, the next-object field, entry padding, entry key order, and any timing. They corroborate and are retained as native evidence; they select and reject nothing. |
 | Forbidden identity | Serial number, ESN (entry key 4 and the serial-bearing block), writable alias, readability of any register (including the S-Dongle's own registers answered at the child, the EMMA offsets, and the SunSpec offset), readability of unit 100 or search status alone, basic identification alone, a child listing, the unit identifier of a request, and a prefix, wildcard, case-folded, or whitespace-normalized match. |
 | Multiple-positive outcome | `AMBIGUOUS`: another Huawei class contract that is also positive at the same endpoint produces no selection, and no order or priority breaks the tie. The collision rule of the gateway contract gives `insufficient_evidence`. |
-| Negative-overlap obligations | Executable fixtures against SmartLogger (the counter read at the child is an exception and at unit 0 is silent; the basic reply at the child is its own SUN2000 identity), EMMA (the model gate fails on non-text data and unit 0 is silent), SunSpec (no marker), and the SUN2000 identity contract (a different model-block form). Growatt probes are Unknown, and S-Dongle probes at an EMMA endpoint are Unknown. The evidence is in the overlap table above. |
+| Negative-overlap obligations | Executable fixtures against SmartLogger (the counter read at the child is an exception and at unit 0 is silent; the basic reply at the child is its own SUN2000 identity), EMMA (the model gate fails on non-text data and unit 0 is silent), SunSpec (no marker), and the SUN2000 identity contract (a different model-block form). Growatt probes are Unknown, and S-Dongle probes at an EMMA endpoint are refused at unit 100 and at an inverter (Proven), with the status reads at the EMMA's unit 0 Unknown. The evidence is in the overlap table above. |
 | Failure outcome | A missing element, an exception other than the required refusal at the gateway unit, a request unanswered after its bounded attempts, or a contradictory element produces `INSUFFICIENT_EVIDENCE`, no selected class, and zero native monitoring facts. |
 | Outcome when every element is exact | Identity applicability holds for this tuple. The selected class is S-Dongle with no model variant, the one entry is native listing evidence and no child list is retained, the profile outcome stays `PRE_LIVE_INSUFFICIENT_EVIDENCE`, and zero monitoring facts are emitted. Applied to a run, every element must match on one connection generation. The two observation runs used separate connections, one for the gateway unit and one for the child unit, so the complete tuple was not matched on a single connection generation by them; a future approved run must match it whole. The recorded persistent non-response is superseded for this identity only by a run in which this whole tuple matched on one connection generation, as the [qualification readiness contract](qualification-readiness-v1.md) states; neither the gateway-unit result alone nor the child result alone supersedes it. |
 
@@ -232,8 +235,9 @@ operator's approval at action time and a confirmed connection context.
 7. Is a battery group attached to the child, and which model tokens and firmware
    texts of the SUN2000 family exist behind an S-Dongle? No group read was
    issued and one child was observed, so both are Unknown.
-8. S-Dongle probes at an EMMA endpoint, SmartLogger counter reads at unit 100,
-   and Growatt probes have no evidence. EMMA identity, children, and capability
-   stay Unknown, because no EMMA answered.
+8. S-Dongle status reads at the EMMA's unit 0, SmartLogger counter reads at
+   unit 100, and Growatt probes have no evidence. The EMMA path is recorded on
+   the [EMMA observation](emma-observed-identity-v1.md), which also records the
+   S-Dongle probes refused there at unit 100 and at an inverter.
 9. Does a power meter appear behind an S-Dongle? None was observed (PM-08 of the
    [power-meter contract](gateway-power-meter-v1.md)).

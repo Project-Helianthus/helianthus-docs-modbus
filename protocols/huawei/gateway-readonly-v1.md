@@ -108,6 +108,11 @@ FC03 identity tuple, and optional-MEI success alone is insufficient to identify
 the gateway. Serial register 30015, a model-register read without the complete
 tuple, or a SmartHEMS prefix without an admitted model are insufficient.
 
+The candidate's FC03 identity tuple has been observed on one installation. The
+observed entry is in the EMMA subsection below, and the record, with its grades,
+is the [EMMA observation](emma-observed-identity-v1.md). The observation neither
+admits nor changes the candidate.
+
 ## Child inventory
 
 SmartLogger and EMMA use:
@@ -154,7 +159,7 @@ and are separate from admission and qualification.
 | SmartLogger, documentary branch | self-entry model `SmartLogger`, firmware `V300R024C10SPC191` | vendor-document inspection only; no observation | defined by the candidate above; unobserved (Unknown) |
 | SmartLogger, documentary branch | self-entry model `SmartLogger`, firmware `V300R024C10SPC210` | vendor-document inspection only; no observation | defined by the candidate above; unobserved (Unknown) |
 | SmartLogger, observed branch | gateway unit 0, self-entry model `Smart Logger`, firmware `V300R023C10SPC620`, self-entry unit `0` | sanitized read-only observation | exact entry; Proven for the observed installation |
-| EMMA | none | no connected observation | Unknown placeholder |
+| EMMA, observed gateway branch | gateway unit 0, the candidate's three FC03 reads (offering `SmartHEMS`, a model that is one of the two admitted values, a software form that meets the floor of its own branch), with the model value, software branch, and suffix withheld on the published pages | sanitized read-only observation | exact entry; Proven for the observed installation; the model variant, branch, and suffix are carried by the registry fixture and are otherwise Unknown |
 | S-Dongle, observed single-inverter branch | gateway unit 100 and child unit 1, the tuple of the S-Dongle subsection below, with no gateway model variant | sanitized read-only observation | exact entry; Proven for the observed installation; the gateway's model variant is Unknown |
 
 `SmartLogger` and `Smart Logger` are different strings, and neither is an alias
@@ -166,8 +171,12 @@ through the extended inventory self entry. The basic identification reply
 (vendor `HUAWEI`, product, and version) is optional corroboration only. The
 S-Dongle entry follows the same rules. It is separate from the documentary
 S-Dongle tuple and from the offline candidate, it is read at two units of one
-endpoint and not through a listing, and it names no gateway model. These
-sections promise no stability before Helianthus 1.0.
+endpoint and not through a listing, and it names no gateway model. The EMMA
+entry follows the same rules too. It is the candidate's own tuple observed on one
+installation, read at unit 0 only, and the published pages name neither its
+model value nor its software text; the comparison is exact against the registry
+fixture, and the entry creates no capability. These sections promise no
+stability before Helianthus 1.0.
 
 ### SmartLogger
 
@@ -178,17 +187,19 @@ sections promise no stability before Helianthus 1.0.
 | Optional corroboration | A decodable basic read shows vendor `HUAWEI`, product `Smart Logger`, and the same firmware. A disagreement with the self entry is a conflicting detector and produces `insufficient_evidence`. Absence or a decode failure of the basic read changes nothing. |
 | Forbidden identity | Serial number or ESN (attribute 4 and the serial-like basic object), the writable device name, readability of any register, a child listing, a basic reply alone, the product string without the firmware string, a prefix, wildcard, case-folded, or whitespace-normalized match, and the unit identifier of an MEI request. The gateway answers a basic read with its own identity for every unit identifier tried. |
 | Multiple-positive outcome | No selection. Two matching Huawei candidates, or a Huawei candidate that collides with SunSpec/Fronius or Growatt, is `AMBIGUOUS` in the qualification card and `insufficient_evidence` in the collision rule below. Both select nothing and send nothing, and no order or priority applies. |
-| Negative-overlap obligations | Executable fixtures against EMMA, S-Dongle, SunSpec/Fronius, and Growatt. Evidence so far: EMMA probes at the SmartLogger endpoint are exceptions (Proven); S-Dongle probes at logical unit 100 are exceptions and the basic reply is the gateway's own (Proven); no SunSpec marker (Proven); Growatt not probed (Unknown); every reverse direction Unknown. |
+| Negative-overlap obligations | Executable fixtures against EMMA, S-Dongle, SunSpec/Fronius, and Growatt. Evidence so far: EMMA probes at the SmartLogger endpoint are exceptions (Proven); S-Dongle probes at logical unit 100 are exceptions and the basic reply is the gateway's own (Proven); no SunSpec marker (Proven); Growatt not probed (Unknown). The reverse direction at an EMMA is observed: the SmartLogger counter read is exception 3 at the EMMA unit and at one of its inverters (Proven), and an EMMA self entry is a SmartLogger negative control (Proven). The reverse direction at the S-Dongle gateway unit 100 is Unknown. |
 
 ### EMMA
 
 | Field | Contract |
 | --- | --- |
-| Required tuple | Unknown. No exact EMMA tuple has been observed, so no observed EMMA entry exists. The candidate above stays documentary and unobserved. An observed EMMA tuple would be a separate exact entry; the candidate's within-branch floors are a numeric comparison that this section's exact-value semantics do not use. |
-| Forbidden identity | Serial number or ESN, the serial register, a model-register read without the complete tuple, a `SmartHEMS` prefix without an admitted model, optional MEI alone, child listing, writable alias, readability, and a prefix or wildcard match. |
+| Required tuple, observed gateway branch | All of the following at gateway unit 0 on one connection generation. FC03 offset 30000, quantity 15: the text `SmartHEMS`, a NUL, and NUL padding over the full 30 bytes. FC03 offset 30222, quantity 20: a text that equals, after terminal NUL padding is stripped, one of the two admitted model values, with NUL padding over the full 40 bytes. FC03 offset 30035, quantity 15: `SmartHEMS`, one space, and a version-style text of one of the two branch forms that meets the floor of its own branch, followed by a NUL and NUL padding over the full 30 bytes. No comparison crosses branches. The published pages name no model value and no version text, so the observed entry is compared against the registry fixture, and no prefix, wildcard, or range links two values. The candidate's within-branch floors are the numeric comparison of the candidate and are not extended by this entry. Basic identification and the self entry of the extended inventory are optional corroboration only: a decodable disagreement with the FC03 tuple is a conflicting detector and produces `insufficient_evidence`, and absence or a decode failure changes nothing. The full contract and the tolerances are on the [EMMA observation](emma-observed-identity-v1.md). |
+| Required tuple, other branches | Unknown. The other admitted model value and the other software branch are unobserved, and an observed value of either would be a separate exact entry. |
+| Child inverters | A SUN2000-family inverter at a routed unit is identified by its own routed read under the EMMA observation: the unit is key 5 of exactly one inventory entry whose device type is `SUN2000`, it is in the operator allowlist, and its model block text equals key 1 of that entry. Two inverters were observed at units 3 and 4, and the child routing rules below apply to them. A backup-box entry is listed at unit 2, has no class contract, and is withheld. No battery unit is listed, and battery addressing is Unknown. |
+| Forbidden identity | Serial number or ESN, the serial register, a model-register read without the complete tuple, a `SmartHEMS` prefix without an admitted model, optional MEI alone, child listing, writable alias, readability (including the EMMA offsets answered at an inverter, the SunSpec offset, and the basic reply that every unit identifier returns), and a prefix or wildcard match. |
 | Multiple-positive outcome | No selection; `AMBIGUOUS` in the qualification card and `insufficient_evidence` in the collision rule, with no order or priority. |
-| Negative-overlap obligations | Against SmartLogger: EMMA probes at the SmartLogger endpoint are rejected (Proven); SmartLogger probes at an EMMA endpoint are Unknown. Against S-Dongle: EMMA probes at the S-Dongle path do not return an EMMA tuple, because the offering and software offsets answer the child's own identity texts, the model offset answers non-text data, and unit 0 is silent (Proven); S-Dongle probes at an EMMA endpoint are Unknown. |
-| Evidence state | Two bounded read-only attempts received no Modbus response of any kind: connections were accepted and then closed by the peer on the first request. The cause is Unknown; Modbus TCP disabled on the device, a client allowlist, and a session held by another client are candidates that were not tested. Identity, children, and capability are Unknown. |
+| Negative-overlap obligations | Against SmartLogger: EMMA probes at the SmartLogger endpoint are rejected, and the SmartLogger counter read is exception 3 at the EMMA unit and at one inverter (all Proven); an EMMA self entry is a SmartLogger negative control (Proven). Against S-Dongle: EMMA probes at the S-Dongle path do not return an EMMA tuple, because the offering and software offsets answer the child's own identity texts, the model offset answers non-text data, and unit 0 is silent (Proven); the S-Dongle status reads are exception 4 at EMMA unit 100 and exception 3 at an inverter, and the basic reply at unit 100 names the product `HEMS` where the S-Dongle gateway gives exception 1 (all Proven); S-Dongle status reads at EMMA unit 0 are Unknown. Against SunSpec: no marker at unit 0 or at an inverter (Proven). Growatt is Unknown. |
+| Evidence state | Four bounded read-only runs from two capture hosts received no Modbus response of any kind: every connection was accepted and then reset or closed by the peer a median of about 60 ms after the request was written. A fifth run, taken after the operator allowed the first capture host on the gateway, was answered on every request, each on its first attempt, on one connection. That a gateway resets the requests of a client it does not allow is a Hypothesis (one before and after pair); the allow mechanism, the reset of the second host, and whether anything else changed are Unknown. The earlier non-response is superseded for the identity of the observed gateway branch only, under the same-class rule of the [readiness contract](qualification-readiness-v1.md), and the record stays on file. Children are two inverters at units 3 and 4 plus a listed backup-box entry. The batteries are not listed and not found, so battery addressing and the EMMA's capability blocks are Unknown. The grades are on the [EMMA observation](emma-observed-identity-v1.md). |
 
 ### S-Dongle
 
@@ -198,7 +209,7 @@ sections promise no stability before Helianthus 1.0.
 | Required tuple, other branches | Unknown. The executable candidate above and the separate documentary tuple both stay unobserved, and they stay distinct from each other and from the observed branch. |
 | Forbidden identity | Serial number or ESN, a writable alias, readability of any register (including the S-Dongle's own search and capacity registers answered at the child, the EMMA offsets, and the SunSpec offset), readability of logical unit 100 or search status alone, basic identification alone, a child listing, the unit identifier of a request, and a prefix, wildcard, case-folded, or whitespace-normalized match. |
 | Multiple-positive outcome | No selection; `AMBIGUOUS` in the qualification card and `insufficient_evidence` in the collision rule, with no order or priority. |
-| Negative-overlap obligations | Against SmartLogger: the counter read at the child is an exception and unit 0 is silent, the basic reply at the child is its own SUN2000 identity, and S-Dongle probes at the SmartLogger endpoint are exceptions with the gateway's own basic reply (all Proven); the counter read at unit 100 is Unknown. Against EMMA: EMMA probes at the S-Dongle path do not return an EMMA tuple (Proven); S-Dongle probes at an EMMA endpoint are Unknown. Against SunSpec: no marker at the child (Proven). Growatt is Unknown. |
+| Negative-overlap obligations | Against SmartLogger: the counter read at the child is an exception and unit 0 is silent, the basic reply at the child is its own SUN2000 identity, and S-Dongle probes at the SmartLogger endpoint are exceptions with the gateway's own basic reply (all Proven); the counter read at unit 100 is Unknown. Against EMMA: EMMA probes at the S-Dongle path do not return an EMMA tuple (Proven); S-Dongle probes at an EMMA endpoint are refused at unit 100 (exception 4) and at an inverter (exception 3), and the EMMA answers basic identification at unit 100 with its own reply where the S-Dongle gateway gives exception 1 (all Proven); S-Dongle status reads at EMMA unit 0 are Unknown. Against SunSpec: no marker at the child (Proven). Growatt is Unknown. |
 | Evidence state | Two bounded read-only runs on one S-Dongle fronting one inverter, taken with the operator's approval at action time, observed the branch above (Proven for the observed installation). The recorded persistent non-response did not reproduce at unit 100, and it is superseded for the identity of the observed branch only by a run of the same class that matches the whole exact tuple on one connection generation, as the [readiness contract](qualification-readiness-v1.md) states; the two observation runs used separate connections and did not. Any further request needs action-time operator approval with confirmed connection context. The gateway's product, the encoding of the protocol words, the child unit without a scan, and every unit other than 0, 1, 2, 3, and 100 are Unknown. |
 
 ## Evidence gaps after observation
@@ -213,26 +224,33 @@ companion's work, and no gap closure is a qualification or support claim.
 | `sanitized_extended_mei_self_entry_fixture` | SmartLogger | Closed by observation for the observed branch | Proven |
 | `exact_child_attribute_encoding_fixture`, structure | SmartLogger | Closed for the observed key set | Proven |
 | `exact_child_attribute_encoding_fixture`, meaning of keys 3, 6, 9, and 10 | SmartLogger | Open | Unknown |
-| `pairwise_negative_overlap_with_emma_fixture` | SmartLogger | Partly closed: EMMA probes at the SmartLogger endpoint are rejected; the reverse direction is open | Proven and Unknown |
+| `pairwise_negative_overlap_with_emma_fixture` | SmartLogger | Closed by observation for the probes issued: EMMA probes at the SmartLogger endpoint are rejected, and the SmartLogger counter read is refused at the EMMA unit and at one inverter; the counter read at the S-Dongle gateway unit 100 is open | Proven and Unknown |
 | Connected identity at the two documentary firmware values | SmartLogger | Open; never observed | Unknown |
-| Connected FC03 identity tuple | EMMA | Open; no Modbus response | Unknown |
-| `sanitized_readonly_capability_fixture` | EMMA | Open | Unknown |
-| `negative_overlap_with_smartlogger` | EMMA | Partly closed: one direction only | Proven and Unknown |
-| `model_specific_capability_fixture` | EMMA | Open | Unknown |
+| Connected FC03 identity tuple | EMMA | Closed by observation for the observed installation: the candidate's three reads answered at unit 0; the model value, software branch, and suffix are withheld, and the other model value and branch are open | Proven and Unknown |
+| `sanitized_readonly_capability_fixture` | EMMA | Open; no capability, monitoring, or battery block was read | Unknown |
+| `negative_overlap_with_smartlogger` | EMMA | Closed by observation in both directions for the probes issued: the EMMA reads are rejected at the SmartLogger endpoint, and the counter read is refused at the EMMA unit and at one inverter | Proven |
+| `model_specific_capability_fixture` | EMMA | Open; the model variant is withheld on the published pages and no capability block was read | Unknown |
+| Child inverters behind the EMMA | EMMA | Closed for the observed installation: units 3 and 4, listed and identified at their own units | Proven |
+| Battery addressing | EMMA | Open; no battery is listed or found, and no battery read was issued | Unknown |
+| Guard of an EMMA listing | EMMA | Open; the SmartLogger counter is refused at the EMMA | Unknown |
 | `gateway_unit_100_topology` | S-Dongle | Closed by observation for the observed tuple: unit 100 is the gateway and unit 1 is the child | Proven |
 | `sanitized_basic_mei_product_model_fixture` | S-Dongle | Partly closed: the gateway refuses basic identification and the child returns vendor and family; the gateway's product string was not obtained | Proven and Unknown |
 | `exact_protocol_version_encoding_fixture` | S-Dongle | Partly closed: the protocol words are recorded as read at the gateway and the child; their encoding is open | Proven and Unknown |
 | `completed_search_stable_sequence_capacity_fixture` | S-Dongle | Closed for the observed tuple by one before and after pair; the coding of the state value and the bracket around the child inventory are open | Proven, Hypothesis, and Unknown |
 | `separately_qualified_child_unit_inventory_fixture` | S-Dongle | Closed for the observed tuple: child unit 1, one page, one entry | Proven |
-| `pairwise_negative_overlap_with_emma_fixture` | S-Dongle | Partly closed: EMMA probes at the S-Dongle path do not return an EMMA tuple; S-Dongle probes at an EMMA endpoint are open | Proven and Unknown |
+| `pairwise_negative_overlap_with_emma_fixture` | S-Dongle | Closed by observation for the probes issued: EMMA probes at the S-Dongle path do not return an EMMA tuple, and the S-Dongle status reads are refused at EMMA unit 100 and at an inverter; the status reads at EMMA unit 0 are open | Proven and Unknown |
 | Connected identity at the candidate's tuple and the documentary tuple | S-Dongle | Open; the observed gateway named no product or firmware | Unknown |
 
 ## Child routing
 
 This section defines how a child listed in a SmartLogger inventory maps to a
 routed unit, and what happens when the listing and an operator allowlist
-disagree. The same rules are the contract for an EMMA inventory, but no EMMA
-inventory has been observed and this section creates no EMMA admission. The
+disagree. The same rules are the contract for an EMMA inventory, and one EMMA
+inventory has now been observed (EM-16 to EM-32 on the
+[EMMA observation](emma-observed-identity-v1.md)). It fits them, with one
+exception: the guard-counter re-read rule below is written for the SmartLogger
+counter, which the EMMA refuses with exception 3, so an EMMA listing has no
+guard, and its guard is Unknown. This section creates no EMMA admission. The
 observation behind each rule is in the
 [SmartLogger observation](smartlogger-observed-inventory-v1.md).
 
@@ -288,15 +306,15 @@ themselves are contract.
 
 | Case | Condition | Outcome | Effect on siblings and gateway | Evidence for the premise |
 | --- | --- | --- | --- | --- |
-| Listed and allowed, routed identity exact | the unit is in the listing and the allowlist, and the class contract's routed identity request is exact | identity is established by the routed read under the class contract, with the listing as corroboration only; the observed SUN2000 tuple still leaves profile selection at `NO_ADMISSIBLE_PROFILE` | none | Proven (eight units) |
+| Listed and allowed, routed identity exact | the unit is in the listing and the allowlist, and the class contract's routed identity request is exact | identity is established by the routed read under the class contract, with the listing as corroboration only; the observed SUN2000 tuple still leaves profile selection at `NO_ADMISSIBLE_PROFILE` | none | Proven (eight units behind a SmartLogger, two behind an EMMA) |
 | Listed and allowed, routed identity not exact | the routed read is an exception, not exact, not ASCII, or unpadded | `INSUFFICIENT_EVIDENCE`; the child is withheld as `identity_insufficient`; the failed read is retained | none | Proven for exceptions at two units; other causes Unknown |
 | Listed but not allowed | the unit is in the listing and not in the allowlist | withheld as `not_allowlisted`; no routed read; the entry stays as listing evidence; the allowlist is not extended | none | Unknown (no allowlist was in force) |
 | Allowed but not listed | the unit is in the allowlist and not in the listing | withheld as `not_listed`; no read and no probe, even if the unit would answer | none | Unknown |
 | Listing changed during enumeration | the counter differs before and after, or a page is malformed, repeated, miscounted, or loops | the whole enumeration is rejected as `listing_unstable`; no partial list; every child of the endpoint is withheld; a committed listing from an earlier enumeration is stale history only | all children of this gateway; other endpoints unaffected | Unknown (the counter never changed) |
 | One child times out while siblings answer | a routed read for one unit times out | that child is withheld for the cycle as `child_timeout`, with its last-known-good observation and age retained; no re-enumeration, scan, or sibling retry; repeated timeouts back off that child only | siblings and the gateway unaffected | Unknown (no child read timed out) |
 | Gateway-unit read fails | the counter or inventory read at the gateway unit times out, is an exception, or is malformed | the endpoint is `INSUFFICIENT_EVIDENCE`; no child read; no child-unit scan and no extended-MEI fallback | all children of this endpoint | Unknown |
-| Listing and routed model disagree | the listing's model differs from the model read at the routed unit | withheld as `identity_mismatch`; both readings are retained; the unit is not reassigned | none | Unknown (all eight agreed) |
-| Listed class has no class contract | a listed and allowed unit labeled PLC or PowerMeter | withheld as `no_class_contract`; no routed read | none | Proven (the entries exist) |
+| Listing and routed model disagree | the listing's model differs from the model read at the routed unit | withheld as `identity_mismatch`; both readings are retained; the unit is not reassigned | none | Unknown (all eight agreed, and the two EMMA inverters agreed) |
+| Listed class has no class contract | a listed and allowed unit labeled PLC, PowerMeter, or BackupBox | withheld as `no_class_contract`; no routed read | none | Proven (the entries exist, the backup-box entry of an EMMA among them) |
 | Allowlist empty | no unit is allowed | every child is withheld as `not_allowlisted`; the enumeration itself may still run | the whole endpoint | Unknown |
 
 ### Guard-counter re-read rule
@@ -321,6 +339,13 @@ themselves are contract.
 The counter read answered within tens of milliseconds and returned one value on
 six reads (Proven). That the counter moves when the listing changes is Unknown,
 so the rule fails closed on any difference or any failed re-read.
+
+The rule is written for the SmartLogger counter and is not extended to an EMMA.
+The counter read is refused at the EMMA unit with exception 3 (Proven, EM-31),
+so the EMMA listing observed was read once and was bracketed by no guard. Which
+register, if any, guards an EMMA listing is Unknown (EM-32), and this section
+defines none. A listing that cannot be bracketed stays unconfirmed, and no
+section of this page turns it into an admission.
 
 ## Private function codes
 
