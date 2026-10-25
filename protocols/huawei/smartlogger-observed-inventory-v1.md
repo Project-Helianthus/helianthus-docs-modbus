@@ -173,7 +173,7 @@ use, and whether any other class appears in a listing are Unknown.
 | CA-05 | Units are not contiguous: the listed units are 0 through 9, 11, and 19, and units 10 and 12 carry no entry. | Proven |
 | CA-06 | Units 0, 1, 9, and 11 (all listed) answered an unserved read with exception 3; units 10, 12, and 100 (no entry) answered with exception 4. | Proven |
 | CA-07 | The exception code distinguishes a listed unit from an unlisted unit. This contract does not use it for identity, admission, or discovery. | Hypothesis |
-| CA-08 | Unit 19, listed and beyond the probed range of 1 through 12, answers reads. It was never read. | Unknown |
+| CA-08 | Unit 19, listed and beyond the probed range of 1 through 12, answers reads. The three passes of this page never read it. The meter run on the [monitoring contract](monitoring-readonly-v1.md) did, and the AC and energy meter groups answered with data there (MM-01). | Proven (answered, by the meter run); value form Hypothesis |
 | CA-09 | No observed key identifies a parent; the parent of every entry is the gateway that lists it. | Hypothesis |
 
 The observation also used a bounded probe of units 1 through 12 as a discovery
@@ -258,9 +258,10 @@ a vendor document.
    15-second ceiling would bound a listing to roughly sixteen entries
    (Hypothesis). A larger installation needs a different gap or ceiling, which
    belongs to the pacing contract.
-5. Whether unit 19 and the other meter and PLC units answer any read is
-   Unknown (CA-08), as is the behavior of a timing-out child: no child read
-   timed out.
+5. Whether the PLC unit answers any read is Unknown, as is the behavior of a
+   timing-out child: no child read timed out. The meter units 11 and 19
+   answered the meter run (CA-08), and the meter-number and configuration
+   groups were refused there.
 6. Whether units outside the probed set exist without a listing entry is
    Unknown; the contract never probes them.
 7. The EMMA path was observed separately (see the

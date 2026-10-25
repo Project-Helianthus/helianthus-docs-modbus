@@ -139,7 +139,7 @@ Contract for the EMMA path:
 
 | ID | Statement | Grade |
 | --- | --- | --- |
-| PD-01 | In three sessions out of three, the first request on the connection was unanswered at its five-second deadline, and its repeat on the same connection was answered within tens of milliseconds. Every later request to units 1 and 100 was answered on its first attempt. | Proven |
+| PD-01 | In four sessions out of four, the first request on the connection was unanswered at its five-second deadline, and its repeat on the same connection was answered within tens of milliseconds. The fourth session is the meter run of the monitoring contract. Every later request to units 1 and 100 was answered on its first attempt. | Proven |
 | PD-02 | The first request on a fresh connection goes unanswered once, whatever the request. | Hypothesis |
 | PD-03 | At a gap of 5 s, the gateway unit's reads took 11 to 29 ms, the child's identity reads 13 to 47 ms, and the child's monitoring groups 17 to 1881 ms, with a median of about 0.36 s. | Proven |
 | PD-04 | Unit 0 never answered: no data and no exception on any of four attempts per request (SD-30). | Proven |
