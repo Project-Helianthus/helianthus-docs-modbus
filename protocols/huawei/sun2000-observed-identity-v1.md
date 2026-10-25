@@ -22,7 +22,8 @@ Each read used here is one that the public
 [gateway contract](gateway-readonly-v1.md) already defines for another Huawei
 family; the observation shows what a routed SUN2000 unit returns at those
 offsets. No offset or string is taken from the vendor
-interface definition, which stays inspection-only. Grades are separate from
+interface definition: this page rests on observations only, as its Documents
+consulted section records. Grades are separate from
 admission, qualification, and support, and `catalog_registered=false`,
 `automatic_runtime_admission=false`, `live_qualified=false`,
 `support_claim=false`, and `write_authority=false` are unchanged. The
@@ -115,6 +116,25 @@ values, never numeric zero. A read exception on the group does not negate an
 identified inverter, and last-known-good values are retained where a profile
 permits. An inverter identity does not prove battery presence, and a gateway
 listing proves neither inverter nor battery identity.
+
+## Documents consulted
+
+| Document title | Document version | Document date | Used for |
+| --- | --- | --- | --- |
+| none | none | none | none |
+
+This page rests on observations only: the routed-unit reads and the listing
+described in the [SmartLogger observation](smartlogger-observed-inventory-v1.md),
+and the S-Dongle child recorded on the
+[S-Dongle observation](sdongle-observed-identity-v1.md). No vendor document was
+consulted to write it. The monitoring contract that follows lists the vendor
+interface definition it rests on in its own Documents consulted section, with
+the title, version, and date of the document and a copyright note in force,
+under the page conventions in the
+[applicability and licensing page](../applicability-and-licensing.md).
+
+**Copyright note.** Not applicable. No information on this page is derived from
+a vendor document.
 
 ## Open questions
 
