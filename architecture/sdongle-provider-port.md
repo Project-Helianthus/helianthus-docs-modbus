@@ -222,6 +222,33 @@ future consumers must preserve eBUS MCP compatibility and GraphQL parity for
 native evidence, reasons, status and loss; this page implements no binding.
 eeBUS output remains owned by helianthus-eebusreg. G5 D1-D5/O8 are unchanged.
 
+## Production acquisition boundary
+
+Production acquisition over a supplied read-only session follows the native
+[read pacing and production acquisition contract](https://github.com/Project-Helianthus/helianthus-docs-modbus/blob/main/protocols/huawei/read-pacing-v1.md)
+and reads only the groups of the native
+[monitoring contract](https://github.com/Project-Helianthus/helianthus-docs-modbus/blob/main/protocols/huawei/monitoring-readonly-v1.md). Both are
+authoritative, and this section adds no protocol fact, read recipe, or wire
+operation. The mapping onto this port is proposed acceptance (Hypothesis) for
+the companion provider of
+[modbusreg issue #349](https://github.com/Project-Helianthus/helianthus-modbusreg/issues/349);
+admission stays denied.
+
+- **Recorded stop.** No production refresh runs until a same-class run matches
+  the whole S-Dongle tuple on one connection generation.
+- **Cycle ordering.** One production refresh runs one native cycle: the
+  search-sequence guard at the gateway unit, which is also the first request of
+  each connection generation and may take one extra attempt, the gateway's
+  plant groups once the native contract lists them as observed, then the four
+  groups of the child unit.
+- **Child isolation.** A failed child read withholds the child for that refresh
+  only. A changed or failed guard sends no child read and identifies the child
+  again in the next refresh.
+- **Retention and loss.** Each group keeps its last complete reading with its
+  original age. Planned groups, unconsumed words, battery zero words, and every
+  meter value are named losses and are never projected as zero, empty, or
+  false.
+
 ## Acceptance and companion disposition
 
 Manual source/API, transition, independent identity, loss, example and public-link

@@ -218,6 +218,31 @@ publish. These are plan fields, not extra inventory-context fields. The public
 port never accepts a caller-authored completion plan. Such component mutation
 tests belong to the native owner, not a new parser or cycle in this wrapper.
 
+## Production acquisition boundary
+
+Production acquisition over a supplied read-only session follows the native
+[read pacing and production acquisition contract](https://github.com/Project-Helianthus/helianthus-docs-modbus/blob/main/protocols/huawei/read-pacing-v1.md)
+and reads only the groups of the native
+[monitoring contract](https://github.com/Project-Helianthus/helianthus-docs-modbus/blob/main/protocols/huawei/monitoring-readonly-v1.md). Both are
+authoritative, and this section adds no protocol fact, read recipe, or wire
+operation. The mapping onto this port is proposed acceptance (Hypothesis) for
+the companion provider of
+[modbusreg issue #349](https://github.com/Project-Helianthus/helianthus-modbusreg/issues/349);
+admission stays denied.
+
+- **Cycle ordering.** One production refresh runs one native cycle: the
+  counter guard at the logger, the logger's own groups once the native contract
+  lists them as observed, then each listed and allowed inverter in ascending
+  unit order. A changed or failed counter ends the refresh without routed
+  reads, and only a following refresh enumerates again under the full bracket.
+- **Per-child isolation.** A failed child is withheld for that refresh only.
+  Siblings, the committed inventory, and the endpoint are unaffected.
+- **Retention and loss.** Each group keeps its last complete reading with its
+  original age. Refused, planned, and unconsumed groups or words are named
+  losses and are never projected as zero, empty, or false.
+- **Identity.** Monitoring reads never refresh the inventory or a child's
+  identity; only the inventory refresh and the routed identity reads do.
+
 ## Retention, projection loss and remaining composition
 
 Only the merged commit owner stores the last complete inventory. Failed,

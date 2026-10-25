@@ -237,6 +237,33 @@ mutated in future ownership tests to prove detached preservation, with the
 expected bytes fixed before caller/view mutation. No identity field can be
 assembled from a previous partial attempt.
 
+## Production acquisition boundary
+
+Production acquisition over a supplied read-only session follows the native
+[read pacing and production acquisition contract](https://github.com/Project-Helianthus/helianthus-docs-modbus/blob/main/protocols/huawei/read-pacing-v1.md)
+and reads only the groups of the native
+[monitoring contract](https://github.com/Project-Helianthus/helianthus-docs-modbus/blob/main/protocols/huawei/monitoring-readonly-v1.md). Both are
+authoritative, and this section adds no protocol fact, read recipe, or wire
+operation. The mapping onto this port is proposed acceptance (Hypothesis) for
+the companion provider of
+[modbusreg issue #349](https://github.com/Project-Helianthus/helianthus-modbusreg/issues/349);
+admission stays denied.
+
+- **Cycle ordering.** One production refresh runs one native cycle: the EMMA's
+  unit 0 groups once the native contract lists them as observed, then each
+  listed and allowed inverter in ascending unit order. No guard exists, so the
+  listing is read at creation and after each reconnect only.
+- **Per-child isolation.** A failed inverter is withheld for that refresh only,
+  and the gateway tuple and the sibling are unaffected. A failed listing
+  re-read withholds every child for that refresh.
+- **Retention and loss.** Each group keeps its last complete reading with its
+  original age. The refused power group, the undecoded battery group, the
+  planned site groups before observation, and every meter value are named
+  losses and are never projected as zero, empty, or false.
+- **Refusal signature.** A refresh in which every request ends with a reset or
+  close after the write ends as insufficient evidence and backs off; it never
+  scans or falls back.
+
 ## Acceptance and companion disposition
 
 This partial architecture contract addresses
