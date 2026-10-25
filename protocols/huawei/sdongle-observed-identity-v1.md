@@ -211,6 +211,22 @@ stays on record, the profile outcome and the default-denied fields are
 unchanged, monitoring is not admitted, and any further live request needs the
 operator's approval at action time and a confirmed connection context.
 
+## Documents consulted
+
+| Document title | Document version | Document date | Used for |
+| --- | --- | --- | --- |
+| none | none | none | none |
+
+This page rests on observations only: every graded row comes from the two
+sanitized runs, and no vendor document was consulted to write it. A page that
+rests on a vendor document, such as a monitoring page, lists the document in its
+own Documents consulted section, with the title, version, and date of the
+document and a copyright note in force, under the page conventions in the
+[applicability and licensing page](../applicability-and-licensing.md).
+
+**Copyright note.** Not applicable. No information on this page is derived from
+a vendor document.
+
 ## Open questions
 
 1. What is the gateway's product, model, and firmware (SD-11)? Until a read

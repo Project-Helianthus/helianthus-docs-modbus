@@ -218,6 +218,24 @@ direction at that path's child unit and at unit 0, and not at its gateway unit
 100. For EMMA the reverse direction at an EMMA endpoint stays Unknown, and the
 Growatt probes were not issued. Those stay open obligations.
 
+## Documents consulted
+
+| Document title | Document version | Document date | Used for |
+| --- | --- | --- | --- |
+| none | none | none | none |
+
+This page rests on observations only: every graded row comes from the sanitized
+observation record, and no vendor document was consulted to write it. The
+documentary values that SL-08 and open question 1 compare the observation with
+are carried by the [gateway contract](gateway-readonly-v1.md), not derived here.
+A page that rests on a vendor document, such as a monitoring page, lists the
+document in its own Documents consulted section, with the title, version, and
+date of the document and a copyright note in force, under the page conventions
+in the [applicability and licensing page](../applicability-and-licensing.md).
+
+**Copyright note.** Not applicable. No information on this page is derived from
+a vendor document.
+
 ## Open questions
 
 1. Which model string a logger at either documentary firmware value reports is
