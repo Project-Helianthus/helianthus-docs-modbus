@@ -201,13 +201,18 @@ unit 100; the routed-unit rows show how a SUN2000 child answers those probes.
 | SmartLogger counter read | routed unit 1 | exception 3 | Proven |
 | SunSpec signature read | gateway unit 0 and routed unit 1 | two words that are not the SunSpec marker at unit 0, two zero words at unit 1 | Proven |
 | Growatt probes | any | not issued | Unknown |
-| SmartLogger probes at an EMMA endpoint | EMMA endpoint | no Modbus response in two bounded attempts; connections were accepted and then closed by the peer on the first request | Unknown |
+| SmartLogger counter read | EMMA path, unit 0 | exception 3 | Proven |
+| SmartLogger counter read | EMMA path, routed inverter unit 3 | exception 3 | Proven |
+| SmartLogger counter read | EMMA path, unit 100 and the other routed units | not probed | Unknown |
 | SmartLogger counter read | S-Dongle path, child unit 1 | exception 2 | Proven |
 | SmartLogger counter read | S-Dongle path, unit 0 | no response on four attempts | Proven |
 | SmartLogger counter read | S-Dongle path, gateway unit 100 | not probed | Unknown |
 | EMMA offering, model, and software reads | S-Dongle path, child unit 1 | the offering and software reads answer the child's own identity texts, and the model read answers 20 words that are not ASCII text | Proven |
 | EMMA offering, model, and software reads | S-Dongle path, unit 0 | no response on all three | Proven |
-| S-Dongle probes at an EMMA endpoint | EMMA endpoint | the EMMA endpoint returned no Modbus response to the reads it was sent | Unknown |
+| S-Dongle protocol-version, search, and capacity reads | EMMA path, unit 100 | exception 4 on all three | Proven |
+| S-Dongle search and capacity reads | EMMA path, routed inverter unit 3 | exception 3 on both | Proven |
+| S-Dongle basic identification | EMMA path, unit 100 | the EMMA's own identity, product `HEMS`, byte-identical to its reply at unit 0 | Proven |
+| S-Dongle status reads | EMMA path, unit 0 | not probed | Unknown |
 
 The negative overlap with EMMA and S-Dongle is shown at the SmartLogger
 endpoint. The rows that read at an S-Dongle path come from a separate
@@ -215,8 +220,13 @@ observation of one S-Dongle, recorded on the
 [S-Dongle observation](sdongle-observed-identity-v1.md); their grades apply to
 that installation. They show the SmartLogger and EMMA probes in the reverse
 direction at that path's child unit and at unit 0, and not at its gateway unit
-100. For EMMA the reverse direction at an EMMA endpoint stays Unknown, and the
-Growatt probes were not issued. Those stay open obligations.
+100. The rows that read at an EMMA path come from a third observation, of one
+EMMA, recorded on the [EMMA observation](emma-observed-identity-v1.md); their
+grades apply to that installation. They show the SmartLogger counter refused at
+the EMMA unit and at one of its inverters, and the S-Dongle status reads refused
+at the EMMA's unit 100 and at that inverter. The counter read at unit 100 of the
+EMMA, the S-Dongle status reads at the EMMA's unit 0, and the Growatt probes were
+not issued. Those stay open obligations.
 
 ## Documents consulted
 
@@ -253,10 +263,10 @@ a vendor document.
    timed out.
 6. Whether units outside the probed set exist without a listing entry is
    Unknown; the contract never probes them.
-7. EMMA listings and tuples, and negative overlap with an EMMA endpoint in the
-   reverse direction, have no evidence. The EMMA endpoint did not answer. The
-   S-Dongle path was observed separately (see the
+7. The EMMA path was observed separately (see the
+   [EMMA observation](emma-observed-identity-v1.md)): its tuple, its listing of
+   four entries, and the negative overlap with it in both directions are
+   recorded there. The S-Dongle path was observed separately too (see the
    [S-Dongle observation](sdongle-observed-identity-v1.md)), and its listing, if
-   any, was never read. The causes of the EMMA non-response are Unknown;
-   candidates not tested are Modbus TCP disabled on the device, a client
-   allowlist, and a session held by another client.
+   any, was never read. What guards an EMMA listing is Unknown, because the
+   counter of this page is refused at the EMMA.
