@@ -120,10 +120,10 @@ Consumed fields of the M3 series groups:
 | Fact | Read | Value form in the edition | Live check at units 1 and 2 | Grade |
 | --- | --- | --- | --- | --- |
 | String voltage, string n for n from 1 to 8 | offset 32016 + 2(n − 1), one word, from the string group | I16, V, gain 10 | Values fall inside the inverter's input range. Strings that share a tracker read equal voltages, in the pairing that the string and tracker counts of the ratings group imply. | Proven |
-| String current, string n | offset 32017 + 2(n − 1), one word | I16, A, gain 100 | The sum of string voltage times current agrees with the current-hour energy increment at the moment of the read. | Proven |
+| String current, string n | offset 32017 + 2(n − 1), one word | I16, A, gain 100 | Strings that share a tracker read equal currents, and each current lies inside the inverter's input range. The power group is refused here, so string power has no same-read cross-check; no time-normalized energy comparison was made. | Hypothesis |
 | Accumulated energy | offset 32106, two words | U32, kWh, gain 100 | It is lower than the DC-input energy counter (offset 32108, same form) by a ratio inside the conversion-efficiency band. At this gain its value is a lifetime yield that the rated power can deliver, and a gain ten times smaller would exceed that. | Proven |
-| Current-hour energy | offset 32112, two words | U32, kWh, gain 100 | It agrees with the string power, as above, and does not exceed the current-day counter. | Proven |
-| Current-day energy | offset 32114, two words | U32, kWh, gain 100 | It does not exceed the accumulated counter, and it agrees with the hour counter and the time of day. | Proven |
+| Current-hour energy | offset 32112, two words | U32, kWh, gain 100 | It does not exceed the current-day counter. That ordering does not establish the gain, and no energy change was compared with power over a measured interval. | Hypothesis |
+| Current-day energy | offset 32114, two words | U32, kWh, gain 100 | It does not exceed the accumulated counter and is not below the hour counter. That ordering does not establish the gain, and no energy change was compared with power over a measured interval. | Hypothesis |
 | Input power and active power | offsets 32064 and 32080, two words each, in the refused power group | I32, kW, gain 1000 | not read: the group is refused (MS-04) | Unknown on this path |
 | Device status code | offset 32089, one word, in the refused power group | U16 code | not read | Unknown on this path |
 
@@ -152,8 +152,8 @@ the plant AC power.
 
 | Fact | Source | Grade |
 | --- | --- | --- |
-| PV energy per inverter (accumulated, current-day, current-hour) | energy group at each inverter unit | Proven at units 1 and 2; Hypothesis at units 3 through 8, which answered identity reads but were not read for monitoring |
-| String voltage and current per inverter | string group | Proven at units 1 and 2; Hypothesis at units 3 through 8 |
+| PV energy per inverter (accumulated, current-day, current-hour) | energy group at each inverter unit | Accumulated: Proven at units 1 and 2; current-day and current-hour: Hypothesis; all Hypothesis at units 3 through 8, which answered identity reads but were not read for monitoring |
+| String voltage and current per inverter | string group | Voltage Proven and current Hypothesis at units 1 and 2; Hypothesis at units 3 through 8 |
 | PV power per inverter | power group, refused | Unknown |
 | Plant PV power and energy | plant groups, planned | Hypothesis (documentary) |
 | Grid or meter power and energy | meter units 11 and 19, never read | Unknown (meter paths below) |
@@ -245,7 +245,7 @@ be checked against the reading.
 | --- | --- | --- |
 | MD-01 | The status group (offset 32000, quantity 16), the string group (offset 32016, quantity 24), the power group (offset 32064, quantity 32), and the energy group (offset 32106, quantity 10) all answered at unit 1. | Proven |
 | MD-02 | Decoded with the SUN2000MC layout, the power group agrees with itself: the grid frequency lies in the nominal band; the line voltages are the phase voltages times the square root of three; the phase currents, the voltages, and the active and reactive powers agree with the power factor word; and the input power times the efficiency word equals the active power. | Proven (one reading) |
-| MD-03 | The input power of the power group agrees with the string voltage times current of the string group, and the current-hour energy increment agrees with the active power. | Proven (one reading) |
+| MD-03 | The input power of the power group agrees with the string voltage times current of the string group, and the hour and day counters are ordered as expected. A single reading holds no time interval, so it does not check any energy counter against power. | Proven (power and strings, one reading); energy Hypothesis |
 | MD-04 | The device status word read the code that the SUN2000MC edition assigns to grid-connected operation, and the active power was positive while producing. No other state code was observed. | Proven (observed code); its meaning for this family Hypothesis |
 | MD-05 | A single read at offset 37000 and a single read at offset 47000 each answered one zero word. The operator describes no battery at the site. | Proven |
 | MD-06 | The power group's last word (offset 32095) was zero. In the SUN2000MC edition that offset starts a two-register value. | Proven |
@@ -258,7 +258,7 @@ Consumed fields of the M1 series groups at unit 1:
 | Active power | offset 32080, two words | I32, kW, gain 1000; positive while producing | Proven at the observed child; the negative range Unknown |
 | Device status code | offset 32089, one word | U16 code; only the observed code is published, as grid-connected operation | Hypothesis for its meaning; every other code Unknown and withheld |
 | String voltage and current, string n | as on the SmartLogger path | I16, V, gain 10, and I16, A, gain 100 | Proven at the observed child (MD-03) |
-| Accumulated, current-hour, and current-day energy | offsets 32106, 32112, and 32114, two words each | U32, kWh, gain 100 | Proven at the observed child (MD-03, and the ordering of the counters) |
+| Accumulated, current-hour, and current-day energy | offsets 32106, 32112, and 32114, two words each | U32, kWh, gain 100 | Hypothesis: the counters are ordered as expected (MD-03), but no energy change was compared with power over a measured interval |
 
 The reactive power, the grid voltages, currents, and frequency, and the
 efficiency and temperature words of the power group are not consumed. They are
@@ -282,7 +282,7 @@ and on the inverter-exposed meter group (DN-05). The two are never mixed.
 
 | Fact | Source | Grade |
 | --- | --- | --- |
-| PV input power, active power, strings, and PV energy | inverter groups at unit 1 | Proven at the observed child; family-wide Hypothesis |
+| PV input power, active power, strings, and PV energy | inverter groups at unit 1 (energy Hypothesis) | Proven at the observed child; family-wide Hypothesis |
 | Plant DC input, consumption, grid exchange, and battery power | plant groups at unit 100, planned | Hypothesis (documentary) |
 | Grid meter power and energy | never read | Unknown (meter paths below) |
 | Battery state of charge and power | no battery is described; zero words only (MD-05) | Unknown; the zero words are not published as a battery value |
