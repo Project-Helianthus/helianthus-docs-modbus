@@ -57,9 +57,10 @@ native disposition contract.
   SmartLogger counter read is refused at the EMMA unit and at one inverter. The
   counter read at an S-Dongle's unit 100 stays open.
 - [x] Publishable evidence from a bounded read-only qualification for the full
-  unit identity, exact firmware, self entry, and inventory guarded by equal
-  before and after counters, with native child attributes and pagination
-  anomalies preserved under the existing bounds, exists for the observed tuple.
+  unit identity, the firmware under its floor, self entry, and inventory guarded
+  by equal before and after counters, with native child attributes and
+  pagination anomalies preserved under the existing bounds, exists for the
+  observed tuple.
 - [ ] The same evidence for the card's two documentary tuples, which were never
   observed.
 - [ ] Reconcile that evidence into the registry disposition before claiming an
@@ -78,7 +79,7 @@ below are closed for the observed installation only, or stay open. The evidence
 and its grades are on the [EMMA observation](emma-observed-identity-v1.md).
 
 - [x] Connected evidence of the complete FC03 offering, model, and software
-  tuple and its exact model-specific and within-branch firmware rules exists for
+  tuple and its exact model values and within-branch firmware floors exists for
   the observed installation. Optional MEI enrichment is neither initial identity
   nor a reason to discard a valid FC03 tuple. The model value, branch, and suffix
   are withheld on the published pages and are carried by the registry fixture.
@@ -163,11 +164,13 @@ provides application admission guidance under its separate AGPL license.
 
 All missing registers remain explicitly unspecified: monitoring, scale, unit,
 access mode, and availability markers are Unknown, and so is battery identity.
-No model family or firmware range is supported. An inverter identity does not
-prove battery presence; a gateway child listing proves neither inverter nor
-battery identity or capability. Optional absent groups remain unknown, never numeric zero;
-optional-group exceptions retain last-known-good values where a future profile
-permits, without invalidating an already identified unit.
+No model family or firmware is supported. That is a support state and sets no
+software limit under the [software applicability
+rule](monitoring-readonly-v1.md#software-applicability). An inverter identity
+does not prove battery presence; a gateway child listing proves neither inverter
+nor battery identity or capability. Optional absent groups remain unknown, never
+numeric zero; optional-group exceptions retain last-known-good values where a
+future profile permits, without invalidating an already identified unit.
 
 ## Power meter closure
 
@@ -190,8 +193,10 @@ synthetic and self-contained, without private identifiers or captures. An invali
 inventory yields no partial admission or partial child list; that rule does not
 authorize erasing unrelated valid last-known-good observations.
 
-Unknown versions, missing discriminators, collisions, unstable inventory, and
-exhausted bounds remain fail-closed under the linked contracts. Evidence never
-transfers between gateway, inverter, and battery families. Closing any checklist
-item does not itself register a profile or establish live qualification,
-production acquisition, hardware acceptance, or parent-issue completion.
+Software below a floor within its branch, missing discriminators, collisions,
+unstable inventory, and exhausted bounds remain fail-closed under the linked
+contracts. A build that no observation has seen is not an unknown version: it
+inherits under the software applicability rule. Evidence never transfers between
+gateway, inverter, and battery families. Closing any checklist item does not
+itself register a profile or establish live qualification, production
+acquisition, hardware acceptance, or parent-issue completion.

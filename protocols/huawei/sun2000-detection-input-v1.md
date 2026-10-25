@@ -72,16 +72,17 @@ permission to inherit another candidate's evidence.
 | --- | --- | --- |
 | `family` | String `SUN2000` | Exact native family claim for this subject; another Huawei family is a mismatch, not fallback |
 | `model` | Nonempty exact string | Full native model token; no prefix, wildcard, alias, serial or writable name substitution |
-| `firmware` | Nonempty exact string | Exact native firmware identity, no guessed ordering or inherited gateway version |
+| `firmware` | Nonempty exact string | Native firmware identity, retained exactly as read and compared with the software floor of the map's documented model row only within a documented branch, under the [software applicability rule](monitoring-readonly-v1.md#software-applicability); a gateway's version is never inherited by the child |
 | `unit` | `{context: string, binding: string}`; both nonempty | `context` must equal envelope `subject`; `binding` locates retained native unit-binding evidence for the same model and firmware observations, not merely a caller routing choice |
-| `map` | `{document: string, revision: string, applicability: string}`; all nonempty | Exact document/revision and locator for explicit family, model, firmware and unit applicability; no inferred cross-family or cross-version applicability |
+| `map` | `{document: string, revision: string, applicability: string}`; all nonempty | Exact document and revision as the citation key, and the locator of the explicit family, model, and unit applicability and of the model row's software floor; a firmware build that follows the floor, or one of a branch with no documented relation to it, inherits the row with grade Hypothesis; no inferred cross-family applicability |
 
 An unrecognized family string is a schema error. A well-formed but other-family
 observation is retained as an incompatible alternative to a SUN2000 claim, or
 as a referenced mismatch diagnostic, never relabeled SUN2000. For contradictions,
 the family alternative type permits other native family strings solely to
-retain the mismatch. Map applicability references must identify the exact
-candidate tuple, including unit binding, rather than assert that a map exists.
+retain the mismatch. Map applicability references must identify the
+candidate's family, model, and unit binding exactly, and the software floor that
+its firmware meets, rather than assert that a map exists.
 A public map locator requires publishable facts under the native contract;
 restricted source inspection does not satisfy this requirement.
 
@@ -235,12 +236,13 @@ retain the other four exact fields and their evidence:
 | Field varied alone | Minimal falsifier | Required outcome; consumer defect caught |
 | --- | --- | --- |
 | Model | Replace exact token with a prefix while retained evidence stays exact | `INSUFFICIENT_EVIDENCE`, `MODEL_EVIDENCE_INSUFFICIENT`; prefix/wildcard acceptance |
-| Firmware | Replace exact token with an unreferenced version | `INSUFFICIENT_EVIDENCE`, `FIRMWARE_EVIDENCE_INSUFFICIENT`; ignored or ordered firmware match |
+| Firmware | Replace the token and its retained native evidence with a build below the map row's floor within the floor's own branch | `INSUFFICIENT_EVIDENCE`, `FIRMWARE_EVIDENCE_INSUFFICIENT`; ignored floor |
+| Firmware, unseen build | Replace the token and its retained native evidence with a build that the map evidence does not name and that follows the floor in its branch, or belongs to a branch with no documented relation to it | outcome and primary reason unchanged, with firmware applicability graded Hypothesis; a ceiling that refuses an unseen build |
 | Unit | Change only `unit.value.context` away from the envelope subject | `INSUFFICIENT_EVIDENCE`, `UNIT_EVIDENCE_INSUFFICIENT`; cross-unit evidence splice |
 | Map | Change only revision to a different nonempty token with unchanged applicability evidence | `INSUFFICIENT_EVIDENCE`, `MAP_EVIDENCE_INSUFFICIENT`; document-only pin acceptance |
 
 Family exactness, unit binding, map document and applicability must also be
-checked independently by a future implementation; the four reasoned cases are
+checked independently by a future implementation; the five reasoned cases are
 not an exhaustive executable identity suite. Resolving evidence intake does
 not implement this interface. Native contract revision, publishable pinned
 facts, separate identity/monitoring fixtures, executable gateway negative

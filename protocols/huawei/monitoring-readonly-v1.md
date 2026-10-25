@@ -90,6 +90,53 @@ pages.
    energy from power or from other counters. Rollover and reset behavior is
    Unknown, because none was observed.
 
+## Software applicability
+
+This section states the software rule once for every Huawei page of this
+repository. The other pages refer to it and do not repeat it. The policy behind
+it is on the [applicability and licensing
+page](../applicability-and-licensing.md).
+
+1. **Identity stays exact.** A consulted document is cited by its exact title,
+   issue or version, and date, and an observed device is recorded with the exact
+   software string it returned. That identity is the citation key and the
+   observation record. It is not the condition under which a fact applies.
+2. **Applicability is a floor.** A fact that a consulted document states for a
+   model row applies from the minimum software that the document gives for that
+   row onward, and to the builds that follow it. A fact observed on a device
+   applies from the observed build onward in the same way. No fact carries an
+   upper software bound unless an observation records one (item 5).
+3. **Branches.** A Huawei software string names a branch, its V, R, and C part
+   taken as a whole, and a build within that branch, its SPC number. A build is
+   compared with a floor only within the same documented branch, by its SPC
+   number. A text that carries a branch part only, such as the eight-character
+   firmware text read at a routed SUN2000 unit, is compared as a branch.
+4. **Unseen builds inherit.** A build that no observation has seen is never
+   refused for that reason. At or above the floor of its branch, it inherits the
+   facts of the row. From a branch with no documented relation to the floor's
+   branch, it inherits them too. Either way the inherited facts are graded
+   Hypothesis until an observation grades them. A build below the floor within
+   the floor's own branch does not inherit, and a text without the V, R, and C
+   form is a malformed element, not an unseen build.
+5. **Only an observation narrows.** An observation that records a changed
+   behavior at a build narrows the fact from that build onward, and the page
+   records that build with the change. A refusal recorded at a build, such as a
+   refused group under the refusal rule above, is carried to the builds that
+   follow in the same way until an observation records an answer.
+6. **No other effect.** The rule decides which facts a build inherits and how
+   they are graded. It creates no admission, qualification, or support state and
+   changes no default-denied field. Model values stay exact: a model token is
+   compared whole, with no prefix, wildcard, or alias.
+
+On this page the M3 series groups rest on the row of the SUN2000MC edition's
+supported-model table that names the observed model token, so they apply to the
+M3 series from the minimum software of that row onward. The software that the
+listing reports for the M3 series units (SU-03 of the
+[SUN2000 identity contract](sun2000-observed-identity-v1.md)) is in the
+V200R023C00 branch that the edition's title names. The refusal of the power
+group on the M3 and MAP0 series (MG-01) is carried to the builds that follow
+under item 5, until an observation records an answer.
+
 ## SmartLogger path
 
 ### Units

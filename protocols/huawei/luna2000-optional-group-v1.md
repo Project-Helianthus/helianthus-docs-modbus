@@ -66,7 +66,7 @@ bindings are unknown, never inferred from history or registration order.
 | Group history | Prior observations and any permitted last-known-good fields, each retaining its original parent/group binding, native evidence reference, applicability revision, source epoch, validity, and freshness status |
 | Current eligibility | Independently evaluated permission to use each field as current under the exact accepted profile; never copied from historical qualification or from a sibling field |
 | Source epochs | Parent and battery acquisition epochs retained separately; an explicit coherent association is required, not equal numeric tokens; reconnect retires the prior association |
-| Evidence revision | Exact public source/version and accepted applicability contract; changing it invalidates prior qualification until re-evaluated |
+| Evidence revision | Exact public source/version, as the citation key, and the accepted applicability contract; a revision that records a changed fact for the battery's model row invalidates prior qualification of that fact until re-evaluated, and a revision that changes nothing for that row does not |
 | Observation result | Unknown, explicit absence, presence, optional exception, transport failure, malformed/partial evidence, or conflicting identity; retain native result and its scope without collapsing them |
 | Budgets | Explicit finite input-size, processing, retry, freshness, and retention bounds described below; none is inferred from a gateway profile |
 
@@ -131,7 +131,7 @@ case today.
 | Previous state | Evidence/event | Next state | Retained history | Current eligibility | Reason |
 | --- | --- | --- | --- | --- | --- |
 | Any | Result from retired source epoch | Unchanged | Unchanged within bounds; record rejected result separately if permitted | Cannot be restored or refreshed by this result | Obsolete source association |
-| Any | Explicit parent mismatch or changed battery model, firmware, unit, attachment, or accepted evidence revision | identity changed | Fence old partition; retain it only as bounded history | None for the old binding | Identity/applicability changed; never transfer qualification |
+| Any | Explicit parent mismatch; changed battery model, unit, or attachment; battery firmware below the floor of its documented row within that floor's branch; or an accepted evidence revision that records a changed fact | identity changed | Fence old partition; retain it only as bounded history | None for the old binding | Identity/applicability changed; never transfer qualification |
 | Any | Parent identity missing or no coherent parent/group epoch association | unknown | Preserve separately bound prior history within bounds | None | Parent binding unproven; inventory cannot fill it |
 | unknown / observed absent / identity changed | No usable presence evidence, including inventory-only evidence | unknown | Preserve old partition separately if any | None | Insufficient native evidence |
 | present-unqualified / qualified / temporarily unreadable | Disconnect, timeout, malformed/partial group evidence, missing budgets, or exhausted budget | temporarily unreadable | Preserve permitted last-known-good fields without refreshing failed fields | No fresh group result; historical fields require independent future-profile freshness/retention permission | Failed acquisition/evaluation is not absence |
@@ -142,6 +142,12 @@ case today.
 | present-unqualified / qualified / temporarily unreadable | Optional-group exception with unchanged positively identified parent and group binding | temporarily unreadable | Retain permitted partial last-known-good state and the native exception | No new group result; permitted history stays explicitly historical and freshness is evaluated per field | Optional failure does not negate identified parent or unit |
 | Any | Freshness or retention age expires without a new presence result | Unchanged observation state | Mark stale or evict as budget requires | Expired fields ineligible; state label cannot refresh them | History is not current evidence |
 | Any | Reconnect opens a new source association | unknown | Prior epoch history remains separately bounded | None until new parent and group evidence is accepted | Reconnect is not requalification |
+
+A battery firmware build that follows the floor of its documented row keeps the
+binding under the
+[software applicability rule](monitoring-readonly-v1.md#software-applicability):
+it is recorded, and the facts graded at the observed build carry over with grade
+Hypothesis until an observation grades them at the build that follows.
 
 An explicit absence cannot be reached by this revision's unknown battery
 encoding. Its row is a future decision rule, not a claim of implemented absence
