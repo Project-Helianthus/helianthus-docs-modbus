@@ -181,11 +181,13 @@ of the licensing page records. No digest appears in public text.
    profiles and every disposition are unchanged by it, and no fact of the
    monitoring contract moves because the dataset exists.
 2. **Consumers are registry follow-ups.** A registry change reads the dataset
-   only through one of two follow-ups, both to be filed: the selection change,
-   which would choose a model row from a routed model token or its recorded
-   wire alias, a model identifier, and a software floor, and the monitoring
-   profiles built on the catalogue. The public page text that those changes
-   need follows with them, and this page then names their issue numbers.
+   only through one of two follow-ups: the selection change, which is to select
+   a SUN2000 profile from the catalogue by a routed model token or its recorded
+   wire alias, a model identifier, and a software floor
+   (helianthus-modbusreg issue 362), and the monitoring profiles built on the
+   catalogue, a follow-up to be filed after the qualification captures. The
+   public page text that those changes need follows with them, and this page
+   then names the issue number of the monitoring profiles.
 3. **A consumer makes only what it reads live.** A follow-up that consumes part
    of the dataset leaves the rest inert. Every default-denied state stays
    until that follow-up meets its own admission, observation, and
@@ -246,9 +248,10 @@ of the reference's engineer-review or operational-authorization clauses.
 
 ## Open questions
 
-1. Which issue numbers do the selection change and the monitoring profiles
-   built on the catalogue take? Both follow-ups are to be filed, and this page
-   names them when they exist.
+1. Which issue number does the follow-up for the monitoring profiles built on
+   the catalogue take? It is to be filed after the qualification captures, and
+   this page names it when it exists. The selection change is
+   helianthus-modbusreg issue 362.
 2. Does a recorded wire form of a model token hold at other builds and behind
    other gateways than the ones where it was reported? The alias scope bounds
    the claim, and nothing wider is known.
