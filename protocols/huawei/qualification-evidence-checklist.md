@@ -28,7 +28,7 @@ it cannot prove that an installation has that identity or capability.
 | S-Dongle | Separate gateway and child contracts, plus one observed single-inverter tuple | Exact candidate tuple evaluation; a positive synthetic input for the candidate cannot replace the recorded stop; the observed tuple has its own card in the registry companion | Documentary tuple and offline candidate remain distinct and unobserved; one observed exact tuple (gateway unit 100, child unit 1) exists, and the gateway's product is Unknown | `PRE_LIVE_INSUFFICIENT_EVIDENCE`; unregistered, no decoder keys | Denied; the recorded `LIVE_STOPPED_PERSISTENT_NON_RESPONSE` stays in force until a same-class run matches the complete tuple on one connection generation (neither observation did), and further I/O needs the operator's approval at action time |
 | SUN2000 | Fail-closed disposition only | Decision rows are documentary, not executable detection | One observed exact identity tuple in the identity contract; admissible pinned map absent | `NO_ADMISSIBLE_PROFILE`; no decoder | None admitted; no live qualification |
 | LUNA2000 | Separate fail-closed battery disposition | Decision rows are documentary, not executable detection | Unknown; no observed tuple; battery identity cannot be inherited from parent or gateway | `NO_ADMISSIBLE_PROFILE`; no decoder | None admitted; no live qualification |
-| Power meter | Class and listing facts only, with the role as configuration | Not applicable; no meter read was issued | Unknown; make, model, firmware, and exposure path are not established | No meter class contract; every meter is `INSUFFICIENT_EVIDENCE` | None admitted; no live qualification |
+| Power meter | Class, listing, and observed exposure facts, with the role as configuration | Not applicable; the meter groups answered once per path in observations, with value form Hypothesis | Unknown; make, model, and firmware are not established, and the exposure path is observed on three paths only | No meter class contract; every meter is `INSUFFICIENT_EVIDENCE` | None admitted; no live qualification |
 
 All rows retain default denial, no automatic runtime admission, no support
 claim, and no write authority. No row is `HARDWARE_TEST_READY`.
@@ -174,7 +174,11 @@ permits, without invalidating an already identified unit.
 - [x] The rule that a meter's electrical role is configuration and is never
   derived from registers is stated in the power-meter contract.
 - [ ] The make, model, and firmware of each meter; the operator confirms them.
-- [ ] The exposure path: routed unit, gateway level, or both.
+  The operator's family declaration is configuration, and the CT ratio and meter
+  number are Unknown.
+- [ ] The exposure path beyond the three observed (routed meter units behind the
+  SmartLogger, the EMMA's unit 0, and the S-Dongle child): whether the
+  SmartLogger path also serves meter values at unit 0.
 - [ ] A meter class contract with an exact identity read. Until then every meter
   is withheld as having no class contract.
 

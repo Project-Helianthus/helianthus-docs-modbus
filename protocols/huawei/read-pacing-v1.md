@@ -48,7 +48,7 @@ source settles it.
 | PE-01 | Every request of each monitoring run was carried on one TCP connection, with one request in flight, and the gateway answered under that discipline on all three paths. | Proven |
 | PE-02 | The consulted editions of the three gateway families each state a response deadline of five seconds. The longest reply observed in an answered run took about 1.9 s, at the S-Dongle child. | Proven (observed replies); documentary deadline |
 | PE-03 | Apart from the first request of an S-Dongle connection (PD-01), every exception arrived as a reply within the same latency band as data replies, so an exception did not need the deadline to expire. | Proven |
-| PE-04 | The consulted editions bound an FC03 read at 1 to 125 registers. The largest group on the monitoring contract is 46 registers, and the largest observed group answered with data is 32. | Proven (observed groups); documentary bound |
+| PE-04 | The consulted editions bound an FC03 read at 1 to 125 registers. The largest group on the monitoring contract is 46 registers, and the largest observed group answered with data is 33 (the SmartLogger AC group). | Proven (observed groups); documentary bound |
 | PE-05 | The consulted gateway editions state a frame maximum of 256 bytes. The groups of the monitoring contract stay far below it, while the SmartLogger's inventory pages exceed it (SL-14), so the documented maximum does not bound a tolerant reader. | Proven |
 | PE-06 | At the EMMA, a client that the gateway does not allow is accepted at the TCP level and reset or closed after each request (EM-56). | Hypothesis |
 | PE-07 | The effect of a second client on the same gateway, such as the vendor's cloud service, and the shortest sustainable gap and cycle on any path. | Unknown |
@@ -139,7 +139,7 @@ Contract for the EMMA path:
 
 | ID | Statement | Grade |
 | --- | --- | --- |
-| PD-01 | In three sessions out of three, the first request on the connection was unanswered at its five-second deadline, and its repeat on the same connection was answered within tens of milliseconds. Every later request to units 1 and 100 was answered on its first attempt. | Proven |
+| PD-01 | In four sessions out of four, the first request on the connection was unanswered at its five-second deadline, and its repeat on the same connection was answered within tens of milliseconds. The fourth session is the meter run of the monitoring contract. Every later request to units 1 and 100 was answered on its first attempt. | Proven |
 | PD-02 | The first request on a fresh connection goes unanswered once, whatever the request. | Hypothesis |
 | PD-03 | At a gap of 5 s, the gateway unit's reads took 11 to 29 ms, the child's identity reads 13 to 47 ms, and the child's monitoring groups 17 to 1881 ms, with a median of about 0.36 s. | Proven |
 | PD-04 | Unit 0 never answered: no data and no exception on any of four attempts per request (SD-30). | Proven |
