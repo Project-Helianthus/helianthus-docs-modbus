@@ -115,16 +115,19 @@ page](../applicability-and-licensing.md).
    such as a minimum that a document states as applying to a whole line from one
    branch onward, or a documented upgrade path from one branch to another. A
    cover label, a release package, and a publication date order nothing. A text
-   that carries a branch part only, such as the eight-character firmware text
-   read at a routed SUN2000 unit, is compared as a branch.
+   that carries the V and R parts only, such as the eight-character firmware
+   text read at a routed SUN2000 unit, is an accepted shortened form. It names
+   a line and a release part, no C part and no SPC number is inferred for it,
+   and it is compared only on the parts it carries.
 4. **Unseen builds inherit.** A build that no observation has seen is never
    refused for that reason. At or above the floor, within its branch or along a
    documented order of branches, it inherits the facts of the row. From a branch
    with no documented relation to the floor, it inherits them too. Either way
    the inherited facts are graded Hypothesis until an observation grades them. A
    build below the floor, within its branch or along a documented order, does
-   not inherit, and a text without the V, R, and C form is a malformed element,
-   not an unseen build.
+   not inherit, and a text that is neither the V, R, and C form nor the
+   accepted shortened form of item 3 is a malformed element, not an unseen
+   build.
 5. **Only an observation narrows.** An observation that records a changed
    behavior at a build narrows the fact from that build onward, and the page
    records that build with the change. A refusal recorded at a build, such as a
