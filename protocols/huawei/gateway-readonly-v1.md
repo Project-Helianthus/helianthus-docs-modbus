@@ -88,9 +88,12 @@ candidate's documented facts with grade Hypothesis; it is not a separate entry.
 The protocol version is decoded as the editions' note states: the high byte is
 the incompatible main revision and the low byte the compatible release
 revision, and D5.0 is main revision 5 with release revision 0. The candidate
-requires main revision 5 with a release revision from 0 onward. The type word
-at offset 37410 is the network connection type that the editions list, a
-configuration value: the candidate records it and does not compare it.
+requires main revision 5 with a release revision from 0 onward. That
+requirement is the compatibility statement of the consulted editions, which
+declare those protocol revisions compatible, and not a software ceiling: the
+software floor stays V200R022C10, and the builds that follow it inherit. The
+type word at offset 37410 is the network connection type that the editions
+list, a configuration value: the candidate records it and does not compare it.
 
 Readability of unit 100, search status alone, or a serial number is
 insufficient. Extended child inventory remains offline-only until the exact TCP
