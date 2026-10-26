@@ -138,8 +138,8 @@ a routed unit, and the gateway candidate reads at unit 100.
 | Field | Contract |
 | --- | --- |
 | Family | An S-Dongle gateway fronting one SUN2000-family inverter. The gateway names no product, so the tuple has no gateway model variant (SD-10), and the child's model never becomes the gateway's. |
-| Required tuple | All of the following at the stated units on one connection generation. Gateway unit 100: basic identification (FC2B / MEI 0x0e, read code 1) is answered with exception 1; FC03 offset 37411, quantity 1, reads 0; FC03 offset 30068, quantity 2, reads 50 then 0, compared as words and never decoded; FC03 offset 37410, quantity 3, has type word 4 and state word 0 (the equality of the sequence across the child identification reads was not observed, SD-08, and is not part of the tuple); FC03 offset 37429, quantity 1, reads at least 1. Child unit 1: the model block (FC03 offset 30000, quantity 15) is a printable non-empty model text of the SUN2000 family, a NUL, optional printable residue, and NUL padding over the full 30 bytes; basic identification (read code 1) carries vendor exactly `Huawei`, product exactly `SUN2000`, and a present version object, each object once; the extended inventory from object 0x87 (read code 3) is one page with conformity 0x03, no continuation, count object value 1, and one entry object 0x88 whose keys are exactly 1 through 6, each once, whose key 1 equals the model text, and whose key 5 is exactly `1`. The page publishes no model token, so no specific token is a discriminator of the tuple and a particular child model stays Unknown; no prefix, wildcard, or range links two tokens. |
-| Recorded, not gating | The child's firmware text and protocol words, entry keys 2, 3, 4, and 6, the version object of the basic reply, objects beyond the basic category, the capacity value beyond the lower bound above, the residue after the model text, the declared-object field, the next-object field, entry padding, entry key order, and any timing. They corroborate and are retained as native evidence; they select and reject nothing. |
+| Required tuple | All of the following at the stated units on one connection generation. Gateway unit 100: basic identification (FC2B / MEI 0x0e, read code 1) is answered with exception 1; FC03 offset 37411, quantity 1, reads 0; FC03 offset 30068, quantity 2, reads 50 then 0, compared as words and never decoded, because their encoding is Unknown (SD-06), and once an observation establishes it the comparison takes the floor form of the consulted editions' note, the same main revision with a release revision from the observed one onward; FC03 offset 37410, quantity 3, has state word 0 (the equality of the sequence across the child identification reads was not observed, SD-08, and is not part of the tuple); FC03 offset 37429, quantity 1, reads at least 1. Child unit 1: the model block (FC03 offset 30000, quantity 15) is a printable non-empty model text of the SUN2000 family, a NUL, optional printable residue, and NUL padding over the full 30 bytes; basic identification (read code 1) carries vendor exactly `Huawei`, product exactly `SUN2000`, and a present version object, each object once; the extended inventory from object 0x87 (read code 3) is one page with conformity 0x03, no continuation, count object value 1, and one entry object 0x88 that carries keys 1 through 6, each once, whose key 1 equals the model text, and whose key 5 is exactly `1`; a further key is retained as opaque native evidence and does not reject the entry, and a repeated key does. The page publishes no model token, so no specific token is a discriminator of the tuple and a particular child model stays Unknown; no prefix, wildcard, or range links two tokens. |
+| Recorded, not gating | The type word of the search-sequence read at unit 100 (observed as 4; the consulted editions name that word the network connection type, a configuration value, and list values that do not include 4), the child's firmware text and protocol words, entry keys 2, 3, 4, and 6, any key beyond them, the version object of the basic reply, objects beyond the basic category, the capacity value beyond the lower bound above, the residue after the model text, the declared-object field, the next-object field, entry padding, entry key order, and any timing. They corroborate and are retained as native evidence; they select and reject nothing. |
 | Forbidden identity | Serial number, ESN (entry key 4 and the serial-bearing block), writable alias, readability of any register (including the S-Dongle's own registers answered at the child, the EMMA offsets, and the SunSpec offset), readability of unit 100 or search status alone, basic identification alone, a child listing, the unit identifier of a request, and a prefix, wildcard, case-folded, or whitespace-normalized match. |
 | Multiple-positive outcome | `AMBIGUOUS`: another Huawei class contract that is also positive at the same endpoint produces no selection, and no order or priority breaks the tie. The collision rule of the gateway contract gives `insufficient_evidence`. |
 | Negative-overlap obligations | Executable fixtures against SmartLogger (the counter read at the child is an exception and at unit 0 is silent; the basic reply at the child is its own SUN2000 identity), EMMA (the model gate fails on non-text data and unit 0 is silent), SunSpec (no marker), and the SUN2000 identity contract (a different model-block form). Growatt probes are Unknown, and S-Dongle probes at an EMMA endpoint are refused at unit 100 and at an inverter (Proven), with the status reads at the EMMA's unit 0 Unknown. The evidence is in the overlap table above. |
@@ -158,7 +158,7 @@ extended inventory is addressed to the child only, never to the gateway unit.
 | Every element of the required tuple exact | identity applicability holds; the disposition outcome stays `PRE_LIVE_INSUFFICIENT_EVIDENCE` |
 | Basic identification at unit 100 answers with a reply instead of exception 1 | `INSUFFICIENT_EVIDENCE` |
 | Gateway reads exact and no child identity, or a child model text that is not printable, not of the SUN2000 family, or not equal to entry key 1 | `INSUFFICIENT_EVIDENCE` |
-| Child inventory missing, logger-shaped, with more than one entry, or with a key set other than 1 through 6 | `INSUFFICIENT_EVIDENCE` |
+| Child inventory missing, logger-shaped, with more than one entry, or without each of keys 1 through 6 exactly once | `INSUFFICIENT_EVIDENCE` |
 | Entry key 5 differs from the unit read, or entry key 1 differs from the model block | `INSUFFICIENT_EVIDENCE` |
 | Serial number or ESN only, or readability only | `INSUFFICIENT_EVIDENCE` |
 | Another Huawei class also positive at the endpoint | `AMBIGUOUS` |
@@ -166,8 +166,8 @@ extended inventory is addressed to the child only, never to the gateway unit.
 ## Tolerance requirements
 
 These are observed requirements: a reader that cannot do each of them cannot
-read this tuple. They add to the tolerance requirements of the SmartLogger
-observation and remove none of its ceilings.
+read this tuple. Each is a lower bound and none is a cap. They add to the
+tolerance requirements of the SmartLogger observation and remove none of them.
 
 1. **Model block.** The text ends at the first NUL. Every byte after it must be
    printable ASCII followed only by NUL padding, and the residue is retained as
@@ -183,11 +183,15 @@ observation and remove none of its ceilings.
    and the fourth tolerance requirement of the SmartLogger observation.
 5. **Entry.** Accept an entry that is not NUL padded and is shorter than the
    254-byte entries of the SmartLogger observation (75 bytes here); padding is
-   accepted and not required. Key order is not validated.
-   Unknown keys and repeated keys still reject the inventory. Basis: SD-24.
-6. **Frame length.** The classic 253-byte limit suffices for this tuple, because
-   the longest response was 87 bytes. The oversize tolerance of the SmartLogger
-   observation is not needed. Basis: SD-21.
+   accepted and not required. Key order is not validated. The observed keys 1
+   through 6 are a lower bound: a further key is retained as opaque native
+   evidence and does not reject the inventory, and repeated keys still reject
+   it. Basis: SD-24.
+6. **Frame length.** The longest response was 87 bytes, within the classic
+   253-byte limit. That length is a lower bound and not a cap: a reader of this
+   tuple works within the resource bounds of the gateway contract and does not
+   refuse a longer response, such as an oversize page of the kind the
+   SmartLogger observation records, for its length alone. Basis: SD-21.
 
 Timing is not a requirement. The first-request behavior of SD-33 and SD-34 is
 recorded and never required, and no predicate of the tuple depends on an
@@ -218,17 +222,29 @@ operator's approval at action time and a confirmed connection context.
 
 | Document title | Document version | Document date | Used for |
 | --- | --- | --- | --- |
-| none | none | none | none |
+| SDongle V200R025C00SPC120 MODBUS Interface Definitions | Issue 01 | 2025-12-23 | the network connection type that the type word carries and its listed values, and the main and release revisions of the protocol-version note, both in the family contract (p. 9) |
+| SDongle V200R022CC10 MODBUS Interface Definitions | Issue 02 | 2023-04-20 | the network connection type that the type word carries and its listed values, and the main and release revisions of the protocol-version note, both in the family contract (p. 9) |
+| Huawei gateway Modbus reference | reference baseline 2026-10-26.1 | 2026-10-26 | locating the type word and the protocol-version note in the two documents above |
 
-This page rests on observations only: every graded row comes from the two
-sanitized runs, and no vendor document was consulted to write it. A page that
-rests on a vendor document, such as a monitoring page, lists the document in its
-own Documents consulted section, with the title, version, and date of the
-document and a copyright note in force, under the page conventions in the
-[applicability and licensing page](../applicability-and-licensing.md).
+Every graded row of this page comes from the two sanitized runs, and no row is
+graded from a document. The documents above give the family contract two notes
+only: why the type word is recorded and not compared, and the form that the
+protocol-word comparison takes once the encoding is known. No table, label, or
+text of the documents is reproduced here.
 
-**Copyright note.** Not applicable. No information on this page is derived from
-a vendor document.
+**Copyright note.** The information on this page that is derived from the
+SDongle documents listed above is attributed to Huawei Digital Power
+Technologies Co., Ltd., which retains the copyright in those documents. This
+page states that information in its own words and does not reproduce the
+documents. The CC0-1.0 dedication of this page covers its own expression only
+and does not relicense those documents.
+
+**Reference note.** The facts that the Documents consulted section attributes
+to the Huawei gateway Modbus reference were taken through that independent
+documentary work, whose contributors dedicate its original writing under
+CC0-1.0. The vendor documents it cites keep their rights, as the copyright note
+states. This page restates those facts in its own words and carries over none
+of the reference's engineer-review or operational-authorization clauses.
 
 ## Open questions
 

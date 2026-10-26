@@ -32,19 +32,30 @@ unit 0 and uses this bounded caller-run sequence:
 The counter values must be equal. Inventory is limited to 15 seconds, 248
 pages, 248 objects, 65536 response bytes, and 247 children. Object 0x87 declares
 the child count. The first record is the self entry and its model must be exactly
-`SmartLogger`. Its software version must be of the V300 line at or above
-`V300R001C00`, the minimum that both consulted editions state for that line.
-Their cover labels, `V300R024C10SPC191` and `V300R024C10SPC210`, identify the
-editions and are not floors. A build that no observation has seen inherits with
-grade Hypothesis under the
+`SmartLogger`. That exactness is admission policy of this card: the consulted
+editions name the SmartLogger family in their applicability sections without a
+model list and print no self-entry model text, so the value is the family name
+and not a documented exhaustive model. Its software version must be of the V300
+line at or above `V300R001C00`, the minimum that both consulted editions state
+for that line. Their cover labels, `V300R024C10SPC191` and `V300R024C10SPC210`,
+identify the editions and are not floors. A build that no observation has seen
+inherits with grade Hypothesis under the
 [software applicability rule](monitoring-readonly-v1.md#software-applicability).
 
-Child attributes use the existing bounded semicolon encoding: key 1 is model,
-2 software version, 3 protocol version, 4 sensitive native identity input,
-5 routing address, 6 feature version, and 8 product type. Key 4 is validated
-but never copied into a public fixture. Unknown keys, repeated keys, missing
-model, malformed ASCII, repeated child address, or wrong object order rejects
-the whole inventory. A counter change, count mismatch, cursor loop, second wrap, or any exhausted limit rejects
+Child attributes use the bounded semicolon encoding of `key=value` pairs, with
+the keys that each consulted edition defines. In both editions key 1 is the
+model text, 2 the software text, 3 the interface-protocol version text, 4 the
+sensitive native identity input, and 5 the routing address. Key 6 differs by
+edition: Issue 52 defines it as a feature-version integer and Issue 49 as a
+parallel-network integer, so the card decodes neither and retains key 6 as
+opaque native evidence. Issue 52 also defines key 8, the product type; key 9,
+parent-device information; and key 10, a registration-code text that is never a
+command, and it marks key 7 not applicable. Issue 49 defines keys 1 through 6
+only. Key 4 is validated but never copied into a public fixture. A key that
+neither edition defines is retained as opaque native evidence and does not by
+itself reject the inventory. Repeated keys, missing model, malformed ASCII,
+repeated child address, or wrong object order rejects the whole inventory. A
+counter change, count mismatch, cursor loop, second wrap, or any exhausted limit rejects
 the whole inventory. No partial child list survives a failure.
 
 An EMMA self entry is a SmartLogger negative control and produces no SmartLogger
@@ -56,7 +67,8 @@ inventory capture remains missing.
 
 The residual evidence listed for SmartLogger in the table above, one connected
 read-only identity and inventory capture, is closed for one observed tuple and
-stays open for the card's two documentary tuples, which were never observed.
+stays open for the card's documentary entry (model `SmartLogger`), which was
+never observed.
 The observed tuple is a separate entry, with its own floor, in the
 [gateway contract](gateway-readonly-v1.md); its evidence and grades are in the
 [SmartLogger observation](smartlogger-observed-inventory-v1.md).
@@ -64,9 +76,9 @@ The observed tuple is a separate entry, with its own floor, in the
 Applied to the observed gateway, the card above returns `INSUFFICIENT_EVIDENCE`,
 because the gateway's self-entry model `Smart Logger` is not the card's exact
 model `SmartLogger`. Its firmware is of the V300R023C10 branch, which precedes
-V300R024C10 within the V300 line and is above the documented minimum, so it
-meets the card's software rule and is not the reason. That is the card working
-as written, not a failure of the gateway. The observed tuple needs its own card
+V300R024C10 along the documented upgrade path and is above the documented
+minimum, so it meets the card's software rule and is not the reason. That is
+the card working as written, not a failure of the gateway. The observed tuple needs its own card
 in the registry companion, and this page defines no card identity for it. Such a
 card must accommodate what the observation showed:
 
@@ -75,8 +87,8 @@ card must accommodate what the observation showed:
   above compares the count object with the number of entries and does not
   refer to that field;
 - a count object that includes the self entry;
-- attribute keys 9 and 10 as known opaque keys, and attribute order that is
-  not numeric; and
+- attribute keys 9 and 10, which Issue 52 defines, as known opaque keys, and
+  attribute order that is not numeric; and
 - a basic reply that carries more than the basic category, which is optional
   corroboration only.
 
@@ -94,11 +106,17 @@ quantity 15 for offering, offset 30222 quantity 20 for model, and offset 30035
 quantity 15 for software version.
 
 After terminal padding is removed, the model must be exactly `EMMA-A01` or
-`EMMA-A02`. Firmware meets the floor of its branch: R024C00 requires SPC100 or
+`EMMA-A02`, the admission list of this card within the family `EMMA` that the
+consulted editions name without a model list. Firmware meets the floor of its
+branch: R024C00 requires SPC100 or
 greater within R024C00, and R025C00 requires SPC102 or greater within R025C00.
-No comparison crosses branches. A build of a branch with no documented relation
-to either inherits the card's identity facts with grade Hypothesis under the
-software applicability rule and is never refused for being unseen. A SmartLogger
+These are the minima that the two editions state, and a build that follows a
+floor inherits the card's identity facts with grade Hypothesis.
+No comparison crosses branches. The editions document no order between the
+R024C00 and R025C00 branches, so each build is compared with the floor of its
+own branch, and a build of a branch with neither a documented floor nor a
+documented relation inherits the card's identity facts with grade Hypothesis
+under the software applicability rule. No build is refused for being unseen. A SmartLogger
 model, near alias, SPC below the floor within R024C00 or R025C00, partial tuple,
 or wrong logical unit produces insufficient evidence.
 
@@ -300,10 +318,12 @@ fixtures or an offline identity match.
 
 | Document title | Document version | Document date | Used for |
 | --- | --- | --- | --- |
-| SmartLogger V300R024C10SPC191 ModBus Interface Definitions | Issue 52 | 2025-06-06 | the minimum software of the V300 line on the SmartLogger card (pp. 15–16) |
-| SmartLogger V300R024C10SPC210 ModBus Interface Definitions | Issue 49 | 2025-03-19 | the minimum software of the V300 line on the SmartLogger card (pp. 13–14) |
+| SmartLogger V300R024C10SPC191 ModBus Interface Definitions | Issue 52 | 2025-06-06 | the minimum software of the V300 line (p. 15) and the family name in the applicability section (pp. 15–16), on the SmartLogger card; the descriptor keys, key 6 as a feature-version integer, and keys 8 through 10 (pp. 83–85) |
+| SmartLogger V300R024C10SPC210 ModBus Interface Definitions | Issue 49 | 2025-03-19 | the minimum software of the V300 line (p. 13) and the family name in the applicability section (pp. 13–14), on the SmartLogger card; the descriptor keys 1 through 6 and key 6 as a parallel-network integer (pp. 97–99) |
 | SmartLogger V300R024C10SPC275 Upgrade Guide | Issue 01 | 2026-10-16 | the upgrade path that places the observed V300R023C10 branch before V300R024C10 within the V300 line (pp. 7–8) |
-| Huawei gateway Modbus reference | reference baseline 2026-10-26.1 | 2026-10-26 | locating the minimum statements and the upgrade path in the three documents above |
+| SmartHEMS V100R024C00 MODBUS Interface Definitions | Issue 01 | 2024-07-15 | the R024C00 floor and the family name `EMMA` on the EMMA card (pp. 7–8) |
+| SmartHEMS V100R025C00SPC102 MODBUS Interface Definitions | Issue V100R025C00SPC102 | 2025-08-14 | the R025C00 floor and the family name `EMMA` on the EMMA card (pp. 7–8) |
+| Huawei gateway Modbus reference | reference baseline 2026-10-26.1 | 2026-10-26 | locating the minimum statements, the family names, the descriptor keys, and the upgrade path in the documents above |
 
 The other rules of this page predate the page conventions of the
 [applicability and licensing page](../applicability-and-licensing.md) and keep
@@ -316,6 +336,13 @@ Ltd., which retains the copyright in those documents. This page states that
 information in its own words and does not reproduce the documents. The CC0-1.0
 dedication of this page covers its own expression only and does not relicense
 those documents.
+
+**Copyright note.** The information on this page that is derived from the
+SmartHEMS documents listed above is attributed to Huawei Digital Power
+Technologies Co., Ltd., which retains the copyright in those documents. This
+page states that information in its own words and does not reproduce the
+documents. The CC0-1.0 dedication of this page covers its own expression only
+and does not relicense those documents.
 
 **Reference note.** The facts that the Documents consulted section attributes
 to the Huawei gateway Modbus reference were taken through that independent

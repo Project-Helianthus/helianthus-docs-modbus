@@ -42,12 +42,15 @@ re-creates the Proven rows as synthetic fixtures; no capture is published.
 | SL-05 | The basic reply carried twelve objects (identifiers 0x00 to 0x03, 0x10 to 0x15, 0x17, and 0x19) instead of the three basic objects, with conformity 0x01 and no continuation. | Proven |
 | SL-06 | The extended self entry (the first entry object) carries model attribute `Smart Logger`, firmware attribute `V300R023C10SPC620`, and unit attribute `0`. Its model and firmware equal the basic reply's product and version objects. | Proven |
 | SL-07 | A basic read answers with the gateway's own identity when the request names unit 0, 1, or 100, so the unit identifier of an MEI request selects no device. Other unit identifiers were not tried. | Proven |
-| SL-08 | The observed model value differs by one space from the documentary self-entry model `SmartLogger`, and the observed firmware is outside the two documentary firmware values. | Proven |
+| SL-08 | The observed model value differs by one space from the self-entry model `SmartLogger` of the documentary entry in the gateway contract. | Proven |
 | SL-09 | Other firmware of the family reports its model with or without the space. | Unknown |
 
 The counter stayed constant but never moved, so SL-03 stays Unknown: equality
 before and after a read is a guard, not proof that no change occurred in
-between, and a U16 counter can wrap.
+between, and a U16 counter can wrap. Where the observed firmware stands against
+the documented software floor and the documented upgrade path is stated on the
+[gateway contract](gateway-readonly-v1.md), which carries the documentary
+values; this page compares nothing with them.
 
 ## Extended inventory paging
 
@@ -74,9 +77,11 @@ The observed trace, in sizes only:
 ### Tolerance requirements
 
 These are observed requirements: a reader that cannot do each of them cannot
-read this logger's inventory. They narrow the existing ceilings of 15 seconds,
-248 pages, 248 objects, 65536 response bytes, and 247 children; they do not
-remove them, and anything beyond a ceiling is still insufficient evidence.
+read this logger's inventory. Each is a lower bound, what a reader must at least
+accept, and none is a cap. They sit inside the resource bounds of the gateway
+contract, 15 seconds, 248 pages, 248 objects, 65536 response bytes, and 247
+children, which are policy and not observed values, and anything beyond a
+resource bound is still insufficient evidence.
 
 1. **Frame length.** Accept FC2B / MEI 0x0e responses with a PDU of at least 263
    bytes (MBAP length field at least 264). The classic 253-byte PDU limit and
@@ -86,8 +91,8 @@ remove them, and anything beyond a ceiling is still insufficient evidence.
 2. **Declared-object field.** Do not require it to equal the number of objects
    present. Completeness comes from the count object, `More`, `Next object ID`,
    and a final `More` of 0x00. Basis: SL-11.
-3. **Entry length.** Accept one object of up to 254 bytes per response. Basis:
-   SL-14.
+3. **Entry length.** Accept one entry object of 254 bytes per response, the
+   observed length, which is a lower bound and not a cap. Basis: SL-14.
 4. **Basic reply.** Decode a basic reply with objects beyond the basic category
    as received and retain the extra objects as opaque native evidence. A basic
    reply that cannot be decoded neither negates nor supplies identity. Basis:
@@ -95,8 +100,10 @@ remove them, and anything beyond a ceiling is still insufficient evidence.
 5. **Count.** The count object counts entries including the self entry, so the
    child count is the count minus one. Basis: SL-13.
 6. **Attribute keys.** Keys 9 and 10 are known opaque keys, and key order inside
-   an entry is not numeric and is not validated. Other unknown keys and repeated
-   keys still reject the inventory. Basis: the encoding table below.
+   an entry is not numeric and is not validated. The observed key set is a lower
+   bound: a key outside it is retained as opaque native evidence and does not
+   reject the inventory. Repeated keys still reject it. Basis: the encoding
+   table below.
 
 ## Entry encoding
 
@@ -248,9 +255,9 @@ a vendor document.
 
 ## Open questions
 
-1. Which model string a logger at either documentary firmware value reports is
-   Unknown, because neither was observed. SL-08 shows that the observed
-   logger's model differs from the documented model by one space.
+1. Which model string a logger at another build reports is Unknown, because
+   one build was observed. SL-08 shows that the observed logger's model differs
+   from the documentary model by one space.
 2. The meaning of keys 3, 6, 9, and 10, and whether the counter moves when the
    listing changes (SL-03), are Unknown. A listing change was never observed.
 3. The finite frame cap above 263 bytes is Unknown (tolerance requirement 1).

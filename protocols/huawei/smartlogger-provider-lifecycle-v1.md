@@ -11,7 +11,7 @@ transport or successfully exercising synthetic mechanics changes none of these.
 
 | Evidence label | Claim and limit |
 | --- | --- |
-| Proven | The public native contracts below specify the read sequence, exact candidate tuples, parser rules, and ceilings. This is documentary evidence, not proof of an implemented lifecycle or device behavior. |
+| Proven | The public native contracts below specify the read sequence, the candidate's identity elements and software floor, parser rules, and ceilings. This is documentary evidence, not proof of an implemented lifecycle or device behavior. |
 | Hypothesis | A future provider implementing the ownership and commit rules here can isolate failed refreshes and obsolete completions. Implementation and independent behavioral evidence remain required. |
 | Unknown | Connected qualification, production acquisition, runtime concurrency behavior, and public-surface replay are not established here. |
 
@@ -92,13 +92,17 @@ The self entry must have exact model `SmartLogger` and a firmware of the V300
 line at or above `V300R001C00`, the minimum that the consulted editions state,
 as the [qualification card](qualification-readiness-v1.md) records; their cover
 labels, `V300R024C10SPC191` and `V300R024C10SPC210`, are citations and not
-floors. A build that no observation has seen inherits with grade Hypothesis
-under the
+floors. The exact model comparison is admission policy: the editions name the
+SmartLogger family without a model list and print no self-entry model text. A
+build that no observation has seen inherits with grade Hypothesis under the
 [software applicability rule](monitoring-readonly-v1.md#software-applicability).
-Preserve the existing bounded semicolon attribute encoding and rejection rules:
-unknown/repeated keys, missing model, malformed ASCII/attributes, duplicate
+Preserve the bounded semicolon attribute encoding and the card's rejection
+rules: repeated keys, missing model, malformed ASCII/attributes, duplicate
 objects or child addresses, wrong order, count mismatch, cursor loops and a
-second wrap all invalidate the inventory.
+second wrap all invalidate the inventory. A key that the consulted editions do
+not define is retained as opaque native evidence and does not by itself
+invalidate it, and key 6, whose meaning differs by edition, is never decoded,
+as the card states.
 Equal U16 counters are the existing guard, not proof that no intervening change
 or counter wrap ever occurred.
 
@@ -180,3 +184,29 @@ eBUS MCP envelopes and GraphQL parity are unchanged; no new consumer surface or
 semantic mapping is defined. G5 D1-D5/O8 remain J01-J17-owned: this page creates
 no receipts, idempotency ledger, principal boundary or recovery redesign. It
 closes no parent issue or release gate.
+
+## Documents consulted
+
+| Document title | Document version | Document date | Used for |
+| --- | --- | --- | --- |
+| SmartLogger V300R024C10SPC191 ModBus Interface Definitions | Issue 52 | 2025-06-06 | the minimum software of the V300 line (p. 15) and the family name in the applicability section (pp. 15–16), for the self-entry rule; the descriptor keys and key 6 (pp. 83–85) |
+| SmartLogger V300R024C10SPC210 ModBus Interface Definitions | Issue 49 | 2025-03-19 | the minimum software of the V300 line (p. 13) and the family name in the applicability section (pp. 13–14), for the self-entry rule; the descriptor keys and key 6 (pp. 97–99) |
+| Huawei gateway Modbus reference | reference baseline 2026-10-26.1 | 2026-10-26 | locating the minimum statements, the family name, and the descriptor keys in the two documents above |
+
+The ownership and transaction rules of this page are proposed provider
+requirements and rest on no document. No table, label, or text of the documents
+is reproduced here.
+
+**Copyright note.** The information on this page that is derived from the
+SmartLogger documents listed above is attributed to Huawei Technologies Co.,
+Ltd., which retains the copyright in those documents. This page states that
+information in its own words and does not reproduce the documents. The CC0-1.0
+dedication of this page covers its own expression only and does not relicense
+those documents.
+
+**Reference note.** The facts that the Documents consulted section attributes
+to the Huawei gateway Modbus reference were taken through that independent
+documentary work, whose contributors dedicate its original writing under
+CC0-1.0. The vendor documents it cites keep their rights, as the copyright note
+states. This page restates those facts in its own words and carries over none
+of the reference's engineer-review or operational-authorization clauses.

@@ -53,6 +53,15 @@ source settles it.
 | PE-06 | At the EMMA, a client that the gateway does not allow is accepted at the TCP level and reset or closed after each request (EM-56). | Hypothesis |
 | PE-07 | The effect of a second client on the same gateway, such as the vendor's cloud service, and the shortest sustainable gap and cycle on any path. | Unknown |
 
+The read bound and the frame maximum of the editions do not agree: a response to
+a 125-register FC03 read takes 259 bytes with its MBAP header, more than the
+256-byte maximum, while a 123-register response takes 255 bytes. The gateway
+reference settles this with a client policy of its own, not a vendor statement,
+by capping a read at 123 registers. This contract adopts that cap as its own
+policy (rule 5). The largest group on the monitoring contract is 46 registers,
+so the cap changes no read, and it does not bound the inventory pages, whose
+tolerance is on the SmartLogger observation.
+
 Contract rules that apply to every path:
 
 1. **One connection.** A provider owns exactly one connection per endpoint and
@@ -72,7 +81,8 @@ Contract rules that apply to every path:
    evidence of absence.
 5. **Extent.** A read is exactly one group or identity read of the linked pages.
    Groups are never merged into a longer read, and a refused group is never split
-   into reads that the monitoring contract does not list.
+   into reads that the monitoring contract does not list. No FC03 read exceeds
+   123 registers.
 
 ## SmartLogger pacing
 
@@ -83,15 +93,19 @@ Contract rules that apply to every path:
 | PS-03 | A whole inventory enumeration with its counter bracket took 15 exchanges in under 11 s (SL-17). | Proven |
 | PS-04 | Whether the counter moves when the listing changes (SL-03), the shortest gap the logger sustains, and its behavior under a concurrent client. | Unknown |
 
-The V300R025C10 edition requires an interval of at least 200 ms between two
-consecutive query commands. The V300R024C10SPC191 edition states no interval.
-The observed gap of 750 ms meets both editions.
+Issue 01 of the V300R025C10 edition requires an interval of at least 200 ms
+between two consecutive query commands. Issue 02 of that edition, and Issue 02
+of the V300R026C10 edition, state at least 100 ms between queries instead. The
+V300R024C10SPC191 edition states no interval. The two statements of the
+V300R025C10 edition are carried as they stand, and no issue number or date
+selects one. The observed gap of 750 ms meets every one of them.
 
 Contract for the SmartLogger path:
 
 1. **Gap.** 750 ms, the observed gap. It is never shortened below that until an
-   observation shows a shorter gap answered, and never below the 200 ms of the
-   V300R025C10 edition.
+   observation shows a shorter gap answered, and never below 200 ms, the
+   stricter of the two intervals that the issues of the V300R025C10 edition
+   state, which meets both.
 2. **Cycle.** A recommended cycle of 60 s (Hypothesis: the maximum sustained
    cycle was not measured). A cycle reads the counter and then three groups at
    each listed and allowed inverter, 25 reads for the observed eight inverters,
@@ -249,12 +263,15 @@ consumer sees each of them as Unknown, never as zero, empty, or false.
 | Document title | Document version | Document date | Used for |
 | --- | --- | --- | --- |
 | SmartLogger V300R024C10SPC191 ModBus Interface Definitions | Issue 52 | 2025-06-06 | the response deadline, the frame maximum, the read quantity bound, and the absence of an interval rule |
-| SmartLogger V300R025C10 ModBus Interface Definitions | Issue 01 | 2025-12-22 | the minimum interval between query commands, the response deadline, the frame maximum, and the read quantity bound |
+| SmartLogger V300R025C10 ModBus Interface Definitions | Issue 01 | 2025-12-22 | the minimum interval between query commands (p. 7), the response deadline, the frame maximum, and the read quantity bound |
+| SmartLogger V300R025C10 ModBus Interface Definitions | Issue 02 | 2026-10-09 | the minimum interval of 100 ms between queries carried next to Issue 01 (p. 7) |
+| SmartLogger V300R026C10 ModBus Interface Definitions | Issue 02 | 2026-10-09 | the minimum interval of 100 ms between queries carried next to Issue 01 of the V300R025C10 edition (p. 7) |
 | SmartHEMS V100R024C00 MODBUS Interface Definitions | Issue 01 | 2024-07-15 | the response deadline, the frame maximum, and the read quantity bound on the EMMA path |
 | SmartHEMS V100R025C00SPC102 MODBUS Interface Definitions | Issue V100R025C00SPC102 | 2025-08-14 | the response deadline, the frame maximum, and the read quantity bound on the EMMA path |
 | SDongle V200R025C00SPC120 MODBUS Interface Definitions | Issue 01 | 2025-12-23 | the response deadline, the frame maximum, the read quantity bound, and the change sequence word of PD-05 |
 | SDongle V200R022CC10 MODBUS Interface Definitions | Issue 02 | 2023-04-20 | the response deadline, the frame maximum, the read quantity bound, and the change sequence word of PD-05 |
 | SUN2000MC V200R023C00 Modbus Interface Definitions | Issue 01 | 2023-03-17 | the read quantity bound for the inverter groups |
+| Huawei gateway Modbus reference | reference baseline 2026-10-26.1 | 2026-10-26 | locating the interval statements of the three SmartLogger issues above; the frame arithmetic and its client policy of a 123-register cap on a read, which rule 5 adopts |
 
 The observations behind the graded rows are the runs described in the scope
 section. No value, table, label, or text of the documents is reproduced here.
@@ -272,6 +289,13 @@ Power Technologies Co., Ltd., which retains the copyright in those documents.
 This page states that information in its own words and does not reproduce the
 documents. The CC0-1.0 dedication of this page covers its own expression only
 and does not relicense those documents.
+
+**Reference note.** The facts that the Documents consulted section attributes
+to the Huawei gateway Modbus reference were taken through that independent
+documentary work, whose contributors dedicate its original writing under
+CC0-1.0. The vendor documents it cites keep their rights, as the copyright note
+states. This page restates those facts in its own words and carries over none
+of the reference's engineer-review or operational-authorization clauses.
 
 ## Open questions
 
