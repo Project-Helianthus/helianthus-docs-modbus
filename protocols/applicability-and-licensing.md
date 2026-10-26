@@ -170,19 +170,21 @@ on, and dedicates its own original writing under CC0-1.0. It is neither official
 vendor documentation nor a vendor document. The repository owner admits it as a
 consulted source class with helianthus-docs-modbus issue 256, on the terms
 below. Two works are admitted: the Huawei PV inverter Modbus reference,
-documentary baseline 2026-10-25, which covers Huawei SUN2000 inverter interface
+reference baseline 2026-10-26.1, which covers Huawei SUN2000 inverter interface
 definitions (the inverter reference), and the Huawei gateway Modbus reference,
-whose source baseline is 43 documents, which covers the SmartLogger, S-Dongle,
-and EMMA interface definitions and their supporting documents (the gateway
-reference).
+reference baseline 2026-10-26.1, which covers the SmartLogger, S-Dongle, and
+EMMA interface definitions and their supporting documents (the gateway
+reference). The baseline tag is the citation key of a reference work, as the
+issue and date are for a vendor edition, so a citation is reproducible without a
+digest.
 
 - **Identity.** A page that took facts through a reference work lists it in its
   Documents consulted section as one row: title `Huawei PV inverter Modbus
-  reference`, version `documentary baseline 2026-10-25`, and date `2026-10-25`;
-  or title `Huawei gateway Modbus reference`, version `source baseline of 43
-  documents`, and date `not stated`. Each vendor document that a reference work
-  cites for an imported fact has its own row, with the title, issue, and date
-  that the document states, under the official vendor documentation policy
+  reference`, version `reference baseline 2026-10-26.1`, and date `2026-10-26`;
+  or title `Huawei gateway Modbus reference`, version `reference baseline
+  2026-10-26.1`, and date `2026-10-26`. Each vendor document that a reference
+  work cites for an imported fact has its own row, with the title, issue, and
+  date that the document states, under the official vendor documentation policy
   above.
 - **Rights.** The original writing of each reference work is dedicated under
   CC0-1.0 by its contributors. The vendor documents it cites keep their rights,

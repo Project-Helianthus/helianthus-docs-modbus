@@ -303,7 +303,7 @@ fixtures or an offline identity match.
 | SmartLogger V300R024C10SPC191 ModBus Interface Definitions | Issue 52 | 2025-06-06 | the minimum software of the V300 line on the SmartLogger card |
 | SmartLogger V300R024C10SPC210 ModBus Interface Definitions | Issue 49 | 2025-03-19 | the minimum software of the V300 line on the SmartLogger card |
 | SmartLogger V300R024C10SPC275 Upgrade Guide | Issue 01 | 2026-10-16 | the upgrade path that places the observed V300R023C10 branch before V300R024C10 within the V300 line |
-| Huawei gateway Modbus reference | source baseline of 43 documents | not stated | locating the minimum statements and the upgrade path in the three documents above |
+| Huawei gateway Modbus reference | reference baseline 2026-10-26.1 | 2026-10-26 | locating the minimum statements and the upgrade path in the three documents above |
 
 The other rules of this page predate the page conventions of the
 [applicability and licensing page](../applicability-and-licensing.md) and keep
