@@ -203,7 +203,7 @@ digest.
   edition's cover label and a release package that carries a document are not,
   and a statement that an edition covers exact firmware bounds what the work
   reviewed, not what the facts apply to.
-- **Locators.** A row for a document consulted through a reference work carries no page number: its title, issue, and date are its whole public locator.
+- **Locators.** A row for a document consulted through a reference work names, in its Used for cell, the physical page of the document on which each relied-on fact stands, counted from the cover, as its only locator beyond the title, issue, and date.
   No digest of a consulted document appears in public text. Where a reference
   work binds a fact to a digest of the vendor document, a private sidecar
   outside this repository keeps that digest, and no public row depends on it.
