@@ -28,6 +28,7 @@ Current protocol contracts:
 - [Huawei EMMA observed gateway identity](protocols/huawei/emma-observed-identity-v1.md)
 - [Huawei read-only monitoring contract](protocols/huawei/monitoring-readonly-v1.md)
 - [Huawei read pacing and production acquisition](protocols/huawei/read-pacing-v1.md)
+- [Huawei SUN2000 inverter catalogue dataset](protocols/huawei/sun2000-inverter-catalogue-v1.md)
 - [Growatt Protocol II read-only candidate](protocols/growatt/protocol-ii-readonly-v1.md)
 - [Growatt Protocol II source and profile evidence matrix](protocols/growatt/protocol-ii-source-profile-matrix-v1.md)
 - [ShineWiLan-X2 transparent Modbus bridge](protocols/growatt/shinewilan-x2-bridge-v1.md)
