@@ -13,8 +13,10 @@ It is the observation record behind the observed EMMA entry of the
 status of the [qualification readiness contract](qualification-readiness-v1.md).
 It defines no monitoring register, capability map, decoder, acquisition
 schedule, or registry behavior, and it creates no admission. The registry
-companion is helianthus-modbusreg issue 353. The historical V1 name implies no
-stability before Helianthus 1.0.
+companion is helianthus-modbusreg issue 353, and the admission of the EMMA
+family through the catalogue rows is its change in issue 366, recorded in the
+gateway contract. The historical V1 name implies no stability before
+Helianthus 1.0.
 
 The answered run used one connection, one request in flight, a gap of 750 ms
 between requests, a deadline of five seconds, and at most four attempts per
@@ -52,12 +54,12 @@ re-creates the Proven rows as synthetic fixtures; no capture is published.
 | --- | --- | --- |
 | EM-01 | Four holding-register reads at unit 0 were answered with data on the first attempt, each within 75 ms: the offering block (FC03 offset 30000, quantity 15: 30 bytes), the model block (offset 30222, quantity 20: 40 bytes), the software block (offset 30035, quantity 15: 30 bytes), and the serial-bearing block (offset 30015, quantity 10: 20 bytes). | Proven |
 | EM-02 | The offering block holds the product-family label `SmartHEMS`, a NUL, and NUL padding to the end of the extent. | Proven |
-| EM-03 | The model block holds a model token of the EMMA family, a NUL, and NUL padding to the end of the extent. After the terminal NUL padding is removed, the text equals one of the two exact values that the EMMA candidate of the gateway contract admits. Which one is withheld, as is every model token on this page. | Proven |
+| EM-03 | The model block holds a model token of the EMMA family, a NUL, and NUL padding to the end of the extent. After the terminal NUL padding is removed, the text equals one of the two observed models that the EMMA candidate of the gateway contract keeps. Which one is withheld, as is every model token on this page. | Proven |
 | EM-04 | The software block holds `SmartHEMS`, one space, a 17-character version-style text, a NUL, and NUL padding to the end of the extent. It carries no serial-class value. The version-style text has the structured form of one branch of the candidate's rule and meets that branch's numeric floor; its branch and suffix are withheld. | Proven |
 | EM-05 | The version-style text of the software block equals key 2 of the EMMA's own inventory entry and the version object (0x02) of its basic reply. | Proven |
 | EM-06 | The serial-bearing block holds a 12-character ASCII text followed by NUL padding. The same text is key 4 of the EMMA's own entry and object 0x10 of the basic reply, and object 0x1b carries it padded to 20 bytes. It is never published and never a predicate. | Proven |
 | EM-07 | The three reads of the candidate (offering, model, software) were answered at unit 0 on one connection, each on its first attempt, and the candidate's rules hold on them. The candidate's FC03 identity tuple is therefore observed on this installation. | Proven (basis: EM-01 to EM-05) |
-| EM-08 | Which of the two admitted model values this installation reports, its software branch and suffix, whether the other admitted model value or the other branch exists behind another installation, and which capability variant the model token names behind this one. | Unknown |
+| EM-08 | Which of the two observed models this installation reports, its software branch and suffix, whether the other observed model, any further model of the family, or the other branch exists behind another installation, and which capability variant the model token names behind this one. | Unknown |
 
 ## Basic identification
 
@@ -245,13 +247,13 @@ produces `INSUFFICIENT_EVIDENCE`, and never a class.
 | Field | Contract |
 | --- | --- |
 | Family | An EMMA energy-management gateway at unit 0. The capability variant is the one that the model token names, and no capability is created by the identity. The inverters behind it have their own contract below, and a child's model never becomes the gateway's. |
-| Required tuple | All of the following at gateway unit 0 on one connection generation. FC03 offset 30000, quantity 15: the text `SmartHEMS`, a NUL, and NUL padding over the full 30 bytes. FC03 offset 30222, quantity 20: a text that equals, after terminal NUL padding is stripped, one of the two exact model values that the EMMA candidate of the gateway contract admits, with NUL padding over the full 40 bytes. FC03 offset 30035, quantity 15: `SmartHEMS`, one space, and a version-style text that the candidate's software rule admits: at or above the floor of its own branch, a build that follows it, or a build of a branch with neither a documented floor nor a documented relation, the inherited builds with grade Hypothesis under the [software applicability rule](monitoring-readonly-v1.md#software-applicability); the text is followed by a NUL and NUL padding over the full 30 bytes. The observed build is Proven, and every other build that this rule admits is Hypothesis. The page publishes no model token and no version text, so the exact model comparison is made against the registry fixture, and no prefix, wildcard, or range links two tokens. |
+| Required tuple | All of the following at gateway unit 0 on one connection generation. FC03 offset 30000, quantity 15: the text `SmartHEMS`, a NUL, and NUL padding over the full 30 bytes. FC03 offset 30222, quantity 20: a text that equals, after terminal NUL padding is stripped, a model that the EMMA candidate of the gateway contract admits by family through the catalogue editions and rows (the observed model is one of the candidate's two observed models, and a model of the family beyond them is Hypothesis until observed), with NUL padding over the full 40 bytes. FC03 offset 30035, quantity 15: `SmartHEMS`, one space, and a version-style text that the candidate's software rule admits: at or above the floor of its own branch, a build that follows it, or a build of a branch with neither a documented floor nor a documented relation, the inherited builds with grade Hypothesis under the [software applicability rule](monitoring-readonly-v1.md#software-applicability); the text is followed by a NUL and NUL padding over the full 30 bytes. The observed build is Proven, and every other build that this rule admits is Hypothesis. The page publishes no model token and no version text, so the exact model comparison is made against the registry fixture, and no prefix, wildcard, or range links two tokens. |
 | Optional corroboration | A decodable basic read at unit 0 shows vendor `Huawei`, product `HEMS`, and the version-style text of the software block. The extended inventory from object 0x87 has its first entry (object 0x88) as the self entry, with key 5 exactly `0`, key 1 equal to the model block, key 2 equal to the version-style text of the software block, and key 8 `HEMS`. A decodable corroboration that disagrees with the FC03 tuple is a conflicting detector and produces `INSUFFICIENT_EVIDENCE`. Absence or a decode failure of either read changes nothing, as the gateway contract states for optional MEI. |
 | Recorded, not gating | The objects of the basic reply beyond the vendor, product, and version objects, the declared-object field, the next-object field, entry keys 3, 4, 6, 9, and 10, entry padding and key order, the serial-bearing block, and any timing. They are retained as native evidence and select and reject nothing. |
 | Forbidden identity | Serial number or ESN (the serial-bearing block, entry key 4, and basic objects 0x10 and 0x1b), a writable alias, readability of any register (including the EMMA offsets answered at an inverter, the SunSpec offset, and the basic reply that every unit identifier returns), a model-register read without the complete tuple, a `SmartHEMS` prefix without an admitted model, basic identification alone, a child listing, the unit identifier of a request, and a prefix, wildcard, case-folded, or whitespace-normalized match. |
 | Multiple-positive outcome | `AMBIGUOUS`: another Huawei class contract that is also positive at the same endpoint produces no selection, and no order or priority breaks the tie. The collision rule of the gateway contract gives `insufficient_evidence`. |
 | Negative-overlap obligations | Executable fixtures against SmartLogger (the counter read is exception 3 at unit 0 and at an inverter, and the EMMA self entry is a SmartLogger negative control), S-Dongle (the status reads are exception 4 at unit 100 and exception 3 at an inverter, and the basic reply names the product `HEMS`), SunSpec (no marker at unit 0 or at an inverter), and the SUN2000 identity contract (the inverter's model token and firmware text differ from its tuple). Growatt probes are Unknown. The evidence is in the overlap table above. |
-| Failure outcome | A missing element; a block that is not ASCII or not NUL padded; an exception on any of the three reads; a request unanswered after its bounded attempts, including a connection reset or closed by the peer after the request was written; a model outside the two admitted values; a software text without the structured form, or below the candidate's floor within its own branch; an offering other than `SmartHEMS`; or a conflicting corroboration produces `INSUFFICIENT_EVIDENCE`, no selected class, and zero native monitoring facts. |
+| Failure outcome | A missing element; a block that is not ASCII or not NUL padded; an exception on any of the three reads; a request unanswered after its bounded attempts, including a connection reset or closed by the peer after the request was written; a model that the catalogue rows of the EMMA family do not hold; a software text without the structured form, or below the candidate's floor within its own branch; an offering other than `SmartHEMS`; or a conflicting corroboration produces `INSUFFICIENT_EVIDENCE`, no selected class, and zero native monitoring facts. |
 | Outcome when every element is exact | Identity applicability holds for this tuple. The selected class is EMMA with the capability variant that the model token names, the qualification card stays `QUALIFICATION_EVIDENCE_BLOCKED` for its capability evidence, the profile stays default denied, and zero monitoring facts are emitted. In the observation every element matched on one connection, which carried all 26 requests. |
 
 ## Family contract: SUN2000-family inverter behind an EMMA
@@ -284,9 +286,10 @@ admits nothing by itself.
 | --- | --- |
 | Every element of the gateway tuple exact | identity applicability holds; the card stays `QUALIFICATION_EVIDENCE_BLOCKED` |
 | An exception, a missing reply, or a connection reset or closed after the write on any of the three reads | `INSUFFICIENT_EVIDENCE` |
-| Model outside the two admitted values, a SmartLogger-shaped model, or an offering other than `SmartHEMS` | `INSUFFICIENT_EVIDENCE` |
+| Model that the catalogue rows of the EMMA family do not hold, a SmartLogger-shaped model, or an offering other than `SmartHEMS` | `INSUFFICIENT_EVIDENCE` |
 | Software text without the structured form, or below the floor within its own branch | `INSUFFICIENT_EVIDENCE` |
 | Software build that follows the floor of its branch and was never observed, or of a branch with neither a documented floor nor a documented relation | identity applicability holds with grade Hypothesis; the card stays `QUALIFICATION_EVIDENCE_BLOCKED` |
+| Model of the family that the catalogue rows hold and no observation has read | identity applicability holds with grade Hypothesis; the card stays `QUALIFICATION_EVIDENCE_BLOCKED` |
 | Self entry or basic reply decodable and in disagreement with the FC03 tuple | `INSUFFICIENT_EVIDENCE` |
 | Serial number or ESN only, basic identification only, or readability only | `INSUFFICIENT_EVIDENCE` |
 | Another Huawei class also positive at the endpoint | `AMBIGUOUS` |
@@ -371,18 +374,22 @@ absent EMMA result, and the readability of any register supersede nothing.
 
 This page rests on observations only: every graded row comes from the sanitized
 observation record, and no vendor document was consulted to write it. The
-candidate's admitted model values and software floors, which the family
-contract refers to, are carried by the [gateway contract](gateway-readonly-v1.md)
-together with the documents they rest on, and are not derived here.
+catalogue admission of the family, the two observed models, and the software
+floors, which the family contract refers to, are carried by the
+[gateway contract](gateway-readonly-v1.md) together with the documents they rest
+on, the Huawei gateway Modbus reference at reference baseline 2026-10-26.1
+among them, and are not derived here. The gateway catalogue is the sibling of
+the dataset on the [catalogue page](sun2000-inverter-catalogue-v1.md).
 
 **Copyright note.** Not applicable. No information on this page is derived from
 a vendor document.
 
 ## Open questions
 
-1. Which of the two admitted model values and which software branch the
-   installation reports is withheld here (EM-08). Does the other model value
-   exist behind another installation, and what capability variant does each name?
+1. Which of the two observed models and which software branch the installation
+   reports is withheld here (EM-08). Does the other observed model, or any
+   further model of the family that the catalogue admits by family, exist behind
+   another installation, and what capability variant does each name?
 2. Where are the batteries addressed (EM-60, EM-61)? Their registers may sit at
    the inverter units, at the EMMA, or at their own units. No battery group read
    is a public contract, and none was issued.

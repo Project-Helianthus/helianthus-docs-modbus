@@ -105,10 +105,14 @@ to logical unit 0 and consumes the exact FC03 identity tuple: offset 30000
 quantity 15 for offering, offset 30222 quantity 20 for model, and offset 30035
 quantity 15 for software version.
 
-After terminal padding is removed, the model must be exactly `EMMA-A01` or
-`EMMA-A02`, the admission list of this card within the family `EMMA` that the
-consulted editions name without a model list. Firmware meets the floor of its
-branch: R024C00 requires SPC100 or
+After terminal padding is removed, the model must be one that the catalogue
+rows of the family `EMMA` hold: the card admits by family, because the consulted
+editions name the family without a model list, and it keeps `EMMA-A01` and
+`EMMA-A02` as its observed models. A model of the family beyond the two inherits
+the card's identity facts with grade Hypothesis until an observation reads it
+(see the [gateway contract](gateway-readonly-v1.md) and the
+[catalogue page](sun2000-inverter-catalogue-v1.md)). Firmware meets the floor of
+its branch: R024C00 requires SPC100 or
 greater within R024C00, and R025C00 requires SPC102 or greater within R025C00.
 These are the minima that the two editions state, and a build that follows a
 floor inherits the card's identity facts with grade Hypothesis.
@@ -129,7 +133,8 @@ does not invent a capability acquisition map. Its missing evidence is named exac
 - `model_specific_capability_fixture`.
 
 EMMA-A01 and EMMA-A02 remain distinct capability variants. Neither identity
-token creates a load, charger, control, or other telemetry capability.
+token, and no token of another model of the family, creates a load, charger,
+control, or other telemetry capability.
 
 ## EMMA observed-tuple status
 
@@ -141,9 +146,9 @@ the gateway, read one EMMA at unit 0 and two inverters behind it at units 3 and
 
 Applied to the observed gateway, the EMMA card above returns
 `QUALIFICATION_EVIDENCE_BLOCKED` with zero native telemetry facts: the offering,
-model, and software reads answered at unit 0, the model is one of the two exact
-values, and the software form meets the floor of its own branch (Proven for the
-observed installation). The card keeps its identity and its missing-evidence
+model, and software reads answered at unit 0, the model is one of the two
+observed models, and the software form meets the floor of its own branch (Proven
+for the observed installation). The card keeps its identity and its missing-evidence
 names, and the executable replay of the observed tuple is the registry
 companion's work (helianthus-modbusreg issue 353). The model value, software
 branch, and suffix are withheld on the published pages. An EMMA self entry is
@@ -215,8 +220,11 @@ Such a card must accommodate what the observation showed:
 
 - the model block holds printable residue after its first NUL, a next object
   identifier set next to a zero continuation, a declared-object field that is
-  not compared, a basic reply with objects beyond the basic category, and one
-  inventory entry that is not NUL padded;
+  not compared, a basic reply with objects beyond the basic category, and an
+  inventory entry that is not NUL padded, in a listing whose entry count comes
+  from the count object, where the observed one entry and the observed keys 1
+  through 6 are lower bounds and a key beyond them is retained as opaque native
+  evidence;
 - basic identification at the gateway unit is a required exception 1 and not a
   failure, and extended inventory is addressed to the child unit only;
 - the card consumes answered replies only, so an unanswered first attempt can
