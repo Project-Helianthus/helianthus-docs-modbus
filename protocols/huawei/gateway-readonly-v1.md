@@ -398,9 +398,9 @@ no-fallback result are defined in
 
 | Document title | Document version | Document date | Used for |
 | --- | --- | --- | --- |
-| SmartLogger V300R024C10SPC191 ModBus Interface Definitions | Issue 52 | 2025-06-06 | the minimum software of the V300 line in the SmartLogger candidate and the documentary entries |
-| SmartLogger V300R024C10SPC210 ModBus Interface Definitions | Issue 49 | 2025-03-19 | the minimum software of the V300 line in the SmartLogger candidate and the documentary entries |
-| SmartLogger V300R024C10SPC275 Upgrade Guide | Issue 01 | 2026-10-16 | the upgrade path that places the V300R023C10 branch before V300R024C10 within the V300 line |
+| SmartLogger V300R024C10SPC191 ModBus Interface Definitions | Issue 52 | 2025-06-06 | the minimum software of the V300 line in the SmartLogger candidate and the documentary entries (pp. 15–16) |
+| SmartLogger V300R024C10SPC210 ModBus Interface Definitions | Issue 49 | 2025-03-19 | the minimum software of the V300 line in the SmartLogger candidate and the documentary entries (pp. 13–14) |
+| SmartLogger V300R024C10SPC275 Upgrade Guide | Issue 01 | 2026-10-16 | the upgrade path that places the V300R023C10 branch before V300R024C10 within the V300 line (pp. 7–8) |
 | Huawei gateway Modbus reference | reference baseline 2026-10-26.1 | 2026-10-26 | locating the minimum statements and the upgrade path in the three documents above |
 
 The other rules of this page predate the page conventions of the
