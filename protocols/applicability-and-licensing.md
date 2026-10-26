@@ -207,7 +207,7 @@ digest.
   No digest of a consulted document appears in public text. Where a reference
   work binds a fact to a digest of the vendor document, a private sidecar
   outside this repository keeps that digest, and no public row depends on it.
-- **Mirror-recovered editions.** The owner decision recorded on helianthus-docs-modbus issue 242 treats a Huawei-authored interface definition whose copy was recovered from a third-party mirror as official vendor documentation, cited by title, issue, and date only, with the mirror origin kept as a private provenance note, so the SUN2000MB V200R023C10 Modbus Interface Definitions, Issue 02, 2024-02-01, which the inverter reference recovered that way, is admissible as a consulted document.
+- **Mirror-recovered editions.** The owner decision recorded on helianthus-docs-modbus issue 242 treats a Huawei-authored interface definition whose copy was recovered from a third-party mirror as official vendor documentation, cited by title, issue, date, and page, with the mirror origin kept as a private provenance note, so the SUN2000MB V200R023C10 Modbus Interface Definitions, Issue 02, 2024-02-01, which the inverter reference recovered that way, is admissible as a consulted document.
 
 The reference note is a paragraph after the copyright note of a page that lists
 a reference work, one note per work, beginning with the bold label
