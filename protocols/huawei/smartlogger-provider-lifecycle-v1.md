@@ -25,7 +25,7 @@ adds no authorization gate; it preserves existing trust and admission boundaries
 The protocol facts come from the existing public native contracts first:
 
 - [Gateway read-only candidates](gateway-readonly-v1.md): SmartLogger identity, encoding, counter guard, pagination, native child evidence, and no-send private functions.
-- [Qualification readiness](qualification-readiness-v1.md): caller-run bracket, exact self entry and firmware tuples, child encoding, ceilings, and offline qualification limits.
+- [Qualification readiness](qualification-readiness-v1.md): caller-run bracket, exact self-entry model and firmware floor, child encoding, ceilings, and offline qualification limits.
 - [Qualification evidence checklist](qualification-evidence-checklist.md): current disposition, missing evidence, last-known-good retention, and separate family acceptance.
 
 The following ownership rules are proposed provider requirements, not newly
@@ -45,7 +45,7 @@ to provider-owned records or transport response buffers.
 | --- | --- |
 | Plan: refresh token | Unique local attempt identity, fixed before the first exchange; never reused by a successor refresh. It is not a wire transaction identifier. |
 | Plan: provider and connection generation | Captures the owning provider instance and transport generation. Reconnect or replacement invalidates the old generation's authority to commit. |
-| Plan: identity context | Captures the opaque routing context, logical unit 0, parent profile context and source revision. Candidate self model and exact firmware must later validate against this context; missing profile admission remains denied. Public examples contain no real routing coordinates. |
+| Plan: identity context | Captures the opaque routing context, logical unit 0, parent profile context and source revision. The candidate's self model, compared exactly, and its firmware, compared with the floor, must then validate against this context; missing profile admission remains denied. Public examples contain no real routing coordinates. |
 | Plan: operations and limits | Freezes the counter-before, extended-MEI continuation policy, counter-after, absolute deadline, and ceilings below. A validated continuation cursor is transaction state, not permission to mutate the plan or add probes. |
 | Completion: correlation and outcome | Copies the frozen plan identity, terminal stage/reason, consumed budgets and generation fence result. Exactly one terminal completion exists per accepted refresh, including failure or cancellation. A busy refusal starts no refresh. |
 | Completion: native evidence | Owns detached copies of actually received native responses, parsed attributes, counter values when available, provenance and version context. Missing responses stay absent; malformed or partial evidence is diagnostic only, never a usable partial inventory. |
@@ -88,12 +88,17 @@ extra MEI pages. Before sending a continuation, ensure it can stay within the
 remaining limits; reject a response that exceeds a ceiling. Reaching a ceiling
 with work still required is exhaustion, not a truncated success.
 
-The self entry must have exact model `SmartLogger` and firmware exactly
-`V300R024C10SPC191` or `V300R024C10SPC210`. These are parallel exact tuples,
-with no ordered or-later comparison. Preserve the existing bounded semicolon
-attribute encoding and rejection rules: unknown/repeated keys, missing model,
-malformed ASCII/attributes, duplicate objects or child addresses, wrong order,
-count mismatch, cursor loops and a second wrap all invalidate the inventory.
+The self entry must have exact model `SmartLogger` and a firmware of the V300
+line at or above `V300R001C00`, the minimum that the consulted editions state,
+as the [qualification card](qualification-readiness-v1.md) records; their cover
+labels, `V300R024C10SPC191` and `V300R024C10SPC210`, are citations and not
+floors. A build that no observation has seen inherits with grade Hypothesis
+under the
+[software applicability rule](monitoring-readonly-v1.md#software-applicability).
+Preserve the existing bounded semicolon attribute encoding and rejection rules:
+unknown/repeated keys, missing model, malformed ASCII/attributes, duplicate
+objects or child addresses, wrong order, count mismatch, cursor loops and a
+second wrap all invalidate the inventory.
 Equal U16 counters are the existing guard, not proof that no intervening change
 or counter wrap ever occurred.
 
@@ -140,10 +145,11 @@ last-known-good observations. This page defines no new freshness threshold.
 A reconnect opens a new generation even if routing appears unchanged. Previously
 retained inventory stays historical under its old identity; it is not evidence
 that the new connection reaches the same parent. A new, independently complete
-bracket must validate the self entry, exact firmware and identity context before
-publishing a current snapshot. No old counter, page, child, or completion can
-be spliced into it. If identity changes or cannot be established, old observations
-remain detached history and cannot be relabeled as the new parent's inventory.
+bracket must validate the self entry, its firmware against the floor, and the
+identity context before publishing a current snapshot. No old counter, page,
+child, or completion can be spliced into it. If identity changes or cannot be
+established, old observations remain detached history and cannot be relabeled as
+the new parent's inventory.
 
 Child identity retains the native contract's parent profile, routing address,
 model/product type and source revision. Each component matters independently;

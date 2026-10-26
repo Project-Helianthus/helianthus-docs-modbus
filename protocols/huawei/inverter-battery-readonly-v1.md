@@ -19,6 +19,13 @@ Registers are classified unknown for model identity, firmware identity, unit
 identity, monitoring values, scale and unit, access mode, and availability
 markers. They are never inferred from another Huawei class.
 
+The cells that read none covered and all unsupported state that this
+disposition covers no model row yet and that no support claim exists. They set
+no software limit. When a revision of this page rests on a consulted document,
+its coverage is stated per documented model row as a software floor under the
+[software applicability rule](monitoring-readonly-v1.md#software-applicability),
+and a build that follows the floor is never refused for being unseen.
+
 ## Disposition
 
 Both classes have the outcome `NO_ADMISSIBLE_PROFILE` in this revision.
@@ -47,6 +54,10 @@ requirement. It satisfies none of the four requirements above, and reopening
 also requires a revision of this page that replaces the disposition with an
 exact applicability contract.
 
+The pinned document name and version identify the source that such a revision
+rests on. They are its citation key and bound no coverage: the coverage of the
+revision is the software floor of each model row that the document covers.
+
 ## Detection contract
 
 A future profile selection requires all of: exact model identity, exact
@@ -55,6 +66,10 @@ firmware identity, unit identity, and a pinned register map.
 Not identity: serial number, ESN, writable alias, register readability, a model
 string in a SmartLogger or EMMA child inventory, or a prefix or wildcard model
 match.
+
+Exact firmware identity means the firmware string as read, retained exactly. It
+is compared with the software floor of the model row that the pinned map covers,
+under the software applicability rule, and never with a list of observed builds.
 
 The default outcome is `INSUFFICIENT_EVIDENCE`. More than one positive
 candidate for one endpoint and unit is `AMBIGUOUS` with no selection and no
@@ -67,7 +82,7 @@ facts. The table is a decision contract only; it is not executable detection.
 | --- | --- | --- |
 | `no_identity_evidence` | `INSUFFICIENT_EVIDENCE` | no model, firmware, or unit identity was read |
 | `gateway_inventory_child_model_only` | `INSUFFICIENT_EVIDENCE` | a gateway child listing is not unit identity |
-| `model_without_firmware` | `INSUFFICIENT_EVIDENCE` | model identity without an exact firmware identity |
+| `model_without_firmware` | `INSUFFICIENT_EVIDENCE` | model identity without a firmware identity read at the unit |
 | `serial_or_esn_only` | `INSUFFICIENT_EVIDENCE` | serial number or ESN is never a qualification predicate |
 | `firmware_without_model` | `INSUFFICIENT_EVIDENCE` | firmware identity without an exact model identity |
 | `register_readability_only` | `INSUFFICIENT_EVIDENCE` | a successful read of any register is not identity |
@@ -83,7 +98,7 @@ facts. The table is a decision contract only; it is not executable detection.
 | `no_identity_evidence` | `INSUFFICIENT_EVIDENCE` | no model, firmware, or unit identity was read |
 | `gateway_inventory_child_model_only` | `INSUFFICIENT_EVIDENCE` | a gateway child listing is not unit identity |
 | `parent_inverter_unidentified` | `INSUFFICIENT_EVIDENCE` | the parent inverter has no positive identity, so no battery profile is selected |
-| `model_without_firmware` | `INSUFFICIENT_EVIDENCE` | model identity without an exact firmware identity |
+| `model_without_firmware` | `INSUFFICIENT_EVIDENCE` | model identity without a firmware identity read at the unit |
 | `serial_or_esn_only` | `INSUFFICIENT_EVIDENCE` | serial number or ESN is never a qualification predicate |
 | `register_readability_only` | `INSUFFICIENT_EVIDENCE` | a successful read of any register is not identity |
 | `battery_group_absent` | `INSUFFICIENT_EVIDENCE` | the optional group is absent; facts stay unknown, never numeric zero |

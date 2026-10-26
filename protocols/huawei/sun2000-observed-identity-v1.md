@@ -2,17 +2,18 @@
 
 ## Scope and relation to the disposition
 
-This page defines exact identity applicability for the SUN2000 inverter tuple
-observed behind a SmartLogger-family gateway, and records the LUNA2000 optional
-group as an Unknown placeholder. It is an identity contract only. It defines no
-monitoring register, scale, unit, decoder, or acquisition. Profile admission
-still requires a pinned register map, so the outcome of the
-[inverter and battery disposition](inverter-battery-readonly-v1.md) for profile
-selection is unchanged: `NO_ADMISSIBLE_PROFILE`. Where that page records
-identity as unobserved, this page supersedes the status for identity only;
-every monitoring, scale, unit, access-mode, and availability fact stays
-Unknown. The disposition page publishes no register offset by design, so the
-offsets this identity contract needs are published here.
+This page defines identity applicability for the SUN2000 inverter tuple observed
+behind a SmartLogger-family gateway, with an exact model and a software floor,
+and records the LUNA2000 optional group as an Unknown placeholder. It is an
+identity contract only. It defines no monitoring register, scale, unit, decoder,
+or acquisition. Profile admission still requires a pinned register map, so the
+outcome of the [inverter and battery
+disposition](inverter-battery-readonly-v1.md) for profile selection is
+unchanged: `NO_ADMISSIBLE_PROFILE`. Where that page records identity as
+unobserved, this page supersedes the status for identity only; every monitoring,
+scale, unit, access-mode, and availability fact stays Unknown. The disposition
+page publishes no register offset by design, so the offsets this identity
+contract needs are published here.
 
 Every statement rests on the sanitized observation record described in the
 [SmartLogger observation](smartlogger-observed-inventory-v1.md), which also
@@ -35,13 +36,13 @@ historical V1 name implies no stability before Helianthus 1.0.
 | Field | Contract |
 | --- | --- |
 | Family | SUN2000 three-phase inverter with the exact model token `SUN2000-50KTL-M3` only. Other model tokens of the same product line are outside this contract; no prefix, wildcard, or range links two tokens. |
-| Required tuple | All of the following at one routed unit `u` on one connection generation. Model: FC03 offset 30000, quantity 15, text exactly `SUN2000-50KTL-M3` after terminal NUL padding is stripped. Firmware: FC03 offset 30035, quantity 15, text exactly `V200R023` after terminal NUL padding is stripped. Unit: `u` is in 1 through 247, is attribute 5 of exactly one entry of a validated listing of the gateway, and is in the operator allowlist. |
+| Required tuple | All of the following at one routed unit `u` on one connection generation. Model: FC03 offset 30000, quantity 15, text exactly `SUN2000-50KTL-M3` after terminal NUL padding is stripped. Firmware: FC03 offset 30035, quantity 15, a version-style text after terminal NUL padding is stripped, recorded exactly as read. The observed text `V200R023` is the floor of this tuple under the [software applicability rule](monitoring-readonly-v1.md#software-applicability): a text that follows it in its branch, or a text of a branch with no documented relation to it, inherits the identity facts of this page with grade Hypothesis until observed, and only a recorded observation narrows that. Unit: `u` is in 1 through 247, is attribute 5 of exactly one entry of a validated listing of the gateway, and is in the operator allowlist. |
 | Recorded, not gating | The protocol words (FC03 offset 30068, quantity 2; observed 5 then 0, encoding Unknown), the listing's firmware text, and the listing's product type. They corroborate and are retained as native evidence; they select and reject nothing. |
 | Forbidden identity | Serial number, ESN (listing key 4 or the serial-bearing block), writable alias, readability of any register (including a successful read at the EMMA offering offset or the S-Dongle protocol offset), any child listing content (label, model, product type, firmware, unit), the gateway's own MEI reply addressed to the unit, and a prefix, wildcard, case-folded, or whitespace-normalized match. The routed firmware text and the listing firmware text are never compared as prefix and suffix. |
 | Multiple-positive outcome | `AMBIGUOUS`: another Huawei class contract that is also positive at the same endpoint and unit produces no selection, and no order or priority breaks the tie. |
 | Negative-overlap obligations | Executable fixtures against SmartLogger (the counter read at the unit is an exception and the MEI reply is the gateway's), EMMA (the model gate fails on non-text data), S-Dongle (search and capacity reads are exceptions; the protocol read answers and is no discriminator), SunSpec (no marker), and Growatt (Unknown: not probed). The evidence is in the observation page's overlap table. |
-| Failure outcome | A missing, non-ASCII, unpadded, excepted, timed-out, or contradictory element produces `INSUFFICIENT_EVIDENCE`, no profile, and zero native monitoring facts. |
-| Outcome when every element is exact | Identity applicability holds for this tuple. Profile selection stays `NO_ADMISSIBLE_PROFILE` and zero monitoring facts are emitted. |
+| Failure outcome | A missing, non-ASCII, unpadded, excepted, timed-out, or contradictory element produces `INSUFFICIENT_EVIDENCE`, no profile, and zero native monitoring facts. A firmware text that differs from the observed one is not a failure; it inherits as the required tuple states. |
+| Outcome when every element matches | Identity applicability holds for this tuple: Proven for the observed firmware text, and Hypothesis for an inherited one. Profile selection stays `NO_ADMISSIBLE_PROFILE` and zero monitoring facts are emitted. |
 
 A listing may limit which identity requests a provider sends to a listed,
 allowed unit, but it never supplies the answer. The identity reads of one tuple
@@ -51,7 +52,7 @@ are all taken at the same routed unit.
 
 | Situation | Outcome |
 | --- | --- |
-| Model and firmware exact at the routed unit, unit validated | identity applicability holds; profile `NO_ADMISSIBLE_PROFILE` |
+| Model exact and firmware read at the routed unit, unit validated | identity applicability holds, graded as the outcome row above states; profile `NO_ADMISSIBLE_PROFILE` |
 | Model without firmware, or firmware without model | `INSUFFICIENT_EVIDENCE` |
 | Listing entry only, no routed read | `INSUFFICIENT_EVIDENCE` |
 | Serial number or ESN only | `INSUFFICIENT_EVIDENCE` |
@@ -111,7 +112,7 @@ from the inverter-only tuple above.
 
 | Field | Contract |
 | --- | --- |
-| Required tuple | Unknown. A hybrid SUN2000 needs its own exact tuple of the same form (model, firmware, routed unit). The LUNA2000 group needs a separate exact identity read; neither is defined by this revision. |
+| Required tuple | Unknown. A hybrid SUN2000 needs its own tuple of the same form (exact model, firmware floor, routed unit). The LUNA2000 group needs a separate exact identity read; neither is defined by this revision. |
 | Forbidden identity | The parent inverter's identity, a hybrid model token, any child listing content, serial number or ESN, a writable alias, register readability, and a prefix or wildcard match. A battery group is never inferred from an inverter model. |
 | Multiple-positive outcome | `AMBIGUOUS`; no selection, order, or priority. |
 | Negative-overlap obligations | Executable fixtures against the inverter-only tuple above, SmartLogger, EMMA, and S-Dongle. No evidence exists. |
@@ -148,9 +149,11 @@ a vendor document.
    cannot be identity, so a second routed read of the full text would have to
    be found. Its existence is Unknown.
 2. Which other SUN2000 model tokens and firmware texts exist behind this and
-   other gateway families? Each needs its own exact tuple and observation. One
-   further child behind an S-Dongle has its own tuple (SU-10), and the two behind
-   an EMMA have theirs (SU-13).
+   other gateway families? Each other model token needs its own tuple and
+   observation. Another firmware text with this model token inherits this tuple
+   under the software applicability rule until an observation records a change.
+   One further child behind an S-Dongle has its own tuple (SU-10), and the two
+   behind an EMMA have theirs (SU-13).
 3. What does the protocol-word pair encode, and should it become a gate? Its
    encoding is Unknown.
 4. Does a PLC or meter unit answer any SUN2000-shaped read other than an
