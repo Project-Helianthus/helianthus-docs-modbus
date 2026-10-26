@@ -178,7 +178,7 @@ permits, without invalidating an already identified unit.
   number are Unknown.
 - [ ] The exposure path beyond the three observed (routed meter units behind the
   SmartLogger, the EMMA's unit 0, and the S-Dongle child): whether the
-  SmartLogger path also serves meter values at unit 0, and other software.
+  SmartLogger path also serves meter values at unit 0.
 - [ ] A meter class contract with an exact identity read. Until then every meter
   is withheld as having no class contract.
 

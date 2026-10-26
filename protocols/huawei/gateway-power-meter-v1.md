@@ -44,7 +44,7 @@ qualification, and support, and `catalog_registered=false`,
 | PM-09 | An S-Dongle lists a power meter at any unit. | Unknown |
 | PM-10 | The one inventory read on an EMMA path lists the EMMA, a backup-box entry, and two inverter entries, and no meter, and no meter unit was addressed there. | Proven |
 | PM-11 | The EMMA serves meter groups, the built-in sensor groups, at its own unit 0, although its listing names no meter and its backup-box entry was never read (MM-09, MM-11). The operator names the backup box's own built-in meter as the meter in use there and describes no CHINT meter at that site. | Proven (answered); the meter behind the groups Hypothesis |
-| PM-12 | The meter-number group and the configuration group were refused with exception 3 at both meter units on the logger's observed software (MG-04). The meter number and the transformer ratios, which those groups hold, are Unknown. | Proven (refusal); content Unknown |
+| PM-12 | The meter-number group and the configuration group were refused with exception 3 at both meter units (MG-04), and the refusals carry forward to the builds that follow the observed one as Hypothesis. The meter number and the transformer ratios, which those groups hold, are Unknown. | Proven (refusal); content Unknown |
 | PM-13 | The inverter child behind an S-Dongle serves the inverter-side meter groups with data, while its listing names only itself (MM-16, MM-19). | Proven (answered); value form Hypothesis |
 | PM-14 | The meter status word and the meter type word at the S-Dongle child are non-zero. Their meaning is not decoded, and no word at any path identifies a meter make or model (MM-18, MM-08). | Unknown |
 
@@ -71,11 +71,12 @@ The observations show three different exposure paths, one per gateway family:
 | EMMA | at the gateway's own unit 0, the built-in sensor groups (PM-11) | no (PM-10) | Proven (answered); the meter behind them Hypothesis |
 | S-Dongle | at the inverter child's unit 1, the inverter-side groups (PM-13) | no; the child lists only itself (PM-08) | Proven (answered) |
 
-An exposure observed on one path is no claim about another: a provider assumes
-the exposure of none of them from a different path or a different software
-branch. Whether the SmartLogger path also serves meter values at its unit 0 is
-Unknown (PM-07), as is whether the S-Dongle's plant grid power at unit 100 comes
-from the same meter.
+An exposure observed on one path is no claim about another path. Within a path,
+an exposure or a refusal observed at a build carries forward to the builds that
+follow it, graded Hypothesis, until an observation records a different answer;
+it is never read as limited to the observed build. Whether the SmartLogger path
+also serves meter values at its unit 0 is Unknown (PM-07), as is whether the
+S-Dongle's plant grid power at unit 100 comes from the same meter.
 
 Because no meter class contract exists, a meter that is listed and allowed is
 withheld as having no class contract under the child-routing rules in the
@@ -114,6 +115,8 @@ exposure belongs to the inverter's contract, which does not cover meter words
 | SmartLogger V300R024C10SPC210 ModBus Interface Definitions | Issue 49 | 2025-03-19 | the names of the AC, energy, meter-number, and configuration groups (PM-06, PM-12) |
 | SmartLogger V300R024C10 ModBus Interface Definitions | Issue 53 | 2025-10-29 | the names of the AC, energy, meter-number, and configuration groups (PM-06, PM-12) |
 | SmartLogger V300R024C10 ModBus Interface Definitions | Issue 54 | 2026-02-06 | the names of the AC, energy, meter-number, and configuration groups (PM-06, PM-12) |
+| SmartLogger V300R025C10 ModBus Interface Definitions | Issue 02 | 2026-10-09 | the names of the AC, energy, and configuration groups (PM-06, PM-12) |
+| SmartLogger V300R026C10 ModBus Interface Definitions | Issue 02 | 2026-10-09 | the names of the AC, energy, and configuration groups (PM-06, PM-12) |
 | SmartHEMS V100R024C00 MODBUS Interface Definitions | Issue 01 | 2024-07-15 | the built-in sensor groups at the EMMA's unit 0 and the note on built-in meters (PM-11) |
 | SmartHEMS V100R025C00SPC102 MODBUS Interface Definitions | Issue V100R025C00SPC102 | 2025-08-14 | the built-in sensor groups at the EMMA's unit 0 and the note on built-in meters (PM-11) |
 | SUN2000MC V200R023C00 Modbus Interface Definitions | Issue 01 | 2023-03-17 | the inverter-side meter groups at the S-Dongle child and the absence of a value list for the status and type words (PM-13, PM-14) |
@@ -143,8 +146,8 @@ and does not relicense those documents.
 2. The exposure beyond what was read: whether the SmartLogger path also serves
    meter values at its unit 0 (PM-07), whether the S-Dongle's plant grid power at
    unit 100 comes from the same meter, whether the EMMA's built-in sensor groups
-   carry the backup box's own meter (PM-11), and whether another software branch
-   exposes a meter differently.
+   carry the backup box's own meter (PM-11), and whether an observation at
+   another build answers differently.
 3. Which identity read, if any, a meter unit serves, and its exact extents and
    padding. The meter-number group is serial-bearing and would be no identity
    predicate in any case.

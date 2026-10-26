@@ -81,7 +81,7 @@ pages.
    retained. Exception 3 to a group that another family answers, or that an
    edition of the same family defines, is a refused group, not an absent device:
    the unit stays identified, and the group is not sent again until a revision
-   of this page (see the version gates below).
+   of this page (see the gates below).
 6. **Timeout.** A timeout is a failed attempt and never evidence of absence.
 7. **Zero.** A zero word is a value only where this page defines the word for the
    family. Elsewhere it is no evidence of a value or of its absence (see the
@@ -318,28 +318,21 @@ which stops before the two-register value, and offset 32064 with quantity 33,
 which includes it. Both are Unknown. The M1 series child is read with the
 observed extent.
 
-## Version gate: the SmartLogger meter groups
+## Refusals: the SmartLogger meter groups
 
 | ID | Statement | Grade |
 | --- | --- | --- |
 | MG-04 | At the two meter units behind the SmartLogger, the AC group (FC03 offset 32260, quantity 33) and the energy group (offset 32335, quantity 30) answered with data, and the meter-number group (offset 32293, quantity 6) and the configuration group (offset 33000, quantity 7) were refused with exception 3. The logger reports the software recorded in SL-04. | Proven |
-| MG-05 | The consulted issues 32, 36, 37, 49, 53, and 54 define the answered groups. Only issues 49, 53, and 54, all issued for the V300R024C10 line, define the refused groups (DN-08). The observed pattern fits a gate on the logger's software, in which the meter-number and configuration groups belong to the V300R024C10 line. | Hypothesis |
-| MG-06 | The logger answers two groups that issues 52 and 01 do not define. An edition's silence on a group therefore does not predict a refusal. | Proven (answered) |
-| MG-07 | What causes the refusal of the meter-number and configuration groups: the logger's software, the meter model or its configuration, or the meter link. No consulted issue is issued for the logger's software, and one run at one logger cannot separate the candidates. | Unknown |
+| MG-05 | The refusal of the meter-number group fits a documented protocol condition. Issue 49 restricts the meter-number row to DL/T 645 meters, issues 53 and 54 list the row without that restriction, and the V300R025C10 and V300R026C10 editions of Issue 02 list no meter-number row (DN-08). The meters are of a CHINT DTSU666 family, taken to be a Modbus RTU family and not a DL/T 645 one, and their protocol mode was not read. The AC group answered across two other rows that issue 49 also restricts to DL/T 645 meters (offsets 32289 through 32292), so the restriction does not by itself refuse a read. | Hypothesis, until an operator-approved observation confirms it |
+| MG-06 | What causes the refusal of the configuration group. The group, offsets 33000 through 33006, is defined in issues 49, 53, and 54 and in the V300R025C10 and V300R026C10 editions of Issue 02, and its rows include the voltage and current transformation ratios (offsets 33002 and 33004, FLOAT). It exists across editions, and no consulted document explains the refusal. | Unknown |
+| MG-07 | The logger answers two groups that issues 52 and 01 do not define. An edition's silence on a group therefore does not predict a refusal. | Proven (answered) |
 
-A derived note from the eight consulted SmartLogger issues (DN-08): the meter
-section of issues 32, 36, and 37 has no meter-number group and no configuration
-group, issues 49, 53, and 54 add both and a sign rule for the meter's power, and
-issues 52 and 01 carry no meter section. The
-system-requirements lists of issues 32, 36, 37, 49, 53, and 54 name a minimum
-software for the logger family and state nothing for any group, so they do not
-settle whether the observed logger serves a group.
-
-Until an operator-approved observation reads the meter-number and configuration
-groups at this logger's software with a different result, they are not sent to a
-meter unit on this logger, and the transformer ratio and the meter number stay
-Unknown. A logger at a different software branch is a different exact tuple, and
-this gate is no claim about it.
+A refusal recorded at a build carries forward to the builds that follow it,
+graded Hypothesis, until an observation records an answer. It is never read as
+limited to the observed build. Until an operator-approved observation reads the
+meter-number and configuration groups with a different result, they are not sent
+to a meter unit of a logger at the observed build or at the builds that follow
+it, and the transformer ratios and the meter number stay Unknown.
 
 ## Battery rule
 
@@ -404,11 +397,11 @@ reads before and after the meter reads returned the value of the earlier passes
 | ID | Statement | Grade |
 | --- | --- | --- |
 | MM-01 | The AC group and the energy group answered with data at both meter units on the first attempt. Non-zero words: 18 of 33 at each unit in the AC group, and 17 and 16 of 30 in the energy group. | Proven (answered); value form Hypothesis |
-| MM-02 | The meter-number group and the configuration group were refused with exception 3 at both units on the first attempt. The units stay listed and answering, so the refusal is not an absent device (rule 5), and the two groups are not sent again at this logger's software until a revision of this page (MG-04). | Proven |
+| MM-02 | The meter-number group and the configuration group were refused with exception 3 at both units on the first attempt. The units stay listed and answering, so the refusal is not an absent device (rule 5), and the two groups are not sent again to these units until a revision of this page (MG-05, MG-06). | Proven |
 | MM-03 | The two units answer different words in both answered groups, so neither unit is an alias of the other. | Proven |
 | MM-04 | The meters answer at their own routed units, as the listing gives them. Whether the logger also serves them at its unit 0 was not read. | Proven (routed units); unit 0 Unknown |
 | MM-05 | The type, gain, unit, and sign of the answered words, as the consumed-fields table below gives them from the editions that define them. | Hypothesis |
-| MM-06 | The sign of the meter's power words. Issues 49, 53, and 54 state that a positive value is power fed to the grid and a negative value is power supplied from it, and issues 32, 36, and 37 state no sign. No reading was correlated with a direction of flow, and no consulted issue is issued for the observed logger's software (MG-07). | Hypothesis where an issue states it; Unknown for the observed logger |
+| MM-06 | The sign of the meter's power words. Issues 49, 53, and 54 and the V300R025C10 and V300R026C10 editions of Issue 02 state that a positive value is power fed to the grid and a negative value is power supplied from it, and issues 32, 36, and 37 state no sign. No reading was correlated with a direction of flow. | Hypothesis |
 | MM-07 | Which of the three active energy counters is import and which is export. The editions name them total, negative, and positive and state no direction. | Unknown |
 | MM-08 | The meters' make, model, and firmware, the current-transformer ratio, and the meter number. The operator declares the family and the wiring. The ratio and the number sit in the two refused groups, and no word of an answered group identifies a make or a model. | Unknown; the declaration is configuration |
 
@@ -500,10 +493,10 @@ These notes are findings that no consulted document states in one place.
 | DN-02 | The two SmartLogger editions agree on every planned plant field. The V300R025C10 edition adds a minimum interval between query commands, which the V300R024C10SPC191 edition does not state (see the pacing contract). | both SmartLogger editions |
 | DN-03 | Neither of the two SmartLogger editions above carries a power-meter register table, although their change history records the addition of power-meter registers. Issue 37 of the logger document carries such a table at the meter's own unit, and the meter reads are named from it and from the other issues that define the same groups (DN-08). The observed logger serves the AC and energy groups and refuses the other two (MG-04). | the change history of the two editions, and Issue 37 |
 | DN-04 | Energy gains differ by source: gain 100 for the inverter counters of the SUN2000MC edition and for the EMMA site energy, and gain 10 for the logger's plant energy. The meter energy counters carry gain 100 in all three sources. A consumer never applies one source's gain to another source's words. | the three documents |
-| DN-05 | Grid signs differ by source: the S-Dongle plant grid exchange power is positive when power is imported from the grid, while the EMMA's external-meter note, the meter note of SmartLogger issues 49, 53, and 54, and the SUN2000MC inverter-exposed meter group use positive for power exported to the grid. The EMMA site grid exchange and battery powers, the EMMA built-in sensor powers, the logger plant AC power, and the inverter active power carry no stated sign. | the S-Dongle, SmartHEMS, SmartLogger, and SUN2000MC documents |
+| DN-05 | Grid signs differ by source: the S-Dongle plant grid exchange power is positive when power is imported from the grid, while the EMMA's external-meter note, the meter note of SmartLogger issues 49, 53, and 54 and of the V300R025C10 and V300R026C10 editions of Issue 02, and the SUN2000MC inverter-exposed meter group use positive for power exported to the grid. The EMMA site grid exchange and battery powers, the EMMA built-in sensor powers, the logger plant AC power, and the inverter active power carry no stated sign. | the S-Dongle, SmartHEMS, SmartLogger, and SUN2000MC documents |
 | DN-06 | The EMMA unit 0 groups, their types, units, and gains, are the same in the two SmartHEMS editions, including the built-in sensor groups, the site power group, and the grid and consumption energy group that the meter run read, and the S-Dongle plant group is the same in the two S-Dongle editions. A read on either path is therefore not tied to one of the two editions. | the paired editions |
 | DN-07 | The two LUNA2000 port definitions cover commercial and utility-scale storage systems in their model tables, not the residential packs that the operator describes behind the EMMA. No battery field on this page rests on them. | both LUNA2000 documents |
-| DN-08 | The meter section differs across the eight consulted SmartLogger issues. Issues 32, 36, and 37 define the meter's voltage, current, power, and energy fields, with no meter-number group and no configuration group. Issues 49, 53, and 54 define the same fields and add both groups and a sign rule for the meter's power. Issues 52 and 01 carry no meter section. The system-requirements lists name a minimum software for the logger family and nothing per group. | the eight SmartLogger issues |
+| DN-08 | The meter section differs across the consulted SmartLogger issues. Issues 32, 36, and 37 define the meter's voltage, current, power, and energy fields, with no meter-number group and no configuration group. Issues 49, 53, and 54 define the same fields and add both groups and a sign rule for the meter's power. The V300R025C10 and V300R026C10 editions of Issue 02 define the same fields, the configuration group, and the sign rule, with no meter-number row. Issues 32, 36, 37, and 49 carry a note that restricts the source ordinals 16 through 25 to DL/T 645 meters, which covers two reserved energy rows at offsets 32289 and 32291 and, in issue 49, the meter-number row; issues 53 and 54 and the two Issue 02 editions carry no such note. Issues 52 and 01 carry no meter section. The system-requirements lists name a minimum software for the logger family and nothing per group. | the consulted SmartLogger issues |
 | DN-09 | Every meter group read in the meter run starts at an offset that its defining editions define, ends on a value boundary, and spans no offset they leave undefined, so shared rule 4 holds for it. The SmartLogger AC group ends with the last two-word value before offset 32293, and its energy group ends on the last reactive energy counter. The two EMMA built-in sensor reads before the energy counters leave out the two undefined words after the active power, and the three energy counters are three reads because four undefined words lie between each pair. The four S-Dongle groups tile offsets 37100 through 37138. | the SmartLogger, SmartHEMS, and SUN2000MC documents |
 | DN-10 | The SUN2000MC edition gives the meter status word, the meter type word, and the meter model check word as 16-bit enumerations and lists no value for any of them at its rows. A non-zero answer therefore carries no documented meaning. The edition also defines read-write meter model, address, and name settings, which were not read. | the SUN2000MC document |
 | DN-11 | Both SmartHEMS editions say, in the note to their external-meter section, that the EMMA's built-in registers are used when a built-in meter is used, and they state the sign rule (positive when power is fed to the grid) only in that note. They state no sign for the built-in sensor groups. | both SmartHEMS documents |
@@ -513,14 +506,16 @@ These notes are findings that no consulted document states in one place.
 | Document title | Document version | Document date | Used for |
 | --- | --- | --- | --- |
 | SUN2000MC V200R023C00 Modbus Interface Definitions | Issue 01 | 2023-03-17 | the M3 series inverter groups and consumed fields, the derived note on the power-group extent, MG-02, the inverter-exposed meter groups at the S-Dongle child and their consumed fields, the battery word at offset 37000, and DN-01, DN-04, DN-05, DN-09, and DN-10 |
-| SmartLogger V300R024C10SPC191 ModBus Interface Definitions | Issue 52 | 2025-06-06 | the logger plant groups, the logger's own unit, MG-06, and DN-02 to DN-04 and DN-08 |
-| SmartLogger V300R025C10 ModBus Interface Definitions | Issue 01 | 2025-12-22 | the logger plant groups, the logger's own unit, MG-06, and DN-02, DN-03, and DN-08 |
-| SmartLogger ModBus Interface Definitions | Issue 37 | 2020-06-24 | the meter groups at the SmartLogger meter units and their consumed fields, MG-05, and DN-03, DN-08, and DN-09 |
-| SmartLogger ModBus Interface Definitions | Issue 32 | 2018-11-15 | the meter groups at the SmartLogger meter units, MG-05, and DN-08 |
-| SmartLogger ModBus Interface Definitions | Issue 36 | 2020-04-13 | the meter groups at the SmartLogger meter units, MG-05, and DN-08 |
-| SmartLogger V300R024C10SPC210 ModBus Interface Definitions | Issue 49 | 2025-03-19 | the meter-number and configuration groups, the meter sign note, MG-05, and DN-05, DN-08, and DN-09 |
-| SmartLogger V300R024C10 ModBus Interface Definitions | Issue 53 | 2025-10-29 | the meter-number and configuration groups, the meter sign note, MG-05, and DN-05, DN-08, and DN-09 |
-| SmartLogger V300R024C10 ModBus Interface Definitions | Issue 54 | 2026-02-06 | the meter-number and configuration groups, the meter sign note, MG-05, and DN-05, DN-08, and DN-09 |
+| SmartLogger V300R024C10SPC191 ModBus Interface Definitions | Issue 52 | 2025-06-06 | the logger plant groups, the logger's own unit, MG-07, and DN-02 to DN-04 and DN-08 |
+| SmartLogger V300R025C10 ModBus Interface Definitions | Issue 01 | 2025-12-22 | the logger plant groups, the logger's own unit, MG-07, and DN-02, DN-03, and DN-08 |
+| SmartLogger ModBus Interface Definitions | Issue 37 | 2020-06-24 | the meter groups at the SmartLogger meter units and their consumed fields, MG-05, MG-06, and DN-03, DN-08, and DN-09 |
+| SmartLogger ModBus Interface Definitions | Issue 32 | 2018-11-15 | the meter groups at the SmartLogger meter units and DN-08 |
+| SmartLogger ModBus Interface Definitions | Issue 36 | 2020-04-13 | the meter groups at the SmartLogger meter units and DN-08 |
+| SmartLogger V300R024C10SPC210 ModBus Interface Definitions | Issue 49 | 2025-03-19 | the meter-number and configuration groups, the DL/T 645 restriction, the meter sign note, MG-05, MG-06, and DN-05, DN-08, and DN-09 |
+| SmartLogger V300R024C10 ModBus Interface Definitions | Issue 53 | 2025-10-29 | the meter-number and configuration groups, the meter sign note, MG-05, MG-06, and DN-05, DN-08, and DN-09 |
+| SmartLogger V300R024C10 ModBus Interface Definitions | Issue 54 | 2026-02-06 | the meter-number and configuration groups, the meter sign note, MG-05, MG-06, and DN-05, DN-08, and DN-09 |
+| SmartLogger V300R025C10 ModBus Interface Definitions | Issue 02 | 2026-10-09 | the meter groups including the configuration group and no meter-number row, the meter sign note, MG-05, MG-06, and DN-05, DN-08, and DN-09 |
+| SmartLogger V300R026C10 ModBus Interface Definitions | Issue 02 | 2026-10-09 | the meter groups including the configuration group and no meter-number row, the meter sign note, MG-05, MG-06, and DN-05, DN-08, and DN-09 |
 | SmartHEMS V100R024C00 MODBUS Interface Definitions | Issue 01 | 2024-07-15 | the EMMA unit 0 site groups, the sensor groups, the built-in sensor groups and the grid groups of the meter run, the EMMA addressing, and DN-01, DN-04 to DN-06, DN-09, and DN-11 |
 | SmartHEMS V100R025C00SPC102 MODBUS Interface Definitions | Issue V100R025C00SPC102 | 2025-08-14 | the EMMA unit 0 site groups, the sensor groups, the built-in sensor groups and the grid groups of the meter run, the external-meter sign note, the EMMA addressing, and DN-01, DN-04 to DN-06, DN-09, and DN-11 |
 | SDongle V200R025C00SPC120 MODBUS Interface Definitions | Issue 01 | 2025-12-23 | the S-Dongle plant groups and their signs, the dongle addressing, and DN-05 and DN-06 |
@@ -574,11 +569,11 @@ and does not relicense those documents.
    SmartLogger or EMMA paths? Are the SmartLogger's two meters the same model
    (MM-08)?
 10. What are the transformer ratios and the meter number of the SmartLogger's
-    meters, which sit in the refused groups (MM-08), and does any other software
-    branch or reader expose them?
-11. What causes the SmartLogger's refusal of the meter-number and configuration
-    groups (MG-07), and what does the observed logger's software define for
-    meters beyond the two groups that answered?
+    meters, which sit in the refused groups (MM-08), and does another reader or
+    an observation at another build expose them?
+11. Does the meter-number refusal come from the DL/T 645 restriction (MG-05), and
+    what causes the refusal of the configuration group, which exists across
+    editions (MG-06)?
 12. Does the whole inverter-side meter area answer as one read at the S-Dongle
     child, and do the four smaller groups answer at the M3 series units
     (MM-21)?
