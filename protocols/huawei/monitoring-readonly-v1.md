@@ -568,17 +568,18 @@ These notes are findings that no consulted document states in one place.
 | SmartLogger ModBus Interface Definitions | Issue 37 | 2020-06-24 | the meter groups at the SmartLogger meter units and their consumed fields, MG-05, MG-06, and DN-03, DN-08, and DN-09 |
 | SmartLogger ModBus Interface Definitions | Issue 32 | 2018-11-15 | the meter groups at the SmartLogger meter units and DN-08 |
 | SmartLogger ModBus Interface Definitions | Issue 36 | 2020-04-13 | the meter groups at the SmartLogger meter units and DN-08 |
-| SmartLogger V300R024C10SPC210 ModBus Interface Definitions | Issue 49 | 2025-03-19 | the meter-number and configuration groups, the DL/T 645 restriction, the meter sign note, MG-05, MG-06, and DN-05, DN-08, and DN-09 |
-| SmartLogger V300R024C10 ModBus Interface Definitions | Issue 53 | 2025-10-29 | the meter-number and configuration groups, the meter sign note, MG-05, MG-06, and DN-05, DN-08, and DN-09 |
-| SmartLogger V300R024C10 ModBus Interface Definitions | Issue 54 | 2026-02-06 | the meter-number and configuration groups, the meter sign note, MG-05, MG-06, and DN-05, DN-08, and DN-09 |
-| SmartLogger V300R025C10 ModBus Interface Definitions | Issue 02 | 2026-10-09 | the meter groups including the configuration group and no meter-number row, the meter sign note, MG-05, MG-06, and DN-05, DN-08, and DN-09 |
-| SmartLogger V300R026C10 ModBus Interface Definitions | Issue 02 | 2026-10-09 | the meter groups including the configuration group and no meter-number row, the meter sign note, MG-05, MG-06, and DN-05, DN-08, and DN-09 |
+| SmartLogger V300R024C10SPC210 ModBus Interface Definitions | Issue 49 | 2025-03-19 | the meter-number and configuration groups, the DL/T 645 restriction, the meter sign note, MG-05, MG-06, and DN-05, DN-08, and DN-09; for MG-05 and MG-06 through the gateway reference, the restricted meter rows including the meter-number row (p. 66) and the configuration group (p. 68) |
+| SmartLogger V300R024C10 ModBus Interface Definitions | Issue 53 | 2025-10-29 | the meter-number and configuration groups, the meter sign note, MG-05, MG-06, and DN-05, DN-08, and DN-09; for MG-05 and MG-06 through the gateway reference, the meter-number row (p. 64) and the configuration group (p. 65) |
+| SmartLogger V300R024C10 ModBus Interface Definitions | Issue 54 | 2026-02-06 | the meter-number and configuration groups, the meter sign note, MG-05, MG-06, and DN-05, DN-08, and DN-09; for MG-05 and MG-06 through the gateway reference, the meter-number row (p. 64) and the configuration group (p. 65) |
+| SmartLogger V300R025C10 ModBus Interface Definitions | Issue 02 | 2026-10-09 | the meter groups including the configuration group and no meter-number row, the meter sign note, MG-05, MG-06, and DN-05, DN-08, and DN-09; for MG-06 through the gateway reference, the configuration group (pp. 58–59) |
+| SmartLogger V300R026C10 ModBus Interface Definitions | Issue 02 | 2026-10-09 | the meter groups including the configuration group and no meter-number row, the meter sign note, MG-05, MG-06, and DN-05, DN-08, and DN-09; for MG-06 through the gateway reference, the configuration group (pp. 58–59) |
 | SmartHEMS V100R024C00 MODBUS Interface Definitions | Issue 01 | 2024-07-15 | the EMMA unit 0 site groups, the sensor groups, the built-in sensor groups and the grid groups of the meter run, the EMMA addressing, and DN-01, DN-04 to DN-06, DN-09, and DN-11 |
 | SmartHEMS V100R025C00SPC102 MODBUS Interface Definitions | Issue V100R025C00SPC102 | 2025-08-14 | the EMMA unit 0 site groups, the sensor groups, the built-in sensor groups and the grid groups of the meter run, the external-meter sign note, the EMMA addressing, and DN-01, DN-04 to DN-06, DN-09, and DN-11 |
 | SDongle V200R025C00SPC120 MODBUS Interface Definitions | Issue 01 | 2025-12-23 | the S-Dongle plant groups and their signs, the dongle addressing, and DN-05 and DN-06 |
 | SDongle V200R022CC10 MODBUS Interface Definitions | Issue 02 | 2023-04-20 | the S-Dongle plant groups and their signs, and DN-06 |
 | LUNA2000B V200R024C00SPC410 Modbus Port Definitions | Issue 01 | 2026-01-24 | DN-07 only |
 | LUNA2000C ESS Modbus Port Definitions | Issue 01 | 2023-06-13 | DN-07 only |
+| Huawei gateway Modbus reference | reference baseline 2026-10-26.1 | 2026-10-26 | MG-05: that a route established as Modbus lies outside the DL/T 645 condition and that RS-485 alone does not identify a meter's protocol; MG-06: that the inspected editions print no comparable condition for the configuration group; locating the meter rows of the five SmartLogger issues above |
 
 The observations that grade these facts are the runs described in the scope
 section. No value, table, label, or text of the documents is reproduced here.
@@ -596,6 +597,13 @@ Power Technologies Co., Ltd., which retains the copyright in those documents.
 This page states that information in its own words and does not reproduce the
 documents. The CC0-1.0 dedication of this page covers its own expression only
 and does not relicense those documents.
+
+**Reference note.** The facts that the Documents consulted section attributes
+to the Huawei gateway Modbus reference were taken through that independent
+documentary work, whose contributors dedicate its original writing under
+CC0-1.0. The vendor documents it cites keep their rights, as the copyright note
+states. This page restates those facts in its own words and carries over none
+of the reference's engineer-review or operational-authorization clauses.
 
 ## Open questions
 

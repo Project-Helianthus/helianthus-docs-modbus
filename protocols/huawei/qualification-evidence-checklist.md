@@ -23,9 +23,9 @@ it cannot prove that an installation has that identity or capability.
 
 | Family | Published contract | Synthetic parser coverage | Admissible identity tuple | Native profile | Production acquisition |
 | --- | --- | --- | --- | --- | --- |
-| SmartLogger | Bounded gateway candidate and qualification card | Stable inventory and rejection cases; card is `QUALIFICATION_TEST_READY` | Defined by the gateway contract, including one exact observed tuple; connected evidence exists for that tuple only, and the two documentary tuples are unobserved | Registry disposition `NO_ADMISSIBLE_PROFILE`; unregistered, no decoder keys | Denied; no live qualification or support claim |
-| EMMA | Independent FC03 identity and qualification card, plus one observed gateway branch | Finite identity aliases, branch floors, inventory rejection cases; the observed branch has its own card in the registry companion | `OFFLINE_IDENTITY_ADMITTED` only; complete tuple required; one connected observation of the candidate's tuple at unit 0 (model value, branch, and suffix withheld) after four refused runs; children are two inverters at their own units and a listed backup box | Capability evidence blocked; unregistered, no telemetry decoder keys | Denied; identity matching supplies no native telemetry facts |
-| S-Dongle | Separate gateway and child contracts, plus one observed single-inverter tuple | Exact candidate tuple evaluation; a positive synthetic input for the candidate cannot replace the recorded stop; the observed tuple has its own card in the registry companion | Documentary tuple and offline candidate remain distinct and unobserved; one observed exact tuple (gateway unit 100, child unit 1) exists, and the gateway's product is Unknown | `PRE_LIVE_INSUFFICIENT_EVIDENCE`; unregistered, no decoder keys | Denied; the recorded `LIVE_STOPPED_PERSISTENT_NON_RESPONSE` stays in force until a same-class run matches the complete tuple on one connection generation (neither observation did), and further I/O needs the operator's approval at action time |
+| SmartLogger | Bounded gateway candidate and qualification card | Stable inventory and rejection cases; card is `QUALIFICATION_TEST_READY` | Defined by the gateway contract, including one exact observed tuple; connected evidence exists for that tuple only, and the documentary entry (model `SmartLogger`, firmware from the V300R001C00 floor) is unobserved | Registry disposition `NO_ADMISSIBLE_PROFILE`; unregistered, no decoder keys | Denied; no live qualification or support claim |
+| EMMA | Independent FC03 identity and qualification card, plus one observed gateway entry | Finite identity aliases, branch floors, inventory rejection cases; the observed entry has its own card in the registry companion | `OFFLINE_IDENTITY_ADMITTED` only; complete tuple required; one connected observation of the candidate's tuple at unit 0 (model value, branch, and suffix withheld) after four refused runs; children are two inverters at their own units and a listed backup box | Capability evidence blocked; unregistered, no telemetry decoder keys | Denied; identity matching supplies no native telemetry facts |
+| S-Dongle | Separate gateway and child contracts, plus one observed single-inverter tuple | Candidate tuple evaluation; a positive synthetic input for the candidate cannot replace the recorded stop; the observed tuple has its own card in the registry companion | The offline candidate (SDongleA-05, SDongleB-03, or SDongleB-06 from the V200R022C10 floor) is unobserved; one observed exact tuple (gateway unit 100, child unit 1) exists, and the gateway's product and software are Unknown | `PRE_LIVE_INSUFFICIENT_EVIDENCE`; unregistered, no decoder keys | Denied; the recorded `LIVE_STOPPED_PERSISTENT_NON_RESPONSE` stays in force until a same-class run matches the complete tuple on one connection generation (neither observation did), and further I/O needs the operator's approval at action time |
 | SUN2000 | Fail-closed disposition only | Decision rows are documentary, not executable detection | One observed exact identity tuple in the identity contract; admissible pinned map absent | `NO_ADMISSIBLE_PROFILE`; no decoder | None admitted; no live qualification |
 | LUNA2000 | Separate fail-closed battery disposition | Decision rows are documentary, not executable detection | Unknown; no observed tuple; battery identity cannot be inherited from parent or gateway | `NO_ADMISSIBLE_PROFILE`; no decoder | None admitted; no live qualification |
 | Power meter | Class, listing, and observed exposure facts, with the role as configuration | Not applicable; the meter groups answered once per path in observations, with value form Hypothesis | Unknown; make, model, and firmware are not established, and the exposure path is observed on three paths only | No meter class contract; every meter is `INSUFFICIENT_EVIDENCE` | None admitted; no live qualification |
@@ -61,8 +61,8 @@ native disposition contract.
   by equal before and after counters, with native child attributes and
   pagination anomalies preserved under the existing bounds, exists for the
   observed tuple.
-- [ ] The same evidence for the card's two documentary tuples, which were never
-  observed.
+- [ ] The same evidence for the card's documentary entry (model `SmartLogger`),
+  which was never observed.
 - [ ] Reconcile that evidence into the registry disposition before claiming an
   admissible native profile; then establish production acquisition separately.
 
@@ -79,9 +79,9 @@ below are closed for the observed installation only, or stay open. The evidence
 and its grades are on the [EMMA observation](emma-observed-identity-v1.md).
 
 - [x] Connected evidence of the complete FC03 offering, model, and software
-  tuple and its exact model values and within-branch firmware floors exists for
-  the observed installation. Optional MEI enrichment is neither initial identity
-  nor a reason to discard a valid FC03 tuple. The model value, branch, and suffix
+  tuple, with its exact model values and the software floors of its branches,
+  exists for the observed installation. Optional MEI enrichment is neither
+  initial identity nor a reason to discard a valid FC03 tuple. The model value, branch, and suffix
   are withheld on the published pages and are carried by the registry fixture.
 - [ ] The other admitted model value and the other software branch, which were
   not observed.
@@ -132,10 +132,11 @@ The items below are closed for the observed tuple only, or stay open.
   issued. EMMA probes at the S-Dongle path do not return an EMMA tuple, and the
   S-Dongle status reads are refused at an EMMA's unit 100 and at one inverter.
   The status reads at an EMMA's unit 0 stay open.
-- [ ] Connected identity at the candidate's tuple and the documentary tuple,
-  which the observed gateway did not name. Keep the documentary default-denied
-  firmware tuple distinct from the offline candidate and its independent protocol
-  baseline.
+- [ ] Connected identity at the candidate's tuple, which the observed gateway
+  did not name: it reports no product and no software. The A-05 build that the
+  sanitized disposition names as its qualification target lies above the
+  V200R022C10 floor and falls under the candidate, and the candidate's protocol
+  word requires main revision 5 with a release revision from 0 onward.
 - [ ] Name the child unit without a scan, and establish the product string of
   the gateway. A gateway timeout permits no child scan, inferred address, or
   extended-MEI fallback. Reconcile the disposition before native-profile
@@ -200,3 +201,38 @@ inherits under the software applicability rule. Evidence never transfers between
 gateway, inverter, and battery families. Closing any checklist item does not
 itself register a profile or establish live qualification, production
 acquisition, hardware acceptance, or parent-issue completion.
+
+## Documents consulted
+
+| Document title | Document version | Document date | Used for |
+| --- | --- | --- | --- |
+| SmartLogger V300R024C10SPC191 ModBus Interface Definitions | Issue 52 | 2025-06-06 | the V300R001C00 floor of the SmartLogger documentary entry (p. 15) |
+| SmartLogger V300R024C10SPC210 ModBus Interface Definitions | Issue 49 | 2025-03-19 | the V300R001C00 floor of the SmartLogger documentary entry (p. 13) |
+| SDongle V200R025C00SPC120 MODBUS Interface Definitions | Issue 01 | 2025-12-23 | the three models and the V200R022C10 floor of the S-Dongle candidate (pp. 8–9) and its protocol-version note (p. 9) |
+| SDongle V200R022CC10 MODBUS Interface Definitions | Issue 02 | 2023-04-20 | the V200R022C10 floor for SDongleA-05 and SDongleB-06 (pp. 8–9) and the protocol-version note (p. 9) |
+| Huawei gateway Modbus reference | reference baseline 2026-10-26.1 | 2026-10-26 | locating the floors and the protocol-version note in the documents above |
+
+The checklist states these floors as the gateway contract does, and every other
+row rests on the linked contracts and observations. No table, label, or text of
+the documents is reproduced here.
+
+**Copyright note.** The information on this page that is derived from the
+SmartLogger documents listed above is attributed to Huawei Technologies Co.,
+Ltd., which retains the copyright in those documents. This page states that
+information in its own words and does not reproduce the documents. The CC0-1.0
+dedication of this page covers its own expression only and does not relicense
+those documents.
+
+**Copyright note.** The information on this page that is derived from the
+SDongle documents listed above is attributed to Huawei Digital Power
+Technologies Co., Ltd., which retains the copyright in those documents. This
+page states that information in its own words and does not reproduce the
+documents. The CC0-1.0 dedication of this page covers its own expression only
+and does not relicense those documents.
+
+**Reference note.** The facts that the Documents consulted section attributes
+to the Huawei gateway Modbus reference were taken through that independent
+documentary work, whose contributors dedicate its original writing under
+CC0-1.0. The vendor documents it cites keep their rights, as the copyright note
+states. This page restates those facts in its own words and carries over none
+of the reference's engineer-review or operational-authorization clauses.

@@ -245,7 +245,7 @@ produces `INSUFFICIENT_EVIDENCE`, and never a class.
 | Field | Contract |
 | --- | --- |
 | Family | An EMMA energy-management gateway at unit 0. The capability variant is the one that the model token names, and no capability is created by the identity. The inverters behind it have their own contract below, and a child's model never becomes the gateway's. |
-| Required tuple | All of the following at gateway unit 0 on one connection generation. FC03 offset 30000, quantity 15: the text `SmartHEMS`, a NUL, and NUL padding over the full 30 bytes. FC03 offset 30222, quantity 20: a text that equals, after terminal NUL padding is stripped, one of the two exact model values that the EMMA candidate of the gateway contract admits, with NUL padding over the full 40 bytes. FC03 offset 30035, quantity 15: `SmartHEMS`, one space, and a version-style text that meets the candidate's numeric floor within its own branch, or is of a branch with no documented relation to the candidate's two branches and so inherits with grade Hypothesis under the [software applicability rule](monitoring-readonly-v1.md#software-applicability), followed by a NUL and NUL padding over the full 30 bytes. No comparison crosses branches. The observed build is Proven, and every other build that this rule admits is Hypothesis. The page publishes no model token and no version text, so the exact model comparison is made against the registry fixture, and no prefix, wildcard, or range links two tokens. |
+| Required tuple | All of the following at gateway unit 0 on one connection generation. FC03 offset 30000, quantity 15: the text `SmartHEMS`, a NUL, and NUL padding over the full 30 bytes. FC03 offset 30222, quantity 20: a text that equals, after terminal NUL padding is stripped, one of the two exact model values that the EMMA candidate of the gateway contract admits, with NUL padding over the full 40 bytes. FC03 offset 30035, quantity 15: `SmartHEMS`, one space, and a version-style text that the candidate's software rule admits: at or above the floor of its own branch, a build that follows it, or a build of a branch with neither a documented floor nor a documented relation, the inherited builds with grade Hypothesis under the [software applicability rule](monitoring-readonly-v1.md#software-applicability); the text is followed by a NUL and NUL padding over the full 30 bytes. The observed build is Proven, and every other build that this rule admits is Hypothesis. The page publishes no model token and no version text, so the exact model comparison is made against the registry fixture, and no prefix, wildcard, or range links two tokens. |
 | Optional corroboration | A decodable basic read at unit 0 shows vendor `Huawei`, product `HEMS`, and the version-style text of the software block. The extended inventory from object 0x87 has its first entry (object 0x88) as the self entry, with key 5 exactly `0`, key 1 equal to the model block, key 2 equal to the version-style text of the software block, and key 8 `HEMS`. A decodable corroboration that disagrees with the FC03 tuple is a conflicting detector and produces `INSUFFICIENT_EVIDENCE`. Absence or a decode failure of either read changes nothing, as the gateway contract states for optional MEI. |
 | Recorded, not gating | The objects of the basic reply beyond the vendor, product, and version objects, the declared-object field, the next-object field, entry keys 3, 4, 6, 9, and 10, entry padding and key order, the serial-bearing block, and any timing. They are retained as native evidence and select and reject nothing. |
 | Forbidden identity | Serial number or ESN (the serial-bearing block, entry key 4, and basic objects 0x10 and 0x1b), a writable alias, readability of any register (including the EMMA offsets answered at an inverter, the SunSpec offset, and the basic reply that every unit identifier returns), a model-register read without the complete tuple, a `SmartHEMS` prefix without an admitted model, basic identification alone, a child listing, the unit identifier of a request, and a prefix, wildcard, case-folded, or whitespace-normalized match. |
@@ -286,7 +286,7 @@ admits nothing by itself.
 | An exception, a missing reply, or a connection reset or closed after the write on any of the three reads | `INSUFFICIENT_EVIDENCE` |
 | Model outside the two admitted values, a SmartLogger-shaped model, or an offering other than `SmartHEMS` | `INSUFFICIENT_EVIDENCE` |
 | Software text without the structured form, or below the floor within its own branch | `INSUFFICIENT_EVIDENCE` |
-| Software build that follows the floor and was never observed, or of a branch with no documented relation to the candidate's two branches | identity applicability holds with grade Hypothesis; the card stays `QUALIFICATION_EVIDENCE_BLOCKED` |
+| Software build that follows the floor of its branch and was never observed, or of a branch with neither a documented floor nor a documented relation | identity applicability holds with grade Hypothesis; the card stays `QUALIFICATION_EVIDENCE_BLOCKED` |
 | Self entry or basic reply decodable and in disagreement with the FC03 tuple | `INSUFFICIENT_EVIDENCE` |
 | Serial number or ESN only, basic identification only, or readability only | `INSUFFICIENT_EVIDENCE` |
 | Another Huawei class also positive at the endpoint | `AMBIGUOUS` |
@@ -298,8 +298,8 @@ admits nothing by itself.
 ## Tolerance requirements
 
 These are observed requirements: a reader that cannot do each of them cannot
-read this tuple. They add to the tolerance requirements of the SmartLogger
-observation and remove none of its ceilings.
+read this tuple. Each is a lower bound and none is a cap. They add to the
+tolerance requirements of the SmartLogger observation and remove none of them.
 
 1. **Identity blocks.** The text ends at the first NUL, and for the EMMA's own
    three blocks every byte after it is NUL padding to the end of the extent. A
@@ -316,15 +316,19 @@ observation and remove none of its ceilings.
 4. **Declared-object field of the inventory.** Retain it and never compare it;
    completeness comes from the count object, more-follows, and the entries.
    Basis: EM-17 and EM-21.
-5. **Entries.** Accept entries that are not NUL padded and are up to 102 bytes.
-   Key order is not validated. Keys 9 and 10 are known opaque keys on any entry
-   class, and key 10 is on the inverter entries here. Unknown keys and repeated
-   keys still reject the inventory. Basis: EM-22, EM-24, and EM-25.
+5. **Entries.** Accept entries that are not NUL padded, of the observed 79 to
+   102 bytes; those lengths are lower bounds and not caps. Key order is not
+   validated. Keys 9 and 10 are known opaque keys on any entry class, and key 10
+   is on the inverter entries here. A key outside the observed set is retained
+   as opaque native evidence and does not reject the inventory; repeated keys
+   still reject it. Basis: EM-22, EM-24, and EM-25.
 6. **Count object.** It counts the entries including the self entry, so the
    child count is the count minus one. Basis: EM-20.
-7. **Frame length.** The classic 253-byte limit suffices for this tuple, because
-   the longest PDU was 118 bytes. The oversize tolerance of the SmartLogger
-   observation is not needed. Basis: EM-09 and EM-21.
+7. **Frame length.** The longest PDU was 118 bytes, within the classic 253-byte
+   limit. That length is a lower bound and not a cap: a reader of this tuple
+   works within the resource bounds of the gateway contract and does not refuse
+   a longer response, such as an oversize page of the kind the SmartLogger
+   observation records, for its length alone. Basis: EM-09 and EM-21.
 8. **Counter.** The refusal of the SmartLogger counter (exception 3) is no
    failure of the tuple, which does not read it, and the counter is no guard for
    an EMMA listing. Basis: EM-31.
@@ -358,6 +362,21 @@ operator's approval at action time and a confirmed connection context.
 Supersession does not say that the refused requests should have been answered,
 and their cause is the Hypothesis EM-56. A result of another class, a failed or
 absent EMMA result, and the readability of any register supersede nothing.
+
+## Documents consulted
+
+| Document title | Document version | Document date | Used for |
+| --- | --- | --- | --- |
+| none | none | none | none |
+
+This page rests on observations only: every graded row comes from the sanitized
+observation record, and no vendor document was consulted to write it. The
+candidate's admitted model values and software floors, which the family
+contract refers to, are carried by the [gateway contract](gateway-readonly-v1.md)
+together with the documents they rest on, and are not derived here.
+
+**Copyright note.** Not applicable. No information on this page is derived from
+a vendor document.
 
 ## Open questions
 
