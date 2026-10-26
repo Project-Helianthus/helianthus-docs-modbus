@@ -100,24 +100,31 @@ page](../applicability-and-licensing.md).
 1. **Identity stays exact.** A consulted document is cited by its exact title,
    issue or version, and date, and an observed device is recorded with the exact
    software string it returned. That identity is the citation key and the
-   observation record. It is not the condition under which a fact applies.
+   observation record. It is not the condition under which a fact applies. The
+   software named in an edition's cover label belongs to its citation and is
+   not its floor.
 2. **Applicability is a floor.** A fact that a consulted document states for a
    model row applies from the minimum software that the document gives for that
    row onward, and to the builds that follow it. A fact observed on a device
    applies from the observed build onward in the same way. No fact carries an
    upper software bound unless an observation records one (item 5).
-3. **Branches.** A Huawei software string names a branch, its V, R, and C part
-   taken as a whole, and a build within that branch, its SPC number. A build is
-   compared with a floor only within the same documented branch, by its SPC
-   number. A text that carries a branch part only, such as the eight-character
-   firmware text read at a routed SUN2000 unit, is compared as a branch.
+3. **Lines and branches.** A Huawei software string names a line, its V part; a
+   branch within that line, its V, R, and C part taken as a whole; and a build
+   within that branch, its SPC number. Builds of one branch are ordered by their
+   SPC number. Branches are ordered only where a document states the relation,
+   such as a minimum that a document states as applying to a whole line from one
+   branch onward, or a documented upgrade path from one branch to another. A
+   cover label, a release package, and a publication date order nothing. A text
+   that carries a branch part only, such as the eight-character firmware text
+   read at a routed SUN2000 unit, is compared as a branch.
 4. **Unseen builds inherit.** A build that no observation has seen is never
-   refused for that reason. At or above the floor of its branch, it inherits the
-   facts of the row. From a branch with no documented relation to the floor's
-   branch, it inherits them too. Either way the inherited facts are graded
-   Hypothesis until an observation grades them. A build below the floor within
-   the floor's own branch does not inherit, and a text without the V, R, and C
-   form is a malformed element, not an unseen build.
+   refused for that reason. At or above the floor, within its branch or along a
+   documented order of branches, it inherits the facts of the row. From a branch
+   with no documented relation to the floor, it inherits them too. Either way
+   the inherited facts are graded Hypothesis until an observation grades them. A
+   build below the floor, within its branch or along a documented order, does
+   not inherit, and a text without the V, R, and C form is a malformed element,
+   not an unseen build.
 5. **Only an observation narrows.** An observation that records a changed
    behavior at a build narrows the fact from that build onward, and the page
    records that build with the change. A refusal recorded at a build, such as a

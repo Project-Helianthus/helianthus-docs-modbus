@@ -33,15 +33,17 @@ The candidate targets unit 0 and requires all of:
 - FC03 offset 65521, quantity 1, a stable U16 device-list change counter;
 - FC2B, MEI 0x0e, ReadDevId 0x03, object 0x87 inventory;
 - a self entry whose model identifies SmartLogger; and
-- a self-entry firmware at or above the floor `V300R024C10SPC191` in the
-  V300R024C10 branch.
+- a self-entry firmware of the V300 line at or above `V300R001C00`, the
+  minimum that both consulted SmartLogger editions state for that line.
 
-The documented `V300R024C10SPC210` is a build of the same branch that meets
-the floor. A build that follows the floor in that branch, or a build of a branch
-with no documented relation to it, inherits the candidate's facts with grade
-Hypothesis under the
-[software applicability rule](monitoring-readonly-v1.md#software-applicability);
-a build below the floor within V300R024C10 does not.
+The editions are cited by their cover labels, `V300R024C10SPC191` (Issue 52)
+and `V300R024C10SPC210` (Issue 49), which identify them and are not floors; each
+also states minima for the other SmartLogger lines. Every V300 build at or above
+the minimum inherits the candidate's documented facts, graded Hypothesis until
+observed, under the
+[software applicability rule](monitoring-readonly-v1.md#software-applicability).
+The sources are listed in the Documents consulted section at the end of this
+page.
 Writable device name 65524, ESN 40713, basic MEI alone, and optional offering
 strings are not detectors.
 
@@ -150,31 +152,36 @@ Limit exhaustion is insufficient evidence, never partial success.
 ## Observed exact tuples
 
 The entries below record exactly what was observed or defined for the gateway
-families. Model and label values are compared field by field, byte for byte,
-and case-sensitively, after only terminal NUL or space padding is stripped, with
-no wildcard, prefix, alias, case folding, or whitespace normalization, and a
-match of one entry's model never implies another's. A firmware value in an entry
-is the record of the build observed or documented, and it is the floor of that
-entry under the software applicability rule: a build that follows it in its
-branch, or a build of a branch with no documented relation to it, inherits the
-entry with grade Hypothesis until observed, and a build below it within its
-branch does not. The Proven, Hypothesis, and Unknown grades are
-defined in the [SmartLogger observation](smartlogger-observed-inventory-v1.md)
-and are separate from admission and qualification.
+families. Model and label values are compared field by field, byte for byte, and
+case-sensitively, after only terminal NUL or space padding is stripped, with no
+wildcard, prefix, alias, case folding, or whitespace normalization, and a match
+of one entry's model never implies another's. A firmware value in an entry is
+the observed build or the documented minimum, and it is the floor of that entry
+under the software applicability rule: a build that follows it, within its
+branch or along a documented order of branches, or a build of a branch with no
+documented relation to it, inherits the entry with grade Hypothesis until
+observed, and a build below it does not. The Proven, Hypothesis, and Unknown
+grades are defined in the [SmartLogger
+observation](smartlogger-observed-inventory-v1.md) and are separate from
+admission and qualification.
 
 | Family | Tuple | Basis | Status |
 | --- | --- | --- | --- |
-| SmartLogger, documentary branch | self-entry model `SmartLogger`, firmware from the floor `V300R024C10SPC191` in the V300R024C10 branch | vendor-document inspection only; no observation | defined by the candidate above; unobserved (Unknown) |
-| SmartLogger, documentary branch | self-entry model `SmartLogger`, firmware `V300R024C10SPC210`, a documented build of the same branch that meets the floor | vendor-document inspection only; no observation | defined by the candidate above; unobserved (Unknown) |
-| SmartLogger, observed branch | gateway unit 0, self-entry model `Smart Logger`, firmware `V300R023C10SPC620` as the floor in the V300R023C10 branch, self-entry unit `0` | sanitized read-only observation | entry with an exact model and a software floor; Proven for the observed build at the observed installation, and Hypothesis for an inherited build |
+| SmartLogger, documentary branch | self-entry model `SmartLogger`, firmware of the V300 line from the minimum `V300R001C00` that the edition with cover label `V300R024C10SPC191` states | vendor-document inspection only; no observation | defined by the candidate above; unobserved (Unknown) |
+| SmartLogger, documentary branch | self-entry model `SmartLogger`, firmware of the V300 line from the minimum `V300R001C00` that the edition with cover label `V300R024C10SPC210` states | vendor-document inspection only; no observation | defined by the candidate above; unobserved (Unknown) |
+| SmartLogger, observed branch | gateway unit 0, self-entry model `Smart Logger`, firmware `V300R023C10SPC620`, the floor of the observed facts, in the V300R023C10 branch, which precedes V300R024C10 within the V300 line and is above the documented minimum, self-entry unit `0` | sanitized read-only observation | entry with an exact model and a software floor; Proven for the observed build at the observed installation, and Hypothesis for an inherited build |
 | EMMA, observed gateway branch | gateway unit 0, the candidate's three FC03 reads (offering `SmartHEMS`, a model that is one of the two admitted values, a software form that meets the floor of its own branch), with the model value, software branch, and suffix withheld on the published pages | sanitized read-only observation | entry with an exact model and a software floor; Proven for the observed installation, and Hypothesis for an inherited build; the model variant, branch, and suffix are carried by the registry fixture and are otherwise Unknown |
 | S-Dongle, observed single-inverter branch | gateway unit 100 and child unit 1, the tuple of the S-Dongle subsection below, with no gateway model variant | sanitized read-only observation | exact entry; Proven for the observed installation; the gateway's model variant is Unknown |
 
 `SmartLogger` and `Smart Logger` are different strings, and neither is an alias
-of the other. The two documentary entries share the V300R024C10 floor. The
-observed entry has its own floor in the V300R023C10 branch, which has no
-documented relation to V300R024C10, so neither floor orders the other. The
-observed branch is a defined entry; whether and when a registry admits it is the
+of the other. The two documentary entries share the V300R001C00 minimum that
+both editions state; their cover labels identify the editions and order nothing.
+The observed entry's V300R023C10 branch precedes V300R024C10 within the V300
+line, as the upgrade path from V300R023C10SPC551 to V300R024C10SPC275 in the
+SmartLogger V300R024C10SPC275 Upgrade Guide documents, and it is above the
+documented minimum, so the documented facts apply to it with grade Hypothesis,
+and its own observed facts apply from its observed build onward. The observed
+branch is a defined entry; whether and when a registry admits it is the
 registry's decision, and the entry carries no qualification, support claim, or
 write authority. The observed branch is read through the extended inventory self
 entry. The basic identification reply (vendor `HUAWEI`, product, and version) is
@@ -192,8 +199,8 @@ Helianthus 1.0.
 
 | Field | Contract |
 | --- | --- |
-| Required tuple, observed branch | Gateway unit 0. The counter (FC03 offset 65521, quantity 1) is equal before and after one complete extended inventory (FC2B / MEI 0x0e / ReadDevId 0x03, start object 0x87). The first entry, the self entry, has attribute 1 exactly `Smart Logger`, attribute 2 a firmware text that meets the floor `V300R023C10SPC620` within the V300R023C10 branch or is of a branch with no documented relation to it, under the software applicability rule (Proven for the observed build, Hypothesis for an inherited one), and attribute 5 exactly `0`. The inventory is valid under the child-inventory rules above and the tolerance requirements of the observation. |
-| Required tuple, documentary branches | As the candidate section above: the model, and a firmware at or above the `V300R024C10SPC191` floor in its branch or of a branch with no documented relation to it. |
+| Required tuple, observed branch | Gateway unit 0. The counter (FC03 offset 65521, quantity 1) is equal before and after one complete extended inventory (FC2B / MEI 0x0e / ReadDevId 0x03, start object 0x87). The first entry, the self entry, has attribute 1 exactly `Smart Logger`, attribute 2 a firmware text of the V300 line at or above the observed build `V300R023C10SPC620`, counting the branches that follow V300R023C10 within the V300 line, or of a branch with no documented relation to it, under the software applicability rule (Proven for the observed build, Hypothesis for an inherited one), and attribute 5 exactly `0`. The inventory is valid under the child-inventory rules above and the tolerance requirements of the observation. |
+| Required tuple, documentary branches | As the candidate section above: the model, and a firmware of the V300 line at or above the documented minimum `V300R001C00`. |
 | Optional corroboration | A decodable basic read shows vendor `HUAWEI`, product `Smart Logger`, and the same firmware. A disagreement with the self entry is a conflicting detector and produces `insufficient_evidence`. Absence or a decode failure of the basic read changes nothing. |
 | Forbidden identity | Serial number or ESN (attribute 4 and the serial-like basic object), the writable device name, readability of any register, a child listing, a basic reply alone, the product string without the firmware string, a prefix, wildcard, case-folded, or whitespace-normalized match, and the unit identifier of an MEI request. The gateway answers a basic read with its own identity for every unit identifier tried. |
 | Multiple-positive outcome | No selection. Two matching Huawei candidates, or a Huawei candidate that collides with SunSpec/Fronius or Growatt, is `AMBIGUOUS` in the qualification card and `insufficient_evidence` in the collision rule below. Both select nothing and send nothing, and no order or priority applies. |
@@ -235,7 +242,7 @@ companion's work, and no gap closure is a qualification or support claim.
 | `exact_child_attribute_encoding_fixture`, structure | SmartLogger | Closed for the observed key set | Proven |
 | `exact_child_attribute_encoding_fixture`, meaning of keys 3, 6, 9, and 10 | SmartLogger | Open | Unknown |
 | `pairwise_negative_overlap_with_emma_fixture` | SmartLogger | Closed by observation for the probes issued: EMMA probes at the SmartLogger endpoint are rejected, and the SmartLogger counter read is refused at the EMMA unit and at one inverter; the counter read at the S-Dongle gateway unit 100 is open | Proven and Unknown |
-| Connected identity at the two documentary firmware values | SmartLogger | Open; never observed | Unknown |
+| Connected identity for the documentary entries (model `SmartLogger`) | SmartLogger | Open; never observed | Unknown |
 | Connected FC03 identity tuple | EMMA | Closed by observation for the observed installation: the candidate's three reads answered at unit 0; the model value, software branch, and suffix are withheld, and the other model value and branch are open | Proven and Unknown |
 | `sanitized_readonly_capability_fixture` | EMMA | Open; no capability, monitoring, or battery block was read | Unknown |
 | `negative_overlap_with_smartlogger` | EMMA | Closed by observation in both directions for the probes issued: the EMMA reads are rejected at the SmartLogger endpoint, and the counter read is refused at the EMMA unit and at one inverter | Proven |
@@ -386,3 +393,31 @@ itself.
 The per-class qualification cards, missing-evidence outcomes, and shared
 no-fallback result are defined in
 [`qualification-readiness-v1.md`](qualification-readiness-v1.md).
+
+## Documents consulted
+
+| Document title | Document version | Document date | Used for |
+| --- | --- | --- | --- |
+| SmartLogger V300R024C10SPC191 ModBus Interface Definitions | Issue 52 | 2025-06-06 | the minimum software of the V300 line in the SmartLogger candidate and the documentary entries |
+| SmartLogger V300R024C10SPC210 ModBus Interface Definitions | Issue 49 | 2025-03-19 | the minimum software of the V300 line in the SmartLogger candidate and the documentary entries |
+| SmartLogger V300R024C10SPC275 Upgrade Guide | Issue 01 | 2026-10-16 | the upgrade path that places the V300R023C10 branch before V300R024C10 within the V300 line |
+| Huawei gateway Modbus reference | source baseline of 43 documents | not stated | locating the minimum statements and the upgrade path in the three documents above |
+
+The other rules of this page predate the page conventions of the
+[applicability and licensing page](../applicability-and-licensing.md) and keep
+their existing basis. No table, label, or text of the documents is reproduced
+here.
+
+**Copyright note.** The information on this page that is derived from the
+SmartLogger documents listed above is attributed to Huawei Technologies Co.,
+Ltd., which retains the copyright in those documents. This page states that
+information in its own words and does not reproduce the documents. The CC0-1.0
+dedication of this page covers its own expression only and does not relicense
+those documents.
+
+**Reference note.** The facts that the Documents consulted section attributes
+to the Huawei gateway Modbus reference were taken through that independent
+documentary work, whose contributors dedicate its original writing under
+CC0-1.0. The vendor documents it cites keep their rights, as the copyright note
+states. This page restates those facts in its own words and carries over none
+of the reference's engineer-review or operational-authorization clauses.

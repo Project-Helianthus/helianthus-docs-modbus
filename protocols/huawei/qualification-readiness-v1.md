@@ -32,10 +32,11 @@ unit 0 and uses this bounded caller-run sequence:
 The counter values must be equal. Inventory is limited to 15 seconds, 248
 pages, 248 objects, 65536 response bytes, and 247 children. Object 0x87 declares
 the child count. The first record is the self entry and its model must be exactly
-`SmartLogger`. Its software version must meet the floor `V300R024C10SPC191`
-within the V300R024C10 branch, which the documented `V300R024C10SPC210` meets.
-A build that follows the floor, or a build of a branch with no documented
-relation to it, inherits with grade Hypothesis under the
+`SmartLogger`. Its software version must be of the V300 line at or above
+`V300R001C00`, the minimum that both consulted editions state for that line.
+Their cover labels, `V300R024C10SPC191` and `V300R024C10SPC210`, identify the
+editions and are not floors. A build that no observation has seen inherits with
+grade Hypothesis under the
 [software applicability rule](monitoring-readonly-v1.md#software-applicability).
 
 Child attributes use the existing bounded semicolon encoding: key 1 is model,
@@ -62,12 +63,12 @@ The observed tuple is a separate entry, with its own floor, in the
 
 Applied to the observed gateway, the card above returns `INSUFFICIENT_EVIDENCE`,
 because the gateway's self-entry model `Smart Logger` is not the card's exact
-model `SmartLogger`. Its firmware is of the V300R023C10 branch, which has no
-documented relation to the card's floor branch, so it would inherit with grade
-Hypothesis and is not the reason. That is the card working as written, not a
-failure of the gateway. The observed tuple needs its own card in the registry
-companion, and this page defines no card identity for it. Such a card must
-accommodate what the observation showed:
+model `SmartLogger`. Its firmware is of the V300R023C10 branch, which precedes
+V300R024C10 within the V300 line and is above the documented minimum, so it
+meets the card's software rule and is not the reason. That is the card working
+as written, not a failure of the gateway. The observed tuple needs its own card
+in the registry companion, and this page defines no card identity for it. Such a
+card must accommodate what the observation showed:
 
 - responses of at least 263 bytes with one object each, and a declared-object
   field that differs from the objects present; the "count mismatch" rejection
@@ -294,3 +295,31 @@ acquisition, native diagnostics, semantic publication, public surfaces, and
 end-to-end replay belong to later integration work. Physical qualification and
 hardware acceptance remain separate and are not established by synthetic
 fixtures or an offline identity match.
+
+## Documents consulted
+
+| Document title | Document version | Document date | Used for |
+| --- | --- | --- | --- |
+| SmartLogger V300R024C10SPC191 ModBus Interface Definitions | Issue 52 | 2025-06-06 | the minimum software of the V300 line on the SmartLogger card |
+| SmartLogger V300R024C10SPC210 ModBus Interface Definitions | Issue 49 | 2025-03-19 | the minimum software of the V300 line on the SmartLogger card |
+| SmartLogger V300R024C10SPC275 Upgrade Guide | Issue 01 | 2026-10-16 | the upgrade path that places the observed V300R023C10 branch before V300R024C10 within the V300 line |
+| Huawei gateway Modbus reference | source baseline of 43 documents | not stated | locating the minimum statements and the upgrade path in the three documents above |
+
+The other rules of this page predate the page conventions of the
+[applicability and licensing page](../applicability-and-licensing.md) and keep
+their existing basis. No table, label, or text of the documents is reproduced
+here.
+
+**Copyright note.** The information on this page that is derived from the
+SmartLogger documents listed above is attributed to Huawei Technologies Co.,
+Ltd., which retains the copyright in those documents. This page states that
+information in its own words and does not reproduce the documents. The CC0-1.0
+dedication of this page covers its own expression only and does not relicense
+those documents.
+
+**Reference note.** The facts that the Documents consulted section attributes
+to the Huawei gateway Modbus reference were taken through that independent
+documentary work, whose contributors dedicate its original writing under
+CC0-1.0. The vendor documents it cites keep their rights, as the copyright note
+states. This page restates those facts in its own words and carries over none
+of the reference's engineer-review or operational-authorization clauses.

@@ -169,49 +169,54 @@ consolidates vendor documents, cites each fact to the vendor document it rests
 on, and dedicates its own original writing under CC0-1.0. It is neither official
 vendor documentation nor a vendor document. The repository owner admits it as a
 consulted source class with helianthus-docs-modbus issue 256, on the terms
-below. The first such work is the Huawei PV inverter Modbus reference,
+below. Two works are admitted: the Huawei PV inverter Modbus reference,
 documentary baseline 2026-10-25, which covers Huawei SUN2000 inverter interface
-definitions.
+definitions (the inverter reference), and the Huawei gateway Modbus reference,
+whose source baseline is 43 documents, which covers the SmartLogger, S-Dongle,
+and EMMA interface definitions and their supporting documents (the gateway
+reference).
 
-- **Identity.** A page that took facts through the reference lists it in its
+- **Identity.** A page that took facts through a reference work lists it in its
   Documents consulted section as one row: title `Huawei PV inverter Modbus
-  reference`, version `documentary baseline 2026-10-25`, and date `2026-10-25`.
-  Each vendor document that the reference cites for an imported fact has its own
-  row, with the title, issue, and date that the document states, under the
-  official vendor documentation policy above.
-- **Rights.** The original writing of the reference is dedicated under CC0-1.0
-  by its contributors. The vendor documents it cites keep their rights, and the
-  copyright note covers the information derived from them. The page adds the
-  reference note below.
+  reference`, version `documentary baseline 2026-10-25`, and date `2026-10-25`;
+  or title `Huawei gateway Modbus reference`, version `source baseline of 43
+  documents`, and date `not stated`. Each vendor document that a reference work
+  cites for an imported fact has its own row, with the title, issue, and date
+  that the document states, under the official vendor documentation policy
+  above.
+- **Rights.** The original writing of each reference work is dedicated under
+  CC0-1.0 by its contributors. The vendor documents it cites keep their rights,
+  and the copyright note covers the information derived from them. The page adds
+  the reference note below for each reference work it lists.
 - **Cleanup on import.** Helianthus takes each fact together with the vendor
   document it rests on, restates it in its own words, and grades it as
   documentary: Hypothesis until an observation grades it, and never Proven on a
-  document alone. It drops the reference's engineer-review and
-  operational-authorization logic, because the reference is a source and not a
-  product: Helianthus's own admission rules, write denial, and operator approval
-  at action time stay in force. It also drops the reference's links to material
-  outside itself, its source digests, and its archive paths, and it reads the
-  reference's firmware applicability statements under the citation identity and
-  software floors section above: a documented row minimum is a floor, a release
-  package that carries a document is not, and a statement that an edition covers
-  exact firmware bounds what the reference reviewed, not what the facts apply
-  to.
-- **Locators.** A row for a document consulted through the reference carries no page number: its title, issue, and date are its whole public locator.
-  No digest of a consulted document appears in public text. Where the reference
-  binds a fact to a digest of the vendor document, a private sidecar outside
-  this repository keeps that digest, and no public row depends on it.
-- **Mirror-recovered editions.** The owner decision recorded on helianthus-docs-modbus issue 242 treats a Huawei-authored interface definition whose copy was recovered from a third-party mirror as official vendor documentation, cited by title, issue, and date only, with the mirror origin kept as a private provenance note, so the SUN2000MB V200R023C10 Modbus Interface Definitions, Issue 02, 2024-02-01, which the reference recovered that way, is admissible as a consulted document.
+  document alone. It drops the engineer-review and operational-authorization
+  logic of a reference work, because the work is a source and not a product:
+  Helianthus's own admission rules, write denial, and operator approval at
+  action time stay in force. It also drops the work's links to material outside
+  itself, its source digests, and its archive paths, and it reads the work's
+  firmware applicability statements under the citation identity and software
+  floors section above: a documented row or edition minimum is a floor, an
+  edition's cover label and a release package that carries a document are not,
+  and a statement that an edition covers exact firmware bounds what the work
+  reviewed, not what the facts apply to.
+- **Locators.** A row for a document consulted through a reference work carries no page number: its title, issue, and date are its whole public locator.
+  No digest of a consulted document appears in public text. Where a reference
+  work binds a fact to a digest of the vendor document, a private sidecar
+  outside this repository keeps that digest, and no public row depends on it.
+- **Mirror-recovered editions.** The owner decision recorded on helianthus-docs-modbus issue 242 treats a Huawei-authored interface definition whose copy was recovered from a third-party mirror as official vendor documentation, cited by title, issue, and date only, with the mirror origin kept as a private provenance note, so the SUN2000MB V200R023C10 Modbus Interface Definitions, Issue 02, 2024-02-01, which the inverter reference recovered that way, is admissible as a consulted document.
 
 The reference note is a paragraph after the copyright note of a page that lists
-the reference, beginning with the bold label `Reference note.`:
+a reference work, one note per work, beginning with the bold label
+`Reference note.`, with NAME replaced by the title of the work:
 
 > **Reference note.** The facts that the Documents consulted section attributes
-> to the Huawei PV inverter Modbus reference were taken through that
-> independent documentary work, whose contributors dedicate its original
-> writing under CC0-1.0. The vendor documents it cites keep their rights, as the
-> copyright note states. This page restates those facts in its own words and
-> carries over none of the reference's engineer-review or
-> operational-authorization clauses.
+> to the NAME were taken through that independent documentary work, whose
+> contributors dedicate its original writing under CC0-1.0. The vendor documents
+> it cites keep their rights, as the copyright note states. This page restates
+> those facts in its own words and carries over none of the reference's
+> engineer-review or operational-authorization clauses.
 
 ## Applicability classes
 
@@ -220,7 +225,7 @@ the reference, beginning with the bold label `Reference note.`:
 | `sunspec.core.readonly.v1` | SunSpec model chains using the explicitly listed model identifiers and lengths | public interoperability standard facts | specified; downstream qualification required |
 | `sunspec.der.readonly.v2` | Common 1/66 plus Models 701/153, 702/50, 703/17, 713/7, 714 variable geometry, 715/7, 802/62, 803 variable geometry, and 804 variable geometry at the exact pinned V2 schema revision | public Apache-2.0 model catalogue and independently stated interoperability facts | offline decoder contract; runtime, vendor, and catalog admission default denied |
 | `fronius.sunspec.float.v1` | manufacturer `Fronius` and model `Symo GEN24 10.0`, each exact, with the chain compared exactly: flavor 1.1.0 from firmware `1.41.11-1`, flavor 1.2.0 from `1.42.9-1`, each until a changed chain is recorded; the V1.1 chain is on the [flavor page](fronius/sunspec-float-v1.md), and that page, the [Fronius qualification card](fronius/qualification-readiness-v1.md), and the registry keep their exact-tuple comparison of the firmware until a registry follow-up replaces it with these floors | vendor-copyright-inspection-only plus sanitized interoperability facts | specified flavor; downstream qualification required |
-| `huawei.smartlogger.readonly.v1` | SmartLogger at gateway unit 0, with an exact model and a software floor per branch: model `SmartLogger` from firmware `V300R024C10SPC191` in the V300R024C10 branch, which the documented `V300R024C10SPC210` meets, and model `Smart Logger` from the observed firmware `V300R023C10SPC620` in the V300R023C10 branch; a build that follows a floor, or one of a branch with no documented relation to it, inherits with grade Hypothesis | vendor-copyright-inspection-only plus sanitized interoperability facts from observation | identity contract for the observed tuple; the documentary branch remains an offline candidate with no observation; default denied |
+| `huawei.smartlogger.readonly.v1` | SmartLogger at gateway unit 0, with an exact model and a software floor: model `SmartLogger` from `V300R001C00`, the minimum of the V300 line that the consulted editions with cover labels `V300R024C10SPC191` and `V300R024C10SPC210` state, and model `Smart Logger` from the observed firmware `V300R023C10SPC620`, whose branch precedes V300R024C10 within the V300 line; a build that follows a floor, or one of a branch with no documented relation to it, inherits with grade Hypothesis | vendor-copyright-inspection-only plus sanitized interoperability facts from observation | identity contract for the observed tuple; the documentary entries remain an offline candidate with no observation; default denied |
 | `huawei.sdongle.readonly.v1` | SDongleA-05, SDongleB-03, or SDongleB-06 from firmware `V200R025C00SPC120` in the V200R025C00 branch, with protocol D5.0, plus, as a separate tuple that is not ordered against the candidate, one observed single-inverter path: gateway unit 100 and child unit 1, with no gateway model variant | vendor-copyright-inspection-only plus sanitized interoperability facts from observation | offline candidate, default denied; the candidate's own tuple has no connected observation, so its identity is Unknown; the observed tuple has an identity contract and nothing more, and the recorded persistent non-response is superseded for that identity only by a same-class run that matches the whole tuple on one connection generation |
 | `huawei.emma.readonly.v1` | SmartHEMS `EMMA-A01` or `EMMA-A02`, from R024C00 SPC100 in the R024C00 branch or from R025C00 SPC102 in the R025C00 branch, a build of a branch with no documented relation to either inheriting with grade Hypothesis, plus, as the observation of that candidate, one observed gateway at unit 0 whose model value, software branch, and suffix are withheld, with SUN2000-family inverters at their own routed units | vendor-copyright-inspection-only plus sanitized interoperability facts from observation | offline candidate, default denied; the candidate's FC03 tuple is observed on one installation, so identity is Proven for it and Unknown elsewhere, and the earlier non-response is superseded for that identity only; capability, battery addressing, and the other model value and branch are Unknown; the qualification card stays evidence blocked |
 | `huawei.sun2000.readonly.v1` / `huawei.luna2000.readonly.v1` | no covered model family or firmware range; SUN2000 inverter and optional LUNA2000 battery | vendor-copyright-inspection-only | `NO_ADMISSIBLE_PROFILE`; default denied, no register map, no decoder |

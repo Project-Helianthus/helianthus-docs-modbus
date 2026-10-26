@@ -88,10 +88,12 @@ extra MEI pages. Before sending a continuation, ensure it can stay within the
 remaining limits; reject a response that exceeds a ceiling. Reaching a ceiling
 with work still required is exhaustion, not a truncated success.
 
-The self entry must have exact model `SmartLogger` and a firmware that meets
-the floor `V300R024C10SPC191` within the V300R024C10 branch, as the documented
-`V300R024C10SPC210` does. A build that follows the floor, or a build of a branch
-with no documented relation to it, inherits with grade Hypothesis under the
+The self entry must have exact model `SmartLogger` and a firmware of the V300
+line at or above `V300R001C00`, the minimum that the consulted editions state,
+as the [qualification card](qualification-readiness-v1.md) records; their cover
+labels, `V300R024C10SPC191` and `V300R024C10SPC210`, are citations and not
+floors. A build that no observation has seen inherits with grade Hypothesis
+under the
 [software applicability rule](monitoring-readonly-v1.md#software-applicability).
 Preserve the existing bounded semicolon attribute encoding and rejection rules:
 unknown/repeated keys, missing model, malformed ASCII/attributes, duplicate
