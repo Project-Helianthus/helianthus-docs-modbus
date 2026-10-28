@@ -24,8 +24,9 @@ child. The vendor interface definitions listed in the Documents consulted sectio
 name those groups. They are a source for what to read and never an identity.
 Proven (answered) on this page grades that a group returned data, or an
 exception, at a unit, and the value form of every word stays Hypothesis because
-no reference reading of any meter was taken. Grades are separate from admission,
-qualification, and support, and `catalog_registered=false`,
+no reference reading of any meter was taken. The family and variant statement
+in PM-04 is operator-confirmed configuration, separate from wire observation.
+Grades are separate from admission, qualification, and support, and `catalog_registered=false`,
 `automatic_runtime_admission=false`, `live_qualified=false`,
 `support_claim=false`, and `write_authority=false` are unchanged.
 
@@ -36,7 +37,7 @@ qualification, and support, and `catalog_registered=false`,
 | PM-01 | The listing carries two entries labeled `PowerMeter` (key 1), at routed units 11 and 19. | Proven |
 | PM-02 | Neither meter entry has key 8. Key 6 has the same value on both meter entries and on the PLC entry, and a different value on the inverter entries. The firmware text (key 2) has 16 characters, not the 17 of the gateway, inverter, and PLC entries. | Proven |
 | PM-03 | The label `PowerMeter` names a class, not a make or model, and no entry text names a manufacturer or a model. | Proven |
-| PM-04 | The make, model, and firmware of either meter, and of the meter at the S-Dongle site. The operator declares the CHINT DTSU666 family at the SmartLogger and S-Dongle sites, current-transformer wired at the SmartLogger site. The declaration is configuration and identifies no meter. | Unknown |
+| PM-04 | The operator confirms that the two SmartLogger `PowerMeter` entries are CHINT DTSU666 family meters: one direct-connected variant and one current-transformer variant. The declaration assigns neither variant to a routed unit. The operator also declares the CHINT DTSU666 family on the S-Dongle path. No meter-class identity read establishes an exact variant or firmware on either path. | Proven (operator-confirmed SmartLogger family and two variants); wire identity Unknown |
 | PM-05 | Unit 11 answered the SUN2000 model read with exception 3, the answer that listed units give to an unserved read. Unit 19 was not sent that read. | Proven |
 | PM-06 | Both meter units serve electrical-value groups at their own routed units: the AC group and the energy group answered with data at units 11 and 19 (MM-01 of the monitoring contract). | Proven (answered); value form Hypothesis |
 | PM-07 | The meter values of the SmartLogger path are also served at the gateway level, at unit 0. | Unknown |
@@ -48,15 +49,15 @@ qualification, and support, and `catalog_registered=false`,
 | PM-13 | The inverter child behind an S-Dongle serves the inverter-side meter groups with data, while its listing names only itself (MM-16, MM-19). | Proven (answered); value form Hypothesis |
 | PM-14 | The meter status word and the meter type word at the S-Dongle child are non-zero. Their meaning is not decoded, and no word at any path identifies a meter make or model (MM-18, MM-08). | Unknown |
 
-The operator's declaration of a meter's family is configuration, not evidence.
-Until a read under a meter class contract establishes the make, model, and
-firmware, no meter identity exists.
+The operator's family and variant confirmation is configuration evidence, not
+a native meter identity or a discriminator. Until a read under a meter class
+contract establishes the make, model, and firmware, no meter identity exists.
 
 ## Family contract: power meter behind a Huawei gateway
 
 | Field | Contract |
 | --- | --- |
-| Required tuple | Unknown. No meter make, model, or firmware is established. A meter tuple needs an exact model and firmware read at the meter's routed unit, or an exact gateway-level read if exposure is gateway-level, under a meter class contract that does not exist yet. Until one exists, every meter is `INSUFFICIENT_EVIDENCE`. |
+| Required tuple | Unknown. Operator-confirmed family and variants do not establish the required native meter tuple. A meter tuple needs an exact model and firmware read at the meter's routed unit, or an exact gateway-level read if exposure is gateway-level, under a meter class contract that does not exist yet. Until one exists, every meter is `INSUFFICIENT_EVIDENCE`. |
 | Forbidden identity | The listing label `PowerMeter`, any other listing content (model, firmware, unit), serial number or ESN, the content of the meter-number group, writable alias, readability of any register, an electrical value, a meter status or type word, a transformer ratio, a declared role, a declared make or family, a SUN2000 or other class identity at the unit, and a prefix or wildcard match. |
 | Multiple-positive outcome | `AMBIGUOUS`; no selection, order, or priority. |
 | Negative-overlap obligations | Executable fixtures showing a meter unit fails the SUN2000 tuple (the model read at unit 11 is an exception, PM-05), and against SmartLogger, EMMA, S-Dongle, and SunSpec probes. Unit 19 was not sent the SUN2000 model read, so it has no evidence for that fixture. |
@@ -140,9 +141,11 @@ and does not relicense those documents.
 
 ## Open questions
 
-1. The make, model, and firmware of each meter. The operator's declaration of the
-   family is configuration (PM-04), and the meter-number group that might hold a
-   number was refused (PM-12).
+1. The native identity and firmware of each meter, and which SmartLogger
+   routed unit corresponds to each variant. The CHINT DTSU666 family and one
+   direct-connected plus one current-transformer variant are operator-confirmed
+   configuration (PM-04), not a meter-class identity read. The meter-number
+   group that might hold a number was refused (PM-12).
 2. The exposure beyond what was read: whether the SmartLogger path also serves
    meter values at its unit 0 (PM-07), whether the S-Dongle's plant grid power at
    unit 100 comes from the same meter, whether the EMMA's built-in sensor groups

@@ -7,8 +7,10 @@ installation of the SmartLogger family established about gateway identity, the
 extended device inventory, and child addressing. It is the observation record
 behind the exact entry and the child-routing rules in the
 [gateway contract](gateway-readonly-v1.md). It defines no monitoring register,
-decoder, acquisition schedule, or registry behavior, and it creates no
-admission. The historical V1 name implies no stability before Helianthus 1.0.
+decoder or acquisition schedule, and it creates no admission. The registry
+parser policies below reconcile the observation with its offline companion;
+they are implementation policy, not additional wire observations. The
+historical V1 name implies no stability before Helianthus 1.0.
 
 Three passes issued only FC03 holding-register reads and FC2B / MEI 0x0e device
 identification reads, with one request in flight and a fixed gap of 750 ms
@@ -86,8 +88,9 @@ resource bound is still insufficient evidence.
 1. **Frame length.** Accept FC2B / MEI 0x0e responses with a PDU of at least 263
    bytes (MBAP length field at least 264). The classic 253-byte PDU limit and
    the 254 stream limit are not applied to this function. Observation fixes only
-   the lower bound; the finite upper cap is chosen and documented by the
-   consuming registry and is otherwise Unknown. Basis: SL-14.
+   the lower bound. The registry companion accepts a response PDU up to 1024
+   bytes as a finite implementation resource policy; that cap is not observed
+   wire proof. The device's actual upper limit remains Unknown. Basis: SL-14.
 2. **Declared-object field.** Do not require it to equal the number of objects
    present. Completeness comes from the count object, `More`, `Next object ID`,
    and a final `More` of 0x00. Basis: SL-11.
@@ -98,7 +101,10 @@ resource bound is still insufficient evidence.
    reply that cannot be decoded neither negates nor supplies identity. Basis:
    SL-05.
 5. **Count.** The count object counts entries including the self entry, so the
-   child count is the count minus one. Basis: SL-13.
+   child count is the count minus one. Basis: SL-13. This is the observed
+   branch only: the documentary inventory parser counts children only and
+   excludes its required self entry from the declared count. The documentary
+   interpretation is implementation policy, not a second observation.
 6. **Attribute keys.** Keys 9 and 10 are known opaque keys, and key order inside
    an entry is not numeric and is not validated. The observed key set is a lower
    bound: a key outside it is retained as opaque native evidence and does not
@@ -131,6 +137,34 @@ The Grade of a key row grades its presence, content class, and role; Unknown
 means the meaning of the value is not established. Key sets by entry class, in
 the order observed: self entry `1;2;3;4;5;6;10;9`, inverter `1;2;3;4;5;6;8;9`,
 PLC and meter `1;2;3;4;5;6;9`. Key 10 precedes key 9 on the self entry.
+
+### Registry entry-parser policy
+
+The policy source is the registry companion's
+[observed parser](https://github.com/Project-Helianthus/helianthus-modbusreg/blob/main/huawei_smartlogger_observed.go)
+and [documentary parser](https://github.com/Project-Helianthus/helianthus-modbusreg/blob/main/huawei_smartlogger_inventory.go).
+
+The observed parser removes only terminal NUL and space bytes, then requires
+all remaining entry bytes to be printable ASCII (0x20 through 0x7e). Embedded
+NUL, control bytes, and non-ASCII bytes reject the entry. The NUL padding above
+is Proven; accepting terminal space padding is implementation policy consistent
+with the [shared encoding](gateway-readonly-v1.md#shared-encoding), not evidence
+that the observed logger used it. Preserve the native extent separately from
+this text interpretation.
+
+Attribute 5 must be canonical unsigned decimal: no sign, whitespace, or leading
+zero. The self entry is exactly `0`; each child is in 1 through 247, unique in
+the inventory. These lexical and range rules are implementation policy, not
+claims that every permitted form or unit was observed. Malformed entries,
+count disagreement, or exhausted resource bounds reject the whole inventory;
+no partial child list is admitted. This does not erase separately retained
+native evidence or establish a monitoring-state retention policy.
+
+The documentary parser also requires printable ASCII, but consumes decoded
+entry text directly; it does not apply the observed parser's padding removal
+or canonical-unit check. The shared encoding rule is not evidence that both
+parser branches accept the same byte input. Neither branch's policy promotes
+a listing label to a child identity.
 
 ## Listing contents
 
@@ -260,7 +294,9 @@ a vendor document.
    from the documentary model by one space.
 2. The meaning of keys 3, 6, 9, and 10, and whether the counter moves when the
    listing changes (SL-03), are Unknown. A listing change was never observed.
-3. The finite frame cap above 263 bytes is Unknown (tolerance requirement 1).
+3. The device's finite frame cap above 263 bytes is Unknown. The registry
+   response-PDU cap is 1024 bytes as implementation policy (tolerance
+   requirement 1), not a measured device limit.
 4. At the 750 ms gap a full enumeration used 15 exchanges in under 11 s, so the
    15-second ceiling would bound a listing to roughly sixteen entries
    (Hypothesis). A larger installation needs a different gap or ceiling, which
