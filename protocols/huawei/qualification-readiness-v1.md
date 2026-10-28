@@ -9,7 +9,8 @@ between Huawei classes. Identity is not telemetry support.
 
 | Class | Provider-local status | Residual evidence |
 | --- | --- | --- |
-| SmartLogger | `QUALIFICATION_TEST_READY` | one connected read-only SmartLogger identity and inventory capture |
+| SmartLogger | `QUALIFICATION_TEST_READY` | documentary card: `connected_smartlogger_identity_inventory_capture` |
+| SmartLogger, observed card | `QUALIFICATION_TEST_READY` | `pairwise_negative_overlap_with_emma_fixture` |
 | EMMA | `QUALIFICATION_EVIDENCE_BLOCKED` | sanitized read-only capability, SmartLogger negative-overlap, and model-specific capability fixtures |
 | S-Dongle | `QUALIFICATION_EVIDENCE_BLOCKED` | confirmed connection context, gateway/child topology, exact identity and protocol encoding, stable search/capacity, and separately qualified child inventory |
 
@@ -31,7 +32,9 @@ unit 0 and uses this bounded caller-run sequence:
 
 The counter values must be equal. Inventory is limited to 15 seconds, 248
 pages, 248 objects, 65536 response bytes, and 247 children. Object 0x87 declares
-the child count. The first record is the self entry and its model must be exactly
+the child count, excluding the self entry, in the documentary parser. This
+children-only interpretation is implementation policy, not observed wire proof.
+The first record is the self entry and its model must be exactly
 `SmartLogger`. That exactness is admission policy of this card: the consulted
 editions name the SmartLogger family in their applicability sections without a
 model list and print no self-entry model text, so the value is the family name
@@ -78,25 +81,45 @@ because the gateway's self-entry model `Smart Logger` is not the card's exact
 model `SmartLogger`. Its firmware is of the V300R023C10 branch, which precedes
 V300R024C10 along the documented upgrade path and is above the documented
 minimum, so it meets the card's software rule and is not the reason. That is
-the card working as written, not a failure of the gateway. The observed tuple needs its own card
-in the registry companion, and this page defines no card identity for it. Such a
-card must accommodate what the observation showed:
+the card working as written, not a failure of the gateway.
 
-- responses of at least 263 bytes with one object each, and a declared-object
-  field that differs from the objects present; the "count mismatch" rejection
-  above compares the count object with the number of entries and does not
-  refer to that field;
-- a count object that includes the self entry;
-- attribute keys 9 and 10, which Issue 52 defines, as known opaque keys, and
-  attribute order that is not numeric; and
-- a basic reply that carries more than the basic category, which is optional
-  corroboration only.
+The registry companion's observed card (`huawei_smartlogger_observed.go`)
+has identity
+`huawei.qualification.smartlogger.observed-readonly@1.0.0`. A matching input
+returns provider-local status `QUALIFICATION_TEST_READY` and residual evidence
+`pairwise_negative_overlap_with_emma_fixture`. That name records the card's
+remaining executable fixture obligation; later observed overlap on the
+[EMMA page](emma-observed-identity-v1.md) does not silently close it. This is
+qualification preparation, not physical acceptance, freshness, admission, or
+support.
 
-A counter that stays equal across the bracket, a complete valid inventory, and
-the self-entry values (the exact model and a firmware under the entry's floor)
-are the observed tuple's qualification inputs. None of this changes the statuses
-in the table above, the rule that no class is `HARDWARE_TEST_READY`, or any
-default-denied field.
+The card requires gateway unit 0, an unchanged counter bracket, a complete
+valid observed-dialect inventory, self-entry unit `0`, and exact model
+`Smart Logger`. Software must pass the current catalogue decision and the
+observed entry's floor rule in the [gateway contract](gateway-readonly-v1.md#observed-and-documentary-entries).
+The observed build is Proven and an inherited build Hypothesis; no exact-build
+ceiling is restored. A below-floor or unevaluated software relation rejects the
+input. The card accommodates:
+
+- response PDUs of at least 263 bytes, with the registry's finite 1024-byte
+  response cap as implementation policy, not observed wire proof;
+- a declared-object field that is retained but not compared with objects
+  present; completeness instead uses the count object and continuation;
+- a count object that includes the self entry, so children equal count minus
+  one, unlike the documentary parser's children-only count;
+- terminal NUL or space removal followed by printable ASCII validation, and
+  canonical decimal child units 1 through 247, with no sign, whitespace, or
+  leading zero, as [entry-parser policy](smartlogger-observed-inventory-v1.md#registry-entry-parser-policy);
+- keys 9 and 10 as opaque evidence and attribute order that is not numeric; and
+- optional decoded basic identification: its vendor, product, and software
+  must agree with the extended self entry, and extra objects stay opaque.
+  An absent or undecodable basic reply neither supplies nor negates identity;
+  a decoded disagreement rejects the input.
+
+Wrong unit, unstable or invalid inventory, wrong self entry, refused software,
+or basic-identity conflict yields `INSUFFICIENT_EVIDENCE` and no retained child
+list. No class becomes `HARDWARE_TEST_READY`, and all default-denied fields
+remain unchanged.
 
 ## EMMA qualification card
 
@@ -254,7 +277,21 @@ in the table at the top of this page, the rule that no class is
 
 ## Shared resolution and negative overlap
 
-Each class result is evaluated independently. Zero positive results produce
+Cards are evaluated independently, then resolved within and across classes
+under the registry's shared resolver (`huawei_qualification_cards.go`).
+The documentary and observed SmartLogger cards are alternative entries of the
+same class. A rejected sibling is discarded when another card of that class
+matches; it does not negate the match. A failed result of a different class is
+not hidden. Two complete matching cards produce `AMBIGUOUS` even within one
+class: candidate class names are retained once each, and no class is selected.
+There is no documentary/observed priority or first-match rule for those matches.
+
+Before counting matches, the registry also drops a same-class identity-only
+match that is blocked specifically on missing capabilities when a complete
+observed match is test-ready. This narrow supersession does not discard two
+complete SmartLogger matches or any result of another class.
+
+After sibling rejection and narrow supersession, zero positive results produce
 `INSUFFICIENT_EVIDENCE`. More than one positive result produces `AMBIGUOUS`,
 retains the candidate class names, and selects no class. A failed SmartLogger
 inventory does not cause an EMMA or S-Dongle attempt. An EMMA identity does not
@@ -293,7 +330,7 @@ telemetry record, or a support claim.
 
 ## Sanitized expected result
 
-The shared expected result contains only the three card identities, their
+The shared expected result contains card identities for the three classes, their
 provider-local statuses, the missing-evidence names above, and false or zero
 safety fields. It contains no endpoint, port number, serial, ESN, account,
 credential, private capture, or device fingerprint.
