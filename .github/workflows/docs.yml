@@ -21,4 +21,5 @@ jobs:
           clean: true
       - run: |
           ./scripts/check_docs.sh
+          python3 -B -m unittest discover -s tests -p test_provider_port_ownership.py
           ./scripts/check_docs_test.sh
