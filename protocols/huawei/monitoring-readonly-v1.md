@@ -147,6 +147,17 @@ V200R023C00 branch that the edition's title names. The refusal of the power
 group on the M3 and MAP0 series (MG-01) is carried to the builds that follow
 under item 5, until an observation records an answer.
 
+## Decoded naming correspondence
+
+The bounded [naming contract](../../architecture/naming-contract.md) records
+`device_status` to `status` for the monitoring profile. The offset, state
+code, `grid_connected` enumeration and evidence grade remain unchanged. This is
+an implementation-name change, not admission or qualification. The accumulated
+energy name remains provisional: lifetime yield is Proven for the M3 path,
+while the M1 value form remains Hypothesis. The candidate `energy_total` is
+not adopted until total accumulation meaning is established across the profile.
+Other decoded names remain unchanged and provisional as recorded there.
+
 ## SmartLogger path
 
 ### Units
