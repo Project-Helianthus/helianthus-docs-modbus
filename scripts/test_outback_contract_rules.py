@@ -18,6 +18,7 @@ CHECKER = ROOT / 'scripts/check_outback_contract.py'
 
 class ContractRules(unittest.TestCase):
     def setUp(self):
+        (ROOT / '.tmp').mkdir(exist_ok=True)
         self.temp = tempfile.TemporaryDirectory(dir=ROOT / '.tmp')
         self.addCleanup(self.temp.cleanup)
         self.work = Path(self.temp.name)
