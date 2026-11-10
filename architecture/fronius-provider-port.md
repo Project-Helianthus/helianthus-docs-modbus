@@ -1,248 +1,130 @@
-# Fronius provider-port composition contract
+# Fronius supplied-evidence provider port
 
-This Helianthus application architecture proposal is released under
-AGPL-3.0-only and complements the CC0 native contracts. Nothing is stable before
-Helianthus 1.0.
+This Helianthus application architecture guidance is released under
+AGPL-3.0-only. It complements the CC0 native contract without changing it.
 
-## Authority and evidence boundary
+## Documentation ownership and reconciliation
 
-Protocol facts require the public native
-[qualification contract](../protocols/fronius/qualification-readiness-v1.md)
-and [SunSpec flavor contract](../protocols/fronius/sunspec-float-v1.md) first.
-Their exact applicability remains authoritative; referring to the Fronius
-family here does not qualify additional family members.
+This is the canonical provider-port page in `helianthus-docs-modbus`; the
+registry owns implementation, not a second provider-port contract. The
+registry companion documentation supplies the lifecycle account below. Its
+reported synthetic-test evidence is documentary evidence here, not a test run
+or fresh source verification by this documentation repository. Proven,
+Hypothesis and Unknown remain separate from qualification and admission.
 
-The merged [offline cycle source](https://github.com/Project-Helianthus/helianthus-modbusreg/blob/main/fronius_offline_provider.go)
-provides `FroniusOfflineProvider.Run/View/Cancel`. The
-[cycle contract](fronius-offline-provider-cycle.md) and
-[retained component](fronius-retained-commit-implementation.md) explain its
-native ownership boundary. Where the cycle page describes a proposed API, the
-concrete source establishes only the existing cycle API, not this wrapper.
+The configured adapter lifetime and native attempt token are distinct. Native Run/View/Cancel ownership and terminal retirement replace the earlier proposed wrapper lifecycle; incompatible keys discard history rather than merging it.
 
-| Evidence class | Claim supported here | Independent acceptance |
-| --- | --- | --- |
-| Proven | Supplied merged source exposes the native request, reader, result and cycle types below; `Run` calls the reader at most once, checks cancellation before considering its result, checks exact attempt echo and sizes, then delegates to the retained owner | Source inspection only; no newly executed replay or runtime proof |
-| Hypothesis | The I25 interface, configured adapter and lifecycle rules on this page are proposed requirements | Implementation and concurrent transition acceptance remain open |
-| Unknown | Production composition, consumer parity, operational freshness policy, restart recovery and physical behavior | No qualification, support or integration acceptance |
+This family-local application seam composes the merged
+[offline provider cycle](fronius-offline-provider-cycle.md) and its retained
+owner. Protocol facts, exact applicability and native limits remain owned by
+the public [native qualification-readiness contract](https://github.com/Project-Helianthus/helianthus-docs-modbus/blob/main/protocols/fronius/qualification-readiness-v1.md)
+and [SunSpec flavor contract](https://github.com/Project-Helianthus/helianthus-docs-modbus/blob/main/protocols/fronius/sunspec-float-v1.md).
+The public [offline lifecycle contract](https://github.com/Project-Helianthus/helianthus-docs-modbus/blob/main/architecture/fronius-offline-provider-cycle.md)
+owns the existing cycle requirements. This page adds no protocol mapping,
+applicability, acquisition recipe or larger native allowance. Nothing is
+stable before Helianthus 1.0.
 
-This is an independent composition-layer contract. It consumes no I25 code,
-unmerged sibling file or PR. Reconcile its final API spelling with I25 at code
-merge. This companion can merge first and has no special merge hold. It is a
-partial slice toward modbusreg issue #201 and Project #2; neither parent nor
-common production Provider/gateway composition is completed here.
+## Configured local API
 
-## Proposed typed port and configured adapter
-
-The following is a proposed Go declaration surface in the consuming registry
-package, over already merged native types. It is not an implementation or a
-new common production Provider interface. All new declarations and methods use
-the I25 prefix; existing native names are consumed unchanged.
+`I25FroniusProvider` is an interface implemented by `I25FroniusAdapter`:
 
 ```go
-type I25FroniusProvider interface {
-    I25Refresh(context.Context, FroniusOfflineRequest) (I25FroniusView, error)
-    I25Cancel() (I25FroniusView, error)
-    I25Retire() (I25FroniusView, error)
-    I25View() I25FroniusView
-}
-
-type I25FroniusConfig struct {
-    I25Registry       SunSpecDecoderRegistry
-    I25Reader         FroniusOfflineReader
-    I25MaxWords       uint32
-    I25MaxOccurrences uint32
-    I25MaxSourceViews uint32
-}
-
-type I25FroniusView struct {
-    I25Lifetime uint64
-    I25Retired  bool
-    I25Busy     bool
-    I25Eligible bool
-    I25Native   FroniusRetainedView
-}
-
-func I25NewFroniusAdapter(I25FroniusConfig) (*I25FroniusAdapter, error)
+I25Run(context.Context, I25FroniusLifetime, FroniusOfflineRequest) error
+I25Cancel(I25FroniusLifetime, FroniusRetainedToken) error
+I25Retire(I25FroniusLifetime) error
+I25View() I25FroniusView
 ```
 
-`I25FroniusAdapter` is the concrete implementation of `I25FroniusProvider`.
-It privately owns one zero-value `FroniusOfflineProvider`, the supplied registry,
-reader, immutable ceilings and lifecycle synchronization. Do not copy an adapter
-after use or expose its native owner for competing calls. Construction validates
-configuration, creates no attempt and invokes the reader zero times. No default
-registry, decoder, source, deadline or bounds are inferred. The supplied registry
-must already be usable for the native card; its contents remain immutable for
-the adapter lifetime. Clone supported mutable configuration at construction;
-otherwise require exclusive immutable ownership rather than pretend a shallow
-copy detaches mutable registry internals.
+Construct with `I25NewFroniusAdapter(registry, maxWords, maxOccurrences,
+maxSourceViews, reader)`. The existing `SunSpecDecoderRegistry` is supplied by
+the caller and copied, including decoder definitions. The three positive
+`uint32` ceilings cannot exceed existing card limits. A nil reader, empty or
+incompatible registry, zero or excessive ceiling returns an error and no
+adapter, with zero supplier calls. Construction performs no native acquisition
+or registration. Inputs must remain immutable during construction/calls;
+callback observations must remain immutable until the call returns.
 
-The adapter adds no scanner, parser, retained store or acquisition owner. Its
-reader consumes supplied synthetic/public evidence through the existing chain
-scanner and card path. Existing `FroniusOfflineReadRequest` carries
-`Attempt`, `MaxWords`, `MaxOccurrences`, `MaxSourceViews`;
-`FroniusOfflineReadResult` echoes that exact `Attempt` and carries
-`SunSpecQualificationObservation`. `Run` remains the sole validation/commit
-path. Neither the wrapper nor its callback may manufacture a positive verdict.
+Use `I25View().I25Lifetime` for calls. This opaque identity belongs to one
+adapter and is independent of `FroniusRetainedAttempt.Token`, which changes
+with native attempts. Nil and zero-value adapters refuse work. Foreign, zero
+and retired lifetimes refuse work without invoking the supplier or changing
+the native owner. Do not copy the adapter after construction.
 
-`I25Lifetime` is a nonzero adapter-local generation, distinct from
-`FroniusRetainedToken`, poll generation, deadline identity and native chain
-revision. It is not a globally unique identity: a handle also belongs to its
-particular adapter instance. Retirement permanently invalidates that lifetime;
-it never reactivates. A new adapter has a new instance identity and no inherited
-envelope, even if numeric generations coincide. Refuse overflow rather than
-reuse a lifetime. No method accepts an arbitrary caller token or targets
-another adapter.
+`I25Run` accepts the existing finite-deadline request. Its three bounds must
+also fit the configured ceilings. Oversized requests still pass through the
+native Begin/key fence and fail without a supplier call. The merged native
+cycle retains ownership of all other validation, exact request echo checking,
+source identity, replay, chain scanning and publication. No second scanner,
+retained store, qualification result or generic Provider contract is introduced.
 
-## Bounded calls, publication and refusal
+The adapter calls the synchronous offline supplier only through the native
+cycle. It creates no goroutine, background scheduler, retry, socket or device
+access. The supplier must cooperate with the original caller context and
+bounds; the adapter cannot forcibly interrupt a blocking supplier. The adapter
+lock is released for the supplier, permitting view, cancel, retirement and
+supersession; publication resumes under that lock and the native token fence.
 
-| Input or resource | Required finite boundary and refusal |
+## Lifecycle and native loss boundaries
+
+`I25FroniusView` contains `I25Lifetime`, `I25Retired` and the existing detached
+`I25Native FroniusRetainedView`. Native current attempt/outcome and retained
+receipt keep their separate meanings. A returned view can describe a newer
+attempt than the call that just finished. Absence is a nil envelope, never
+synthetic zero facts. Source words, spans, occurrence order, decoder revisions,
+flavor, capability and provenance remain native evidence.
+
+| Event | Result |
 | --- | --- |
-| Configured registry and reader | Already supplied, immutable registry of finite size and nonnil offline reader; native card/schema compatibility required. Missing or unusable configuration refuses creation. No registry loading or plugin discovery. |
-| Configured ceilings | Positive `I25MaxWords`, `I25MaxOccurrences`, `I25MaxSourceViews`; no overflow or implicit unlimited value. Respect the native card's total-word/occurrence ceilings and `MaxSunSpecPhaseOneChainWords` source-view ceiling used by `Run`. No larger protocol allowance. |
-| Refresh request | Native `FroniusOfflineRequest`: exact `Key`, nonzero `PollGeneration` and `DeadlineIdentity`, positive `MaxWords`, `MaxOccurrences`, `MaxSourceViews` no greater than the configured ceilings and native limits. Never clamp, rewrite or silently replace a caller bound. |
-| Context | Nonnil, active, future finite deadline. A derived cancellable context preserves that original deadline; never extend it or substitute background context. |
-| Reader work | At most one synchronous callback per accepted refresh; zero retries, fallback, detached tasks or unbounded streams. Bound supplied record extents, aggregate words, occurrences, views, identity/diagnostic storage and scanner work before allocation/iteration. The reader must cooperate with cancellation; a deadline cannot interrupt arbitrary blocking code. |
-| Native result | Exact attempt echo, complete observation, and sizes within the accepted bounds before native replay/cloning. Zero, partial, malformed, mismatched or extra-chain evidence cannot commit. |
-| Concurrency and storage | At most one admitted refresh per adapter; concurrent refresh refuses busy without queueing or superseding. One native retained envelope, one current attempt, fixed lifecycle metadata; no growing history or retained arbitrary callback error strings. |
+| Complete supplied-evidence replay | Existing native owner atomically publishes one complete exact-card receipt. Adapter lifetime stays unchanged. |
+| Same-key partial, rejected or failed refresh | Current attempt fails; the entire original last-good receipt, original attempt and local commit instant remain unchanged and stale. |
+| Compatibility-key change | Native Begin permanently drops incompatible history, including on invalid new requests. Returning to the old key does not resurrect history. |
+| Native chain decoder revision change | Existing exact-card replay remains authoritative; changing an occurrence revision does not create a new admissible profile. |
+| Cancel before publication | `I25Cancel` delegates the exact token to the native owner; late completion cannot replace retained evidence. Caller context cancellation after supplier return is also checked by the native cycle. |
+| Supersession | Older callbacks may return, but their closed token cannot change the newer attempt or its result. |
+| Retire before publication | Mark the adapter retired and cancel its active native attempt while serialized against publication. All later runs are refused; late callbacks cannot publish. |
+| Retire after publication | Keep the completed native receipt as history with its original outcome and commit instant; retirement is separately visible. |
+| Repeated retire, foreign lifetime or closed/foreign native token | Return an error; do not invalidate another adapter or newer attempt. |
+| View or accepted input mutation after return | Detached copies protect retained storage; no caller-owned slice can rewrite an existing receipt. |
 
-Apply configured-ceiling refusals inside an adapter-owned reader guard passed
-to `Run`: it rejects before invoking the configured reader. Thus an otherwise
-admitted refresh still reaches native `Begin` and its key fence even when a
-request exceeds configured ceilings. Native invalid contexts, identities,
-card inputs, zero bounds and native-limit excess already refuse before the
-reader. Do not introduce wrapper preflight that bypasses the incompatible-key
-invalidation rule. Busy and retired calls are lifecycle refusals: they are not
-new native attempts and change no native key or history.
+The exact key axes remain requested function, received function, logical table,
+unit, opaque source, connection identity, transport family, transport generation,
+card identity and schema. Attempt axes remain poll generation, deadline
+identity, original finite deadline and native token. Neither matching values nor
+a matching callback echo can repair incompatible native source evidence.
 
-Register the cancellable refresh context under lifecycle synchronization before
-entering `Run`. Cancellation or retirement during the interval before native
-`Begin` must still prevent publication. Do not hold a lifecycle mutex across
-the callback: `I25Cancel`, `I25Retire` and `I25View` must remain callable. After
-reader-guard entry, record the supplied `Attempt.Token` under lifecycle
-synchronization and recheck retirement/context before invoking the configured
-reader. Cancellation also targets only that recorded active native token
-through `Cancel`; the derived context covers the earlier interval. Keep busy
-until `Run` returns, even after cancellation. A subsequent refresh cannot race
-with delayed cleanup from its predecessor. Terminal cleanup must compare the
-captured adapter instance/lifetime and attempt before clearing state.
+For example, complete attempt A followed by partial attempt B retains A's
+receipt unchanged and stale while reporting B's failure. Retiring during B
+closes B and refuses attempt C under the same adapter lifetime. A's local
+commit instant remains A's; it is neither a capture timestamp nor an
+operational freshness guarantee. With no successful A, absence remains absence.
 
-Native publication and cancellation retain the existing owner's serialization.
-If cancellation wins before commit, no candidate publishes; if commit wins,
-later cancellation cannot relabel its success. Retirement marks the adapter
-permanently retired and cancels its outstanding context before returning; it
-does not wait for an uncooperative reader. A late completion cannot reactivate
-the adapter. A commit that won the native race remains historical evidence,
-but a retired adapter always reports `I25Eligible=false`.
+## Evidence and remaining acceptance
 
-`I25View` returns detached native current-attempt and retained-envelope data
-together with a coherent lifecycle view. Synchronize/recheck across lifecycle
-changes so it cannot label an active native attempt with another lifetime.
-`I25Eligible` means only eligible offline history for this active adapter and
-key; it does not assert freshness, qualification or runtime admission. Pending,
-failed or cancelled same-key refreshes may expose eligible stale history.
-Retirement withholds eligibility without mutating original native evidence.
-Never rewrite the native `Stale`, `Outcome`, attempt or receipt to express a
-wrapper state. Without history, eligibility is false.
-
-Return errors distinguish configuration/input refusal, busy, retired,
-cancellation/deadline, reader failure, native validation and inactive completion.
-These are semantic categories, not a promised new error enum. Native `Run`
-normalizes callback errors to `offline reader failed`; do not promise original
-callback text or cause recovery. A method's returned view is current state,
-not proof that its own attempt committed. Never retry a failed terminal call
-against a different token. Repeated retirement succeeds idempotently;
-cancellation with no pending attempt is a no-op, and cancellation after a
-completed commit leaves success intact. Cancellation on a retired adapter
-returns its retired view without starting work. Retired refreshes refuse forever.
-
-## Synthetic transition review
-
-These are manual acceptance scenarios, not executed tests. An I25-prefixed fake
-reader supplies native observations from synthetic replay through the existing
-scanner/card, performs zero network/device work, and echoes the exact attempt.
-Let K be a complete compatibility key, E the first complete envelope, and C
-its symbolic original receipt (`Envelope.Attempt` and `CommittedAt`); C is not
-a published capture time. Run each loss case both with E and with no history.
-
-| Event | Required result and original-receipt check |
+| Class | Scope |
 | --- | --- |
-| Create then view | Active, not busy, no native envelope or attempt; no reader call. |
-| First successful K refresh | One callback, exact echoed attempt, complete replay; native owner publishes E atomically. No partial prefix is visible. |
-| Same-key partial chain | Fake reader returns incomplete/error evidence or a zero observation; refresh fails, E remains stale with C unchanged. No missing words or terminal marker are invented. |
-| Same-key failed chain | Fake reader returns an error with or without a candidate, or native replay rejects it; E remains stale with C unchanged. The candidate is never spliced into E. |
-| Same-key successful replacement | A complete new observation replaces all of E with its own receipt; no old words, flavor or provenance are relabeled. |
-| Cancel before callback or during read | Cancel the registered context; configured reader is invoked zero times if native preflight has already observed cancellation, otherwise at most once cooperatively. No candidate may publish after cancellation wins. E remains stale at C. |
-| Cancel after reader return, before commit | A fully successful candidate still cannot commit if native cancellation wins. E remains at C; without E, absence remains absence. |
-| Cancel after committed success | Completed envelope and native outcome remain unchanged; no false cancellation label. |
-| Retire while idle or reading | Permanently retired, eligibility false; original E/C remain available as detached history. An in-flight reader may return late but cannot restore eligibility or restart work. |
-| Late completion from retired lifetime | Cleanup cannot clear or populate another adapter's attempt or history. Native inactive token cannot publish; a prior winning commit is historical only. |
-| Key change K to L, including invalid new bounds/context | Native Begin drops incompatible E even when the new attempt fails; returning to K does not resurrect it. Busy/retired refusal is not a key-change attempt. |
-| Oversized request or result | No configured reader call for excessive request ceilings; oversized returned evidence fails before replay/cloning. Compatible E retains C; incompatible history is already fenced. |
-| Concurrent refresh | Busy refusal; no second callback, native Begin or key change. Cancelled-but-still-returning readers keep the slot busy. |
-| Detached view mutation | Mutating a returned observation or nested collection cannot alter subsequent views, current attempt or E/C. |
+| Proven | Source composition delegates Run/View/Cancel to the merged native cycle. Synthetic provider tests cover identity axes, refusal, retention, detachment, revision rejection, cancellation, retirement and stale completion. Execution evidence is recorded separately. |
+| Hypothesis | Future production composition could bind this local port to a common provider owner. |
+| Unknown | Live acquisition, runtime integration, operational freshness policy, persistence, restart recovery, physical acceptance and consumer parity. |
 
-The cancellation-after-return and stale-completion rows require controlled
-barriers in future synthetic code tests. A finite watchdog diagnoses hangs;
-elapsed timing alone does not prove ordering or bounded cooperation.
+These evidence classes do not confer qualification, freshness or admission.
+Documentary replay success grants no live qualification, automatic runtime
+admission, semantic promotion or write authority. Existing native validation is
+unchanged. This is a partial implementation advancing #201; the parent remains
+open. The common production Provider interface and gateway registry are outside
+this slice. eBUS MCP compatibility and later MCP/GraphQL parity remain
+requirements; no consumer binding changes here. G5 D1-D5/O8 are unchanged;
+eeBUS output remains in helianthus-eebusreg.
 
-## Identity and projection-loss review
+Focused acceptance: `go test . -run '^TestI25' -count=1` with nonzero test
+selection. Documentation acceptance is manual source, claim, transition,
+loss-state, example and public-link review. Independent review, committed-head
+CI, publication audit, runtime integration and physical acceptance remain separate gates. No transport or smoke PASS is
+implied by offline synthetic tests.
 
-Vary each field independently with all others held equal. The expected behavior
-comes from the native key/attempt contract, not measurement equality. The last
-column names a production mutation future tests must catch; these are reasoned
-test mappings, not executed mutation kills.
+## Native authority and consumer continuity
 
-| Axis | Required independent variant | Mutation the variant must reject |
-| --- | --- | --- |
-| `RequestedFunction` | Change only requested function: key fence drops E; mismatched replay cannot commit | Omit requested-function equality |
-| `ReceivedFunction` | Change only received function: same fence/rejection | Compare only requested function |
-| `Table` | Change only table: same fence/rejection | Omit table equality |
-| `UnitID` | Change only unit: same fence/rejection | Omit unit equality |
-| `Source` | Change only opaque source: same fence/rejection; never interpret as locator | Omit source equality |
-| `ConnectionID` | Change only connection: same fence/rejection despite identical words | Omit connection equality |
-| `Transport` | Change only transport family: same fence/rejection | Omit transport equality |
-| `TransportGeneration` | Change only generation: same fence/rejection | Omit generation equality |
-| `CardID` | Change only card: drop history and refuse incompatible exact card | Omit card identity check |
-| `Schema` | Change only schema: drop history and refuse incompatible registry/card revision | Omit schema equality |
-| `PollGeneration` | Change only echoed poll identity: refuse; E keeps its original poll identity | Omit poll equality or relabel retained attempt |
-| `DeadlineIdentity` | Change only echoed deadline identity: refuse; E keeps its original deadline identity | Omit deadline-identity equality |
-| `Deadline` | Change only echoed finite deadline: exact attempt comparison refuses | Compare attempt without deadline |
-| `Token` | Substitute foreign-owner, closed and superseded tokens independently: no publication or newer-state change | Accept matching numeric identities instead of opaque token |
-| Adapter instance / `I25Lifetime` | Retired instance or stale captured generation cannot operate on a replacement instance | Reuse lifetime or omit instance guard in cleanup |
-| Native request identity | Independently alter plan, chain instance, sequence, purpose, exact address and quantity in supplied replay: native acquisition/replay must reject transplantation | Bypass the corresponding native request identity check |
-| Native chain revision | Change decoder/chain schema revision alone: require authoritative native validation; do not alias it to adapter lifetime or invent a wrapper revision field | Accept different revision based on equal words |
-
-The wrapper consumes native replay; it does not claim to expose planner request
-fields in `FroniusOfflineRequest`. Native request/revision variants belong in
-the fake reader's supplied replay and existing scanner checks. Missing source
-details about those internal fields remain Unknown, not invented adapter APIs.
-
-Keep the complete native observation: raw words, ordered occurrences, decoder
-keys/opaque dispositions, source spans, logical-view provenance, capability,
-flavor, unavailable sentinels and original receipt. Preserve zero, absence,
-unknown, unsupported and stale as distinct states. A failed refresh retains
-partial last-known-good availability: the complete original envelope plus the
-new failed attempt, never partial new facts presented as success. There is no
-persistent archive or restart guarantee. Local commit age is not operational
-freshness or a device capture timestamp.
-
-## Composition and remaining acceptance
-
-Every row keeps `live_qualified=false`, `automatic_runtime_admission=false`
-and `write_authority=false`. Production admission stays denied/`NO_GO`;
-offline success supplies no new Fronius applicability or runtime admission.
-No socket, device access, active acquisition, background scheduler, native
-qualification, registration or gateway M02 registry is introduced. Existing
-native authorization-scope provenance is preserved without a new authorization
-gate.
-
-Future composition must preserve eBUS MCP compatibility and MCP/GraphQL parity
-for current attempt, retained evidence, absence, stale state, age, retirement
-and errors. If a consumer cannot represent one of these, declare the projection
-loss and withhold unsupported output; do not invent a shared success boolean.
-G5 D1-D5/O8 are unchanged. eeBUS output remains in `helianthus-eebusreg`.
-
-Independent implementation review, synthetic per-axis and controlled transition
-execution, committed-head checks, production integration, consumer parity and
-physical acceptance remain separate. This page claims only a proposed local
-port contract and manual source/transition/identity/loss/example/link review.
+This reconciliation changes no native protocol fact or profile admission.
+Preserve native evidence and partial last-known-good state within the native
+retention rules; unknown or incompatible evidence fails closed. Existing eBUS
+MCP compatibility and GraphQL parity remain requirements. No consumer binding,
+transport or physical qualification is established by this page.

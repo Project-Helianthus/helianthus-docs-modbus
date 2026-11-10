@@ -12,230 +12,172 @@ The [native qualification contract](https://github.com/Project-Helianthus/helian
 owns missing qualification evidence. This page changes neither contract and
 introduces no register mapping, capability inheritance or acquisition recipe.
 
+This is the canonical provider-port page in `helianthus-docs-modbus`; the
+registry owns implementation, not a second provider-port contract.
+
 | Evidence status | Basis and boundary |
 | --- | --- |
-| Proven, source inspection | The merged [EmmaOfflineProvider source](https://github.com/Project-Helianthus/helianthus-modbusreg/blob/main/emma_offline_provider.go) has `NewEmmaOfflineProvider`, `SetContext`, `Latest` and `Cycle`. It calls a supplied reader synchronously outside its publication lock, checks finite work/byte bounds, fences completion, and retains identity separately from attempt diagnostics. This is inspected source behavior, not executed integration evidence. |
-| Hypothesis, required wrapper behavior | The I19 interface and concrete lifecycle adapter specified below are proposed. Their signatures, cancellation translation, frozen configuration and view publication require implementation agreement and review. No sibling implementation is evidence or a prerequisite here. |
-| Unknown | Qualified optional inventory-guard acquisition, live correlation, capabilities, transport behavior and physical acceptance remain unknown. |
+| Proven, source inspection | The public [provider source](https://github.com/Project-Helianthus/helianthus-modbusreg/blob/main/emma_provider_port.go), [offline cycle](https://github.com/Project-Helianthus/helianthus-modbusreg/blob/main/emma_offline_provider.go) and [identity transition](https://github.com/Project-Helianthus/helianthus-modbusreg/blob/main/emma_identity_transaction.go) establish the signatures and lifecycle described here. Source inspection is not executed integration evidence. |
+| Hypothesis | A future acquisition owner can supply validated native records, cooperative work accounting and a consistent logical clock through this family-local port. |
+| Unknown | Live correlation, qualified optional inventory guards, acquisition boundedness, physical behavior and production integration remain unknown. |
 
 The [existing cycle contract](https://github.com/Project-Helianthus/helianthus-docs-modbus/blob/main/architecture/emma-offline-provider-cycle.md)
-provides earlier cycle requirements; its proposed API language is not proof that
-every requirement is implemented. The merged source establishes the actual
-`Cycle` signature. The [identity component boundary](https://github.com/Project-Helianthus/helianthus-docs-modbus/blob/main/architecture/emma-identity-transaction-implementation.md)
-describes the consumed native value transitions. This new layer owns adapter
-lifecycle and views, rather than duplicating either component or cycle.
+provides earlier requirements; its proposed API language is not proof that
+every requirement is implemented. The
+[identity component boundary](https://github.com/Project-Helianthus/helianthus-docs-modbus/blob/main/architecture/emma-identity-transaction-implementation.md)
+describes consumed native value transitions. Merged source defines the actual
+port and cycle signatures. This layer adds no native identity evaluator.
 
-This is a family-local offline port for future production composition. It is
-neither the absent common production `Provider` interface nor the M02 gateway
-registry. There is no registration, socket, device, active acquisition,
-background scheduler, inventory sender or native qualification. Identity
-success leaves admission denied and qualification evidence blocked: overall
-production readiness is NO_GO. Network/device work is zero.
+This is a family-local supplied-evidence port, neither the common production
+`Provider` interface nor a gateway registry. It creates no socket, device work,
+background scheduler, retry, inventory sender or registration. Identity success
+leaves qualification evidence blocked and admission default denied. Production
+readiness remains NO_GO independently of retained identity evidence.
 
-## Proposed typed surface and frozen configuration
-
-The following Go-shaped specification consumes existing native API names.
-Every new API identifier uses the I19/i19 prefix. Exact spelling must be
-reconciled with I19 at code merge; the signatures are contract proposals, not
-claims about available exports. The interface and concrete adapter belong in
-the same new implementation file, with no import of an I sibling.
+## Implemented typed surface and configuration
 
 ```go
 type I19EmmaProviderPort interface {
-    I19Refresh(i19Refresh I19EmmaRefresh) (EmmaIdentityResult, error)
-    I19SetContext(i19Epoch uint64, i19Current EmmaIdentityContext) (uint64, error)
-    I19Cancel(i19Refresh I19EmmaRefresh) error
-    I19Retire() error
-    I19Identity() (EmmaIdentityResult, bool)
-    I19RetainedView() EmmaIdentityResult
+    I19Refresh(context.Context, EmmaIdentityContext, bool) (EmmaIdentityResult, error)
+    I19SetContext(EmmaIdentityContext) error
+    I19Retire()
+    I19Latest() EmmaIdentityResult
+    I19Identity() (EmmaIdentityInput, bool)
+    I19RetainedIdentity() (EmmaRetainedIdentity, bool)
 }
 
-type I19EmmaConfig struct {
-    I19InitialContext EmmaIdentityContext
+type I19EmmaProviderConfig struct {
     I19Bounds EmmaOfflineBounds
-    I19MaxContextBytes int
-    I19MaxErrorBytes int
-    I19MaxHorizon time.Duration
     I19Reader EmmaOfflineIdentityReader
     I19Now func() time.Time
 }
 
-type I19EmmaRefresh struct {
-    I19Epoch uint64
-    I19Context EmmaIdentityContext
-    I19InventoryRequested bool
-}
-
-type I19EmmaAdapter struct { /* private i19-prefixed lifecycle state */ }
-
-func I19NewEmmaAdapter(i19Config I19EmmaConfig) (*I19EmmaAdapter, error)
+func I19NewEmmaProvider(current EmmaIdentityContext, config I19EmmaProviderConfig) (*I19EmmaProvider, error)
 ```
 
-`I19EmmaAdapter` implements `I19EmmaProviderPort` using one privately owned
-`*EmmaOfflineProvider`; callers cannot access it. The constructor creates it
-with `NewEmmaOfflineProvider` and starts adapter epoch 1. Construction performs
-no reader call. It copies validated configuration by value, including bounds
-and initial context. Later caller mutation cannot alter it. Functions are
-frozen references, not frozen closure storage: their supplier must keep captured
-state safe, bounded and offline. The adapter must not be copied after use.
+The concrete `I19EmmaProvider` implements this interface over one private
+`EmmaOfflineProvider`. Construction refuses nil reader/clock, zero reader work,
+nonpositive input-byte allowance or an initial context rejected by the native
+transition at the supplied clock time. It calls the clock, not the reader.
+Configuration is copied by value. Replacing caller configuration fields cannot
+replace callbacks or widen bounds; captured closure state remains caller-owned.
+Do not copy the provider after construction. Callbacks must be cooperative,
+bounded and safe for the caller's concurrency. Returned reader buffers remain
+unchanged until refresh returns.
 
-| Bounded input | Validation and ownership |
-| --- | --- |
-| `I19InitialContext`, refresh context, replacement context | Nonempty `ParentSource` and `SourceRevision`, nonzero `ConnectionGeneration` and `Attempt`, nonzero deadline and caller time; uncancelled for creation/new refresh. Bound the combined context string bytes by positive finite `I19MaxContextBytes` before retaining them. Tokens are opaque metadata, never native device identity. |
-| `I19Bounds.MaxReaderWork` | Positive finite caller allowance, passed unchanged to the single cooperative reader; no replenishment, retry or implicit default. A return check cannot bound a noncooperative callback's execution. |
-| `I19Bounds.MaxInputBytes` | Positive finite total of `Offering`, `Model`, `Firmware`, `Request` and `Response` bytes, matching the existing cycle accounting. Native limits remain ceilings. Oversize is failure, never a truncated valid tuple. |
-| `I19MaxHorizon`, context `Deadline`, `I19Now` | Positive finite horizon and nonnil logical clock. At entry require time strictly before deadline and remaining duration within horizon. Recheck completion through `Cycle`; equality is expired. Clock values must be nonzero and nondecreasing; no new deadline or wall-clock-generated identity. |
-| `I19Reader` | Nonnil, injected supplier of already validated FC03 records and independent diagnostic `EmmaMEIStatus`. It must honor deadline/work bounds and leave returned buffers unchanged until `Cycle` returns. No acquisition, guard procedure, inventory parser or extra callback. |
-| `I19MaxErrorBytes` | Positive finite ceiling for adapter-retained error text. Return a bounded refusal category and bounded diagnostic text without treating it as native evidence. The supplier must bound error construction; formatting an arbitrary error is not an execution bound. |
-| `I19Epoch` and context updates | Nonzero adapter lifecycle epoch, compared independently of native context. Each accepted `I19SetContext` advances it; refuse exhaustion rather than wrap. Reject wrong epoch, stale context and refresh reuse; all context updates and new attempts require new, nonreused native `Attempt` tokens, even when other native fields stay equal. |
-| `I19InventoryRequested` | Explicit boolean intent per refresh, frozen before callback. False means `not_requested`; true means `blocked`. `InventoryComplete()` stays false in both cases. It never permits a second callback or sender. |
+`MaxInputBytes` counts the aggregate Offering, Model, Firmware, Request and
+Response bytes. Oversized input is discarded as failed evidence, never
+truncated into a valid tuple. A reader error marks input failed while retaining
+in-bound diagnostic evidence. `MaxReaderWork` is passed unchanged to the reader;
+this cooperative contract cannot forcibly bound arbitrary callback execution.
 
-The adapter keeps one active slot, at most one in-flight refresh, one latest
-bounded attempt and one retained identity. A busy refresh fails immediately,
-with zero reader calls. No unbounded parent map, task queue or retired archive
-is introduced. Context tokens are not reused within an adapter lifecycle;
-callers needing a distinct parent create or replace the slot explicitly.
+The former adapter name and constructor, explicit cancel method, caller epoch,
+refresh wrapper and retained-view API were unsupported proposals. They are not
+exports of the merged provider. Proposed context/error string ceilings, horizon
+validation, nondecreasing clock enforcement, attempt-reuse rejection, overflow
+refusal and a busy single-flight rule are also not implemented port guarantees.
 
 ## Lifecycle, cancellation and publication
 
-1. **Create.** Validate the entire frozen configuration and initial context
-   before constructing the native provider. Invalid input returns a bounded
-   error and no usable adapter. The initial views are empty and denied.
-2. **Refresh.** Under adapter synchronization, reject retirement, busy state,
-   wrong epoch, invalid/stale context, duplicate attempt or invalid bounds/time.
-   Reserve the refresh and freeze its epoch, context and inventory intent.
-   Invoke the actual merged `Cycle(context, bounds, inventoryRequested, reader,
-   now)` once, with a fake/supplied offline FC03 reader. Do not reproduce its
-   evaluator or fabricate a successful result. Neither callback nor arbitrary
-   reader work runs under the adapter lifecycle lock.
-3. **Cancel.** `I19Cancel` targets the exact reserved epoch/context, including
-   parent, revision, connection, attempt and deadline. Under lifecycle
-   synchronization mark that refresh cancelled and immediately call
-   `SetContext` with a copy of its current native context whose `Cancelled`
-   is true. This translates explicit refresh cancellation into the existing
-   context fence *before commit*, not into a post-return error alone. A stale
-   cancel must refuse without cancelling a successor. Repeated cancellation of
-   the same still-reserved refresh is idempotent. Cancellation cannot forcibly
-   stop reader code; do not spawn a goroutine to abandon it.
-4. **Replace context.** `I19SetContext` compares the expected epoch, validates
-   the bounded replacement, advances epoch and calls `SetContext` atomically
-   with the adapter state change. A changed parent starts empty history;
-   same-parent revision/connection changes may retain old evidence only as
-   labelled history. The busy reservation remains until its callback returns.
-   Never restore an earlier uncancelled context to let old work commit.
-5. **Retire.** `I19Retire` is terminal and idempotent. It marks the current
-   native context cancelled through `SetContext`, fences adapter publication
-   and invalidates the current-identity flag. All later refresh/update/cancel
-   requests refuse. Detached history may still be read; callbacks already in
-   flight may finish but cannot resurrect the adapter or replace its view.
-6. **Complete.** After `Cycle`, recheck epoch, cancellation and retirement
-   under adapter synchronization before exposing a new view. The native
-   provider's publication lock orders its own commit against `SetContext`;
-   cancellation that wins that lock rejects the native commit. Cancellation
-   after native commit cannot undo it retroactively: that completed observation
-   may remain history, but current success is suppressed. A retirement that
-   wins during the callback instead preserves the pre-refresh published view.
-   Keep a detached public view; do not expose the private provider's `Latest`
-   blindly. Report lifecycle refusal
-   separately from the native result rather than rewriting native reasons.
+1. **Refresh.** `I19Refresh` refuses a nil refresh context, nil/uninitialized or
+   retired provider, and an expected context unequal to the active context
+   before calling the reader. Equality covers ParentSource, SourceRevision,
+   ConnectionGeneration, Attempt, Deadline and Cancelled. An accepted call
+   delegates to the actual native `Cycle` with frozen bounds, reader and clock.
+   Native preflight may still refuse with zero reader calls. An accepted native
+   cycle calls the synchronous reader once outside the publication lock.
+2. **Concurrent work.** The port has no busy reservation. Native cycle tickets
+   fence superseded completions; concurrent callers may invoke cooperative
+   readers concurrently. This is not a queued scheduler or a promise of
+   single-flight execution. A stale refresh refused before delegation does not
+   supersede unrelated work.
+3. **Cancellation.** The wrapped clock calls the supplied clock, then samples
+   `context.Context.Err()` at each native clock fence, including completion
+   before commit. If the refresh sequence and expected context still match,
+   cancellation sets the native current context's Cancelled flag. The native
+   transition then rejects before matching. The sequence check prevents an old
+   cancellation from cancelling a replacement context or later refresh.
+   Cancellation cannot interrupt a blocked reader. Cancellation after the final
+   sample is a subsequent event; it is not atomic with native commit and cannot
+   undo an already committed observation. If the native call returns no error,
+   cancellation is observed and the result is uncommitted, the port returns the
+   context error alongside that result. Preserve both, rather than equating an
+   error alone with the native reason.
+4. **Replace context.** `I19SetContext(current)` serializes replacement and
+   advances the private sequence. It does not validate replacement contexts or
+   enforce increasing tokens. Callers must supply fresh attempt/connection
+   tokens and never restore old contexts. Invalid contexts serve as fences;
+   native preflight still refuses them. Parent replacement clears foreign
+   history; same-parent revision/connection changes retain historical evidence
+   with its original context and observation time. It returns an error for a
+   nil, uninitialized or retired provider.
+5. **Retire.** `I19Retire()` returns no value. It is terminal and idempotent,
+   marks current context cancelled and forwards that fence to the native owner.
+   Later refresh/context updates refuse. History survives; a callback may finish
+   but cannot commit against the retired native context. Retirement after a
+   commit does not erase that observation. A new lifetime requires a new port.
 
-`Cycle` already normalizes a reader error to `EmmaFC03Failed`, rejects oversized
-input and checks the context before/after its callback. A stale completion can
-still be stored by its private latest-result path in some same-parent cases;
-that does not authorize adapter publication. The adapter's epoch fence and
-pre-refresh snapshot therefore remain necessary. The existing source does not
-provide an explicit refresh-cancellation method, frozen adapter configuration,
-adapter retirement or an adapter single-flight guarantee.
-
-Wrap the injected clock to validate both readings before native commit. An
-invalid completion reading must set the native current context cancelled before
-returning to `Cycle`; a check only after `Cycle` returns is too late. Bound that
-clock callback as well as the reader. A cancelled context stays fenced until
-an explicit update with a fresh native attempt token.
-
-Invalid entry leaves both published views untouched. A reader/input failure
-within an accepted, still-current refresh publishes bounded attempt diagnostics
-and preserves the last valid identity. Unavailable FC03 is not a proven native
-mismatch. Preserve the native `Reason()`, FC03 status, `MEIStatus()`, inventory
-status, `Committed()` and `InventoryAssociationInvalidated()` independently
-from adapter errors. Unsupported diagnostic enum values must be refused rather
-than treated as successful identity evidence; no new native reason is invented.
+The native owner serializes commit against context changes. Its latest attempt
+can contain a rejected same-parent completion after a context fence; the port
+returns that native result rather than maintaining the old proposal's detached
+pre-refresh publication cache. Never treat Latest's Committed flag alone as
+current identity after lifecycle changes. Native cycle sequencing prevents an
+older cycle from overwriting a newer cycle's result; the port's private sequence
+is not an additional general publication fence.
 
 ## Identity, retained history and projection loss
 
-`I19Identity` returns a detached successful committed result and true only while
-it is the latest successful current refresh under the active epoch/context,
-uncancelled, unretired and unexpired at the supplied logical clock. After a
-failed refresh or lifecycle change it returns an empty result and false.
-`I19RetainedView` returns the detached latest published attempt whose
-`RetainedIdentity()` exposes separately labelled history, even after failure
-or retirement. Context replacement must invalidate the current flag even when
-the native `Latest()` still describes a successful earlier attempt. Neither
-view initiates refresh or changes observation time.
+`I19Latest()` returns the native latest-attempt `EmmaIdentityResult`.
+`I19Identity()` returns `(EmmaIdentityInput, bool)`, not a result envelope. Its
+boolean requires a committed latest attempt matching every active context field,
+an unretired and uncancelled provider, and a nonzero supplied time strictly
+before the current deadline. Deadline equality is expired. The getter calls the
+clock but no reader. It does not enforce monotonic clock progression or prove
+live freshness. A failed latest attempt makes current identity unavailable.
 
-History preserves its original `Context()`, `Input()` and `ObservedAt()`.
-Failed/partial input stays in `AttemptInput()` and never patches the old tuple
-or a future attempt. Native byte-slice accessors provide detached copies;
-adapter views must preserve that ownership. On parent replacement, discard
-that slot's published history, excluding foreign-parent history from both views.
-Retirement preserves only the slot's previously published history. Bounds and
-cancellation do not manufacture request/response bytes.
+`I19RetainedIdentity()` returns `(EmmaRetainedIdentity, bool)` from the native
+latest result, including after failure or retirement. History keeps its
+originating Context, Input and ObservedAt. AttemptInput contains the separate
+candidate, including partial or failed input; it never fills gaps in a retained
+tuple. Native byte accessors return detached copies. Parent replacement clears
+history instead of importing another parent's identity.
 
-A current-identity boolean loses native failure reasons, raw FC03 evidence,
-optional diagnostic status, inventory intent, association invalidation and age.
-It is therefore not a substitute for the retained/attempt envelope. Future MCP
-and GraphQL projections must expose the same deterministic envelope, explicit
-unknowns, age and reasons, with projection loss recorded. Preserve eBUS MCP
-compatibility, GraphQL parity and unchanged G5 D1-D5/O8. eeBUS output remains
-in `helianthus-eebusreg`. No consumer binding is implemented here.
+Preserve native Reason, FC03 evidence, MEIStatus, InventoryStatus, Committed,
+InventoryAssociationInvalidated and retained history independently of Go errors.
+MEI success cannot rescue missing FC03. Requested inventory is blocked and
+incomplete; omitted inventory is not_requested. A valid replacement changing
+offering, family variant, firmware, revision or connection preserves native
+inventory-association invalidation without establishing inventory. Attempt or
+deadline changes alone do not change native identity association.
 
-## Synthetic transitions and independent identity axes
+A current-identity boolean loses failure reasons, raw evidence, diagnostic
+status, inventory intent, association invalidation and age. Future MCP and
+GraphQL projections must retain equivalent envelopes, explicit unknowns, reasons
+and original age, and name projection loss. Existing eBUS MCP compatibility,
+GraphQL parity and G5 D1-D5/O8 remain unchanged. eeBUS output remains owned by
+`helianthus-eebusreg`. No consumer binding is implemented here.
 
-These are manual acceptance cases, not executed tests, parser fixtures or
-physical observations. P/Q, R/S, C/D, A/B, E/F and T represent synthetic parent,
-revision, connection, attempt, adapter epoch and logical time symbols. A valid
-FC03 tuple means one validated against the linked native contract; no model
-literal or synthetic reply bytes stand in for that validation.
+## Supplied-evidence transition review
 
-| Transition using actual `Cycle` with fake FC03 supply | Expected port outcome and retained state |
+These are synthetic logical examples, not device observations or executed
+runtime tests in this repository.
+
+| Supplied event | Native result and retained-state boundary |
 | --- | --- |
-| Create E/P/R/C/A, then fenced valid FC03 with MEI failure | Commit identity at T; diagnostic MEI failure retained. Admission denied, qualification blocked, NO_GO. |
-| Next attempt B has missing/failed FC03 but successful MEI | Current identity false; previous identity stays at T with unchanged evidence; B diagnostics remain separate. |
-| B returns complete tuple plus reader error, or oversized input | Failed/unavailable, bounded diagnostics, no identity refresh or silent truncation. |
-| Valid B requests inventory after prior identity success | Identity may commit; inventory `blocked`, incomplete; zero guard/inventory calls. Omitted inventory stays `not_requested`. |
-| Explicit cancellation during callback, followed by valid FC03 | Cancelled native context before commit yields rejection; old identity at T remains history, not current. |
-| Retirement during callback, followed by late success/error | No adapter publication, current identity false, old view/history unchanged. Later calls refuse with zero reader calls. |
-| Epoch/context replacement during callback; late old completion | Refuse stale adapter publication even if private latest changes. Preserve the replacement slot and any unrelated parent's valid identity. |
-| Clock reaches deadline or moves backwards before publication | Refuse current success; do not refresh retained observation or invent capture time. |
-| Invalid creation/refresh, busy refresh or stale cancellation | Bounded refusal; zero reader calls for refused refresh; no damage to a valid unrelated slot. |
+| Valid complete FC03, failed MEI, inventory requested | Identity may commit; MEI failure stays diagnostic; inventory blocked and incomplete; admission denied. |
+| Later missing/failed FC03 or reader error, successful MEI | Current identity unavailable; prior same-parent identity retains its original observation time. |
+| Complete native mismatch | Explicit mismatch; retained identity remains separately labelled history. |
+| Oversized candidate | Failed evidence discarded rather than truncated; prior history survives. |
+| Parent, revision, connection, attempt or deadline changes during reader | Native context rejection; parent change excludes foreign history. |
+| Cancellation sampled at completion or retirement during reader | No match/commit against cancelled current context; retained age unchanged. |
+| Cancellation only after final sample | No retroactive rollback; inspect returned committed result separately from later cancellation. |
+| Newer native cycle supersedes old callback | Old result cannot overwrite newer cycle publication. |
 
-Each row below changes only that field from an otherwise identical valid
-baseline. Required future tests must use independently expected results and
-fail the named production mutation; these are reasoned mutation mappings,
-not executed mutant kills. For same-parent rejection, the previous valid
-identity remains historical at T; a separate Q adapter stays unchanged.
-
-| Independently varied field | Expected result | Production mutation the variant must catch |
-| --- | --- | --- |
-| `ParentSource` P to Q in current context | Reject P completion; Q gets no P history; unrelated valid Q adapter unchanged | Remove parent fence or import previous-parent history. |
-| `SourceRevision` R to S | Reject old completion, retain old revision as history | Omit revision equality. |
-| `ConnectionGeneration` C to D | Reject old connection, retain old evidence without refreshing it | Omit connection-generation equality. |
-| `Attempt` A to B | Reject superseded completion; do not overwrite newer diagnostics | Omit attempt equality/publication fence. |
-| `Deadline` changed, all else equal | Reject changed deadline even if both are future instants | Omit deadline equality. |
-| Completion time equals unchanged `Deadline` | Expired, not current identity | Replace strict expiry with an inclusive success boundary. |
-| `Cancelled` false to true | Reject before matching | Drop cancellation translation or native cancellation check. |
-| Submitted `I19Epoch` E to F with native fields unchanged | Refuse before callback; current native context cannot rescue a wrong wrapper epoch | Remove adapter epoch comparison. |
-| `Offering` alone in a valid replacement | Preserve new field; propagate inventory-association invalidation | Omit offering comparison or discard invalidation signal. |
-| `Model` alone in a valid native family variant replacement | Preserve variant; invalidate association without inheriting capabilities | Omit model comparison. |
-| `Firmware` alone in a valid native replacement | Preserve firmware; invalidate association | Omit firmware comparison. |
-
-Attempt/deadline changes alone do not change native identity association.
-Revision, connection or parent changes on a later valid identity replacement
-also carry the native invalidation semantics; wrapper slot isolation does not
-supply an inventory. Raw request/response bytes must also be independently
-mutated in future ownership tests to prove detached preservation, with the
-expected bytes fixed before caller/view mutation. No identity field can be
-assembled from a previous partial attempt.
+Runtime acceptance must vary every context field independently, as well as
+offering, family variant, firmware and each raw evidence buffer, and test the
+named lifecycle fences against actual Cycle. The offline documentation guard
+checks ownership, link integrity and the documented API; it makes no claim to
+execute those runtime acceptance cases.
 
 ## Production acquisition boundary
 
@@ -264,22 +206,11 @@ admission stays denied.
   close after the write ends as insufficient evidence and backs off; it never
   scans or falls back.
 
-## Acceptance and companion disposition
 
-This partial architecture contract addresses
-[docs-modbus #228](https://github.com/Project-Helianthus/helianthus-docs-modbus/issues/228)
-and advances [modbusreg #201](https://github.com/Project-Helianthus/helianthus-modbusreg/issues/201)
-and [modbusreg #199](https://github.com/Project-Helianthus/helianthus-modbusreg/issues/199).
-It can merge first with no special merge hold and no dependency on an I19 PR or
-unmerged file. Reconcile final API spelling and implementation behavior at code
-merge. Parents remain open.
+## Acceptance boundary
 
-Documentation acceptance consists of manual source/API, transition, independent
-identity, loss, example and public-link review against the merged anchors.
-Future implementation acceptance must exercise actual `Cycle` with a bounded
-fake FC03 supplier, every axis independently, cancellation and retirement inside
-the callback, late completion isolation, retained history and default denial.
-No runtime integration, full CI, transport/smoke, passive acquisition, native
-qualification or hardware PASS follows from this document. Independent review,
-common production Provider/gateway composition, qualified acquisition and
-physical acceptance remain separate work. No authorization gate is introduced.
+Source inspection establishes the API correspondence above. Offline link and
+ownership checks establish documentary consistency only. Independent review,
+committed-head CI, public publication checks, production composition, qualified
+acquisition and physical acceptance remain separate obligations. No transport,
+smoke, native conformance or hardware PASS follows from this page.
