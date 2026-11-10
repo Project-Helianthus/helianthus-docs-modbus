@@ -1,0 +1,69 @@
+{
+  "scope": "HuaweiSUN2000MonitoringProfile decoded fields; inventory is partial",
+  "rows": [
+    {
+      "current": "pv_string_voltage",
+      "target": "pv_string_voltage",
+      "status": "unchanged_provisional",
+      "open_question": "Vocabulary and indexed string identity",
+      "consumer": "ebusgateway/cmd/gateway/huawei_pv_semreg.go"
+    },
+    {
+      "current": "pv_string_current",
+      "target": "pv_string_current",
+      "status": "unchanged_provisional",
+      "open_question": "Vocabulary and indexed string identity",
+      "consumer": "ebusgateway/cmd/gateway/huawei_pv_semreg.go"
+    },
+    {
+      "current": "energy_accumulated",
+      "target": "energy_accumulated",
+      "status": "unchanged_provisional",
+      "open_question": "Total accumulation meaning across profiles",
+      "consumer": "ebusgateway/cmd/gateway/huawei_pv_semreg.go"
+    },
+    {
+      "current": "energy_current_hour",
+      "target": "energy_current_hour",
+      "status": "unchanged_provisional",
+      "open_question": "Period and lifetime semantics",
+      "consumer": "none established"
+    },
+    {
+      "current": "energy_current_day",
+      "target": "energy_current_day",
+      "status": "unchanged_provisional",
+      "open_question": "Period and lifetime semantics",
+      "consumer": "none established"
+    },
+    {
+      "current": "input_power",
+      "target": "input_power",
+      "status": "unchanged_provisional",
+      "open_question": "Vocabulary and polarity",
+      "consumer": "ebusgateway/cmd/gateway/huawei_pv_semreg.go"
+    },
+    {
+      "current": "active_power",
+      "target": "active_power",
+      "status": "unchanged_provisional",
+      "open_question": "Vocabulary and polarity",
+      "consumer": "ebusgateway/cmd/gateway/huawei_pv_semreg.go"
+    },
+    {
+      "current": "device_status",
+      "target": "status",
+      "status": "supported_rename",
+      "open_question": "No open naming question",
+      "consumer": "ebusgateway/cmd/gateway/huawei_pv_semreg.go"
+    }
+  ],
+  "native_identity": [
+    "W",
+    "WH",
+    "V_SF",
+    "TEDAPI method and field spellings"
+  ],
+  "remaining_exports": "unchanged; classification and enumeration remain open",
+  "consumer_matches": "inventory matches are lexical candidates, not established closure"
+}
