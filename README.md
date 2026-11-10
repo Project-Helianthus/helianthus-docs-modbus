@@ -42,3 +42,28 @@ and do not expose private device identity or unsafe control procedures.
 Architecture and admission records:
 
 - [S-Dongle qualification disposition](architecture/sdongle-qualification-disposition-v1.md)
+
+## Provider-port documentation ownership
+
+This repository is the single documentation owner for the eight family-local
+provider ports below. The registry owns their implementation. These pages
+reconcile the former registry documentation copies; implementation links are
+source evidence, never native qualification or profile admission. Public native
+protocol contracts remain authoritative before any application composition.
+
+| Family | Canonical owner page |
+| --- | --- |
+| EMMA | [EMMA provider port](architecture/emma-provider-port.md) |
+| Fronius | [Fronius provider port](architecture/fronius-provider-port.md) |
+| Growatt aggregate | [Growatt aggregate provider port](architecture/growatt-aggregate-provider-port.md) |
+| LUNA | [LUNA provider port](architecture/luna-provider-port.md) |
+| OutBack | [OutBack provider port](architecture/outback-provider-port.md) |
+| S-Dongle | [S-Dongle provider port](architecture/sdongle-provider-port.md) |
+| SmartLogger | [SmartLogger provider port](architecture/smartlogger-provider-port.md) |
+| SUN2000 | [SUN2000 provider port](architecture/sun2000-provider-port.md) |
+
+Each linked port keeps identity evidence, retained history, qualification and
+fail-closed admission distinct. Existing eBUS MCP compatibility and GraphQL
+parity are unchanged. The adjacent offline-provider-cycle pages remain native
+lifecycle references; reconciling their former registry copies is a separate
+prerequisite before deleting those copies.
