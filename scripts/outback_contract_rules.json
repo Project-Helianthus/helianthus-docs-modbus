@@ -1,0 +1,155 @@
+{
+  "version": 1,
+  "rules": [
+    {
+      "target": "document",
+      "kind": "heading",
+      "value": "Scope"
+    },
+    {
+      "target": "document",
+      "kind": "heading",
+      "value": "Source-pinned qualification"
+    },
+    {
+      "target": "document",
+      "kind": "heading",
+      "value": "Chain selection"
+    },
+    {
+      "target": "document",
+      "kind": "heading",
+      "value": "Observed state and requested-output dependencies"
+    },
+    {
+      "target": "document",
+      "kind": "heading",
+      "value": "Read operations and provenance"
+    },
+    {
+      "target": "document",
+      "kind": "heading",
+      "value": "Excluded fields and operations"
+    },
+    {
+      "target": "document",
+      "kind": "heading",
+      "value": "Failure and ambiguity"
+    },
+    {
+      "target": "document",
+      "kind": "literal",
+      "value": "owner manual revision C declares `64110/282`"
+    },
+    {
+      "target": "document",
+      "kind": "literal",
+      "value": "application note revision 5 declares `64110/420`"
+    },
+    {
+      "target": "document",
+      "kind": "literal",
+      "value": "finite selector is therefore `NO_GO`"
+    },
+    {
+      "target": "document",
+      "kind": "literal",
+      "value": "64111 remains opaque."
+    },
+    {
+      "target": "document",
+      "kind": "literal",
+      "value": "function, table, absolute address, quantity, response-size bound, timeout or retry bound"
+    },
+    {
+      "target": "document",
+      "kind": "literal",
+      "value": "immutable request and response bytes"
+    },
+    {
+      "target": "document",
+      "kind": "literal",
+      "value": "Every write or control operation remains `NO_SEND` until an operation-specific"
+    },
+    {
+      "target": "document",
+      "kind": "literal",
+      "value": "unresolved source conflict produces `NO_GO` and no partial typed output."
+    },
+    {
+      "target": "matrix",
+      "kind": "heading",
+      "value": "Purpose and publication boundary"
+    },
+    {
+      "target": "matrix",
+      "kind": "heading",
+      "value": "Pinned public sources"
+    },
+    {
+      "target": "matrix",
+      "kind": "heading",
+      "value": "Finite profile selector"
+    },
+    {
+      "target": "matrix",
+      "kind": "heading",
+      "value": "Read-only operation matrix"
+    },
+    {
+      "target": "matrix",
+      "kind": "heading",
+      "value": "Requested native-output and evidence inventory"
+    },
+    {
+      "target": "matrix",
+      "kind": "heading",
+      "value": "Qualification, replay and provenance outcomes"
+    },
+    {
+      "target": "matrix",
+      "kind": "literal",
+      "value": "outback.axs.owner-manual.rev-c"
+    },
+    {
+      "target": "matrix",
+      "kind": "commitment",
+      "value": "K3cNrdcjwiiPPL1z7JOAfLr0YR/jonZT3SVlcqwVW4g"
+    },
+    {
+      "target": "matrix",
+      "kind": "literal",
+      "value": "outback.axs.application-note.rev-5"
+    },
+    {
+      "target": "matrix",
+      "kind": "commitment",
+      "value": "na8hQT6iyLse7r5OrcXxwC2iM3zPyBj4b7NgIQnnYjA"
+    },
+    {
+      "target": "matrix",
+      "kind": "literal",
+      "value": "explicit conflict `64110/282` versus `64110/420`"
+    },
+    {
+      "target": "matrix",
+      "kind": "literal",
+      "value": "no function, address, quantity, response bound, timeout or retry is inferred."
+    },
+    {
+      "target": "matrix",
+      "kind": "literal",
+      "value": "| 64111 values | `MISSING_EVIDENCE` |"
+    },
+    {
+      "target": "matrix",
+      "kind": "literal",
+      "value": "wrong product, unknown firmware, wrong source revision, wrong 64110 or 64111 length"
+    },
+    {
+      "target": "matrix",
+      "kind": "literal",
+      "value": "Every write, control, configuration, password, network and firmware-update path"
+    }
+  ]
+}
