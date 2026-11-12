@@ -469,6 +469,65 @@ for forbidden_addition in \
   fi
 done
 
+# One passing and one failing case per Tesla rule kind. The failing run must
+# name the rule kind it violated, so an unrelated failure cannot mask a gap.
+expect_tesla_rule_failure() {
+  local kind="$1"
+  shift
+  if "$repo_root/scripts/check_docs.sh" "$@" 2> "$fixture_root/tesla-rule-kind.stderr"; then
+    echo "Tesla $kind rule accepted a violating page" >&2
+    exit 1
+  fi
+  if ! grep -Fq " $kind " "$fixture_root/tesla-rule-kind.stderr"; then
+    echo "Tesla $kind rule did not report the violation" >&2
+    cat "$fixture_root/tesla-rule-kind.stderr" >&2
+    exit 1
+  fi
+}
+
+# heading: the exact heading line must stay in place.
+"$repo_root/scripts/check_docs.sh" --check-tesla-tedapi-contract "$tesla_document"
+sed 's/^## Terminology$/## Glossary/' "$tesla_document" > "$tesla_fixture"
+expect_tesla_rule_failure heading --check-tesla-tedapi-contract "$tesla_fixture"
+
+# row: the exact table row must stay inside its section.
+"$repo_root/scripts/check_docs.sh" --check-tesla-read-acquisition "$tesla_read_acquisition_document"
+sed 's/^| WC lifetime statistics | 6 | 3 → 4 |$/| WC lifetime statistics | 6 | 3 → 5 |/' \
+  "$tesla_read_acquisition_document" > "$tesla_read_acquisition_fixture"
+expect_tesla_rule_failure row --check-tesla-read-acquisition "$tesla_read_acquisition_fixture"
+
+# statement: a statement moved out of the section it governs is missing.
+"$repo_root/scripts/check_docs.sh" --check-tesla-legacy-evse-current-contract "$tesla_legacy_document"
+sed 's/ `0x08` remains unknown and unmapped\.//' "$tesla_legacy_document" > "$tesla_legacy_fixture"
+printf '\n`0x08` remains unknown and unmapped.\n' >> "$tesla_legacy_fixture"
+expect_tesla_rule_failure statement --check-tesla-legacy-evse-current-contract "$tesla_legacy_fixture"
+
+# statement pin: a cited revision that no longer matches its commitment.
+sed 's/^`\([0-9a-f]\{7,\}\)` of its branch/`\1f` of its branch/' \
+  "$tesla_read_acquisition_document" > "$tesla_read_acquisition_fixture"
+if cmp -s "$tesla_read_acquisition_document" "$tesla_read_acquisition_fixture"; then
+  echo 'Tesla statement pin mutation did not change the document' >&2
+  exit 1
+fi
+expect_tesla_rule_failure statement --check-tesla-read-acquisition "$tesla_read_acquisition_fixture"
+
+# forbidden: an added numeric version threshold.
+"$repo_root/scripts/check_docs.sh" --check-tesla-generation-contracts "$tesla_legacy_document" "$tesla_gen3_document"
+cp "$tesla_gen3_document" "$tesla_gen3_fixture"
+printf '\nMinimum version 24.28.3 qualifies this profile.\n' >> "$tesla_gen3_fixture"
+expect_tesla_rule_failure forbidden --check-tesla-generation-contracts "$tesla_legacy_document" "$tesla_gen3_fixture"
+
+# allowed_digest: a 64-digit hexadecimal value without a commitment.
+synthetic_digest=$(printf 'e%.0s' $(seq 64))
+cp "$tesla_gen3_document" "$tesla_gen3_fixture"
+printf '\nSynthetic SHA-256: `%s`.\n' "$synthetic_digest" >> "$tesla_gen3_fixture"
+expect_tesla_rule_failure allowed_digest --check-tesla-generation-contracts "$tesla_legacy_document" "$tesla_gen3_fixture"
+
+# source_locator: an added locator outside the committed set.
+cp "$tesla_legacy_document" "$tesla_legacy_fixture"
+printf '\n[synthetic](https://example.invalid/legacy)\n' >> "$tesla_legacy_fixture"
+expect_tesla_rule_failure source_locator --check-tesla-generation-contracts "$tesla_legacy_fixture" "$tesla_gen3_document"
+
 # The following legacy mutations apply only while the superseded general
 # TEDAPI catalog is present. The EVSE-only contract has its own guard above.
 if grep -Fq '### Qualified WC vitals operation' "$tesla_document"; then
