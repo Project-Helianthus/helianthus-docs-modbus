@@ -1,0 +1,1917 @@
+{
+  "version": 1,
+  "rules": [
+    {
+      "contract": "legacy_public_protocol",
+      "page": "protocols/tesla/legacy-wall-connector-rs485.md",
+      "section": null,
+      "kind": "forbidden",
+      "value": "/[Uu]sers/|sha(-?256)?[-:]?[0-9a-f]{8,}|(source|vendor material) (is|are) public domain|sunspec\\.inverter\\.|canonical facts",
+      "reason": "The legacy page publishes no local path, inline digest, public-domain claim, foreign SunSpec identifier or canonical-fact claim."
+    },
+    {
+      "contract": "legacy_public_protocol",
+      "page": "protocols/tesla/legacy-wall-connector-rs485.md",
+      "section": null,
+      "kind": "source_locator",
+      "value": "9/oIOYbZEayedTE7pLlE2C79yDLOGK/EiduayBDaEys",
+      "reason": "First pinned community locator of the evidence section: construction of the FDE0 record from the command, two IDs and the heartbeat data. The value is the commitment of the exact locator; no other locator is admitted."
+    },
+    {
+      "contract": "legacy_public_protocol",
+      "page": "protocols/tesla/legacy-wall-connector-rs485.md",
+      "section": null,
+      "kind": "source_locator",
+      "value": "Rq2OfpkbZiTCN1heQgmLFCHziBbR1Gb/iGOSjEL73dM",
+      "reason": "Second pinned community locator: the FBE0 parser captures both IDs before the heartbeat data. The value is the commitment of the exact locator; no other locator is admitted."
+    },
+    {
+      "contract": "legacy_public_protocol",
+      "page": "protocols/tesla/legacy-wall-connector-rs485.md",
+      "section": null,
+      "kind": "source_locator",
+      "value": "6k92H2zIpEKJBSKnHnDooI2EYUXbb8ezvntNbJ5r7u8",
+      "reason": "Third pinned community locator: the FDE0 parser captures both IDs before the heartbeat data. The value is the commitment of the exact locator; no other locator is admitted."
+    },
+    {
+      "contract": "legacy_public_protocol",
+      "page": "protocols/tesla/legacy-wall-connector-rs485.md",
+      "section": null,
+      "kind": "source_locator",
+      "value": "oNsizHKN1TAyLwGnM0lFLLQEoTMyGhmMfSEkOIzjAjQ",
+      "reason": "Fourth pinned community locator: the heartbeat records identify the address, state, allocated-current, actual-current and remaining-byte roles. The value is the commitment of the exact locator; no other locator is admitted."
+    },
+    {
+      "contract": "gen3_public_protocol",
+      "page": "protocols/tesla/gen3-hsc-rtu.md",
+      "section": null,
+      "kind": "forbidden",
+      "value": "https?://|/[Uu]sers/|(source|vendor material) (is|are) public domain|sunspec\\.inverter\\.|canonical facts|private capture|decompiler",
+      "reason": "The Gen3 page publishes no locator, local path, public-domain claim, foreign SunSpec identifier, canonical-fact claim or private analysis material."
+    },
+    {
+      "contract": "gen3_public_protocol",
+      "page": "protocols/tesla/gen3-hsc-rtu.md",
+      "section": null,
+      "kind": "allowed_digest",
+      "value": "bmtxGAnbRipBaHbrzzrkslmdPT6coDsxChkYYXPjJlk",
+      "reason": "Admits the published 24.44.3 evidence digest of the \"Artifact SHA-256\" record; any other 64-digit hexadecimal value on the page is rejected."
+    },
+    {
+      "contract": "gen3_public_protocol",
+      "page": "protocols/tesla/gen3-hsc-rtu.md",
+      "section": null,
+      "kind": "allowed_digest",
+      "value": "3qOqp1m0aA1uRy7aBnZS3yzoK+sVV2AqibxsnANcOXI",
+      "reason": "Admits the published 24.44.3 evidence digest of the \"Descriptor-tree SHA-256\" record; any other 64-digit hexadecimal value on the page is rejected."
+    },
+    {
+      "contract": "gen3_public_protocol",
+      "page": "protocols/tesla/gen3-hsc-rtu.md",
+      "section": null,
+      "kind": "allowed_digest",
+      "value": "fKSTx+OdxNA3hj/a9Zh/j/cPm3Z6ZRJwtuuisLvE1pQ",
+      "reason": "Admits the published 24.44.3 evidence digest of the \"Complete descriptor-row SHA-256\" record; any other 64-digit hexadecimal value on the page is rejected."
+    },
+    {
+      "contract": "gen3_public_protocol",
+      "page": "protocols/tesla/gen3-hsc-rtu.md",
+      "section": null,
+      "kind": "allowed_digest",
+      "value": "M7aQdx/+OUw89yXh9VFcdJCugbgaN7znC+fNUx4qT8M",
+      "reason": "Admits the published 24.44.3 evidence digest of the \"t7 request\" record; any other 64-digit hexadecimal value on the page is rejected."
+    },
+    {
+      "contract": "gen3_public_protocol",
+      "page": "protocols/tesla/gen3-hsc-rtu.md",
+      "section": null,
+      "kind": "allowed_digest",
+      "value": "U2CfZL/1xOwuWx3A5LE8ZaLDA5xlmpQDAPVgOjJyb4Q",
+      "reason": "Admits the published 24.44.3 evidence digest of the \"shared settings\" record; any other 64-digit hexadecimal value on the page is rejected."
+    },
+    {
+      "contract": "gen3_public_protocol",
+      "page": "protocols/tesla/gen3-hsc-rtu.md",
+      "section": null,
+      "kind": "allowed_digest",
+      "value": "qXq2F/4JQVFLpJ4dlKT87xb/OOuwO9bgMDyC43KTqNM",
+      "reason": "Admits the published 24.44.3 evidence digest of the \"t8 response\" record; any other 64-digit hexadecimal value on the page is rejected."
+    },
+    {
+      "contract": "gen3_public_protocol",
+      "page": "protocols/tesla/gen3-hsc-rtu.md",
+      "section": null,
+      "kind": "allowed_digest",
+      "value": "M/Jmj7im7Gf9esCL5ckv8INI6rI7u4wI+eGfSCEKLNI",
+      "reason": "Admits the published 24.44.3 evidence digest of the \"t25 request\" record; any other 64-digit hexadecimal value on the page is rejected."
+    },
+    {
+      "contract": "gen3_public_protocol",
+      "page": "protocols/tesla/gen3-hsc-rtu.md",
+      "section": null,
+      "kind": "allowed_digest",
+      "value": "Nj9NVNBgvh7WXF8Scv6I++T+zVeIyI00WzJOgSr/0zs",
+      "reason": "Admits the published 24.44.3 evidence digest of the \"shared provisional values\" record; any other 64-digit hexadecimal value on the page is rejected."
+    },
+    {
+      "contract": "gen3_public_protocol",
+      "page": "protocols/tesla/gen3-hsc-rtu.md",
+      "section": null,
+      "kind": "allowed_digest",
+      "value": "mJRDKhsqkr1jNhJfwxE+E620L0OxKfjoP9Z+oN75UPU",
+      "reason": "Admits the published 24.44.3 evidence digest of the \"t26 empty response\" record; any other 64-digit hexadecimal value on the page is rejected."
+    },
+    {
+      "contract": "gen3_public_protocol",
+      "page": "protocols/tesla/gen3-hsc-rtu.md",
+      "section": null,
+      "kind": "allowed_digest",
+      "value": "vZREDG0nUKiND/7JQ0BxBBP7mWDEXn1WdDtpV0pC6fw",
+      "reason": "Admits the published 24.44.3 evidence digest of the \"t27 empty request\" record; any other 64-digit hexadecimal value on the page is rejected."
+    },
+    {
+      "contract": "gen3_public_protocol",
+      "page": "protocols/tesla/gen3-hsc-rtu.md",
+      "section": null,
+      "kind": "allowed_digest",
+      "value": "708OLEuD7lfEWxRrqJ7ICBxzX5MtqPa8Bh0TVA6RXyE",
+      "reason": "Admits the published 24.44.3 evidence digest of the \"t28 response\" record; any other 64-digit hexadecimal value on the page is rejected."
+    },
+    {
+      "contract": "gen3_public_protocol",
+      "page": "protocols/tesla/gen3-hsc-rtu.md",
+      "section": null,
+      "kind": "allowed_digest",
+      "value": "Bq57UEyipdeFojnkkFGjYBVcBOGk5G9GEWJijnDIe6E",
+      "reason": "Admits the published 24.44.3 evidence digest of the \"WC family-6 handler\" record; any other 64-digit hexadecimal value on the page is rejected."
+    },
+    {
+      "contract": "gen3_public_protocol",
+      "page": "protocols/tesla/gen3-hsc-rtu.md",
+      "section": null,
+      "kind": "allowed_digest",
+      "value": "/ImZzwFfPMKvb8FFKajUJt1P7izkwisrc/KTsS7f330",
+      "reason": "Admits the published 24.44.3 evidence digest of the \"t8 settings-state builder\" record; any other 64-digit hexadecimal value on the page is rejected."
+    },
+    {
+      "contract": "gen3_public_protocol",
+      "page": "protocols/tesla/gen3-hsc-rtu.md",
+      "section": null,
+      "kind": "allowed_digest",
+      "value": "k+g9dgSBhfQdFWnq5kHAl7e1Okx99nxfgnYuNglkFPU",
+      "reason": "Admits the published 24.44.3 evidence digest of the \"t25 three-value enqueue\" record; any other 64-digit hexadecimal value on the page is rejected."
+    },
+    {
+      "contract": "gen3_public_protocol",
+      "page": "protocols/tesla/gen3-hsc-rtu.md",
+      "section": null,
+      "kind": "allowed_digest",
+      "value": "Jtarysn6nl/tdLyL9NZTD2MNd3m17guGF4zHOrgujxo",
+      "reason": "Admits the published 24.44.3 evidence digest of the \"selector-20 snapshot update\" record; any other 64-digit hexadecimal value on the page is rejected."
+    },
+    {
+      "contract": "gen3_public_protocol",
+      "page": "protocols/tesla/gen3-hsc-rtu.md",
+      "section": null,
+      "kind": "allowed_digest",
+      "value": "/ateHAtjFeo/wdV+S84GaiNB7ZzueDK9BFVn2JEp1YI",
+      "reason": "Admits the published 24.44.3 evidence digest of the \"t28 four-word readback copy\" record; any other 64-digit hexadecimal value on the page is rejected."
+    },
+    {
+      "contract": "generation",
+      "page": "protocols/tesla/legacy-wall-connector-rs485.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Scope and identification",
+      "reason": "Legacy profile scope and explicit flavor identification."
+    },
+    {
+      "contract": "generation",
+      "page": "protocols/tesla/legacy-wall-connector-rs485.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Serial and framing",
+      "reason": "Legacy serial format and SLIP-style frame delimiting."
+    },
+    {
+      "contract": "generation",
+      "page": "protocols/tesla/legacy-wall-connector-rs485.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Checksum",
+      "reason": "Legacy additive checksum definition."
+    },
+    {
+      "contract": "generation",
+      "page": "protocols/tesla/legacy-wall-connector-rs485.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Command-family boundary",
+      "reason": "Boundary between legacy command families and Modbus or Gen3 codecs."
+    },
+    {
+      "contract": "generation",
+      "page": "protocols/tesla/legacy-wall-connector-rs485.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Qualification",
+      "reason": "Legacy evidence tiers."
+    },
+    {
+      "contract": "generation",
+      "page": "protocols/tesla/legacy-wall-connector-rs485.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Native retention",
+      "reason": "Native retention of legacy frames and unknown payloads."
+    },
+    {
+      "contract": "generation",
+      "page": "protocols/tesla/legacy-wall-connector-rs485.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Safety boundary",
+      "reason": "No live transmission or hardware authority from the legacy contract."
+    },
+    {
+      "contract": "generation",
+      "page": "protocols/tesla/legacy-wall-connector-rs485.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Compatibility",
+      "reason": "Independence of the legacy and Gen3 profiles."
+    },
+    {
+      "contract": "generation",
+      "page": "protocols/tesla/legacy-wall-connector-rs485.md",
+      "section": "## EVSE dynamic-current records",
+      "kind": "heading",
+      "value": "### Evidence and confidence",
+      "reason": "The evidence grade of the dynamic-current layout lives in its own subsection."
+    },
+    {
+      "contract": "generation",
+      "page": "protocols/tesla/legacy-wall-connector-rs485.md",
+      "section": "## Scope and identification",
+      "kind": "statement",
+      "value": "The legacy profile is a pre-Gen3 candidate and is not an assertion that every Wall Connector Gen2 implements this protocol.",
+      "reason": "Candidate status: the profile claims no universal Gen2 coverage."
+    },
+    {
+      "contract": "generation",
+      "page": "protocols/tesla/legacy-wall-connector-rs485.md",
+      "section": "## Serial and framing",
+      "kind": "statement",
+      "value": "9600 baud, eight data bits, no parity, and one stop bit",
+      "reason": "Legacy serial parameters."
+    },
+    {
+      "contract": "generation",
+      "page": "protocols/tesla/legacy-wall-connector-rs485.md",
+      "section": "## Serial and framing",
+      "kind": "statement",
+      "value": "C0 | escaped(message) | C0",
+      "reason": "Legacy frame delimiter layout."
+    },
+    {
+      "contract": "generation",
+      "page": "protocols/tesla/legacy-wall-connector-rs485.md",
+      "section": "## Serial and framing",
+      "kind": "statement",
+      "value": "C0 -> DB DC",
+      "reason": "Escape substitution for the delimiter byte."
+    },
+    {
+      "contract": "generation",
+      "page": "protocols/tesla/legacy-wall-connector-rs485.md",
+      "section": "## Serial and framing",
+      "kind": "statement",
+      "value": "DB -> DB DD",
+      "reason": "Escape substitution for the escape byte."
+    },
+    {
+      "contract": "generation",
+      "page": "protocols/tesla/legacy-wall-connector-rs485.md",
+      "section": "## Checksum",
+      "kind": "statement",
+      "value": "sum(message_without_checksum[1:]) & 0xff",
+      "reason": "Exact legacy checksum formula."
+    },
+    {
+      "contract": "generation",
+      "page": "protocols/tesla/legacy-wall-connector-rs485.md",
+      "section": "## Command-family boundary",
+      "kind": "statement",
+      "value": "A legacy command byte `FC` is not a Modbus function code.",
+      "reason": "The legacy FC command family must not be read as a Modbus function code."
+    },
+    {
+      "contract": "generation",
+      "page": "protocols/tesla/legacy-wall-connector-rs485.md",
+      "section": "## Command-family boundary",
+      "kind": "statement",
+      "value": "FC100, FC101, and FC102 are not part of this contract.",
+      "reason": "The Gen3 private function codes stay outside the legacy contract."
+    },
+    {
+      "contract": "generation",
+      "page": "protocols/tesla/legacy-wall-connector-rs485.md",
+      "section": "## Qualification",
+      "kind": "statement",
+      "value": "The family-compatible tier accepts a locally declared legacy protocol family without claiming a firmware build.",
+      "reason": "The family-compatible tier never claims a firmware build."
+    },
+    {
+      "contract": "generation",
+      "page": "protocols/tesla/legacy-wall-connector-rs485.md",
+      "section": "## Native retention",
+      "kind": "statement",
+      "value": "Native runtime records retain bounded decoded frames and unknown command payloads exactly.",
+      "reason": "Native evidence of legacy frames and unknown payloads is preserved exactly."
+    },
+    {
+      "contract": "generation",
+      "page": "protocols/tesla/legacy-wall-connector-rs485.md",
+      "section": "### Evidence and confidence",
+      "kind": "statement",
+      "value": "community-observed/correlated",
+      "reason": "Evidence grade of the dynamic-current layout: community-observed, not an exact-build proof."
+    },
+    {
+      "contract": "generation",
+      "page": "protocols/tesla/gen3-hsc-rtu.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Scope and separation",
+      "reason": "Gen3 scope and separation from the legacy profile."
+    },
+    {
+      "contract": "generation",
+      "page": "protocols/tesla/gen3-hsc-rtu.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Serial and activation",
+      "reason": "Gen3 serial format and activation sequence."
+    },
+    {
+      "contract": "generation",
+      "page": "protocols/tesla/gen3-hsc-rtu.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## RTU framing",
+      "reason": "Gen3 RTU frame layout and bounds."
+    },
+    {
+      "contract": "generation",
+      "page": "protocols/tesla/gen3-hsc-rtu.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Function boundary",
+      "reason": "Scope of the private function codes."
+    },
+    {
+      "contract": "generation",
+      "page": "protocols/tesla/gen3-hsc-rtu.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Exact version profiles",
+      "reason": "Version observations and dispositions."
+    },
+    {
+      "contract": "generation",
+      "page": "protocols/tesla/gen3-hsc-rtu.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Qualification",
+      "reason": "Gen3 qualification inputs."
+    },
+    {
+      "contract": "generation",
+      "page": "protocols/tesla/gen3-hsc-rtu.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Native retention",
+      "reason": "Native retention of Gen3 payloads."
+    },
+    {
+      "contract": "generation",
+      "page": "protocols/tesla/gen3-hsc-rtu.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Native operation records",
+      "reason": "Identity tuple of a retained native operation record."
+    },
+    {
+      "contract": "generation",
+      "page": "protocols/tesla/gen3-hsc-rtu.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Safety boundary",
+      "reason": "No live transmission or hardware authority from the Gen3 contract."
+    },
+    {
+      "contract": "generation",
+      "page": "protocols/tesla/gen3-hsc-rtu.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Compatibility",
+      "reason": "Independence of the Gen3 and legacy profiles."
+    },
+    {
+      "contract": "generation",
+      "page": "protocols/tesla/gen3-hsc-rtu.md",
+      "section": "## Scope and separation",
+      "kind": "statement",
+      "value": "It must not use the legacy SLIP framing, checksum, command vocabulary, or qualification predicate.",
+      "reason": "The Gen3 profile never falls back to legacy framing or qualification."
+    },
+    {
+      "contract": "generation",
+      "page": "protocols/tesla/gen3-hsc-rtu.md",
+      "section": "## Serial and activation",
+      "kind": "statement",
+      "value": "115200 baud, eight data bits, no parity, and one stop bit",
+      "reason": "Gen3 serial parameters."
+    },
+    {
+      "contract": "generation",
+      "page": "protocols/tesla/gen3-hsc-rtu.md",
+      "section": "## Serial and activation",
+      "kind": "statement",
+      "value": "`TESLA` followed by NUL and then `PASS` followed by NUL",
+      "reason": "Exact device-originated activation sequence."
+    },
+    {
+      "contract": "generation",
+      "page": "protocols/tesla/gen3-hsc-rtu.md",
+      "section": "## Function boundary",
+      "kind": "statement",
+      "value": "FC100, FC101, and FC102 are private function-code values selected only by this Gen3 profile.",
+      "reason": "The private function codes are selected by the configured profile, not globally."
+    },
+    {
+      "contract": "generation",
+      "page": "protocols/tesla/gen3-hsc-rtu.md",
+      "section": "## Exact version profiles",
+      "kind": "statement",
+      "value": "`wc3_24_28_3` and `wc3_24_44_3` are known HSC observations, not a version whitelist.",
+      "reason": "Known versions are observations and admit nothing by themselves."
+    },
+    {
+      "contract": "generation",
+      "page": "protocols/tesla/gen3-hsc-rtu.md",
+      "section": "## Exact version profiles",
+      "kind": "statement",
+      "value": "An unenumerated version is recorded as `compatible_candidate` when its separately supplied HSC activation, private-function, and operation capabilities are compatible; otherwise it is `unknown`.",
+      "reason": "Disposition rule for an unenumerated version."
+    },
+    {
+      "contract": "generation",
+      "page": "protocols/tesla/gen3-hsc-rtu.md",
+      "section": "## Exact version profiles",
+      "kind": "statement",
+      "value": "`compatible_candidate` retains an unenumerated Gen3 version with its native payloads.",
+      "reason": "A candidate version keeps its native evidence."
+    },
+    {
+      "contract": "generation",
+      "page": "protocols/tesla/gen3-hsc-rtu.md",
+      "section": "## Exact version profiles",
+      "kind": "statement",
+      "value": "No numeric minimum version is asserted by this contract.",
+      "reason": "The contract has no numeric version threshold."
+    },
+    {
+      "contract": "generation",
+      "page": "protocols/tesla/gen3-hsc-rtu.md",
+      "section": "## Exact version profiles",
+      "kind": "statement",
+      "value": "The version label alone does not grant a HSC operation or live exchange.",
+      "reason": "A version label grants no operation authority."
+    },
+    {
+      "contract": "generation",
+      "page": "protocols/tesla/gen3-hsc-rtu.md",
+      "section": "## Native retention",
+      "kind": "statement",
+      "value": "Native runtime records retain bounded payloads, including unknown fields, exactly.",
+      "reason": "Native evidence and unknown fields are preserved exactly."
+    },
+    {
+      "contract": "generation",
+      "page": "protocols/tesla/gen3-hsc-rtu.md",
+      "section": "## Native operation records",
+      "kind": "statement",
+      "value": "A record retains its selected Gen3 profile, operation version, private function code, request and response direction, normal or exception outcome, and the complete bounded native payload for each retained request or response.",
+      "reason": "Identity tuple and complete native payload of every retained operation record."
+    },
+    {
+      "contract": "generation",
+      "page": "protocols/tesla/gen3-hsc-rtu.md",
+      "section": "## Native operation records",
+      "kind": "statement",
+      "value": "The FC100 catalog applies only to the Gen3 profile; it does not select or reinterpret a legacy Wall Connector frame.",
+      "reason": "The FC100 catalog never reinterprets legacy frames."
+    },
+    {
+      "contract": "generation",
+      "page": "protocols/tesla/gen3-hsc-rtu.md",
+      "section": "## Native operation records",
+      "kind": "statement",
+      "value": "FC101 and FC102 retain the same native record context, while their normal payloads remain opaque unless a separate version-scoped operation contract assigns a named structure.",
+      "reason": "FC101 and FC102 payloads stay opaque without a version-scoped operation contract."
+    },
+    {
+      "contract": "generation",
+      "page": "protocols/tesla/gen3-hsc-rtu.md",
+      "section": null,
+      "kind": "forbidden",
+      "value": "([0-9]+\\.[0-9]+\\.[0-9]+)[^.]*\\b(minimum|or newer|and later|qualifies)\\b|\\bminimum version\\b[^.]*[0-9]",
+      "reason": "No sentence may introduce a numeric minimum or open-ended version threshold."
+    },
+    {
+      "contract": "legacy_evse_current",
+      "page": "protocols/tesla/legacy-wall-connector-rs485.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## EVSE dynamic-current records",
+      "reason": "Section that owns the legacy dynamic-current records."
+    },
+    {
+      "contract": "legacy_evse_current",
+      "page": "protocols/tesla/legacy-wall-connector-rs485.md",
+      "section": "## EVSE dynamic-current records",
+      "kind": "statement",
+      "value": "This candidate legacy-family contract retains the `FBE0` request and `FDE0` state records for EVSE energy-management current allocation.",
+      "reason": "Admitted legacy dynamic-current record pair."
+    },
+    {
+      "contract": "legacy_evse_current",
+      "page": "protocols/tesla/legacy-wall-connector-rs485.md",
+      "section": "## EVSE dynamic-current records",
+      "kind": "statement",
+      "value": "It is not an assertion that every Gen2 unit implements these records.",
+      "reason": "Candidate status: no universal Gen2 coverage."
+    },
+    {
+      "contract": "legacy_evse_current",
+      "page": "protocols/tesla/legacy-wall-connector-rs485.md",
+      "section": "## EVSE dynamic-current records",
+      "kind": "statement",
+      "value": "The allocation is not the actual current and neither value is a power setpoint.",
+      "reason": "Allocation, actual current and power remain distinct values."
+    },
+    {
+      "contract": "legacy_evse_current",
+      "page": "protocols/tesla/legacy-wall-connector-rs485.md",
+      "section": "## EVSE dynamic-current records",
+      "kind": "statement",
+      "value": "The absolute offer states are `0x05` for pre-charge and `0x09` for charging.",
+      "reason": "Value table of the absolute offer states."
+    },
+    {
+      "contract": "legacy_evse_current",
+      "page": "protocols/tesla/legacy-wall-connector-rs485.md",
+      "section": "## EVSE dynamic-current records",
+      "kind": "statement",
+      "value": "Each carries a big-endian unsigned 16-bit current value in centiamperes.",
+      "reason": "Width, byte order, signedness and scale of the offered current."
+    },
+    {
+      "contract": "legacy_evse_current",
+      "page": "protocols/tesla/legacy-wall-connector-rs485.md",
+      "section": "## EVSE dynamic-current records",
+      "kind": "statement",
+      "value": "`0x06` and `0x07` are relative changes of 2 A.",
+      "reason": "Value table of the relative offer states."
+    },
+    {
+      "contract": "legacy_evse_current",
+      "page": "protocols/tesla/legacy-wall-connector-rs485.md",
+      "section": "## EVSE dynamic-current records",
+      "kind": "statement",
+      "value": "`0x08` remains unknown and unmapped.",
+      "reason": "An unknown state stays unknown."
+    },
+    {
+      "contract": "gen3_evse_current_limit",
+      "page": "protocols/tesla/gen3-hsc-rtu.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## EVSE current-limit records",
+      "reason": "Section that owns the Gen3 current-limit records."
+    },
+    {
+      "contract": "gen3_evse_current_limit",
+      "page": "protocols/tesla/gen3-hsc-rtu.md",
+      "section": "## EVSE current-limit records",
+      "kind": "statement",
+      "value": "Only the `wc3_24_44_3` operation version qualifies this contract.",
+      "reason": "The current-limit records are bound to one exact operation version."
+    },
+    {
+      "contract": "gen3_evse_current_limit",
+      "page": "protocols/tesla/gen3-hsc-rtu.md",
+      "section": "## EVSE current-limit records",
+      "kind": "statement",
+      "value": "Persistent current configuration is FC100 family `6`, request tag `7`, terminal tag `8`.",
+      "reason": "Identity tuple of the persistent current configuration."
+    },
+    {
+      "contract": "gen3_evse_current_limit",
+      "page": "protocols/tesla/gen3-hsc-rtu.md",
+      "section": "## EVSE current-limit records",
+      "kind": "statement",
+      "value": "Its `settings.maxOutputCurrentAmps` value is an integer number of amperes.",
+      "reason": "Unit and type of the persistent current value."
+    },
+    {
+      "contract": "gen3_evse_current_limit",
+      "page": "protocols/tesla/gen3-hsc-rtu.md",
+      "section": "## EVSE current-limit records",
+      "kind": "statement",
+      "value": "Temporary provisional current configuration is family `6`, request tag `25`, terminal tag `26`.",
+      "reason": "Identity tuple of the provisional current configuration."
+    },
+    {
+      "contract": "gen3_evse_current_limit",
+      "page": "protocols/tesla/gen3-hsc-rtu.md",
+      "section": "## EVSE current-limit records",
+      "kind": "statement",
+      "value": "Its native request fields are `limitCurrentMaxAmps` in amperes, `limitTimeoutS`, and `inhibitCharging`.",
+      "reason": "Native request fields of the provisional configuration."
+    },
+    {
+      "contract": "gen3_evse_current_limit",
+      "page": "protocols/tesla/gen3-hsc-rtu.md",
+      "section": "## EVSE current-limit records",
+      "kind": "statement",
+      "value": "correlated family-`6` tag-`27` to tag-`28` readback is required to confirm a retained provisional value.",
+      "reason": "Identity tuple of the confirming readback."
+    },
+    {
+      "contract": "gen3_evse_current_limit",
+      "page": "protocols/tesla/gen3-hsc-rtu.md",
+      "section": "## EVSE current-limit records",
+      "kind": "statement",
+      "value": "For interoperable EVSE requests, the final-pilot current floor is 6 A and the timeout is finite from 1 through 86399 seconds.",
+      "reason": "Operation limits of an interoperable request."
+    },
+    {
+      "contract": "gen3_evse_current_limit",
+      "page": "protocols/tesla/gen3-hsc-rtu.md",
+      "section": "## EVSE current-limit records",
+      "kind": "statement",
+      "value": "Zero timeout remains unresolved and is not an interoperable request value.",
+      "reason": "An unresolved value is never admitted."
+    },
+    {
+      "contract": "gen3_evse_current_limit",
+      "page": "protocols/tesla/gen3-hsc-rtu.md",
+      "section": "## EVSE current-limit records",
+      "kind": "statement",
+      "value": "Native records retain the bounded request, terminal, and readback context without inferring a watt limit or a result for another version.",
+      "reason": "No watt limit and no cross-version result is inferred."
+    },
+    {
+      "contract": "gen3_wire_evidence",
+      "page": "protocols/tesla/gen3-hsc-rtu.md",
+      "section": "## EVSE current-limit records",
+      "kind": "heading",
+      "value": "### Exact 24.44.3 body and evidence contract",
+      "reason": "Subsection that owns the exact 24.44.3 body contract; other pages link to its anchor."
+    },
+    {
+      "contract": "gen3_wire_evidence",
+      "page": "protocols/tesla/gen3-hsc-rtu.md",
+      "section": "### Exact 24.44.3 body and evidence contract",
+      "kind": "statement",
+      "value": "Artifact SHA-256: `<pin:bmtxGAnbRipBaHbrzzrkslmdPT6coDsxChkYYXPjJlk>`.",
+      "reason": "Binds the body contract to the exact signed artifact digest."
+    },
+    {
+      "contract": "gen3_wire_evidence",
+      "page": "protocols/tesla/gen3-hsc-rtu.md",
+      "section": "### Exact 24.44.3 body and evidence contract",
+      "kind": "statement",
+      "value": "Descriptor-tree SHA-256: `<pin:3qOqp1m0aA1uRy7aBnZS3yzoK+sVV2AqibxsnANcOXI>`.",
+      "reason": "Binds the body contract to the exact descriptor-tree digest."
+    },
+    {
+      "contract": "gen3_wire_evidence",
+      "page": "protocols/tesla/gen3-hsc-rtu.md",
+      "section": "### Exact 24.44.3 body and evidence contract",
+      "kind": "statement",
+      "value": "t7/t8 use singular field 1 (wire type 2) containing settings field 1 (wire type 0, signed int32 amperes).",
+      "reason": "Wire layout, width and signedness of the persistent current."
+    },
+    {
+      "contract": "gen3_wire_evidence",
+      "page": "protocols/tesla/gen3-hsc-rtu.md",
+      "section": "### Exact 24.44.3 body and evidence contract",
+      "kind": "statement",
+      "value": "t25/t28 use singular field 1 (wire type 2) containing provisional fields 1 and 2 (wire type 0, uint32) and field 3 (wire type 0, bool).",
+      "reason": "Wire layout and widths of the provisional values."
+    },
+    {
+      "contract": "gen3_wire_evidence",
+      "page": "protocols/tesla/gen3-hsc-rtu.md",
+      "section": "### Exact 24.44.3 body and evidence contract",
+      "kind": "statement",
+      "value": "t28 additionally carries distinct singular field 2 (wire type 0, uint32) for configured current.",
+      "reason": "Configured current is a distinct readback field."
+    },
+    {
+      "contract": "gen3_wire_evidence",
+      "page": "protocols/tesla/gen3-hsc-rtu.md",
+      "section": "### Exact 24.44.3 body and evidence contract",
+      "kind": "statement",
+      "value": "t26 and t27 have empty bodies.",
+      "reason": "Exact empty bodies of the acknowledgement and readback request."
+    },
+    {
+      "contract": "gen3_wire_evidence",
+      "page": "protocols/tesla/gen3-hsc-rtu.md",
+      "section": "### Exact 24.44.3 body and evidence contract",
+      "kind": "statement",
+      "value": "t8 is getter-populated returned persistent settings state, not an acknowledgement.",
+      "reason": "Meaning of the persistent terminal."
+    },
+    {
+      "contract": "gen3_wire_evidence",
+      "page": "protocols/tesla/gen3-hsc-rtu.md",
+      "section": "### Exact 24.44.3 body and evidence contract",
+      "kind": "statement",
+      "value": "t26 is an acknowledgement only and cannot confirm an applied provisional value.",
+      "reason": "An acknowledgement is not a confirmation."
+    },
+    {
+      "contract": "gen3_wire_evidence",
+      "page": "protocols/tesla/gen3-hsc-rtu.md",
+      "section": "### Exact 24.44.3 body and evidence contract",
+      "kind": "statement",
+      "value": "A t28 body has no nonce, timestamp, or generation counter.",
+      "reason": "Readback cannot prove causality."
+    },
+    {
+      "contract": "gen3_wire_evidence",
+      "page": "protocols/tesla/gen3-hsc-rtu.md",
+      "section": "### Exact 24.44.3 body and evidence contract",
+      "kind": "statement",
+      "value": "Unknown members remain retained as raw evidence; malformed encodings and duplicate documented singular members are rejected by Helianthus decoder policy.",
+      "reason": "Raw evidence retention and fail-closed decoding."
+    },
+    {
+      "contract": "gen3_wire_evidence",
+      "page": "protocols/tesla/gen3-hsc-rtu.md",
+      "section": "### Exact 24.44.3 body and evidence contract",
+      "kind": "statement",
+      "value": "Zero current and zero timeout remain unknown.",
+      "reason": "Unknown values are never given a meaning."
+    },
+    {
+      "contract": "gen3_wire_evidence",
+      "page": "protocols/tesla/gen3-hsc-rtu.md",
+      "section": "### Exact 24.44.3 body and evidence contract",
+      "kind": "statement",
+      "value": "No sender, dispatcher, transport activation, operation authorization, or live-device claim follows from this decoder contract.",
+      "reason": "The decoder contract grants no send or live authority."
+    },
+    {
+      "contract": "gen3_mcp_projection",
+      "page": "protocols/tesla/gen3-hsc-rtu.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## MCP read-only current-limit projection",
+      "reason": "Section that owns the read-only MCP projection."
+    },
+    {
+      "contract": "gen3_mcp_projection",
+      "page": "protocols/tesla/gen3-hsc-rtu.md",
+      "section": "## MCP read-only current-limit projection",
+      "kind": "statement",
+      "value": "The no-argument `modbus.v1.tesla.gen3.evse.current_limit.get` tool projects only already-injected records for `wc3_24_44_3`.",
+      "reason": "Tool name, argument shape and the single projected operation version."
+    },
+    {
+      "contract": "gen3_mcp_projection",
+      "page": "protocols/tesla/gen3-hsc-rtu.md",
+      "section": "## MCP read-only current-limit projection",
+      "kind": "statement",
+      "value": "The projection is `READ_ONLY`: it always reports `outbound_allowed` as `false`, constructs no request, performs no acquisition, and never sends a frame.",
+      "reason": "The projection is read-only and never reaches the bus."
+    },
+    {
+      "contract": "gen3_mcp_projection",
+      "page": "protocols/tesla/gen3-hsc-rtu.md",
+      "section": "## MCP read-only current-limit projection",
+      "kind": "statement",
+      "value": "Its optional persistent object retains the integer-A `max_output_current_amps` fact with the bounded family-6 t7 request and t8 terminal payloads.",
+      "reason": "Persistent object field and its retained native payloads."
+    },
+    {
+      "contract": "gen3_mcp_projection",
+      "page": "protocols/tesla/gen3-hsc-rtu.md",
+      "section": "## MCP read-only current-limit projection",
+      "kind": "statement",
+      "value": "Its optional provisional object retains `limit_current_max_amps`, `limit_timeout_s`, and `inhibit_charging` with all four bounded payloads: t25 request, t26 acknowledgement, t27 readback request, and t28 readback terminal.",
+      "reason": "Provisional object fields and its retained native payloads."
+    },
+    {
+      "contract": "gen3_mcp_projection",
+      "page": "protocols/tesla/gen3-hsc-rtu.md",
+      "section": "## MCP read-only current-limit projection",
+      "kind": "statement",
+      "value": "A provisional object is available only when that complete correlated sequence is retained.",
+      "reason": "No partial provisional sequence is projected."
+    },
+    {
+      "contract": "gen3_mcp_projection",
+      "page": "protocols/tesla/gen3-hsc-rtu.md",
+      "section": "## MCP read-only current-limit projection",
+      "kind": "statement",
+      "value": "Each object is validated independently.",
+      "reason": "Objects are admitted independently."
+    },
+    {
+      "contract": "gen3_mcp_projection",
+      "page": "protocols/tesla/gen3-hsc-rtu.md",
+      "section": "## MCP read-only current-limit projection",
+      "kind": "statement",
+      "value": "An invalid object is not projected, but a complete qualified sibling remains available even when the provider reports an error.",
+      "reason": "Partial last-known-good state survives a failed sibling."
+    },
+    {
+      "contract": "gen3_mcp_projection",
+      "page": "protocols/tesla/gen3-hsc-rtu.md",
+      "section": "## MCP read-only current-limit projection",
+      "kind": "statement",
+      "value": "If neither object qualifies, the tool returns no projected data with a structured error.",
+      "reason": "Fail-closed result when nothing qualifies."
+    },
+    {
+      "contract": "gen3_mcp_projection",
+      "page": "protocols/tesla/gen3-hsc-rtu.md",
+      "section": "## MCP read-only current-limit projection",
+      "kind": "statement",
+      "value": "The projection does not define a setter, must not infer a watt limit, and does not make zero timeout interoperable.",
+      "reason": "No setter, no watt inference, no zero-timeout admission."
+    },
+    {
+      "contract": "gen3_mcp_projection",
+      "page": "protocols/tesla/gen3-hsc-rtu.md",
+      "section": "## MCP read-only current-limit projection",
+      "kind": "statement",
+      "value": "It does not expose a result for another operation version or assign semantics to FC101 or FC102.",
+      "reason": "No cross-version result and no FC101/FC102 semantics."
+    },
+    {
+      "contract": "gen3_mcp_projection",
+      "page": "protocols/tesla/gen3-hsc-rtu.md",
+      "section": "## EVSE current-limit records",
+      "kind": "statement",
+      "value": "Persistent and provisional limits remain distinct.",
+      "reason": "The projection keeps the persistent and provisional limits apart."
+    },
+    {
+      "contract": "current_limit_operation",
+      "page": "protocols/tesla/gen3-current-limit-operation-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Scope and evidence status",
+      "reason": "Scope and evidence class of the operation contract."
+    },
+    {
+      "contract": "current_limit_operation",
+      "page": "protocols/tesla/gen3-current-limit-operation-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Ownership and consumers",
+      "reason": "Consumer boundaries of the operation contract."
+    },
+    {
+      "contract": "current_limit_operation",
+      "page": "protocols/tesla/gen3-current-limit-operation-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Admission preconditions",
+      "reason": "Fail-closed admission inputs."
+    },
+    {
+      "contract": "current_limit_operation",
+      "page": "protocols/tesla/gen3-current-limit-operation-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Registry-owned request and response framing",
+      "reason": "Registry-owned framing boundary."
+    },
+    {
+      "contract": "current_limit_operation",
+      "page": "protocols/tesla/gen3-current-limit-operation-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Outcomes and confirmation limits",
+      "reason": "Outcome classes and their evidence."
+    },
+    {
+      "contract": "current_limit_operation",
+      "page": "protocols/tesla/gen3-current-limit-operation-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Immutable correlated evidence",
+      "reason": "Evidence retention rules."
+    },
+    {
+      "contract": "current_limit_operation",
+      "page": "protocols/tesla/gen3-current-limit-operation-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Quarantine and recovery",
+      "reason": "Fencing and recovery rules."
+    },
+    {
+      "contract": "current_limit_operation",
+      "page": "protocols/tesla/gen3-current-limit-operation-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Idempotency and retry boundary",
+      "reason": "Duplicate guard and retry rules."
+    },
+    {
+      "contract": "current_limit_operation",
+      "page": "protocols/tesla/gen3-current-limit-operation-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Read-only and state-changing boundary",
+      "reason": "Read-only versus state-changing boundary."
+    },
+    {
+      "contract": "current_limit_operation",
+      "page": "protocols/tesla/gen3-current-limit-operation-v1.md",
+      "section": null,
+      "kind": "forbidden",
+      "value": "([0-9]{1,3}\\.){3}[0-9]{1,3}|(?:[^\\W_]|[.-])+:[0-9]{1,5}|(^|[^0-9A-Fa-f])[0-9A-Fa-f]{40}([^0-9A-Fa-f]|$)|(^|[^0-9A-Fa-f])[0-9A-Fa-f]{64}([^0-9A-Fa-f]|$)",
+      "reason": "The operation contract publishes no network coordinates and no 40- or 64-digit fingerprints."
+    },
+    {
+      "contract": "current_limit_operation",
+      "page": "protocols/tesla/gen3-current-limit-operation-v1.md",
+      "section": "## Scope and evidence status",
+      "kind": "statement",
+      "value": "Live state-changing operations require explicit operator confirmation at action time.",
+      "reason": "Operator confirmation at action time is mandatory for any live write."
+    },
+    {
+      "contract": "current_limit_operation",
+      "page": "protocols/tesla/gen3-current-limit-operation-v1.md",
+      "section": "## Scope and evidence status",
+      "kind": "statement",
+      "value": "Body interpretation is limited to `wc3_24_44_3`.",
+      "reason": "The operation is bound to one exact operation version."
+    },
+    {
+      "contract": "current_limit_operation",
+      "page": "protocols/tesla/gen3-current-limit-operation-v1.md",
+      "section": "## Ownership and consumers",
+      "kind": "statement",
+      "value": "No Tesla body interpretation or global FC-to-vendor dispatch.",
+      "reason": "The transport consumer stays vendor-neutral."
+    },
+    {
+      "contract": "current_limit_operation",
+      "page": "protocols/tesla/gen3-current-limit-operation-v1.md",
+      "section": "## Ownership and consumers",
+      "kind": "statement",
+      "value": "A vitals executor or a native payload container alone is insufficient.",
+      "reason": "The registry consumer owns operation admission and records."
+    },
+    {
+      "contract": "current_limit_operation",
+      "page": "protocols/tesla/gen3-current-limit-operation-v1.md",
+      "section": "## Ownership and consumers",
+      "kind": "statement",
+      "value": "An injected read-only projection grants no send authority.",
+      "reason": "The gateway consumer gains no send authority from a projection."
+    },
+    {
+      "contract": "current_limit_operation",
+      "page": "protocols/tesla/gen3-current-limit-operation-v1.md",
+      "section": "## Admission preconditions",
+      "kind": "statement",
+      "value": "A failed or unknown precondition is `REJECTED`, `NO_SEND`, with the reason retained.",
+      "reason": "Fail-closed admission outcome."
+    },
+    {
+      "contract": "current_limit_operation",
+      "page": "protocols/tesla/gen3-current-limit-operation-v1.md",
+      "section": "## Admission preconditions",
+      "kind": "statement",
+      "value": "Mutation retries are zero; read retries require an explicit read-only allowlist and finite budget.",
+      "reason": "Retry limits."
+    },
+    {
+      "contract": "current_limit_operation",
+      "page": "protocols/tesla/gen3-current-limit-operation-v1.md",
+      "section": "## Admission preconditions",
+      "kind": "statement",
+      "value": "Unknown upper limit, zero/absent current, zero timeout, or unsupported field semantics deny dispatch.",
+      "reason": "Unknown limits and values deny dispatch."
+    },
+    {
+      "contract": "current_limit_operation",
+      "page": "protocols/tesla/gen3-current-limit-operation-v1.md",
+      "section": "## Admission preconditions",
+      "kind": "statement",
+      "value": "The owning registry must require qualified inputs for those gaps; it must not fill them from names or successful decoding.",
+      "reason": "Gaps are never filled by inference."
+    },
+    {
+      "contract": "current_limit_operation",
+      "page": "protocols/tesla/gen3-current-limit-operation-v1.md",
+      "section": "## Outcomes and confirmation limits",
+      "kind": "statement",
+      "value": "| `ACK` |",
+      "reason": "Outcome class value table entry."
+    },
+    {
+      "contract": "current_limit_operation",
+      "page": "protocols/tesla/gen3-current-limit-operation-v1.md",
+      "section": "## Outcomes and confirmation limits",
+      "kind": "statement",
+      "value": "| `READBACK` |",
+      "reason": "Outcome class value table entry."
+    },
+    {
+      "contract": "current_limit_operation",
+      "page": "protocols/tesla/gen3-current-limit-operation-v1.md",
+      "section": "## Outcomes and confirmation limits",
+      "kind": "statement",
+      "value": "| `TIMEOUT` |",
+      "reason": "Outcome class value table entry."
+    },
+    {
+      "contract": "current_limit_operation",
+      "page": "protocols/tesla/gen3-current-limit-operation-v1.md",
+      "section": "## Outcomes and confirmation limits",
+      "kind": "statement",
+      "value": "| `INDETERMINATE` |",
+      "reason": "Outcome class value table entry."
+    },
+    {
+      "contract": "current_limit_operation",
+      "page": "protocols/tesla/gen3-current-limit-operation-v1.md",
+      "section": "## Outcomes and confirmation limits",
+      "kind": "statement",
+      "value": "| `REJECTED` |",
+      "reason": "Outcome class value table entry."
+    },
+    {
+      "contract": "current_limit_operation",
+      "page": "protocols/tesla/gen3-current-limit-operation-v1.md",
+      "section": "## Outcomes and confirmation limits",
+      "kind": "statement",
+      "value": "A readback exception or application error after ACK is overall `INDETERMINATE`",
+      "reason": "Outcome of a failed readback after an acknowledgement."
+    },
+    {
+      "contract": "current_limit_operation",
+      "page": "protocols/tesla/gen3-current-limit-operation-v1.md",
+      "section": "## Outcomes and confirmation limits",
+      "kind": "statement",
+      "value": "An exchange timeout before the operation deadline is `TIMEOUT`",
+      "reason": "Outcome of an exchange timeout."
+    },
+    {
+      "contract": "current_limit_operation",
+      "page": "protocols/tesla/gen3-current-limit-operation-v1.md",
+      "section": "## Outcomes and confirmation limits",
+      "kind": "statement",
+      "value": "Mutation and confirmation readback must use the same lifecycle generation.",
+      "reason": "Readback never confirms across generations."
+    },
+    {
+      "contract": "current_limit_operation",
+      "page": "protocols/tesla/gen3-current-limit-operation-v1.md",
+      "section": "## Outcomes and confirmation limits",
+      "kind": "statement",
+      "value": "Even a matching readback reports returned values; it cannot prove causal application or exclusion of an intervening actor.",
+      "reason": "Readback is not proof of causal application."
+    },
+    {
+      "contract": "current_limit_operation",
+      "page": "protocols/tesla/gen3-current-limit-operation-v1.md",
+      "section": "## Immutable correlated evidence",
+      "kind": "statement",
+      "value": "Freeze the admitted request and context before any possible transmission.",
+      "reason": "Admitted intent is immutable before transmission."
+    },
+    {
+      "contract": "current_limit_operation",
+      "page": "protocols/tesla/gen3-current-limit-operation-v1.md",
+      "section": "## Immutable correlated evidence",
+      "kind": "statement",
+      "value": "Failures retain available evidence; never invent response bytes, fill unavailable values with zero, or drop a valid ACK because readback failed.",
+      "reason": "Failures keep evidence and never invent or zero-fill values."
+    },
+    {
+      "contract": "current_limit_operation",
+      "page": "protocols/tesla/gen3-current-limit-operation-v1.md",
+      "section": "## Quarantine and recovery",
+      "kind": "statement",
+      "value": "Admit no successor exchange while fenced or quarantined.",
+      "reason": "Fencing blocks successor exchanges."
+    },
+    {
+      "contract": "current_limit_operation",
+      "page": "protocols/tesla/gen3-current-limit-operation-v1.md",
+      "section": "## Quarantine and recovery",
+      "kind": "statement",
+      "value": "Local generation numbers are not wire transaction identifiers.",
+      "reason": "Local generations do not prove wire correlation."
+    },
+    {
+      "contract": "current_limit_operation",
+      "page": "protocols/tesla/gen3-current-limit-operation-v1.md",
+      "section": "## Quarantine and recovery",
+      "kind": "statement",
+      "value": "Recovery never resends the mutation, changes to another profile, performs a rollback, or restores an assumed previous setting.",
+      "reason": "Recovery never repeats or reverses a mutation."
+    },
+    {
+      "contract": "current_limit_operation",
+      "page": "protocols/tesla/gen3-current-limit-operation-v1.md",
+      "section": "## Idempotency and retry boundary",
+      "kind": "statement",
+      "value": "No automatic mutation retry is admitted, including after timeout, ACK-only completion, readback mismatch, or indeterminate outcome.",
+      "reason": "No automatic mutation retry."
+    },
+    {
+      "contract": "current_limit_operation",
+      "page": "protocols/tesla/gen3-current-limit-operation-v1.md",
+      "section": "## Read-only and state-changing boundary",
+      "kind": "statement",
+      "value": "The injected `modbus.v1.tesla.gen3.evse.current_limit.get` projection remains read-only with `outbound_allowed=false`; it neither acquires records nor constructs/sends requests.",
+      "reason": "The injected projection never reaches the bus."
+    },
+    {
+      "contract": "read_acquisition",
+      "page": "protocols/tesla/gen3-read-acquisition-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Scope and evidence status",
+      "reason": "Scope and evidence class of the lifecycle contract."
+    },
+    {
+      "contract": "read_acquisition",
+      "page": "protocols/tesla/gen3-read-acquisition-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Operations in scope",
+      "reason": "Admitted observation operations."
+    },
+    {
+      "contract": "read_acquisition",
+      "page": "protocols/tesla/gen3-read-acquisition-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Lifecycle states and transitions",
+      "reason": "Lifecycle states and transitions."
+    },
+    {
+      "contract": "read_acquisition",
+      "page": "protocols/tesla/gen3-read-acquisition-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Admission rules",
+      "reason": "Fail-closed admission rules."
+    },
+    {
+      "contract": "read_acquisition",
+      "page": "protocols/tesla/gen3-read-acquisition-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Scheduling and single-flight",
+      "reason": "Single-flight scheduling rules."
+    },
+    {
+      "contract": "read_acquisition",
+      "page": "protocols/tesla/gen3-read-acquisition-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Retry, deadline, and recovery budgets",
+      "reason": "Bounded retry, deadline and recovery budgets."
+    },
+    {
+      "contract": "read_acquisition",
+      "page": "protocols/tesla/gen3-read-acquisition-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Freshness and retention",
+      "reason": "Freshness and last-known-good retention."
+    },
+    {
+      "contract": "read_acquisition",
+      "page": "protocols/tesla/gen3-read-acquisition-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Evidence record",
+      "reason": "Evidence record and evidence states."
+    },
+    {
+      "contract": "read_acquisition",
+      "page": "protocols/tesla/gen3-read-acquisition-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Activation prerequisite and the current NO_SEND gate",
+      "reason": "Activation gate."
+    },
+    {
+      "contract": "read_acquisition",
+      "page": "protocols/tesla/gen3-read-acquisition-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## What this contract does not claim",
+      "reason": "Explicit non-claims."
+    },
+    {
+      "contract": "read_acquisition",
+      "page": "protocols/tesla/gen3-read-acquisition-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Compatibility and versioning",
+      "reason": "Versioning rules."
+    },
+    {
+      "contract": "read_acquisition",
+      "page": "protocols/tesla/gen3-read-acquisition-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Falsifiers",
+      "reason": "Observable falsifiers of the contract."
+    },
+    {
+      "contract": "read_acquisition",
+      "page": "protocols/tesla/gen3-read-acquisition-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Implementation evidence",
+      "reason": "Implementation evidence citation."
+    },
+    {
+      "contract": "read_acquisition",
+      "page": "protocols/tesla/gen3-read-acquisition-v1.md",
+      "section": null,
+      "kind": "forbidden",
+      "value": "([0-9]{1,3}\\.){3}[0-9]{1,3}|(?:[^\\W_]|[.-])+:[0-9]{1,5}|(^|[^0-9A-Fa-f])[0-9A-Fa-f]{40}([^0-9A-Fa-f]|$)|(^|[^0-9A-Fa-f])[0-9A-Fa-f]{64}([^0-9A-Fa-f]|$)",
+      "reason": "The lifecycle contract publishes no network coordinates and no 40- or 64-digit fingerprints."
+    },
+    {
+      "contract": "read_acquisition",
+      "page": "protocols/tesla/gen3-read-acquisition-v1.md",
+      "section": "## Operations in scope",
+      "kind": "row",
+      "value": "| Common system information | 4 | 2 → 3 |",
+      "reason": "Identity tuple (family, request tag, terminal tag) of an admitted observation operation."
+    },
+    {
+      "contract": "read_acquisition",
+      "page": "protocols/tesla/gen3-read-acquisition-v1.md",
+      "section": "## Operations in scope",
+      "kind": "row",
+      "value": "| WC vitals | 6 | 1 → 2 |",
+      "reason": "Identity tuple (family, request tag, terminal tag) of an admitted observation operation."
+    },
+    {
+      "contract": "read_acquisition",
+      "page": "protocols/tesla/gen3-read-acquisition-v1.md",
+      "section": "## Operations in scope",
+      "kind": "row",
+      "value": "| WC lifetime statistics | 6 | 3 → 4 |",
+      "reason": "Identity tuple (family, request tag, terminal tag) of an admitted observation operation."
+    },
+    {
+      "contract": "read_acquisition",
+      "page": "protocols/tesla/gen3-read-acquisition-v1.md",
+      "section": "## Operations in scope",
+      "kind": "row",
+      "value": "| WC system information | 6 | 9 → 10 |",
+      "reason": "Identity tuple (family, request tag, terminal tag) of an admitted observation operation."
+    },
+    {
+      "contract": "read_acquisition",
+      "page": "protocols/tesla/gen3-read-acquisition-v1.md",
+      "section": "## Operations in scope",
+      "kind": "row",
+      "value": "| WC load-sharing state | 6 | 11 → 12 |",
+      "reason": "Identity tuple (family, request tag, terminal tag) of an admitted observation operation."
+    },
+    {
+      "contract": "read_acquisition",
+      "page": "protocols/tesla/gen3-read-acquisition-v1.md",
+      "section": "## Scope and evidence status",
+      "kind": "statement",
+      "value": "The contract covers only the exact `wc3_24_44_3` operation version.",
+      "reason": "The lifecycle is bound to one exact operation version."
+    },
+    {
+      "contract": "read_acquisition",
+      "page": "protocols/tesla/gen3-read-acquisition-v1.md",
+      "section": "## Operations in scope",
+      "kind": "statement",
+      "value": "a lifecycle conforming to this page has no mutation path.",
+      "reason": "The lifecycle never mutates."
+    },
+    {
+      "contract": "read_acquisition",
+      "page": "protocols/tesla/gen3-read-acquisition-v1.md",
+      "section": "## Lifecycle states and transitions",
+      "kind": "statement",
+      "value": "The lifecycle is in exactly one externally visible state: `stopped`, `activating`, `ready`, `recovering`, `unavailable`, or `closed`.",
+      "reason": "Value table of the lifecycle states."
+    },
+    {
+      "contract": "read_acquisition",
+      "page": "protocols/tesla/gen3-read-acquisition-v1.md",
+      "section": "## Lifecycle states and transitions",
+      "kind": "statement",
+      "value": "while a repeated Close returns success",
+      "reason": "Close is idempotent."
+    },
+    {
+      "contract": "read_acquisition",
+      "page": "protocols/tesla/gen3-read-acquisition-v1.md",
+      "section": "## Lifecycle states and transitions",
+      "kind": "statement",
+      "value": "Every successful activation opens a new lifecycle epoch",
+      "reason": "Each activation opens a successor epoch."
+    },
+    {
+      "contract": "read_acquisition",
+      "page": "protocols/tesla/gen3-read-acquisition-v1.md",
+      "section": "## Admission rules",
+      "kind": "statement",
+      "value": "A retired or replaced endpoint instance refuses every candidate.",
+      "reason": "Retired endpoints admit nothing."
+    },
+    {
+      "contract": "read_acquisition",
+      "page": "protocols/tesla/gen3-read-acquisition-v1.md",
+      "section": "## Admission rules",
+      "kind": "statement",
+      "value": "The standard register-read admission of the owned endpoint (FC03 and FC04) admits nothing; this lifecycle never reads registers.",
+      "reason": "The lifecycle never reads registers."
+    },
+    {
+      "contract": "read_acquisition",
+      "page": "protocols/tesla/gen3-read-acquisition-v1.md",
+      "section": "## Scheduling and single-flight",
+      "kind": "statement",
+      "value": "a concurrent call fails fast with a busy error",
+      "reason": "Single-flight without queueing."
+    },
+    {
+      "contract": "read_acquisition",
+      "page": "protocols/tesla/gen3-read-acquisition-v1.md",
+      "section": "## Scheduling and single-flight",
+      "kind": "statement",
+      "value": "at most one Restart of an `unavailable` lifecycle per loop iteration.",
+      "reason": "Restart bound."
+    },
+    {
+      "contract": "read_acquisition",
+      "page": "protocols/tesla/gen3-read-acquisition-v1.md",
+      "section": "## Scheduling and single-flight",
+      "kind": "statement",
+      "value": "Buffered ticks do not guarantee a full interval between two Restart attempts.",
+      "reason": "Documented limit of the restart pacing."
+    },
+    {
+      "contract": "read_acquisition",
+      "page": "protocols/tesla/gen3-read-acquisition-v1.md",
+      "section": "## Retry, deadline, and recovery budgets",
+      "kind": "statement",
+      "value": "Each transport exchange has exactly one send attempt.",
+      "reason": "One send per exchange."
+    },
+    {
+      "contract": "read_acquisition",
+      "page": "protocols/tesla/gen3-read-acquisition-v1.md",
+      "section": "## Retry, deadline, and recovery budgets",
+      "kind": "statement",
+      "value": "The numeric limits are configuration maxima enforced by the implementation, not defaults and not minimums.",
+      "reason": "Meaning of the numeric limits."
+    },
+    {
+      "contract": "read_acquisition",
+      "page": "protocols/tesla/gen3-read-acquisition-v1.md",
+      "section": "## Retry, deadline, and recovery budgets",
+      "kind": "statement",
+      "value": "`MaxAttempts` is 1 through 3 exchanges per acquisition.",
+      "reason": "Attempt bound."
+    },
+    {
+      "contract": "read_acquisition",
+      "page": "protocols/tesla/gen3-read-acquisition-v1.md",
+      "section": "## Retry, deadline, and recovery budgets",
+      "kind": "statement",
+      "value": "It is at least one response timeout and at most five minutes.",
+      "reason": "Acquisition deadline bound."
+    },
+    {
+      "contract": "read_acquisition",
+      "page": "protocols/tesla/gen3-read-acquisition-v1.md",
+      "section": "## Retry, deadline, and recovery budgets",
+      "kind": "statement",
+      "value": "The response timeout is positive and at most thirty seconds. It applies per received response frame, not to the whole exchange: the transport restarts it for each frame.",
+      "reason": "Response timeout bound and scope."
+    },
+    {
+      "contract": "read_acquisition",
+      "page": "protocols/tesla/gen3-read-acquisition-v1.md",
+      "section": "## Retry, deadline, and recovery budgets",
+      "kind": "statement",
+      "value": "An exchange accepts at most eight response frames.",
+      "reason": "Response count bound."
+    },
+    {
+      "contract": "read_acquisition",
+      "page": "protocols/tesla/gen3-read-acquisition-v1.md",
+      "section": "## Retry, deadline, and recovery budgets",
+      "kind": "statement",
+      "value": "Each activation is bounded by a positive activation timeout of at most sixty seconds",
+      "reason": "Activation timeout bound."
+    },
+    {
+      "contract": "read_acquisition",
+      "page": "protocols/tesla/gen3-read-acquisition-v1.md",
+      "section": "## Retry, deadline, and recovery budgets",
+      "kind": "statement",
+      "value": "The overall bound of an exchange, and of the acquisition that contains it, is the acquisition deadline.",
+      "reason": "The acquisition deadline is the overall bound."
+    },
+    {
+      "contract": "read_acquisition",
+      "page": "protocols/tesla/gen3-read-acquisition-v1.md",
+      "section": "## Retry, deadline, and recovery budgets",
+      "kind": "statement",
+      "value": "it is a classifier fault that fences the transport generation",
+      "reason": "An uncorrelated response fences the generation."
+    },
+    {
+      "contract": "read_acquisition",
+      "page": "protocols/tesla/gen3-read-acquisition-v1.md",
+      "section": "## Retry, deadline, and recovery budgets",
+      "kind": "statement",
+      "value": "Recovery and re-activation run inside the acquisition deadline.",
+      "reason": "Recovery is bounded."
+    },
+    {
+      "contract": "read_acquisition",
+      "page": "protocols/tesla/gen3-read-acquisition-v1.md",
+      "section": "## Freshness and retention",
+      "kind": "statement",
+      "value": "a retention duration no shorter than freshness and at most twenty-four hours.",
+      "reason": "Retention window bound."
+    },
+    {
+      "contract": "read_acquisition",
+      "page": "protocols/tesla/gen3-read-acquisition-v1.md",
+      "section": "## Freshness and retention",
+      "kind": "statement",
+      "value": "A failed attempt, whatever its evidence state, never replaces the last acknowledged record.",
+      "reason": "Partial last-known-good state survives failed attempts."
+    },
+    {
+      "contract": "read_acquisition",
+      "page": "protocols/tesla/gen3-read-acquisition-v1.md",
+      "section": "## Evidence record",
+      "kind": "statement",
+      "value": "Lifecycle and pre-exchange refusals (an unsupported or unconfigured operation, a busy, unavailable, or closed lifecycle) return an error without a populated record.",
+      "reason": "Refusals never produce a populated record."
+    },
+    {
+      "contract": "read_acquisition",
+      "page": "protocols/tesla/gen3-read-acquisition-v1.md",
+      "section": "## Evidence record",
+      "kind": "statement",
+      "value": "| `ack` |",
+      "reason": "Evidence state value table entry."
+    },
+    {
+      "contract": "read_acquisition",
+      "page": "protocols/tesla/gen3-read-acquisition-v1.md",
+      "section": "## Evidence record",
+      "kind": "statement",
+      "value": "| `rejected` |",
+      "reason": "Evidence state value table entry."
+    },
+    {
+      "contract": "read_acquisition",
+      "page": "protocols/tesla/gen3-read-acquisition-v1.md",
+      "section": "## Evidence record",
+      "kind": "statement",
+      "value": "| `timeout` |",
+      "reason": "Evidence state value table entry."
+    },
+    {
+      "contract": "read_acquisition",
+      "page": "protocols/tesla/gen3-read-acquisition-v1.md",
+      "section": "## Evidence record",
+      "kind": "statement",
+      "value": "| `indeterminate` |",
+      "reason": "Evidence state value table entry."
+    },
+    {
+      "contract": "read_acquisition",
+      "page": "protocols/tesla/gen3-read-acquisition-v1.md",
+      "section": "## Evidence record",
+      "kind": "statement",
+      "value": "| `no_send` |",
+      "reason": "Evidence state value table entry."
+    },
+    {
+      "contract": "read_acquisition",
+      "page": "protocols/tesla/gen3-read-acquisition-v1.md",
+      "section": "## Evidence record",
+      "kind": "statement",
+      "value": "never carry a value, even when response frames were received.",
+      "reason": "Indeterminate evidence never carries a value."
+    },
+    {
+      "contract": "read_acquisition",
+      "page": "protocols/tesla/gen3-read-acquisition-v1.md",
+      "section": "## Evidence record",
+      "kind": "statement",
+      "value": "A receipt retired by Close is never promoted to `ack`",
+      "reason": "Retired receipts are never promoted."
+    },
+    {
+      "contract": "read_acquisition",
+      "page": "protocols/tesla/gen3-read-acquisition-v1.md",
+      "section": "## Activation prerequisite and the current NO_SEND gate",
+      "kind": "statement",
+      "value": "The activation deadline is taken from the lifecycle clock before the witness is called.",
+      "reason": "Activation deadline source."
+    },
+    {
+      "contract": "read_acquisition",
+      "page": "protocols/tesla/gen3-read-acquisition-v1.md",
+      "section": "## Activation prerequisite and the current NO_SEND gate",
+      "kind": "statement",
+      "value": "A witness report returned at or after that deadline is rejected regardless of whether the context timer has fired.",
+      "reason": "Late witness reports are rejected."
+    },
+    {
+      "contract": "read_acquisition",
+      "page": "protocols/tesla/gen3-read-acquisition-v1.md",
+      "section": "## Activation prerequisite and the current NO_SEND gate",
+      "kind": "statement",
+      "value": "A report delivered after the activation deadline never establishes readiness, even when its bytes match.",
+      "reason": "Late reports never establish readiness."
+    },
+    {
+      "contract": "read_acquisition",
+      "page": "protocols/tesla/gen3-read-acquisition-v1.md",
+      "section": "## Activation prerequisite and the current NO_SEND gate",
+      "kind": "statement",
+      "value": "Cancellation is re-checked inside the readiness commit, under the lifecycle mutex",
+      "reason": "Cancellation cannot be overtaken by a late report."
+    },
+    {
+      "contract": "read_acquisition",
+      "page": "protocols/tesla/gen3-read-acquisition-v1.md",
+      "section": "## Activation prerequisite and the current NO_SEND gate",
+      "kind": "statement",
+      "value": "A configuration without a witness is `NO_SEND`.",
+      "reason": "No witness, no send."
+    },
+    {
+      "contract": "read_acquisition",
+      "page": "protocols/tesla/gen3-read-acquisition-v1.md",
+      "section": "## Activation prerequisite and the current NO_SEND gate",
+      "kind": "statement",
+      "value": "helianthus-docs-modbus issue 158",
+      "reason": "Open item that keeps the activation gate closed."
+    },
+    {
+      "contract": "read_acquisition",
+      "page": "protocols/tesla/gen3-read-acquisition-v1.md",
+      "section": "## Activation prerequisite and the current NO_SEND gate",
+      "kind": "statement",
+      "value": "helianthus-modbus issue 38",
+      "reason": "Open item that keeps the activation gate closed."
+    },
+    {
+      "contract": "read_acquisition",
+      "page": "protocols/tesla/gen3-read-acquisition-v1.md",
+      "section": "## What this contract does not claim",
+      "kind": "statement",
+      "value": "No mutation path.",
+      "reason": "Explicit non-claim: no mutation."
+    },
+    {
+      "contract": "read_acquisition",
+      "page": "protocols/tesla/gen3-read-acquisition-v1.md",
+      "section": "## What this contract does not claim",
+      "kind": "statement",
+      "value": "No support, hardware, or live-qualification claim.",
+      "reason": "Explicit non-claim: no qualification."
+    },
+    {
+      "contract": "read_acquisition",
+      "page": "protocols/tesla/gen3-read-acquisition-v1.md",
+      "section": "## Compatibility and versioning",
+      "kind": "statement",
+      "value": "This is version 1 of the read-path acquisition contract.",
+      "reason": "Contract version."
+    },
+    {
+      "contract": "read_acquisition",
+      "page": "protocols/tesla/gen3-read-acquisition-v1.md",
+      "section": "## Compatibility and versioning",
+      "kind": "statement",
+      "value": "Later revisions may only add:",
+      "reason": "Later revisions are additive only."
+    },
+    {
+      "contract": "read_acquisition",
+      "page": "protocols/tesla/gen3-read-acquisition-v1.md",
+      "section": "## Implementation evidence",
+      "kind": "statement",
+      "value": "at revision `<pin:UZODwi9hozyZcQtymhyfkuyg+You9uf8Y3S6peobqnc>` of its branch.",
+      "reason": "Binds the implementation evidence to the exact cited revision (committed, not published here)."
+    },
+    {
+      "contract": "tedapi",
+      "page": "protocols/tesla/tedapi.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Scope and non-goals",
+      "reason": "EVSE-only scope."
+    },
+    {
+      "contract": "tedapi",
+      "page": "protocols/tesla/tedapi.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Terminology",
+      "reason": "Definition of native data and of an EVSE limit."
+    },
+    {
+      "contract": "tedapi",
+      "page": "protocols/tesla/tedapi.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Endpoint roles",
+      "reason": "Initiator responsibilities."
+    },
+    {
+      "contract": "tedapi",
+      "page": "protocols/tesla/tedapi.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Serial settings",
+      "reason": "Serial parameters."
+    },
+    {
+      "contract": "tedapi",
+      "page": "protocols/tesla/tedapi.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Frame structure",
+      "reason": "Frame layout."
+    },
+    {
+      "contract": "tedapi",
+      "page": "protocols/tesla/tedapi.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Function 100",
+      "reason": "FC100 envelope and operation registry; other pages link to its subsections."
+    },
+    {
+      "contract": "tedapi",
+      "page": "protocols/tesla/tedapi.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Functions 101 and 102",
+      "reason": "FC101 and FC102 have no EVSE operation mapping."
+    },
+    {
+      "contract": "tedapi",
+      "page": "protocols/tesla/tedapi.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Fail-closed validation rules",
+      "reason": "Fail-closed validation."
+    },
+    {
+      "contract": "tedapi",
+      "page": "protocols/tesla/tedapi.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Unknown payload and field retention",
+      "reason": "Native retention of unknown data."
+    },
+    {
+      "contract": "tedapi",
+      "page": "protocols/tesla/tedapi.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Capability and version gates",
+      "reason": "A version grants no operation."
+    },
+    {
+      "contract": "tedapi",
+      "page": "protocols/tesla/tedapi.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Compatibility and versioning",
+      "reason": "Separation from the legacy profile."
+    },
+    {
+      "contract": "tedapi",
+      "page": "protocols/tesla/tedapi.md",
+      "section": "## Runtime provenance",
+      "kind": "statement",
+      "value": "Records retain complete native EVSE payload with version, function, direction, and outcome.",
+      "reason": "Identity tuple and complete native payload of a retained record."
+    },
+    {
+      "contract": "evse_scope",
+      "page": "protocols/tesla/tedapi.md",
+      "section": "## Function 100",
+      "kind": "heading",
+      "value": "### FC100 EVSE operation registry",
+      "reason": "Subsection that lists the admitted EVSE observation operations."
+    },
+    {
+      "contract": "evse_scope",
+      "page": "protocols/tesla/tedapi.md",
+      "section": "## Function 100",
+      "kind": "heading",
+      "value": "### FC100 EVSE operation numbers",
+      "reason": "Subsection that holds the operation-number table; other pages link to its anchor."
+    },
+    {
+      "contract": "evse_scope",
+      "page": "protocols/tesla/tedapi.md",
+      "section": "### FC100 EVSE operation registry",
+      "kind": "statement",
+      "value": "| GetVitals |",
+      "reason": "Admitted EVSE observation operation."
+    },
+    {
+      "contract": "evse_scope",
+      "page": "protocols/tesla/tedapi.md",
+      "section": "### FC100 EVSE operation registry",
+      "kind": "statement",
+      "value": "| GetLifetimeStats |",
+      "reason": "Admitted EVSE observation operation."
+    },
+    {
+      "contract": "evse_scope",
+      "page": "protocols/tesla/tedapi.md",
+      "section": "### FC100 EVSE operation registry",
+      "kind": "statement",
+      "value": "| GetLoadSharingNetworkState |",
+      "reason": "Admitted EVSE observation operation."
+    },
+    {
+      "contract": "evse_scope",
+      "page": "protocols/tesla/tedapi.md",
+      "section": "### FC100 EVSE operation registry",
+      "kind": "statement",
+      "value": "| GetSystemInfo |",
+      "reason": "Admitted EVSE observation operation."
+    },
+    {
+      "contract": "evse_scope",
+      "page": "protocols/tesla/tedapi.md",
+      "section": "### FC100 EVSE operation numbers",
+      "kind": "row",
+      "value": "| Common system information | 4 | 2 → 3 | exact empty | registry fact, see below |",
+      "reason": "Identity tuple (family, request tag, terminal tag), request-body rule and basis of one retained operation."
+    },
+    {
+      "contract": "evse_scope",
+      "page": "protocols/tesla/tedapi.md",
+      "section": "### FC100 EVSE operation numbers",
+      "kind": "row",
+      "value": "| WC vitals (GetVitals) | 6 | 1 → 2 | exact empty | registry fact, see below |",
+      "reason": "Identity tuple (family, request tag, terminal tag), request-body rule and basis of one retained operation."
+    },
+    {
+      "contract": "evse_scope",
+      "page": "protocols/tesla/tedapi.md",
+      "section": "### FC100 EVSE operation numbers",
+      "kind": "row",
+      "value": "| WC lifetime statistics (GetLifetimeStats) | 6 | 3 → 4 | exact empty | registry fact, see below |",
+      "reason": "Identity tuple (family, request tag, terminal tag), request-body rule and basis of one retained operation."
+    },
+    {
+      "contract": "evse_scope",
+      "page": "protocols/tesla/tedapi.md",
+      "section": "### FC100 EVSE operation numbers",
+      "kind": "row",
+      "value": "| WC system information (GetSystemInfo) | 6 | 9 → 10 | exact empty | registry fact, see below |",
+      "reason": "Identity tuple (family, request tag, terminal tag), request-body rule and basis of one retained operation."
+    },
+    {
+      "contract": "evse_scope",
+      "page": "protocols/tesla/tedapi.md",
+      "section": "### FC100 EVSE operation numbers",
+      "kind": "row",
+      "value": "| WC load-sharing state (GetLoadSharingNetworkState) | 6 | 11 → 12 | exact empty | registry fact, see below |",
+      "reason": "Identity tuple (family, request tag, terminal tag), request-body rule and basis of one retained operation."
+    },
+    {
+      "contract": "evse_scope",
+      "page": "protocols/tesla/tedapi.md",
+      "section": "### FC100 EVSE operation numbers",
+      "kind": "row",
+      "value": "| WC persistent settings, current limit only | 6 | 7 → 8 | structurally validated | [exact 24.44.3 body and evidence contract](gen3-hsc-rtu.md#exact-24443-body-and-evidence-contract) |",
+      "reason": "Identity tuple (family, request tag, terminal tag), request-body rule and basis of one retained operation."
+    },
+    {
+      "contract": "evse_scope",
+      "page": "protocols/tesla/tedapi.md",
+      "section": "### FC100 EVSE operation numbers",
+      "kind": "row",
+      "value": "| WC provisional current limit | 6 | 25 → 26 | structurally validated | [exact 24.44.3 body and evidence contract](gen3-hsc-rtu.md#exact-24443-body-and-evidence-contract) |",
+      "reason": "Identity tuple (family, request tag, terminal tag), request-body rule and basis of one retained operation."
+    },
+    {
+      "contract": "evse_scope",
+      "page": "protocols/tesla/tedapi.md",
+      "section": "### FC100 EVSE operation numbers",
+      "kind": "row",
+      "value": "| WC provisional readback | 6 | 27 → 28 | exact empty | [exact 24.44.3 body and evidence contract](gen3-hsc-rtu.md#exact-24443-body-and-evidence-contract) |",
+      "reason": "Identity tuple (family, request tag, terminal tag), request-body rule and basis of one retained operation."
+    },
+    {
+      "contract": "evse_scope",
+      "page": "protocols/tesla/tedapi.md",
+      "section": "### FC100 EVSE operation numbers",
+      "kind": "statement",
+      "value": "EVSE charging-current limit control, enable, and disable require an independently qualified request shape, unit and range where applicable, acknowledgement, and post-command confirmation.",
+      "reason": "Live-control qualification boundary."
+    },
+    {
+      "contract": "evse_scope",
+      "page": "protocols/tesla/tedapi.md",
+      "section": "### FC100 EVSE operation numbers",
+      "kind": "statement",
+      "value": "The six observation and readback requests have exact empty bodies.",
+      "reason": "Request-body rule of the empty-body operations."
+    },
+    {
+      "contract": "evse_scope",
+      "page": "protocols/tesla/tedapi.md",
+      "section": "### FC100 EVSE operation numbers",
+      "kind": "statement",
+      "value": "Basis for the current-limit pairs is the bounded static evidence for `wc3_24_44_3` published in the linked Gen3 HSC contract.",
+      "reason": "Evidence basis of the current-limit pairs."
+    },
+    {
+      "contract": "evse_scope",
+      "page": "protocols/tesla/tedapi.md",
+      "section": "### FC100 EVSE operation numbers",
+      "kind": "statement",
+      "value": "They are recorded as Helianthus operation-registry facts for the `wc3_24_44_3` operation version, restored from the named operation registry published in this page at commit `<pin:FcxvD3lqqkGPxjYPJuxdSEN9fJMTuZDZCM30FUhz23E>` (section \"FC100 named operation registry for WC3 24.44.3\", first added in commit `<pin:zEtK9w+7QIrBr8x+ltAh6DdMRv6Nq7dpTQ52nL3FRj0>`), and are not additional observations of firmware behavior.",
+      "reason": "Provenance of the registry facts, bound to the exact cited page revisions (committed, not published here); they are not firmware observations."
+    },
+    {
+      "contract": "evse_scope",
+      "page": "protocols/tesla/tedapi.md",
+      "section": "### FC100 EVSE operation numbers",
+      "kind": "statement",
+      "value": "They carry no independent body qualification, and a family/tag match grants no live capability or control.",
+      "reason": "A family/tag match grants no capability."
+    },
+    {
+      "contract": "evse_scope",
+      "page": "protocols/tesla/tedapi.md",
+      "section": "### FC100 EVSE operation numbers",
+      "kind": "statement",
+      "value": "are Helianthus recovered labels",
+      "reason": "Terminal field labels are Helianthus labels."
+    },
+    {
+      "contract": "evse_scope",
+      "page": "protocols/tesla/tedapi.md",
+      "section": "### FC100 EVSE operation numbers",
+      "kind": "statement",
+      "value": "They are not vendor-published names, and no unit, scale, range, or other semantic qualification is implied by a label.",
+      "reason": "A label carries no unit, scale, range or semantics."
+    },
+    {
+      "contract": "evse_scope",
+      "page": "protocols/tesla/tedapi.md",
+      "section": null,
+      "kind": "forbidden",
+      "value": "wifi|wi-fi|(^|[\\W_])AP([\\W_]|$)|pairing|(?-i:provision(?!al current|al readback))|(?!(?-i:provision))provision|registration|activat(e|ion)|credential|password|auth(entication|orization)?|OCPP|(^|[\\W_])LED([\\W_]|$)|service|debug|eCAN|mailbox|(^|[\\W_])reset([\\W_]|$)|factory[\\s-]?reset|perform[\\s-]?reset|perform[\\s-]?update|check[\\s-]?for[\\s-]?update|clear[\\s-]?update|reboot|firmware[\\s-]?update|AccessControl|ChargeSchedule|SecurityParameter|CountryCode|Neurio",
+      "reason": "The TEDAPI page stays inside EVSE interoperability: no network setup, pairing, provisioning, activation, credentials, authentication, OCPP, LED, service, debug, reset, update or other non-EVSE operation. The lowercase phrases \"provisional current\" and \"provisional readback\" name the admitted current-limit operations and are exempt."
+    }
+  ]
+}

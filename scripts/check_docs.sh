@@ -46,373 +46,31 @@ check_public_protocol() {
   fi
 }
 
-check_tesla_legacy_public_protocol() {
-	local document="$1"
-	local forbidden='/[Uu]sers/|sha(-?256)?[-:]?[0-9a-f]{8,}|(source|vendor material) (is|are) public domain|sunspec\.inverter\.|canonical facts'
-	local url
-	local allowed_urls=(
-		'https://github.com/dracoventions/TWCManager/blob/7fb019a6838c9d15ba3b27f27458fa76c5e482d2/TWCManager.py#L1690-L1706'
-		'https://github.com/dracoventions/TWCManager/blob/7fb019a6838c9d15ba3b27f27458fa76c5e482d2/TWCManager.py#L3207-L3213'
-		'https://github.com/dracoventions/TWCManager/blob/7fb019a6838c9d15ba3b27f27458fa76c5e482d2/TWCManager.py#L3344-L3351'
-		'https://github.com/craigpeacock/TWC/blob/593b722c117e310076572b4c5ff644c3f2e56865/TWC.c#L114-L157'
-	)
+tesla_tedapi_page='protocols/tesla/tedapi.md'
+tesla_legacy_page='protocols/tesla/legacy-wall-connector-rs485.md'
+tesla_gen3_page='protocols/tesla/gen3-hsc-rtu.md'
+tesla_current_limit_page='protocols/tesla/gen3-current-limit-operation-v1.md'
+tesla_read_acquisition_page='protocols/tesla/gen3-read-acquisition-v1.md'
 
-	if grep -Ein "$forbidden" "$document"; then
-		echo 'Tesla legacy public protocol contains prohibited material' >&2
-		return 1
-	fi
-	for url in "${allowed_urls[@]}"; do
-		if ! grep -Fq "$url" "$document"; then
-			echo 'Tesla legacy public protocol is missing a required source locator' >&2
-			return 1
-		fi
-	done
-	while IFS= read -r url; do
-		case " ${allowed_urls[*]} " in
-			*" $url "*) ;;
-			*)
-				echo 'Tesla legacy public protocol contains an unapproved source locator' >&2
-				return 1
-				;;
-		esac
-	done < <(grep -Eo 'https://[^)]+' "$document" || true)
-}
-
-check_tesla_gen3_public_protocol() {
-	local document="$1"
-	local forbidden='https?://|/[Uu]sers/|(source|vendor material) (is|are) public domain|sunspec\.inverter\.|canonical facts|private capture|decompiler'
-	local hash
-	local allowed_hashes=(
-		a7c9104450879a8f0943f83dda76c865c2bb5de1cfca3d6afc1a328ea1633806
-		41863115905a67530956526df456439e72fdafc4a81afdf6129521aa94da4b67
-		79f28d7d613b6bd83dfbe0682d045cf2da95a03109d7dfc95fe03e06393a419f
-		27e8ac77bd8f14aa9400567d273d29618a56832f0241dec2285a145d19d097da
-		b80f647be57fa7c44c38878895d1f5527c778e34ec0df74503a0684878c54b88
-		2a5fc2d9d93deea774467c7cdd900274a95f1bba1ca5d1b71323e402052133b4
-		4fff4964cdf246200ccd9d477b2350b505d211bffc66686d827140a41dca11b8
-		f20e2a1b3076fe646e0590c4f789e4e15f086c8895b39384b50643a90d385d9c
-		259b801526162e10c9a25b1d9ad910a708496802150207c4ce26aa0c24137942
-		5ed96649b6e57e5dca5ff8609aad42cb9f96fabace3531a1c41fb3ef1af050e7
-		d8a01e37163023537bce557f6144b457d97780a16b1cb567392c04cb72ac65f8
-		dbc8f5730047a6d3078275408b8608bef7250c570814cb92d4f04b711c637923
-		a818d9e08fbd11f438fad710afd189d06adce12f2f5496851578cf19e0aeb614
-		b0e30bc93c3af943ea572b4320c0355a570ebd4f5aeed0790b196c6b81c9eb59
-		212af65c444a0a3ccba72fc69334c9ec09648839fa6130dab97678734bcfe394
-		3bd43ed16ffe6f06eab4e08ab9f23c33397989ca523c4b98d928a246cd5ad48a
-	)
-
-	if grep -Ein "$forbidden" "$document"; then
-		echo 'Tesla Gen3 public contract contains a prohibited locator or private analysis material' >&2
-		return 1
-	fi
-	while IFS= read -r hash; do
-		case " ${allowed_hashes[*]} " in
-			*" $hash "*) ;;
-			*)
-				echo 'Tesla Gen3 public contract contains an unapproved evidence hash' >&2
-				return 1
-				;;
-		esac
-	done < <(grep -Eo '[[:xdigit:]]{64}' "$document" || true)
+# The Tesla contract rules live in scripts/tesla_contract_rules.json. The first
+# argument selects comma-separated contracts; each further argument maps a
+# repository page to the document checked in its place.
+check_tesla_contract() {
+  local contracts="$1"
+  shift
+  local root
+  root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+  python3 "$root/scripts/check_tesla_contract.py" "$root/scripts/tesla_contract_rules.json" "$contracts" "$@"
 }
 
 check_tesla_current_limit_operation() {
-  local document="$1"
-  local required
-
-  check_public_protocol "$document" || return 1
-  if grep -Ein '([0-9]{1,3}\.){3}[0-9]{1,3}|[[:alnum:].-]+:[0-9]{1,5}|(^|[^[:xdigit:]])[[:xdigit:]]{40}([^[:xdigit:]]|$)|(^|[^[:xdigit:]])[[:xdigit:]]{64}([^[:xdigit:]]|$)' "$document"; then
-    echo 'Tesla current-limit operation contains coordinates or fingerprint material' >&2
-    return 1
-  fi
-  for required in \
-    'Scope and evidence status' 'Ownership and consumers' \
-    'Admission preconditions' 'Registry-owned request and response framing' \
-    'Outcomes and confirmation limits' 'Immutable correlated evidence' \
-    'Quarantine and recovery' 'Idempotency and retry boundary' \
-    'Read-only and state-changing boundary'; do
-    grep -Fqx "## $required" "$document" || return 1
-  done
-  for required in \
-    'state-changing operations require explicit operator confirmation at action time.' \
-    'Body interpretation is limited to `wc3_24_44_3`.' \
-    'unknown precondition is `REJECTED`, `NO_SEND`' \
-    'Mutation retries are zero;' \
-    'Unknown upper limit, zero/absent current,' \
-    'registry must require qualified inputs for those gaps;' \
-    'it cannot prove causal application' \
-    'A readback exception or application error after ACK is overall `INDETERMINATE`' \
-    'An exchange timeout before the operation deadline is `TIMEOUT`' \
-    'Mutation and confirmation readback must use the same lifecycle generation.' \
-    'Freeze the admitted request and context before any possible transmission.' \
-    'never invent response bytes' \
-    'successor exchange while fenced or quarantined.' \
-    'Local generation numbers are not wire transaction identifiers.' \
-    'Recovery never resends the mutation' \
-    'No automatic mutation retry is admitted' \
-    '`outbound_allowed=false`' \
-    '`helianthus-modbus` T2a/T2b' \
-    '`helianthus-modbusreg` M3/M4, issues #200/#202' \
-    'gateway G7b/G12'; do
-    grep -Fq "$required" "$document" || return 1
-  done
-  for required in ACK READBACK TIMEOUT INDETERMINATE REJECTED; do
-    grep -Fq "| \`$required\` |" "$document" || return 1
-  done
+  check_public_protocol "$1" || return 1
+  check_tesla_contract current_limit_operation "$tesla_current_limit_page=$1"
 }
 
 check_tesla_read_acquisition() {
-  local document="$1"
-  local required
-  local flat
-
-  flat=$(tr '\n' ' ' < "$document" | tr -s ' ')
-  check_public_protocol "$document" || return 1
-  if grep -Ein '([0-9]{1,3}\.){3}[0-9]{1,3}|[[:alnum:].-]+:[0-9]{1,5}|(^|[^[:xdigit:]])[[:xdigit:]]{40}([^[:xdigit:]]|$)|(^|[^[:xdigit:]])[[:xdigit:]]{64}([^[:xdigit:]]|$)' "$document"; then
-    echo 'Tesla read acquisition contract contains coordinates or fingerprint material' >&2
-    return 1
-  fi
-  for required in \
-    'Scope and evidence status' 'Operations in scope' \
-    'Lifecycle states and transitions' 'Admission rules' \
-    'Scheduling and single-flight' 'Retry, deadline, and recovery budgets' \
-    'Freshness and retention' 'Evidence record' \
-    'Activation prerequisite and the current NO_SEND gate' \
-    'What this contract does not claim' 'Compatibility and versioning' \
-    'Falsifiers' 'Implementation evidence'; do
-    grep -Fqx "## $required" "$document" || return 1
-  done
-  for required in \
-    'The contract covers only the exact `wc3_24_44_3` operation version.' \
-    '| Common system information | 4 | 2 → 3 |' \
-    '| WC vitals | 6 | 1 → 2 |' \
-    '| WC lifetime statistics | 6 | 3 → 4 |' \
-    '| WC system information | 6 | 9 → 10 |' \
-    '| WC load-sharing state | 6 | 11 → 12 |' \
-    'a lifecycle conforming to this page has no mutation path.' \
-    'Every successful activation opens a new lifecycle epoch' \
-    'The standard register-read admission of the owned endpoint (FC03 and FC04)' \
-    'admits nothing; this lifecycle never reads registers.' \
-    'A retired or replaced endpoint instance refuses every candidate.' \
-    'a concurrent call fails fast with a busy error' \
-    'Each transport exchange has exactly one send attempt.' \
-    '`MaxAttempts` is 1 through 3 exchanges per acquisition.' \
-    'It is at least one response timeout and at most five minutes.' \
-    'positive and at most thirty seconds. It applies per received response frame' \
-    'An exchange accepts at most eight response frames.' \
-    'positive activation timeout of at most sixty seconds' \
-    'twenty-four hours' \
-    'configuration maxima' \
-    'enforced by the implementation, not defaults and not minimums.' \
-    'The overall bound of an exchange, and of the acquisition that contains it, is the acquisition deadline.' \
-    'return an error without a populated record.' \
-    'while a repeated Close returns success' \
-    'at most one Restart of an `unavailable` lifecycle per loop iteration.' \
-    'Buffered ticks do not guarantee a full interval between two Restart attempts.' \
-    '`51db865a`' \
-    'it is a classifier fault that fences the transport generation' \
-    'Recovery and re-activation run inside the acquisition deadline.' \
-    'A failed attempt, whatever its evidence state, never replaces the last' \
-    'A receipt retired by Close' \
-    'is never promoted to `ack`' \
-    'never carry a value, even when response frames were received.' \
-    'A report delivered after the' \
-    'never establishes readiness' \
-    'is rejected regardless of whether the context timer has fired.' \
-    'The activation deadline is taken from the lifecycle clock before the witness is called.' \
-    'Cancellation is re-checked inside the readiness commit, under the lifecycle mutex' \
-    'A configuration without a witness is `NO_SEND`.' \
-    'helianthus-docs-modbus issue 158' \
-    'helianthus-modbus issue 38' \
-    'No mutation path.' \
-    'No support, hardware, or live-qualification claim.' \
-    'This is version 1 of the read-path acquisition contract.' \
-    'Later revisions may' \
-    'only add:'; do
-    grep -Fq -- "$required" <<<"$flat" || return 1
-  done
-  for required in ack rejected timeout indeterminate no_send; do
-    grep -Fq "| \`$required\` |" "$document" || return 1
-  done
-  for required in stopped activating ready recovering unavailable closed; do
-    grep -Fq "\`$required\`" "$document" || return 1
-  done
-}
-
-check_tesla_tedapi_contract() {
-	local document="$1"
-	local evse_required=(
-    'Scope and non-goals' 'Terminology' 'Endpoint roles' 'Serial settings'
-    'Frame structure' 'Function 100' 'Functions 101 and 102'
-    'Fail-closed validation rules' 'Unknown payload and field retention'
-    'Capability and version gates' 'Compatibility and versioning'
-	)
-	for heading in "${evse_required[@]}"; do grep -Fqx "## $heading" "$document"; done
-	grep -Fqx '### FC100 EVSE operation registry' "$document"
-	grep -Fq 'Records retain complete native EVSE payload with version, function, direction, and outcome.' "$document"
-	check_tesla_evse_scope "$document"
-}
-
-check_tesla_legacy_evse_current_contract() {
-	local document="$1"
-	grep -Fqx '## EVSE dynamic-current records' "$document"
-	grep -Fq '`FBE0` request and `FDE0`' "$document"
-	grep -Fq 'every Gen2 unit implements these records.' "$document"
-	grep -Fq 'allocation is not the actual' "$document"
-	grep -Fq 'current and neither value is a power setpoint.' "$document"
-	grep -Fq '`0x05` for pre-charge and `0x09` for charging.' "$document"
-	grep -Fq 'big-endian unsigned 16-bit current value in centiamperes.' "$document"
-	grep -Fq '`0x06` and `0x07` are relative changes of 2 A.' "$document"
-	grep -Fq '`0x08` remains unknown and unmapped.' "$document"
-}
-
-check_tesla_gen3_evse_current_limit_contract() {
-	local document="$1"
-	grep -Fqx '## EVSE current-limit records' "$document"
-	grep -Fq 'Only the `wc3_24_44_3` operation version qualifies this contract.' "$document"
-	grep -Fq 'FC100 family `6`, request tag `7`, terminal tag `8`.' "$document"
-	grep -Fq '`settings.maxOutputCurrentAmps` value is an integer number of amperes.' "$document"
-	grep -Fq 'request tag `25`, terminal tag `26`.' "$document"
-	grep -Fq '`limitCurrentMaxAmps` in amperes, `limitTimeoutS`, and `inhibitCharging`.' "$document"
-	grep -Fq 'tag-`27` to tag-`28` readback' "$document"
-	grep -Fq 'final-pilot current floor is 6 A and the timeout is finite from 1 through 86399 seconds.' "$document"
-	grep -Fq 'Zero timeout remains unresolved' "$document"
-	grep -Fq 'without inferring a watt limit or a result for another version.' "$document"
-}
-
-check_tesla_gen3_evse_current_limit_wire_evidence() {
-	local document="$1"
-	grep -Fqx '### Exact 24.44.3 body and evidence contract' "$document"
-	grep -Fq 'Artifact SHA-256: `a7c9104450879a8f0943f83dda76c865c2bb5de1cfca3d6afc1a328ea1633806`.' "$document"
-	grep -Fq 'Descriptor-tree SHA-256: `41863115905a67530956526df456439e72fdafc4a81afdf6129521aa94da4b67`.' "$document"
-	grep -Fq 't7/t8 use singular field 1 (wire type 2) containing settings field 1 (wire type 0, signed int32 amperes).' "$document"
-	grep -Fq 't25/t28 use singular field 1 (wire type 2) containing provisional fields 1 and 2 (wire type 0, uint32) and field 3 (wire type 0, bool).' "$document"
-	grep -Fq 't28 additionally carries distinct singular field 2 (wire type 0, uint32) for configured current.' "$document"
-	grep -Fq 't26 and t27 have empty bodies.' "$document"
-	grep -Fq 't8 is getter-populated returned persistent settings state, not an acknowledgement.' "$document"
-	grep -Fq 't26 is an acknowledgement only and cannot confirm an applied provisional value.' "$document"
-	grep -Fq 'A t28 body has no nonce, timestamp, or generation counter.' "$document"
-	grep -Fq 'Unknown members remain retained as raw evidence; malformed encodings and duplicate documented singular members are rejected by Helianthus decoder policy.' "$document"
-	grep -Fq 'Zero current and zero timeout remain unknown.' "$document"
-	grep -Fq 'No sender, dispatcher, transport activation, operation authorization, or live-device claim follows from this decoder contract.' "$document"
-}
-
-check_tesla_gen3_evse_current_limit_mcp_projection() {
-	local document="$1"
-	grep -Fqx '## MCP read-only current-limit projection' "$document"
-	grep -Fq 'The no-argument `modbus.v1.tesla.gen3.evse.current_limit.get` tool' "$document"
-	grep -Fq 'only already-injected records for `wc3_24_44_3`.' "$document"
-	grep -Fq 'The projection is `READ_ONLY`:' "$document"
-	grep -Fq 'always reports `outbound_allowed` as `false`, constructs no request, performs no acquisition, and never sends a frame.' "$document"
-	grep -Fq 'Persistent and provisional limits remain distinct.' "$document"
-	grep -Fq 'Its optional persistent object retains the integer-A `max_output_current_amps` fact with the bounded family-6 t7 request and t8 terminal payloads.' "$document"
-	grep -Fq 'Its optional provisional object retains `limit_current_max_amps`, `limit_timeout_s`, and `inhibit_charging` with all four bounded payloads: t25 request, t26 acknowledgement, t27 readback request, and t28 readback terminal.' "$document"
-	grep -Fq 'A provisional object is available only when that complete correlated sequence is retained.' "$document"
-	grep -Fq 'Each object is validated independently.' "$document"
-	grep -Fq 'An invalid object is not projected, but a complete qualified sibling remains available even when the provider reports an error.' "$document"
-	grep -Fq 'If neither object qualifies, the tool returns no projected data with a structured error.' "$document"
-	grep -Fq 'does not define a setter, must not infer a watt limit, and does not make zero timeout interoperable.' "$document"
-	grep -Fq 'does not expose a result for another operation version or assign semantics to FC101 or FC102.' "$document"
-}
-
-check_tesla_generation_contracts() {
-	local legacy="$1"
-	local gen3="$2"
-
-	check_tesla_legacy_public_protocol "$legacy"
-	check_tesla_gen3_public_protocol "$gen3"
-
-	for heading in \
-		'Scope and identification' \
-		'Serial and framing' \
-		'Checksum' \
-		'Command-family boundary' \
-		'Qualification' \
-		'Native retention' \
-		'Safety boundary' \
-		'Compatibility'; do
-		grep -Fqx "## $heading" "$legacy"
-	done
-	grep -Fq 'The legacy profile is a pre-Gen3 candidate and is not an assertion that every Wall Connector Gen2 implements this protocol.' "$legacy"
-	grep -Fq 'A legacy command byte `FC` is not a Modbus function code.' "$legacy"
-	grep -Fq 'FC100, FC101, and FC102 are not part of this contract.' "$legacy"
-	grep -Fq '9600 baud, eight data bits, no parity, and one stop bit' "$legacy"
-	grep -Fq 'C0 | escaped(message) | C0' "$legacy"
-	grep -Fq 'C0 -> DB DC' "$legacy"
-	grep -Fq 'DB -> DB DD' "$legacy"
-	grep -Fq 'sum(message_without_checksum[1:]) & 0xff' "$legacy"
-	grep -Fq 'The family-compatible tier accepts a locally declared legacy protocol family without claiming a firmware build.' "$legacy"
-	grep -Fq 'Native runtime records retain bounded decoded frames and unknown command payloads exactly.' "$legacy"
-	grep -Fqx '### Evidence and confidence' "$legacy"
-	grep -Fq 'community-observed/correlated' "$legacy"
-
-	for heading in \
-		'Scope and separation' \
-		'Serial and activation' \
-		'RTU framing' \
-		'Function boundary' \
-		'Exact version profiles' \
-		'Qualification' \
-		'Native retention' \
-		'Safety boundary' \
-		'Compatibility'; do
-		grep -Fqx "## $heading" "$gen3"
-	done
-	grep -Fq 'It must not use the legacy SLIP framing, checksum, command vocabulary, or qualification predicate.' "$gen3"
-	grep -Fq '115200 baud, eight data bits, no parity, and one stop bit' "$gen3"
-	grep -Fq '`TESLA` followed by NUL and then `PASS` followed by NUL' "$gen3"
-	grep -Fq 'FC100, FC101, and FC102 are private function-code values selected only by this Gen3 profile.' "$gen3"
-	grep -Fq '`wc3_24_28_3` and `wc3_24_44_3` are known HSC observations, not a version whitelist.' "$gen3"
-	grep -Fq '`compatible_candidate` retains an unenumerated Gen3 version with its native payloads.' "$gen3"
-	grep -Fq 'No numeric minimum version is asserted by this contract.' "$gen3"
-	grep -Fq 'otherwise it is `unknown`.' "$gen3"
-	grep -Fq 'The version label alone does not grant a HSC operation or live exchange.' "$gen3"
-	grep -Fq 'Native runtime records retain bounded payloads, including unknown fields, exactly.' "$gen3"
-	grep -Fqx '## Native operation records' "$gen3"
-	grep -Fq 'record retains its selected Gen3 profile, operation version, private function' "$gen3"
-	grep -Fq 'complete bounded native payload for each retained request or response.' "$gen3"
-	grep -Fq 'The FC100 catalog applies only to the Gen3 profile; it does not select or reinterpret' "$gen3"
-	grep -Fq 'FC101 and FC102 retain the same native record context, while their normal payloads remain' "$gen3"
-	grep -Fq 'opaque unless a separate version-scoped operation contract assigns a named' "$gen3"
-	if grep -Eqi '([0-9]+\.[0-9]+\.[0-9]+)[^.]*\b(minimum|or newer|and later|qualifies)\b|\bminimum version\b[^.]*[0-9]' "$gen3"; then
-		echo 'Tesla Gen3 contract introduces a numeric version threshold' >&2
-		return 1
-	fi
-}
-
-check_tesla_evse_scope() {
-	local document="$1"
-	local forbidden='wifi|wi-fi|(^|[^[:alnum:]])AP([^[:alnum:]]|$)|pairing|provision|registration|activat(e|ion)|credential|password|auth(entication|orization)?|OCPP|(^|[^[:alnum:]])LED([^[:alnum:]]|$)|service|debug|eCAN|mailbox|(^|[^[:alnum:]])reset([^[:alnum:]]|$)|factory[[:space:]-]?reset|perform[[:space:]-]?reset|perform[[:space:]-]?update|check[[:space:]-]?for[[:space:]-]?update|clear[[:space:]-]?update|reboot|firmware[[:space:]-]?update|AccessControl|ChargeSchedule|SecurityParameter|CountryCode|Neurio'
-
-	grep -Fqx '### FC100 EVSE operation registry' "$document"
-	grep -Fq 'GetVitals' "$document"
-	grep -Fq 'GetLifetimeStats' "$document"
-	grep -Fq 'GetLoadSharingNetworkState' "$document"
-	grep -Fq 'GetSystemInfo' "$document"
-	grep -Fq 'EVSE charging-current limit control' "$document"
-	grep -Fqx '### FC100 EVSE operation numbers' "$document"
-	local number_row
-	for number_row in \
-		'| Common system information | 4 | 2 → 3 | exact empty | registry fact, see below |' \
-		'| WC vitals (GetVitals) | 6 | 1 → 2 | exact empty | registry fact, see below |' \
-		'| WC lifetime statistics (GetLifetimeStats) | 6 | 3 → 4 | exact empty | registry fact, see below |' \
-		'| WC system information (GetSystemInfo) | 6 | 9 → 10 | exact empty | registry fact, see below |' \
-		'| WC load-sharing state (GetLoadSharingNetworkState) | 6 | 11 → 12 | exact empty | registry fact, see below |' \
-		'| WC persistent settings, current limit only | 6 | 7 → 8 | structurally validated | [exact 24.44.3 body and evidence contract](gen3-hsc-rtu.md#exact-24443-body-and-evidence-contract) |' \
-		'| WC provisional current limit | 6 | 25 → 26 | structurally validated | [exact 24.44.3 body and evidence contract](gen3-hsc-rtu.md#exact-24443-body-and-evidence-contract) |' \
-		'| WC provisional readback | 6 | 27 → 28 | exact empty | [exact 24.44.3 body and evidence contract](gen3-hsc-rtu.md#exact-24443-body-and-evidence-contract) |'; do
-		grep -Fxq "$number_row" "$document" || { echo "Tesla EVSE operation number row missing: $number_row" >&2; return 1; }
-	done
-	grep -Fq 'Basis for the current-limit pairs is the bounded static evidence for `wc3_24_44_3` published in the linked Gen3 HSC contract.' "$document" || return 1
-	grep -Fq 'They are recorded as Helianthus operation-registry facts for the `wc3_24_44_3` operation version, restored from the named operation registry published in this page at commit `9fa7cd8` (section "FC100 named operation registry for WC3 24.44.3", first added in commit `d9352f2`), and are not additional observations of firmware behavior.' "$document" || return 1
-	grep -Fq 'They carry no independent body qualification, and a family/tag match grants no live capability or control.' "$document" || return 1
-	grep -Fq 'The six observation and readback requests have exact empty bodies.' "$document" || return 1
-	grep -Fq 'are Helianthus recovered labels' "$document" || return 1
-	grep -Fq 'They are not vendor-published names' "$document" || return 1
-	if sed -e 's/provisional current//g' -e 's/provisional readback//g' "$document" | grep -Eqi "$forbidden"; then
-		echo 'Tesla TEDAPI document exceeds the EVSE interoperability scope' >&2
-		return 1
-	fi
+  check_public_protocol "$1" || return 1
+  check_tesla_contract read_acquisition "$tesla_read_acquisition_page=$1"
 }
 
 check_private_function_contract() {
@@ -1372,24 +1030,25 @@ if [[ $# -gt 0 ]]; then
     --check-tesla-read-acquisition) check_tesla_read_acquisition "$2" ;;
     --check-sdongle-admission) check_sdongle_admission "$2" ;;
     --check-public-protocol) check_public_protocol "$2" ;;
-    --check-tesla-tedapi-contract) check_tesla_tedapi_contract "$2" ;;
+    --check-tesla-tedapi-contract) check_tesla_contract tedapi,evse_scope "$tesla_tedapi_page=$2" ;;
     --check-tesla-generation-contracts)
       if [[ $# -ne 3 ]]; then
         exit 2
       fi
-      check_tesla_generation_contracts "$2" "$3"
+      check_tesla_contract legacy_public_protocol,gen3_public_protocol,generation \
+        "$tesla_legacy_page=$2" "$tesla_gen3_page=$3"
       ;;
 		--check-tesla-legacy-evse-current-contract)
-			check_tesla_legacy_evse_current_contract "$2"
+			check_tesla_contract legacy_evse_current "$tesla_legacy_page=$2"
 			;;
 		--check-tesla-gen3-evse-current-limit-contract)
-			check_tesla_gen3_evse_current_limit_contract "$2"
+			check_tesla_contract gen3_evse_current_limit "$tesla_gen3_page=$2"
 			;;
 		--check-tesla-gen3-evse-current-limit-wire-evidence)
-			check_tesla_gen3_evse_current_limit_wire_evidence "$2"
+			check_tesla_contract gen3_wire_evidence "$tesla_gen3_page=$2"
 			;;
 		--check-tesla-gen3-evse-current-limit-mcp-projection)
-			check_tesla_gen3_evse_current_limit_mcp_projection "$2"
+			check_tesla_contract gen3_mcp_projection "$tesla_gen3_page=$2"
 			;;
     --check-private-function-contract) check_private_function_contract "$2" ;;
     --check-sunspec-v1-model-families-contract) check_sunspec_v1_model_families_contract "$2" ;;
@@ -1468,15 +1127,11 @@ for multivendor_spec in "${multivendor_specs[@]}"; do
   test -f "$multivendor_spec"
 done
 
-check_tesla_tedapi_contract "$spec"
-check_tesla_generation_contracts "$tesla_legacy_spec" "$tesla_gen3_spec"
-check_tesla_legacy_evse_current_contract "$tesla_legacy_spec"
-check_tesla_gen3_evse_current_limit_contract "$tesla_gen3_spec"
-check_tesla_gen3_evse_current_limit_wire_evidence "$tesla_gen3_spec"
-check_tesla_gen3_evse_current_limit_mcp_projection "$tesla_gen3_spec"
+check_tesla_contract \
+  tedapi,evse_scope,legacy_public_protocol,gen3_public_protocol,generation,legacy_evse_current,gen3_evse_current_limit,gen3_wire_evidence,gen3_mcp_projection \
+  "$tesla_tedapi_page=$spec" "$tesla_legacy_page=$tesla_legacy_spec" "$tesla_gen3_page=$tesla_gen3_spec"
 check_tesla_current_limit_operation "$tesla_current_limit_spec"
 check_tesla_read_acquisition "$tesla_read_acquisition_spec"
-check_tesla_evse_scope "$spec"
 
 check_private_function_contract "$private_spec"
 
