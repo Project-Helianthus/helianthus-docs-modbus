@@ -301,6 +301,31 @@ class TeslaContractRules(unittest.TestCase):
                 self.assertNotEqual(self.run_contract(rule['contract']).returncode, 0)
                 self.restore(rule['page'])
 
+    def test_fence_types_hide_headings_and_close_only_on_a_matching_fence(self):
+        hidden = ('~~~', '~~~~text', '```', '````', '  ```text', '   ~~~')
+        for opener in hidden:
+            with self.subTest(opener=opener):
+                lines = [opener, '## A', opener.strip()[:3] * 2 + opener.strip()[0], '## B']
+                self.assertEqual([line for _, _, line in ENGINE.headings(lines)], ['## B'])
+        # A different fence character, or a shorter run, does not close the block.
+        self.assertEqual(ENGINE.headings(['~~~', '```', '## A', '~~', '~~~', '## B']),
+                         [(5, 2, '## B')])
+        self.assertEqual(ENGINE.headings(['````', '```', '## A', '````', '## B']),
+                         [(4, 2, '## B')])
+        # A backtick fence cannot carry backticks in its info string; four spaces is code.
+        self.assertEqual([line for _, _, line in ENGINE.headings(['``` a`b', '## A'])], ['## A'])
+        self.assertEqual([line for _, _, line in ENGINE.headings(['    ```', '## A'])], ['## A'])
+
+    def test_tilde_fenced_sections_do_not_satisfy_rules(self):
+        rule = next(rule for rule in ENGINE.load_rules(RULES)
+                    if rule['kind'] == 'heading' and rule['section'] is None)
+        path = self.copies[rule['page']]
+        lines = path.read_text(encoding='utf-8').split('\n')
+        self.assertEqual(lines.count(rule['value']), 1)
+        path.write_text('\n'.join('~~~\n' + line + '\n~~~' if line == rule['value'] else line
+                                  for line in lines), encoding='utf-8')
+        self.assertNotEqual(self.run_contract(rule['contract']).returncode, 0)
+
     def test_each_rule_key_field_changes_the_outcome(self):
         """Vary contract, page, section, kind and value of one rule; each must fail."""
         target = next(i for i, r in enumerate(self.rules)

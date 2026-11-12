@@ -64,6 +64,7 @@ PAGE = re.compile(r'protocols/tesla/[a-z0-9]+(?:-[a-z0-9]+)*\.md')
 HEADING = re.compile(r'(#{1,6}) \S(?:.*\S)?')
 PIN = re.compile(r'<pin:([^>\s]*)>')
 PIN_TOKEN = '([0-9A-Fa-f]{7,64})'
+FENCE = re.compile(r' {0,3}(`{3,}|~{3,})(.*)')
 DIGEST = re.compile(r'[0-9A-Fa-f]{64}')
 LOCATOR = re.compile(r'https://[^)]+')
 
@@ -184,11 +185,16 @@ def load_rules(path):
 def headings(lines):
     """Return (index, level, line) for every heading outside fenced blocks."""
     found = []
-    fenced = False
+    fence = None
     for index, line in enumerate(lines):
-        if line.startswith('```'):
-            fenced = not fenced
-        elif not fenced and HEADING.fullmatch(line):
+        opening = FENCE.match(line)
+        if fence is not None:
+            if (opening and opening.group(1)[0] == fence[0] and len(opening.group(1)) >= len(fence)
+                    and not opening.group(2).strip()):
+                fence = None
+        elif opening and not (opening.group(1)[0] == '`' and '`' in opening.group(2)):
+            fence = opening.group(1)
+        elif HEADING.fullmatch(line):
             found.append((index, len(line) - len(line.lstrip('#')), line))
     return found
 
