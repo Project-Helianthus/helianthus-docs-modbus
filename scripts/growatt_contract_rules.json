@@ -1,0 +1,1381 @@
+{
+  "version": 1,
+  "rules": [
+    {
+      "contract": "x2_page",
+      "page": "protocols/growatt/shinewilan-x2-bridge-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Request mapping",
+      "reason": "Required section of the bridge contract: request mapping."
+    },
+    {
+      "contract": "x2_page",
+      "page": "protocols/growatt/shinewilan-x2-bridge-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Response mapping",
+      "reason": "Required section of the bridge contract: response mapping."
+    },
+    {
+      "contract": "x2_page",
+      "page": "protocols/growatt/shinewilan-x2-bridge-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Read-only boundary",
+      "reason": "Required section of the bridge contract: read-only boundary."
+    },
+    {
+      "contract": "x2_page",
+      "page": "protocols/growatt/shinewilan-x2-bridge-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Identity and admission",
+      "reason": "Required section of the bridge contract: identity and admission."
+    },
+    {
+      "contract": "x2_page",
+      "page": "protocols/growatt/shinewilan-x2-bridge-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Transparency limits",
+      "reason": "Required section of the bridge contract: transparency limits."
+    },
+    {
+      "contract": "x2_page",
+      "page": "protocols/growatt/shinewilan-x2-bridge-v1.md",
+      "section": "## Read-only boundary",
+      "kind": "statement",
+      "value": "Unsupported or undocumented operations are",
+      "reason": "Operations outside the FC03/FC04 read surface are refused before transmission."
+    },
+    {
+      "contract": "x2_contract",
+      "page": "protocols/growatt/shinewilan-x2-bridge-v1.md",
+      "section": "## Request mapping",
+      "kind": "statement",
+      "value": "MBAP Unit Identifier as the downstream Modbus RTU unit address and forwards",
+      "reason": "The MBAP Unit Identifier is the downstream RTU unit address; the bridge does not remap it."
+    },
+    {
+      "contract": "x2_contract",
+      "page": "protocols/growatt/shinewilan-x2-bridge-v1.md",
+      "section": "## Request mapping",
+      "kind": "statement",
+      "value": "without changing its function code, register offset, quantity, or payload.",
+      "reason": "The bridge forwards the request PDU unchanged: function code, register offset, quantity and payload."
+    },
+    {
+      "contract": "x2_contract",
+      "page": "protocols/growatt/shinewilan-x2-bridge-v1.md",
+      "section": "## Request mapping",
+      "kind": "statement",
+      "value": "The MBAP Protocol Identifier must be 0x0000.",
+      "reason": "Admitted MBAP Protocol Identifier value."
+    },
+    {
+      "contract": "x2_contract",
+      "page": "protocols/growatt/shinewilan-x2-bridge-v1.md",
+      "section": "## Request mapping",
+      "kind": "statement",
+      "value": "The MBAP Length must equal one",
+      "reason": "The MBAP Length is exact; any other length is rejected before a downstream request."
+    },
+    {
+      "contract": "x2_contract",
+      "page": "protocols/growatt/shinewilan-x2-bridge-v1.md",
+      "section": "## Request mapping",
+      "kind": "statement",
+      "value": "Only Unit Identifiers 1 through 247 are admitted",
+      "reason": "Admitted unicast Unit Identifier range."
+    },
+    {
+      "contract": "x2_contract",
+      "page": "protocols/growatt/shinewilan-x2-bridge-v1.md",
+      "section": "## Request mapping",
+      "kind": "statement",
+      "value": "Unit Identifier 0 is RTU broadcast and is `NO_SEND`",
+      "reason": "The broadcast Unit Identifier is never sent."
+    },
+    {
+      "contract": "x2_contract",
+      "page": "protocols/growatt/shinewilan-x2-bridge-v1.md",
+      "section": "## Request mapping",
+      "kind": "statement",
+      "value": "not infer a unit, scan unit addresses",
+      "reason": "The bridge neither infers a unit nor scans unit addresses."
+    },
+    {
+      "contract": "x2_contract",
+      "page": "protocols/growatt/shinewilan-x2-bridge-v1.md",
+      "section": "## Read-only boundary",
+      "kind": "statement",
+      "value": "The read-only candidate surface consists of FC03 holding-register reads and FC04 input-register reads.",
+      "reason": "Admitted read-only function codes of the bridge surface."
+    },
+    {
+      "contract": "x2_contract",
+      "page": "protocols/growatt/shinewilan-x2-bridge-v1.md",
+      "section": "## Identity and admission",
+      "kind": "statement",
+      "value": "The bridge has no semantic registry profile of its own.",
+      "reason": "The bridge is transport only and creates no semantic profile."
+    },
+    {
+      "contract": "bms_page",
+      "page": "protocols/growatt/bms-rs485-1xsxxp-v202.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Exact applicability and revision",
+      "reason": "Required section of the BMS contract: exact applicability and revision."
+    },
+    {
+      "contract": "bms_page",
+      "page": "protocols/growatt/bms-rs485-1xsxxp-v202.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## FC03 read-only boundary",
+      "reason": "Required section of the BMS contract: FC03 read-only boundary."
+    },
+    {
+      "contract": "bms_page",
+      "page": "protocols/growatt/bms-rs485-1xsxxp-v202.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Writes and controls",
+      "reason": "Required section of the BMS contract: writes and controls."
+    },
+    {
+      "contract": "bms_page",
+      "page": "protocols/growatt/bms-rs485-1xsxxp-v202.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Decoder and runtime boundary",
+      "reason": "Required section of the BMS contract: decoder and runtime boundary."
+    },
+    {
+      "contract": "bms_page",
+      "page": "protocols/growatt/bms-rs485-1xsxxp-v202.md",
+      "section": "## Decoder and runtime boundary",
+      "kind": "statement",
+      "value": "Runtime observations retain the selected unit, transport context, and exact",
+      "reason": "Runtime observations keep the selected unit, transport context and exact slices as native evidence."
+    },
+    {
+      "contract": "bms_page",
+      "page": "protocols/growatt/bms-rs485-1xsxxp-v202.md",
+      "section": "## Decoder and runtime boundary",
+      "kind": "statement",
+      "value": "Public fixtures use synthetic values and do not publish installation data.",
+      "reason": "Public fixtures stay synthetic and publish no installation data."
+    },
+    {
+      "contract": "bms_contract",
+      "page": "protocols/growatt/bms-rs485-1xsxxp-v202.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Typed read-only fields",
+      "reason": "Required section that bounds the typed subset."
+    },
+    {
+      "contract": "bms_contract",
+      "page": "protocols/growatt/bms-rs485-1xsxxp-v202.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## MCP native observation projection",
+      "reason": "Required section of the native MCP projection."
+    },
+    {
+      "contract": "bms_contract",
+      "page": "protocols/growatt/bms-rs485-1xsxxp-v202.md",
+      "section": "## Exact applicability and revision",
+      "kind": "statement",
+      "value": "protocol family label `1xSxxP ESS`",
+      "reason": "Identity tuple member (protocol family label) of the exact revision tuple."
+    },
+    {
+      "contract": "bms_contract",
+      "page": "protocols/growatt/bms-rs485-1xsxxp-v202.md",
+      "section": "## Exact applicability and revision",
+      "kind": "statement",
+      "value": "file revision family `Rev2.01`",
+      "reason": "Identity tuple member (file revision family) of the exact revision tuple."
+    },
+    {
+      "contract": "bms_contract",
+      "page": "protocols/growatt/bms-rs485-1xsxxp-v202.md",
+      "section": "## Exact applicability and revision",
+      "kind": "statement",
+      "value": "document header version `V2.0`",
+      "reason": "Identity tuple member (document header version) of the exact revision tuple."
+    },
+    {
+      "contract": "bms_contract",
+      "page": "protocols/growatt/bms-rs485-1xsxxp-v202.md",
+      "section": "## Exact applicability and revision",
+      "kind": "statement",
+      "value": "cumulative change record through revision `2.02`",
+      "reason": "Identity tuple member (cumulative change record) of the exact revision tuple."
+    },
+    {
+      "contract": "bms_contract",
+      "page": "protocols/growatt/bms-rs485-1xsxxp-v202.md",
+      "section": "## Public evidence and source boundary",
+      "kind": "statement",
+      "value": "does not automatically apply the contract to any commercial battery",
+      "reason": "The contract is not applied to a product by brand, transport or function code."
+    },
+    {
+      "contract": "bms_contract",
+      "page": "protocols/growatt/bms-rs485-1xsxxp-v202.md",
+      "section": "## Transport and addressing",
+      "kind": "statement",
+      "value": "Unit 0 is broadcast and is always `NO_SEND`.",
+      "reason": "The broadcast unit is never sent."
+    },
+    {
+      "contract": "bms_contract",
+      "page": "protocols/growatt/bms-rs485-1xsxxp-v202.md",
+      "section": "## FC03 read-only boundary",
+      "kind": "statement",
+      "value": "function is FC03 Read Holding Registers.",
+      "reason": "FC03 is the only admitted function; the statement also opens the base slice list."
+    },
+    {
+      "contract": "bms_contract",
+      "page": "protocols/growatt/bms-rs485-1xsxxp-v202.md",
+      "section": "## FC03 read-only boundary",
+      "kind": "slice",
+      "value": "offset 0x0001, quantity 7",
+      "reason": "First admitted base FC03 slice: firmware and gauge-version context."
+    },
+    {
+      "contract": "bms_contract",
+      "page": "protocols/growatt/bms-rs485-1xsxxp-v202.md",
+      "section": "## FC03 read-only boundary",
+      "kind": "slice",
+      "value": "offset 0x000D, quantity 29",
+      "reason": "Second admitted base FC03 slice: identity, status and telemetry context."
+    },
+    {
+      "contract": "bms_contract",
+      "page": "protocols/growatt/bms-rs485-1xsxxp-v202.md",
+      "section": "## FC03 read-only boundary",
+      "kind": "slice",
+      "value": "offset 0x0100, quantity 12",
+      "reason": "Third admitted base FC03 slice: read-only prefix of the 2.02 extension."
+    },
+    {
+      "contract": "bms_contract",
+      "page": "protocols/growatt/bms-rs485-1xsxxp-v202.md",
+      "section": "## FC03 read-only boundary",
+      "kind": "slice",
+      "value": "offset 0x010D, quantity 2",
+      "reason": "Fourth admitted base FC03 slice: final read-only extension values."
+    },
+    {
+      "contract": "bms_contract",
+      "page": "protocols/growatt/bms-rs485-1xsxxp-v202.md",
+      "section": "## FC03 read-only boundary",
+      "kind": "statement",
+      "value": "Only the typed extension words listed below are decoded.",
+      "reason": "Only the listed typed extension words are decoded; the statement closes the base slice list."
+    },
+    {
+      "contract": "bms_contract",
+      "page": "protocols/growatt/bms-rs485-1xsxxp-v202.md",
+      "section": "## Opt-in fixed multi-group diagnostic observation",
+      "kind": "statement",
+      "value": "The base observation remains complete with its four FC03 slices.",
+      "reason": "The base observation is complete without the diagnostic."
+    },
+    {
+      "contract": "bms_contract",
+      "page": "protocols/growatt/bms-rs485-1xsxxp-v202.md",
+      "section": "## Opt-in fixed multi-group diagnostic observation",
+      "kind": "statement",
+      "value": "multi-group diagnostic may be evaluated only after that base observation and",
+      "reason": "The diagnostic runs only after the base observation qualifies."
+    },
+    {
+      "contract": "bms_contract",
+      "page": "protocols/growatt/bms-rs485-1xsxxp-v202.md",
+      "section": "## Opt-in fixed multi-group diagnostic observation",
+      "kind": "statement",
+      "value": "It adds exactly these three FC03 slices, in",
+      "reason": "The diagnostic adds exactly three slices; the statement opens the diagnostic slice list."
+    },
+    {
+      "contract": "bms_contract",
+      "page": "protocols/growatt/bms-rs485-1xsxxp-v202.md",
+      "section": "## Opt-in fixed multi-group diagnostic observation",
+      "kind": "slice",
+      "value": "offset 0x0070, quantity 1",
+      "reason": "First diagnostic FC03 slice: reported battery-group ID word."
+    },
+    {
+      "contract": "bms_contract",
+      "page": "protocols/growatt/bms-rs485-1xsxxp-v202.md",
+      "section": "## Opt-in fixed multi-group diagnostic observation",
+      "kind": "slice",
+      "value": "offset 0x0071, quantity 16",
+      "reason": "Second diagnostic FC03 slice: first fixed cell-voltage block."
+    },
+    {
+      "contract": "bms_contract",
+      "page": "protocols/growatt/bms-rs485-1xsxxp-v202.md",
+      "section": "## Opt-in fixed multi-group diagnostic observation",
+      "kind": "slice",
+      "value": "offset 0x0081, quantity 16",
+      "reason": "Third diagnostic FC03 slice: second fixed cell-voltage block."
+    },
+    {
+      "contract": "bms_contract",
+      "page": "protocols/growatt/bms-rs485-1xsxxp-v202.md",
+      "section": "## Opt-in fixed multi-group diagnostic observation",
+      "kind": "statement",
+      "value": "The two cell blocks are exactly 0x0071 through 0x0080 and 0x0081 through 0x0090. They are fixed bounds, not an example from which another group, block,",
+      "reason": "Fixed cell-block bounds that admit no inferred group, block or offset; the statement closes the diagnostic slice list."
+    },
+    {
+      "contract": "bms_contract",
+      "page": "protocols/growatt/bms-rs485-1xsxxp-v202.md",
+      "section": "## Opt-in fixed multi-group diagnostic observation",
+      "kind": "statement",
+      "value": "At offset 0x001F, bits 8 through 13 are the reported Battery ID; bits 14 and 15 are reserved.",
+      "reason": "Value table of the Battery ID bit field and its reserved bits."
+    },
+    {
+      "contract": "bms_contract",
+      "page": "protocols/growatt/bms-rs485-1xsxxp-v202.md",
+      "section": "## Opt-in fixed multi-group diagnostic observation",
+      "kind": "statement",
+      "value": "At offset 0x0070, the whole raw word is the reported",
+      "reason": "The group word is retained whole as the reported group ID."
+    },
+    {
+      "contract": "bms_contract",
+      "page": "protocols/growatt/bms-rs485-1xsxxp-v202.md",
+      "section": "## Opt-in fixed multi-group diagnostic observation",
+      "kind": "statement",
+      "value": "Neither value is a Modbus unit identifier, an address",
+      "reason": "Battery and group IDs are never unit identifiers or selectors."
+    },
+    {
+      "contract": "bms_contract",
+      "page": "protocols/growatt/bms-rs485-1xsxxp-v202.md",
+      "section": "## Opt-in fixed multi-group diagnostic observation",
+      "kind": "statement",
+      "value": "Offset 0x0109 is a native, revision-scoped balance-state word.",
+      "reason": "The balance-state word is native and revision-scoped."
+    },
+    {
+      "contract": "bms_contract",
+      "page": "protocols/growatt/bms-rs485-1xsxxp-v202.md",
+      "section": "## Opt-in fixed multi-group diagnostic observation",
+      "kind": "statement",
+      "value": "Bits 0 through 15 retain the documented per-cell off/on states in native bit order.",
+      "reason": "The balance bits keep their native per-cell order."
+    },
+    {
+      "contract": "bms_contract",
+      "page": "protocols/growatt/bms-rs485-1xsxxp-v202.md",
+      "section": "## Opt-in fixed multi-group diagnostic observation",
+      "kind": "statement",
+      "value": "Offset 0x010C is excluded from every admitted slice.",
+      "reason": "Offset 0x010C is outside every admitted slice."
+    },
+    {
+      "contract": "bms_contract",
+      "page": "protocols/growatt/bms-rs485-1xsxxp-v202.md",
+      "section": "## Opt-in fixed multi-group diagnostic observation",
+      "kind": "statement",
+      "value": "This contract defines no selector, scan, broadcast, handshake, write, or read-modify-write operation.",
+      "reason": "No selector, scan, broadcast, handshake or write operation exists."
+    },
+    {
+      "contract": "bms_contract",
+      "page": "protocols/growatt/bms-rs485-1xsxxp-v202.md",
+      "section": "## Opt-in fixed multi-group diagnostic observation",
+      "kind": "statement",
+      "value": "Missing, contradictory, malformed, or reserved-bit-invalid identity evidence;",
+      "reason": "Invalid identity evidence fails closed."
+    },
+    {
+      "contract": "bms_contract",
+      "page": "protocols/growatt/bms-rs485-1xsxxp-v202.md",
+      "section": "## Opt-in fixed multi-group diagnostic observation",
+      "kind": "statement",
+      "value": "`insufficient_evidence`, with no repeated diagnostic facts and no diagnostic send. It does not erase qualified base status telemetry.",
+      "reason": "A failed diagnostic emits nothing and keeps the base telemetry (partial last-known-good state)."
+    },
+    {
+      "contract": "bms_contract",
+      "page": "protocols/growatt/bms-rs485-1xsxxp-v202.md",
+      "section": "## Opt-in fixed multi-group diagnostic observation",
+      "kind": "statement",
+      "value": "Offsets 0x0009 through 0x000C contain barcode material and are not read",
+      "reason": "Barcode offsets are never read or used for identity."
+    },
+    {
+      "contract": "bms_contract",
+      "page": "protocols/growatt/bms-rs485-1xsxxp-v202.md",
+      "section": "## Offline identity tuple",
+      "kind": "statement",
+      "value": "revision-declared tuple remains required.",
+      "reason": "The complete revision-declared identity tuple stays required."
+    },
+    {
+      "contract": "bms_contract",
+      "page": "protocols/growatt/bms-rs485-1xsxxp-v202.md",
+      "section": "## Typed read-only fields",
+      "kind": "statement",
+      "value": "The typed subset is limited to the fields listed below.",
+      "reason": "The typed subset is closed."
+    },
+    {
+      "contract": "bms_contract",
+      "page": "protocols/growatt/bms-rs485-1xsxxp-v202.md",
+      "section": "## Typed read-only fields",
+      "kind": "statement",
+      "value": "Company and generation occupy the low and high bytes, respectively,",
+      "reason": "Byte order of the company and generation identity components."
+    },
+    {
+      "contract": "bms_contract",
+      "page": "protocols/growatt/bms-rs485-1xsxxp-v202.md",
+      "section": "## Typed read-only fields",
+      "kind": "statement",
+      "value": "SOC is the low byte at `0x0015` and must be in the inclusive range 0 through",
+      "reason": "Byte position and value range of SOC."
+    },
+    {
+      "contract": "bms_contract",
+      "page": "protocols/growatt/bms-rs485-1xsxxp-v202.md",
+      "section": "## Typed read-only fields",
+      "kind": "statement",
+      "value": "Current at `0x0017` is signed two's-complement and uses 10 mA units.",
+      "reason": "Signedness and scale of the pack current."
+    },
+    {
+      "contract": "bms_contract",
+      "page": "protocols/growatt/bms-rs485-1xsxxp-v202.md",
+      "section": "## Typed read-only fields",
+      "kind": "statement",
+      "value": "Only `0x0100`, `0x0101`, `0x0102`, `0x0104`, `0x0105`, and `0x0106` have typed",
+      "reason": "Closed list of typed extension words."
+    },
+    {
+      "contract": "bms_contract",
+      "page": "protocols/growatt/bms-rs485-1xsxxp-v202.md",
+      "section": "## Typed read-only fields",
+      "kind": "statement",
+      "value": "`0x0103`, `0x0107` through `0x010B`, and both `0x010D` slice words remain opaque.",
+      "reason": "Extension words that stay opaque."
+    },
+    {
+      "contract": "bms_contract",
+      "page": "protocols/growatt/bms-rs485-1xsxxp-v202.md",
+      "section": "## MCP native observation projection",
+      "kind": "statement",
+      "value": "For a qualified observation, an MCP status result must return the selected",
+      "reason": "An MCP result returns the selected native observation."
+    },
+    {
+      "contract": "bms_contract",
+      "page": "protocols/growatt/bms-rs485-1xsxxp-v202.md",
+      "section": "## MCP native observation projection",
+      "kind": "statement",
+      "value": "all four exact FC03 slices that formed the bounded base observation. It must preserve every retained word at its native offset, in",
+      "reason": "An MCP result keeps all four base slices and every word at its native offset."
+    },
+    {
+      "contract": "bms_contract",
+      "page": "protocols/growatt/bms-rs485-1xsxxp-v202.md",
+      "section": "## MCP native observation projection",
+      "kind": "statement",
+      "value": "A failed diagnostic evaluation emits no repeated diagnostic facts and does not erase qualified base status telemetry.",
+      "reason": "A failed diagnostic does not erase the qualified base projection."
+    },
+    {
+      "contract": "bms_contract",
+      "page": "protocols/growatt/bms-rs485-1xsxxp-v202.md",
+      "section": "## Writes and controls",
+      "kind": "statement",
+      "value": "FC10 Preset Multiple Registers, address allocation",
+      "reason": "FC10 and address allocation are writes outside the read contract."
+    },
+    {
+      "contract": "bms_contract",
+      "page": "protocols/growatt/bms-rs485-1xsxxp-v202.md",
+      "section": "## Writes and controls",
+      "kind": "statement",
+      "value": "every field marked W or WR require an exact operation contract that names function, address,",
+      "reason": "Writable fields need an exact operation contract."
+    },
+    {
+      "contract": "bms_contract",
+      "page": "protocols/growatt/bms-rs485-1xsxxp-v202.md",
+      "section": "## Decoder and runtime boundary",
+      "kind": "statement",
+      "value": "A bounded decoder is permitted only for an externally declared",
+      "reason": "A decoder needs an externally declared revision tuple."
+    },
+    {
+      "contract": "bms_contract",
+      "page": "protocols/growatt/bms-rs485-1xsxxp-v202.md",
+      "section": "## Decoder and runtime boundary",
+      "kind": "statement",
+      "value": "No bounded decoder creates catalog registration, executable detection,",
+      "reason": "A decoder creates no registration or detection."
+    },
+    {
+      "contract": "bms_contract",
+      "page": "protocols/growatt/bms-rs485-1xsxxp-v202.md",
+      "section": "## Decoder and runtime boundary",
+      "kind": "statement",
+      "value": "automatic runtime admission, telemetry publication, or a support claim.",
+      "reason": "A decoder creates no runtime admission, publication or support claim."
+    },
+    {
+      "contract": "bms_contract",
+      "page": "protocols/growatt/bms-rs485-1xsxxp-v202.md",
+      "section": "## Decoder and runtime boundary",
+      "kind": "statement",
+      "value": "synthetic identity assembled from the document is not a substitute for a",
+      "reason": "A document-derived identity is not a qualified identity decision."
+    },
+    {
+      "contract": "bms_contract",
+      "page": "protocols/growatt/bms-rs485-1xsxxp-v202.md",
+      "section": "## Collision and failure behavior",
+      "kind": "statement",
+      "value": "An observation that also satisfies Growatt Protocol II, SunSpec/Fronius, or a",
+      "reason": "Overlap with another protocol family is detected."
+    },
+    {
+      "contract": "bms_contract",
+      "page": "protocols/growatt/bms-rs485-1xsxxp-v202.md",
+      "section": "## Collision and failure behavior",
+      "kind": "statement",
+      "value": "is ambiguous and produces no match.",
+      "reason": "An overlapping observation is ambiguous and matches nothing."
+    },
+    {
+      "contract": "bms_contract",
+      "page": "protocols/growatt/bms-rs485-1xsxxp-v202.md",
+      "section": "## Collision and failure behavior",
+      "kind": "statement",
+      "value": "produces `insufficient_evidence`, no send, and no partial",
+      "reason": "Failures produce insufficient evidence with no send and no partial publication."
+    },
+    {
+      "contract": "bms_contract",
+      "page": "protocols/growatt/bms-rs485-1xsxxp-v202.md",
+      "section": null,
+      "kind": "forbidden",
+      "value": "/[Uu]sers/|sha(-?256)?[-:]?[0-9a-f]{8,}|(source|vendor material) (is|are) public domain|sunspec\\.inverter\\.|canonical facts",
+      "reason": "The BMS page publishes no local path, inline digest, public-domain claim, foreign SunSpec identifier or canonical-fact claim."
+    },
+    {
+      "contract": "bms_contract",
+      "page": "protocols/growatt/bms-rs485-1xsxxp-v202.md",
+      "section": null,
+      "kind": "forbidden",
+      "value": "(^|[^0-9A-Fa-f])[0-9A-Fa-f]{40}([^0-9A-Fa-f]|$)|(^|[^0-9A-Fa-f])[0-9A-Fa-f]{64}([^0-9A-Fa-f]|$)|([0-9]{1,3}\\.){3}[0-9]{1,3}|[^\\W_](?:[^\\W_]|[.-])*:([0-9]{1,5}|[^\\W\\d_](?:[^\\W_]|[.-])*)|[Pp]ort\\s+[0-9]{1,5}",
+      "reason": "The BMS page publishes no bare source revision, address, host and port, or port number."
+    },
+    {
+      "contract": "bms_contract",
+      "page": "protocols/growatt/bms-rs485-1xsxxp-v202.md",
+      "section": null,
+      "kind": "source_locator",
+      "value": "BzXotwvjUhVhF6QHdw1AanGr8LR2kjXqfUtVK39yi+U",
+      "reason": "Public source locator for page 1 of the declared BMS revision. The value is the commitment of the exact locator; no other locator is admitted."
+    },
+    {
+      "contract": "bms_contract",
+      "page": "protocols/growatt/bms-rs485-1xsxxp-v202.md",
+      "section": null,
+      "kind": "source_locator",
+      "value": "QhAWveKgnvCWI6Aih7YO39zMPv79CTvBFBWzPWGbmXU",
+      "reason": "Public source locator for page 2 of the declared BMS revision. The value is the commitment of the exact locator; no other locator is admitted."
+    },
+    {
+      "contract": "bms_contract",
+      "page": "protocols/growatt/bms-rs485-1xsxxp-v202.md",
+      "section": null,
+      "kind": "source_locator",
+      "value": "ZK1bi9YDZU72VbkypxnAHaL2DY4v0rkwinbtg2wdb9Y",
+      "reason": "Public source locator for page 12 of the declared BMS revision. The value is the commitment of the exact locator; no other locator is admitted."
+    },
+    {
+      "contract": "bms_contract",
+      "page": "protocols/growatt/bms-rs485-1xsxxp-v202.md",
+      "section": null,
+      "kind": "source_locator",
+      "value": "0yS2M2VaobwnLjE5z3VD8uvZ7CJiJ+5/s48ILEr9V9g",
+      "reason": "Public source locator for page 14 of the declared BMS revision. The value is the commitment of the exact locator; no other locator is admitted."
+    },
+    {
+      "contract": "bms_contract",
+      "page": "protocols/growatt/bms-rs485-1xsxxp-v202.md",
+      "section": null,
+      "kind": "source_locator",
+      "value": "jZ8OVP4C5MDi2eu9lQ9UGnYNP0Z2xjtGGOPm1cOY1D4",
+      "reason": "Public source locator for page 15 of the declared BMS revision. The value is the commitment of the exact locator; no other locator is admitted."
+    },
+    {
+      "contract": "bms_contract",
+      "page": "protocols/growatt/bms-rs485-1xsxxp-v202.md",
+      "section": null,
+      "kind": "source_locator",
+      "value": "ezBOgxYVU0FdonPtpBGBaEkfOXnGw3IIiW02p5FzZzk",
+      "reason": "Public source locator for page 19 of the declared BMS revision. The value is the commitment of the exact locator; no other locator is admitted."
+    },
+    {
+      "contract": "bms_contract",
+      "page": "protocols/growatt/bms-rs485-1xsxxp-v202.md",
+      "section": null,
+      "kind": "source_locator",
+      "value": "2Gv4a2MA4lFSah/CV0/7HW15jthfLna/L0f2W0rtr5E",
+      "reason": "Public source locator for page 20 of the declared BMS revision. The value is the commitment of the exact locator; no other locator is admitted."
+    },
+    {
+      "contract": "protocol_ii_identity",
+      "page": "protocols/growatt/protocol-ii-readonly-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Identity tuple",
+      "reason": "Required section of the Protocol II identity contract: identity tuple."
+    },
+    {
+      "contract": "protocol_ii_identity",
+      "page": "protocols/growatt/protocol-ii-readonly-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Native identity capability",
+      "reason": "Required section of the Protocol II identity contract: native identity capability."
+    },
+    {
+      "contract": "protocol_ii_identity",
+      "page": "protocols/growatt/protocol-ii-readonly-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## MCP native identity projection",
+      "reason": "Required section of the Protocol II identity contract: MCP native identity projection."
+    },
+    {
+      "contract": "protocol_ii_identity",
+      "page": "protocols/growatt/protocol-ii-readonly-v1.md",
+      "section": "## Identity tuple",
+      "kind": "statement",
+      "value": "offsets 23 through 27, five words, for native serial text;",
+      "reason": "Identity tuple member: native serial text slice (offset and width)."
+    },
+    {
+      "contract": "protocol_ii_identity",
+      "page": "protocols/growatt/protocol-ii-readonly-v1.md",
+      "section": "## Native identity capability",
+      "kind": "statement",
+      "value": "A qualified runtime identity contains the selected family, unicast unit,",
+      "reason": "A qualified identity carries the selected family and unicast unit."
+    },
+    {
+      "contract": "protocol_ii_identity",
+      "page": "protocols/growatt/protocol-ii-readonly-v1.md",
+      "section": "## Native identity capability",
+      "kind": "statement",
+      "value": "model-build pair, Modbus protocol version, and the five exact FC03 identity",
+      "reason": "A qualified identity carries the model-build pair, protocol version and the five exact identity slices."
+    },
+    {
+      "contract": "protocol_ii_identity",
+      "page": "protocols/growatt/protocol-ii-readonly-v1.md",
+      "section": "## Native identity capability",
+      "kind": "statement",
+      "value": "The runtime API may carry its configured endpoint and transport context with this native observation. Public documentation and fixtures use synthetic identity values and do not publish installation-specific identifiers, captures,",
+      "reason": "Runtime context stays with the native observation; public material stays synthetic."
+    },
+    {
+      "contract": "protocol_ii_identity",
+      "page": "protocols/growatt/protocol-ii-readonly-v1.md",
+      "section": "## MCP native identity projection",
+      "kind": "statement",
+      "value": "`native_identity` without a redaction marker or a substitute digest.",
+      "reason": "The MCP projection returns the native identity without redaction or substitute digest."
+    },
+    {
+      "contract": "protocol_ii_identity",
+      "page": "protocols/growatt/protocol-ii-readonly-v1.md",
+      "section": "## MCP native identity projection",
+      "kind": "statement",
+      "value": "identity projection. The identity projection does not authorize an FC06, FC16,",
+      "reason": "The identity projection authorizes no write."
+    },
+    {
+      "contract": "protocol_ii_identity",
+      "page": "protocols/growatt/protocol-ii-readonly-v1.md",
+      "section": "## MCP native identity projection",
+      "kind": "statement",
+      "value": "The currently enumerated operation is FC03 identity acquisition. This contract does not define an FC06 or FC16 control operation, so no control command is",
+      "reason": "FC03 identity acquisition is the only enumerated operation; no control command exists."
+    },
+    {
+      "contract": "protocol_ii_identity",
+      "page": "protocols/growatt/protocol-ii-readonly-v1.md",
+      "section": "## Failure and overlap",
+      "kind": "statement",
+      "value": "partial publication. This version enumerates no control operation.",
+      "reason": "Failures publish nothing partial and no control operation is enumerated."
+    },
+    {
+      "contract": "protocol_ii_fc04",
+      "page": "protocols/growatt/protocol-ii-readonly-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## FC04 monitoring foundation",
+      "reason": "Required section of the FC04 monitoring foundation."
+    },
+    {
+      "contract": "protocol_ii_fc04",
+      "page": "protocols/growatt/protocol-ii-readonly-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "### Monitoring feature inventory",
+      "reason": "Required section of the FC04 monitoring inventory."
+    },
+    {
+      "contract": "protocol_ii_fc04",
+      "page": "protocols/growatt/protocol-ii-readonly-v1.md",
+      "section": "## Identity tuple",
+      "kind": "statement",
+      "value": "The bounded result is `NO_ADMISSIBLE_PROFILE`: there is no exact tuple and no typed field. There is no current publicly admitted typed FC04 profile.",
+      "reason": "Admitted profile result: none, with no exact tuple and no typed field."
+    },
+    {
+      "contract": "protocol_ii_fc04",
+      "page": "protocols/growatt/protocol-ii-readonly-v1.md",
+      "section": "## Identity tuple",
+      "kind": "statement",
+      "value": "The exported opaque applicability value has no public successful constructor;",
+      "reason": "The applicability value cannot be constructed publicly."
+    },
+    {
+      "contract": "protocol_ii_fc04",
+      "page": "protocols/growatt/protocol-ii-readonly-v1.md",
+      "section": "## Identity tuple",
+      "kind": "statement",
+      "value": "externally constructible forms fail closed.",
+      "reason": "Externally constructed applicability fails closed."
+    },
+    {
+      "contract": "protocol_ii_fc04",
+      "page": "protocols/growatt/protocol-ii-readonly-v1.md",
+      "section": "## Identity tuple",
+      "kind": "statement",
+      "value": "Only an unexported synthetic in-package fixture helper may exercise the source-backed FC04 schema and mechanics. That helper cannot establish real-build qualification.",
+      "reason": "Only a synthetic in-package fixture exercises the schema and it qualifies no real build."
+    },
+    {
+      "contract": "protocol_ii_fc04",
+      "page": "protocols/growatt/protocol-ii-readonly-v1.md",
+      "section": "## Identity tuple",
+      "kind": "statement",
+      "value": "its revision `1.24` is not treated as a",
+      "reason": "The manual revision is not a device-reported protocol value."
+    },
+    {
+      "contract": "protocol_ii_fc04",
+      "page": "protocols/growatt/protocol-ii-readonly-v1.md",
+      "section": "## Identity tuple",
+      "kind": "statement",
+      "value": "protocol-register value.",
+      "reason": "The protocol value is a device-reported register value."
+    },
+    {
+      "contract": "protocol_ii_fc04",
+      "page": "protocols/growatt/protocol-ii-readonly-v1.md",
+      "section": "## Identity tuple",
+      "kind": "statement",
+      "value": "Before enabling public typed admission, an owning source must establish one exact device-type, model-build, and protocol-value tuple tied to the FC04 schema.",
+      "reason": "Typed admission needs one exact device-type, model-build and protocol-value tuple."
+    },
+    {
+      "contract": "protocol_ii_fc04",
+      "page": "protocols/growatt/protocol-ii-readonly-v1.md",
+      "section": "## FC04 monitoring foundation",
+      "kind": "statement",
+      "value": "Because no public FC04 profile is admitted, the public FC04 decoder and observer fail closed and create no typed telemetry or observer.",
+      "reason": "Without an admitted profile the public decoder and observer fail closed."
+    },
+    {
+      "contract": "protocol_ii_fc04",
+      "page": "protocols/growatt/protocol-ii-readonly-v1.md",
+      "section": "## FC04 monitoring foundation",
+      "kind": "statement",
+      "value": "fixture exercises exactly one input-register slice: zero-based offsets 0 through 58 inclusive (59 words).",
+      "reason": "The fixture exercises exactly one input-register slice."
+    },
+    {
+      "contract": "protocol_ii_fc04",
+      "page": "protocols/growatt/protocol-ii-readonly-v1.md",
+      "section": "## FC04 monitoring foundation",
+      "kind": "statement",
+      "value": "offset, word count, table/provenance, timeout, Modbus exception, missing admission, identity/applicability mismatch, malformed response,",
+      "reason": "Failure classes of the all-or-nothing fixture decode."
+    },
+    {
+      "contract": "protocol_ii_fc04",
+      "page": "protocols/growatt/protocol-ii-readonly-v1.md",
+      "section": "## FC04 monitoring foundation",
+      "kind": "statement",
+      "value": "Multiword values below are unsigned 32-bit integers, high word first.",
+      "reason": "Width, signedness and word order of the multiword values."
+    },
+    {
+      "contract": "protocol_ii_fc04",
+      "page": "protocols/growatt/protocol-ii-readonly-v1.md",
+      "section": "## FC04 monitoring foundation",
+      "kind": "statement",
+      "value": "manual does not state a sentinel for these rows, so this contract invents none.",
+      "reason": "No sentinel is invented."
+    },
+    {
+      "contract": "protocol_ii_fc04",
+      "page": "protocols/growatt/protocol-ii-readonly-v1.md",
+      "section": "## FC04 monitoring foundation",
+      "kind": "row",
+      "value": "| 0 | inverter run state | one unsigned word; only 0, 1, 3 | waiting, normal, fault |",
+      "reason": "Value table row: offset, native fact, width and scale, and typed result."
+    },
+    {
+      "contract": "protocol_ii_fc04",
+      "page": "protocols/growatt/protocol-ii-readonly-v1.md",
+      "section": "## FC04 monitoring foundation",
+      "kind": "row",
+      "value": "| 1-2 | aggregate PV input power | unsigned 32-bit, high word first, 0.1 W | watts |",
+      "reason": "Value table row: offset, native fact, width and scale, and typed result."
+    },
+    {
+      "contract": "protocol_ii_fc04",
+      "page": "protocols/growatt/protocol-ii-readonly-v1.md",
+      "section": "## FC04 monitoring foundation",
+      "kind": "row",
+      "value": "| 35-36 | aggregate output power | unsigned 32-bit, high word first, 0.1 W | watts |",
+      "reason": "Value table row: offset, native fact, width and scale, and typed result."
+    },
+    {
+      "contract": "protocol_ii_fc04",
+      "page": "protocols/growatt/protocol-ii-readonly-v1.md",
+      "section": "## FC04 monitoring foundation",
+      "kind": "row",
+      "value": "| 37 | grid frequency | one unsigned word, 0.01 Hz | hertz |",
+      "reason": "Value table row: offset, native fact, width and scale, and typed result."
+    },
+    {
+      "contract": "protocol_ii_fc04",
+      "page": "protocols/growatt/protocol-ii-readonly-v1.md",
+      "section": "## FC04 monitoring foundation",
+      "kind": "row",
+      "value": "| 38, 39 | phase 1 grid voltage and output current | one unsigned word each, 0.1 V and 0.1 A | volts and amperes |",
+      "reason": "Value table row: offset, native fact, width and scale, and typed result."
+    },
+    {
+      "contract": "protocol_ii_fc04",
+      "page": "protocols/growatt/protocol-ii-readonly-v1.md",
+      "section": "## FC04 monitoring foundation",
+      "kind": "row",
+      "value": "| 42, 43 | phase 2 grid voltage and output current | one unsigned word each, 0.1 V and 0.1 A | volts and amperes |",
+      "reason": "Value table row: offset, native fact, width and scale, and typed result."
+    },
+    {
+      "contract": "protocol_ii_fc04",
+      "page": "protocols/growatt/protocol-ii-readonly-v1.md",
+      "section": "## FC04 monitoring foundation",
+      "kind": "row",
+      "value": "| 46, 47 | phase 3 grid voltage and output current | one unsigned word each, 0.1 V and 0.1 A | volts and amperes |",
+      "reason": "Value table row: offset, native fact, width and scale, and typed result."
+    },
+    {
+      "contract": "protocol_ii_fc04",
+      "page": "protocols/growatt/protocol-ii-readonly-v1.md",
+      "section": "## FC04 monitoring foundation",
+      "kind": "row",
+      "value": "| 53-54 | generated energy today | unsigned 32-bit, high word first, 0.1 kWh | kWh |",
+      "reason": "Value table row: offset, native fact, width and scale, and typed result."
+    },
+    {
+      "contract": "protocol_ii_fc04",
+      "page": "protocols/growatt/protocol-ii-readonly-v1.md",
+      "section": "## FC04 monitoring foundation",
+      "kind": "row",
+      "value": "| 55-56 | generated energy total | unsigned 32-bit, high word first, 0.1 kWh | kWh |",
+      "reason": "Value table row: offset, native fact, width and scale, and typed result."
+    },
+    {
+      "contract": "protocol_ii_fc04",
+      "page": "protocols/growatt/protocol-ii-readonly-v1.md",
+      "section": "## FC04 monitoring foundation",
+      "kind": "row",
+      "value": "| 57-58 | total work time | unsigned 32-bit, high word first, 0.5 s | seconds |",
+      "reason": "Value table row: offset, native fact, width and scale, and typed result."
+    },
+    {
+      "contract": "protocol_ii_fc04",
+      "page": "protocols/growatt/protocol-ii-readonly-v1.md",
+      "section": "### Monitoring feature inventory",
+      "kind": "statement",
+      "value": "[Growatt Protocol II source and profile evidence matrix](protocol-ii-source-profile-matrix-v1.md).",
+      "reason": "The inventory points to the source and profile evidence matrix."
+    },
+    {
+      "contract": "protocol_ii_fc04",
+      "page": "protocols/growatt/protocol-ii-readonly-v1.md",
+      "section": "### Monitoring feature inventory",
+      "kind": "statement",
+      "value": "It does not currently admit a typed profile or close the broader `NATIVE-07-GROWATT-II` monitoring feature.",
+      "reason": "The foundation admits no typed profile and does not close the monitoring feature."
+    },
+    {
+      "contract": "protocol_ii_source_matrix",
+      "page": "protocols/growatt/protocol-ii-source-profile-matrix-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "# Growatt Protocol II Source and Profile Evidence Matrix V1",
+      "reason": "Title of the source and profile evidence matrix."
+    },
+    {
+      "contract": "protocol_ii_source_matrix",
+      "page": "protocols/growatt/protocol-ii-source-profile-matrix-v1.md",
+      "section": "## Retained primary source",
+      "kind": "row",
+      "value": "| `growatt-rtu-v1.24` | *Growatt Inverter Modbus RTU Protocol V1.24* | 85 pages | `<pin:ljmFREcAg54hU5d2cS58nVzmYbrljyx7ezKO7qjcmCA>` | `vendor-copyright-inspection-only`; non-redistributed |",
+      "reason": "Retained source identity: source ID, title and version, extent, SHA-256 and evidence disposition. The digest is pinned by its commitment."
+    },
+    {
+      "contract": "protocol_ii_source_matrix",
+      "page": "protocols/growatt/protocol-ii-source-profile-matrix-v1.md",
+      "section": "## Retained primary source",
+      "kind": "statement",
+      "value": "It does not redistribute the source or vendor schema text.",
+      "reason": "The matrix does not redistribute the source."
+    },
+    {
+      "contract": "protocol_ii_source_matrix",
+      "page": "protocols/growatt/protocol-ii-source-profile-matrix-v1.md",
+      "section": "## Bounded profile result",
+      "kind": "statement",
+      "value": "`NO_ADMISSIBLE_PROFILE`: there is no exact device-type, model-build, and device-reported protocol-value tuple, and there is no typed field.",
+      "reason": "Admitted profile result: none, with no exact tuple and no typed field."
+    },
+    {
+      "contract": "protocol_ii_source_matrix",
+      "page": "protocols/growatt/protocol-ii-source-profile-matrix-v1.md",
+      "section": "## Requested field disposition",
+      "kind": "statement",
+      "value": "`implemented` would require a publicly admitted exact tuple and is absent.",
+      "reason": "The implemented disposition needs a publicly admitted exact tuple."
+    },
+    {
+      "contract": "protocol_ii_source_matrix",
+      "page": "protocols/growatt/protocol-ii-source-profile-matrix-v1.md",
+      "section": "## Requested field disposition",
+      "kind": "row",
+      "value": "| exact device type, model-build pair, and device-reported protocol value | evidence-needed | the source identifies the TL3-X MAX/MID/MAC map but does not map these three values together | publishable provider-owned evidence that binds one exact tuple to this FC04 schema |",
+      "reason": "Disposition table row: requested fact, disposition, supported fact and closure criterion."
+    },
+    {
+      "contract": "protocol_ii_source_matrix",
+      "page": "protocols/growatt/protocol-ii-source-profile-matrix-v1.md",
+      "section": "## Requested field disposition",
+      "kind": "row",
+      "value": "| inverter run state | evidence-needed | schema-only synthetic fixture mechanics at offset 0 | the exact tuple plus an admitted bounded FC04 acquisition and decoder test |",
+      "reason": "Disposition table row: requested fact, disposition, supported fact and closure criterion."
+    },
+    {
+      "contract": "protocol_ii_source_matrix",
+      "page": "protocols/growatt/protocol-ii-source-profile-matrix-v1.md",
+      "section": "## Requested field disposition",
+      "kind": "row",
+      "value": "| aggregate PV input power | evidence-needed | schema-only synthetic fixture mechanics at offsets 1-2 | the exact tuple plus an admitted bounded FC04 acquisition and decoder test |",
+      "reason": "Disposition table row: requested fact, disposition, supported fact and closure criterion."
+    },
+    {
+      "contract": "protocol_ii_source_matrix",
+      "page": "protocols/growatt/protocol-ii-source-profile-matrix-v1.md",
+      "section": "## Requested field disposition",
+      "kind": "row",
+      "value": "| aggregate output power | evidence-needed | schema-only synthetic fixture mechanics at offsets 35-36 | the exact tuple plus an admitted bounded FC04 acquisition and decoder test |",
+      "reason": "Disposition table row: requested fact, disposition, supported fact and closure criterion."
+    },
+    {
+      "contract": "protocol_ii_source_matrix",
+      "page": "protocols/growatt/protocol-ii-source-profile-matrix-v1.md",
+      "section": "## Requested field disposition",
+      "kind": "row",
+      "value": "| grid frequency | evidence-needed | schema-only synthetic fixture mechanics at offset 37 | the exact tuple plus an admitted bounded FC04 acquisition and decoder test |",
+      "reason": "Disposition table row: requested fact, disposition, supported fact and closure criterion."
+    },
+    {
+      "contract": "protocol_ii_source_matrix",
+      "page": "protocols/growatt/protocol-ii-source-profile-matrix-v1.md",
+      "section": "## Requested field disposition",
+      "kind": "row",
+      "value": "| phase 1 grid voltage and output current | evidence-needed | schema-only synthetic fixture mechanics at offsets 38-39 | the exact tuple plus an admitted bounded FC04 acquisition and decoder test |",
+      "reason": "Disposition table row: requested fact, disposition, supported fact and closure criterion."
+    },
+    {
+      "contract": "protocol_ii_source_matrix",
+      "page": "protocols/growatt/protocol-ii-source-profile-matrix-v1.md",
+      "section": "## Requested field disposition",
+      "kind": "row",
+      "value": "| phase 2 grid voltage and output current | evidence-needed | schema-only synthetic fixture mechanics at offsets 42-43 | the exact tuple plus an admitted bounded FC04 acquisition and decoder test |",
+      "reason": "Disposition table row: requested fact, disposition, supported fact and closure criterion."
+    },
+    {
+      "contract": "protocol_ii_source_matrix",
+      "page": "protocols/growatt/protocol-ii-source-profile-matrix-v1.md",
+      "section": "## Requested field disposition",
+      "kind": "row",
+      "value": "| phase 3 grid voltage and output current | evidence-needed | schema-only synthetic fixture mechanics at offsets 46-47 | the exact tuple plus an admitted bounded FC04 acquisition and decoder test |",
+      "reason": "Disposition table row: requested fact, disposition, supported fact and closure criterion."
+    },
+    {
+      "contract": "protocol_ii_source_matrix",
+      "page": "protocols/growatt/protocol-ii-source-profile-matrix-v1.md",
+      "section": "## Requested field disposition",
+      "kind": "row",
+      "value": "| generated energy today | evidence-needed | schema-only synthetic fixture mechanics at offsets 53-54 | the exact tuple plus an admitted bounded FC04 acquisition and decoder test |",
+      "reason": "Disposition table row: requested fact, disposition, supported fact and closure criterion."
+    },
+    {
+      "contract": "protocol_ii_source_matrix",
+      "page": "protocols/growatt/protocol-ii-source-profile-matrix-v1.md",
+      "section": "## Requested field disposition",
+      "kind": "row",
+      "value": "| generated energy total | evidence-needed | schema-only synthetic fixture mechanics at offsets 55-56 | the exact tuple plus an admitted bounded FC04 acquisition and decoder test |",
+      "reason": "Disposition table row: requested fact, disposition, supported fact and closure criterion."
+    },
+    {
+      "contract": "protocol_ii_source_matrix",
+      "page": "protocols/growatt/protocol-ii-source-profile-matrix-v1.md",
+      "section": "## Requested field disposition",
+      "kind": "row",
+      "value": "| total work time | evidence-needed | schema-only synthetic fixture mechanics at offsets 57-58 | the exact tuple plus an admitted bounded FC04 acquisition and decoder test |",
+      "reason": "Disposition table row: requested fact, disposition, supported fact and closure criterion."
+    },
+    {
+      "contract": "protocol_ii_source_matrix",
+      "page": "protocols/growatt/protocol-ii-source-profile-matrix-v1.md",
+      "section": "## Requested field disposition",
+      "kind": "row",
+      "value": "| per-PV voltage | unknown | no selected-tuple applicability or bounded acquisition is established | an exact field definition, selected-tuple applicability, and bounded acquisition/decoder tests |",
+      "reason": "Disposition table row: requested fact, disposition, supported fact and closure criterion."
+    },
+    {
+      "contract": "protocol_ii_source_matrix",
+      "page": "protocols/growatt/protocol-ii-source-profile-matrix-v1.md",
+      "section": "## Requested field disposition",
+      "kind": "row",
+      "value": "| per-PV current | unknown | no selected-tuple applicability, signedness, or bounded acquisition is established | an exact field definition, selected-tuple applicability and signedness, and bounded acquisition/decoder tests |",
+      "reason": "Disposition table row: requested fact, disposition, supported fact and closure criterion."
+    },
+    {
+      "contract": "protocol_ii_source_matrix",
+      "page": "protocols/growatt/protocol-ii-source-profile-matrix-v1.md",
+      "section": "## Requested field disposition",
+      "kind": "row",
+      "value": "| per-PV power | unknown | no selected-tuple applicability or bounded acquisition is established | an exact field definition, selected-tuple applicability, and bounded acquisition/decoder tests |",
+      "reason": "Disposition table row: requested fact, disposition, supported fact and closure criterion."
+    },
+    {
+      "contract": "protocol_ii_source_matrix",
+      "page": "protocols/growatt/protocol-ii-source-profile-matrix-v1.md",
+      "section": "## Requested field disposition",
+      "kind": "row",
+      "value": "| per-phase output power | unknown | no selected-tuple semantics, units, or composition are established | an exact field definition, selected-tuple applicability, units/composition, and bounded acquisition/decoder tests |",
+      "reason": "Disposition table row: requested fact, disposition, supported fact and closure criterion."
+    },
+    {
+      "contract": "protocol_ii_source_matrix",
+      "page": "protocols/growatt/protocol-ii-source-profile-matrix-v1.md",
+      "section": "## Requested field disposition",
+      "kind": "row",
+      "value": "| line-to-line voltage | unknown | no selected-tuple semantics, units, or composition are established | an exact field definition, selected-tuple applicability, units/composition, and bounded acquisition/decoder tests |",
+      "reason": "Disposition table row: requested fact, disposition, supported fact and closure criterion."
+    },
+    {
+      "contract": "protocol_ii_source_matrix",
+      "page": "protocols/growatt/protocol-ii-source-profile-matrix-v1.md",
+      "section": "## Requested field disposition",
+      "kind": "row",
+      "value": "| inverter temperature | evidence-needed | the source supplies 0.1 C at offset 93, but not signedness, invalid handling, or selected-tuple applicability | an exact field definition with signedness and invalid handling, selected-tuple applicability, and bounded acquisition/decoder tests |",
+      "reason": "Disposition table row: requested fact, disposition, supported fact and closure criterion."
+    },
+    {
+      "contract": "protocol_ii_source_matrix",
+      "page": "protocols/growatt/protocol-ii-source-profile-matrix-v1.md",
+      "section": "## Requested field disposition",
+      "kind": "row",
+      "value": "| internal IPM temperature | unknown | no field-specific selected-tuple definition is established | an exact field definition, selected-tuple applicability, and bounded acquisition/decoder tests |",
+      "reason": "Disposition table row: requested fact, disposition, supported fact and closure criterion."
+    },
+    {
+      "contract": "protocol_ii_source_matrix",
+      "page": "protocols/growatt/protocol-ii-source-profile-matrix-v1.md",
+      "section": "## Requested field disposition",
+      "kind": "row",
+      "value": "| boost temperature | unknown | no field-specific selected-tuple definition is established | an exact field definition, selected-tuple applicability, and bounded acquisition/decoder tests |",
+      "reason": "Disposition table row: requested fact, disposition, supported fact and closure criterion."
+    },
+    {
+      "contract": "protocol_ii_source_matrix",
+      "page": "protocols/growatt/protocol-ii-source-profile-matrix-v1.md",
+      "section": "## Requested field disposition",
+      "kind": "row",
+      "value": "| power factor | unknown | no field-specific selected-tuple definition is established | an exact field definition, selected-tuple applicability, and bounded acquisition/decoder tests |",
+      "reason": "Disposition table row: requested fact, disposition, supported fact and closure criterion."
+    },
+    {
+      "contract": "protocol_ii_source_matrix",
+      "page": "protocols/growatt/protocol-ii-source-profile-matrix-v1.md",
+      "section": "## Requested field disposition",
+      "kind": "row",
+      "value": "| derating | unknown | no field-specific selected-tuple definition is established | an exact field definition, selected-tuple applicability, enum/sentinel handling, and bounded acquisition/decoder tests |",
+      "reason": "Disposition table row: requested fact, disposition, supported fact and closure criterion."
+    },
+    {
+      "contract": "protocol_ii_source_matrix",
+      "page": "protocols/growatt/protocol-ii-source-profile-matrix-v1.md",
+      "section": "## Requested field disposition",
+      "kind": "row",
+      "value": "| fault facts | unknown | no field-specific selected-tuple definition is established | an exact field definition, selected-tuple applicability, enum/bitfield/sentinel handling, and bounded acquisition/decoder tests |",
+      "reason": "Disposition table row: requested fact, disposition, supported fact and closure criterion."
+    },
+    {
+      "contract": "protocol_ii_source_matrix",
+      "page": "protocols/growatt/protocol-ii-source-profile-matrix-v1.md",
+      "section": "## Requested field disposition",
+      "kind": "row",
+      "value": "| warning facts | unknown | no field-specific selected-tuple definition is established | an exact field definition, selected-tuple applicability, enum/bitfield/sentinel handling, and bounded acquisition/decoder tests |",
+      "reason": "Disposition table row: requested fact, disposition, supported fact and closure criterion."
+    },
+    {
+      "contract": "protocol_ii_source_matrix",
+      "page": "protocols/growatt/protocol-ii-source-profile-matrix-v1.md",
+      "section": "## Requested field disposition",
+      "kind": "row",
+      "value": "| storage or battery overlays | unknown | no selected-tuple overlay definition is established | an exact overlay contract with selected-tuple applicability, bounded acquisition, and decoder tests |",
+      "reason": "Disposition table row: requested fact, disposition, supported fact and closure criterion."
+    },
+    {
+      "contract": "protocol_ii_source_matrix",
+      "page": "protocols/growatt/protocol-ii-source-profile-matrix-v1.md",
+      "section": "## Requested field disposition",
+      "kind": "row",
+      "value": "| every otherwise unlisted offset 59-124 | unknown | no field-specific selected-tuple definition is established | an exact field definition, selected-tuple applicability, and bounded acquisition/decoder tests for each offset |",
+      "reason": "Disposition table row: requested fact, disposition, supported fact and closure criterion."
+    },
+    {
+      "contract": "protocol_ii_source_matrix",
+      "page": "protocols/growatt/protocol-ii-source-profile-matrix-v1.md",
+      "section": "## Requested field disposition",
+      "kind": "row",
+      "value": "| FC06, FC16, and every other control operation | unsupported | this read-only version enumerates no control operation | a separate exact operation contract; this matrix does not authorize a real-device write |",
+      "reason": "Disposition table row: requested fact, disposition, supported fact and closure criterion."
+    },
+    {
+      "contract": "protocol_ii_source_matrix",
+      "page": "protocols/growatt/protocol-ii-source-profile-matrix-v1.md",
+      "section": null,
+      "kind": "forbidden",
+      "value": "https?://|/[Uu]sers/|([0-9]{1,3}\\.){3}[0-9]{1,3}|[^\\W_](?:[^\\W_]|[.-])*:([0-9]{1,5}|[^\\W\\d_](?:[^\\W_]|[.-])*)|[Pp]ort\\s+[0-9]{1,5}",
+      "reason": "The matrix publishes no locator, local path, address, host and port, or port number."
+    },
+    {
+      "contract": "wit_matrix",
+      "page": "protocols/growatt/wit-family-protocol-matrix-v1.md",
+      "section": "## Family qualification matrix",
+      "kind": "matrix_row",
+      "value": "| `WIT 4-25K-HU` | worldwide, 380/400 Vac, low-voltage battery | Modbus TCP available; ShineWiLAN-X2 listed | `UNKNOWN` | `UNKNOWN` | `INSUFFICIENT_EVIDENCE`; `NO_SEND` |",
+      "reason": "Exact family branch row: product context, exposure, protocol revision, firmware gate and disposition."
+    },
+    {
+      "contract": "wit_matrix",
+      "page": "protocols/growatt/wit-family-protocol-matrix-v1.md",
+      "section": "## Family qualification matrix",
+      "kind": "matrix_row",
+      "value": "| `WIT 4-25K-XHU` | worldwide, 380/400 Vac, high-voltage battery | Modbus TCP available; ShineWiLAN-X2 listed | `UNKNOWN` | `UNKNOWN` | `INSUFFICIENT_EVIDENCE`; `NO_SEND` |",
+      "reason": "Exact family branch row: product context, exposure, protocol revision, firmware gate and disposition."
+    },
+    {
+      "contract": "wit_matrix",
+      "page": "protocols/growatt/wit-family-protocol-matrix-v1.md",
+      "section": "## Family qualification matrix",
+      "kind": "matrix_row",
+      "value": "| `WIT 29.9-50K-XHU` | worldwide, 380/400 Vac, high-voltage battery | ShineWiLan-X2 and ShineSEM-XA-R listed; wire exposure not established | `UNKNOWN` | `UNKNOWN` | `INSUFFICIENT_EVIDENCE`; `NO_SEND` |",
+      "reason": "Exact family branch row: product context, exposure, protocol revision, firmware gate and disposition."
+    },
+    {
+      "contract": "wit_matrix",
+      "page": "protocols/growatt/wit-family-protocol-matrix-v1.md",
+      "section": "## Family qualification matrix",
+      "kind": "matrix_row",
+      "value": "| `WIT 50-100K-HU` | APAC, 380/400/415 Vac, high-voltage battery | ShineWiLan-X2 and ShineSEM-XA-R listed; wire exposure not established | `UNKNOWN` | `UNKNOWN` | `INSUFFICIENT_EVIDENCE`; `NO_SEND` |",
+      "reason": "Exact family branch row: product context, exposure, protocol revision, firmware gate and disposition."
+    },
+    {
+      "contract": "wit_matrix",
+      "page": "protocols/growatt/wit-family-protocol-matrix-v1.md",
+      "section": "## Family qualification matrix",
+      "kind": "matrix_row",
+      "value": "| `WIT 50-100K-AU` | APAC, 380/400/415 Vac, high-voltage battery | ShineWiLan-X2 and ShineSEM-XA-R listed; wire exposure not established | `UNKNOWN` | `UNKNOWN` | `INSUFFICIENT_EVIDENCE`; `NO_SEND` |",
+      "reason": "Exact family branch row: product context, exposure, protocol revision, firmware gate and disposition."
+    },
+    {
+      "contract": "wit_matrix",
+      "page": "protocols/growatt/wit-family-protocol-matrix-v1.md",
+      "section": "## Family qualification matrix",
+      "kind": "matrix_row",
+      "value": "| `WIT 50-100K-HU-US` | US branch; product context not established | not established by this contract | `UNKNOWN` | `UNKNOWN` | `INSUFFICIENT_EVIDENCE`; `NO_SEND` |",
+      "reason": "Exact family branch row: product context, exposure, protocol revision, firmware gate and disposition."
+    },
+    {
+      "contract": "wit_matrix",
+      "page": "protocols/growatt/wit-family-protocol-matrix-v1.md",
+      "section": "## Family qualification matrix",
+      "kind": "matrix_row",
+      "value": "| `WIT 50-100K-AU-US` | US branch; product context not established | not established by this contract | `UNKNOWN` | `UNKNOWN` | `INSUFFICIENT_EVIDENCE`; `NO_SEND` |",
+      "reason": "Exact family branch row: product context, exposure, protocol revision, firmware gate and disposition."
+    },
+    {
+      "contract": "wit_matrix",
+      "page": "protocols/growatt/wit-family-protocol-matrix-v1.md",
+      "section": "## Family qualification matrix",
+      "kind": "matrix_row",
+      "value": "| `WIT 63-125K-XHU` | worldwide, 380/400 Vac, high-voltage battery | not established by this contract | `UNKNOWN` | `UNKNOWN` | `INSUFFICIENT_EVIDENCE`; `NO_SEND` |",
+      "reason": "Exact family branch row: product context, exposure, protocol revision, firmware gate and disposition."
+    },
+    {
+      "contract": "wit_matrix",
+      "page": "protocols/growatt/wit-family-protocol-matrix-v1.md",
+      "section": "## Family qualification matrix",
+      "kind": "matrix_row",
+      "value": "| `WIT 28-55K-HU-US L2` | US L2, 208/220 Vac, high-voltage battery | ShineMaster listed; wire exposure not established | `UNKNOWN` | `UNKNOWN` | `INSUFFICIENT_EVIDENCE`; `NO_SEND` |",
+      "reason": "Exact family branch row: product context, exposure, protocol revision, firmware gate and disposition."
+    },
+    {
+      "contract": "wit_matrix",
+      "page": "protocols/growatt/wit-family-protocol-matrix-v1.md",
+      "section": "## Family qualification matrix",
+      "kind": "matrix_row",
+      "value": "| `WIT 28-55K-AU-US L2` | US L2, 208/220 Vac, high-voltage battery | ShineMaster listed; wire exposure not established | `UNKNOWN` | `UNKNOWN` | `INSUFFICIENT_EVIDENCE`; `NO_SEND` |",
+      "reason": "Exact family branch row: product context, exposure, protocol revision, firmware gate and disposition."
+    },
+    {
+      "contract": "wit_matrix",
+      "page": "protocols/growatt/wit-family-protocol-matrix-v1.md",
+      "section": "## Family qualification matrix",
+      "kind": "matrix_row",
+      "value": "| `WIT 50-150K-XHU-US` | US, 277/480 Vac, high-voltage battery | not established by this contract | `UNKNOWN` | `UNKNOWN` | `INSUFFICIENT_EVIDENCE`; `NO_SEND` |",
+      "reason": "Exact family branch row: product context, exposure, protocol revision, firmware gate and disposition."
+    },
+    {
+      "contract": "wit_matrix",
+      "page": "protocols/growatt/wit-family-protocol-matrix-v1.md",
+      "section": null,
+      "kind": "forbidden",
+      "value": "VPP (read|reads|control|controls|write|writes) (is|are) (permitted|allowed|enabled|supported)|Protocol II[^.]*(applies|is applicable)\\s+to\\s+(a\\s+|the\\s+|any\\s+)?WIT|`WIT [^`]+` firmware (version |gate )?(is|=)",
+      "reason": "The WIT page states no VPP permission, Protocol II applicability to WIT or WIT firmware gate."
+    },
+    {
+      "contract": "wit_matrix",
+      "page": "protocols/growatt/wit-family-protocol-matrix-v1.md",
+      "section": "## Scope",
+      "kind": "statement",
+      "value": "Each row is an independent, case-sensitive family branch.",
+      "reason": "Each family branch is independent and case-sensitive."
+    },
+    {
+      "contract": "wit_matrix",
+      "page": "protocols/growatt/wit-family-protocol-matrix-v1.md",
+      "section": "## Scope",
+      "kind": "statement",
+      "value": "A combined marketing page does not make HU, AU, XHU, worldwide, or US branches protocol aliases.",
+      "reason": "Shared marketing pages create no protocol alias."
+    },
+    {
+      "contract": "wit_matrix",
+      "page": "protocols/growatt/wit-family-protocol-matrix-v1.md",
+      "section": "## Family qualification matrix",
+      "kind": "statement",
+      "value": "Modbus TCP availability and a listed logger or bridge are transport facts only.",
+      "reason": "Transport availability is not protocol evidence."
+    },
+    {
+      "contract": "wit_matrix",
+      "page": "protocols/growatt/wit-family-protocol-matrix-v1.md",
+      "section": "## Family qualification matrix",
+      "kind": "statement",
+      "value": "They do not establish a register map, firmware gate, identity tuple, or semantic profile.",
+      "reason": "Transport facts establish no register map, firmware gate, identity tuple or profile."
+    },
+    {
+      "contract": "wit_matrix",
+      "page": "protocols/growatt/wit-family-protocol-matrix-v1.md",
+      "section": "## Explicit VPP V2.01 tuple",
+      "kind": "statement",
+      "value": "`WIT 100KTL3-H` with DTC `5601` is the only WIT tuple explicitly associated with VPP protocol `V2.01`.",
+      "reason": "Identity tuple (model and DTC) of the only VPP-associated WIT tuple."
+    },
+    {
+      "contract": "wit_matrix",
+      "page": "protocols/growatt/wit-family-protocol-matrix-v1.md",
+      "section": "## Explicit VPP V2.01 tuple",
+      "kind": "statement",
+      "value": "It does not admit `WIT 50-100K-HU`, `WIT 50-100K-AU`, or any other WIT row.",
+      "reason": "The VPP tuple admits no other WIT row."
+    },
+    {
+      "contract": "wit_matrix",
+      "page": "protocols/growatt/wit-family-protocol-matrix-v1.md",
+      "section": "## Explicit VPP V2.01 tuple",
+      "kind": "statement",
+      "value": "The VPP tuple has no qualified firmware gate in this contract.",
+      "reason": "The VPP tuple has no firmware gate."
+    },
+    {
+      "contract": "wit_matrix",
+      "page": "protocols/growatt/wit-family-protocol-matrix-v1.md",
+      "section": "## Explicit VPP V2.01 tuple",
+      "kind": "statement",
+      "value": "Every VPP read, control, and write remains `NO_SEND`.",
+      "reason": "Every VPP operation stays unsent."
+    },
+    {
+      "contract": "wit_matrix",
+      "page": "protocols/growatt/wit-family-protocol-matrix-v1.md",
+      "section": "## Protocol isolation",
+      "kind": "statement",
+      "value": "Growatt Protocol II v1.24 TL3-X does not apply to a WIT row by vendor or name similarity.",
+      "reason": "Protocol II never applies to WIT by name or vendor."
+    },
+    {
+      "contract": "wit_matrix",
+      "page": "protocols/growatt/wit-family-protocol-matrix-v1.md",
+      "section": "## Admission and failure behavior",
+      "kind": "statement",
+      "value": "No decoder, fixture, catalog registration, runtime admission, telemetry publication, or support claim is created.",
+      "reason": "The matrix creates no decoder, fixture, registration, admission or support claim."
+    },
+    {
+      "contract": "wit_matrix",
+      "page": "protocols/growatt/wit-family-protocol-matrix-v1.md",
+      "section": "## Admission and failure behavior",
+      "kind": "statement",
+      "value": "Missing or conflicting evidence produces `INSUFFICIENT_EVIDENCE`, no match, and no send.",
+      "reason": "Missing or conflicting evidence fails closed."
+    }
+  ]
+}

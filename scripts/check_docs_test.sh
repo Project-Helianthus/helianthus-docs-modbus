@@ -1155,7 +1155,7 @@ protocol_ii_matrix_fixture="$(mktemp)"
 "$repo_root/scripts/check_docs.sh" --check-growatt-protocol-ii-source-matrix "$protocol_ii_matrix"
 for mutation in \
   's/growatt-rtu-v1\.24/growatt-rtu-v1.25/' \
-  's/fac88d609d74ff6b3c9c31ed65370d166d1fb17461e91b4b4855018fe232a320/0000000000000000000000000000000000000000000000000000000000000000/' \
+  's/`\([0-9a-f]\)\([0-9a-f]\{63\}\)`/`\2\1`/' \
   's/NO_ADMISSIBLE_PROFILE/ADMISSIBLE_PROFILE/' \
   's/there is no exact device-type, model-build, and/there is one exact device-type, model-build, and/' \
   's/every otherwise unlisted offset 59-124/every remaining offset 59-124/' \
@@ -1350,3 +1350,89 @@ for mutation in \
     exit 1
   fi
 done
+
+# One passing and one failing case per Growatt rule kind. The failing run must
+# name the rule kind it violated, so an unrelated failure cannot mask a gap.
+growatt_fixture="$fixture_root/growatt-rule-kind.md"
+expect_growatt_rule_failure() {
+  local kind="$1"
+  shift
+  if "$repo_root/scripts/check_docs.sh" "$@" 2> "$fixture_root/growatt-rule-kind.stderr"; then
+    echo "Growatt $kind rule accepted a violating page" >&2
+    exit 1
+  fi
+  if ! grep -Fq " $kind " "$fixture_root/growatt-rule-kind.stderr"; then
+    echo "Growatt $kind rule did not report the violation" >&2
+    cat "$fixture_root/growatt-rule-kind.stderr" >&2
+    exit 1
+  fi
+}
+
+# heading: the exact section heading must stay in place.
+"$repo_root/scripts/check_docs.sh" --check-bms-contract "$bms_document"
+sed 's/^## Typed read-only fields$/## Typed fields/' "$bms_document" > "$growatt_fixture"
+expect_growatt_rule_failure heading --check-bms-contract "$growatt_fixture"
+
+# row: a value-table row with a changed scale is missing.
+"$repo_root/scripts/check_docs.sh" --check-growatt-protocol-ii-fc04-contract "$protocol_ii_document"
+sed 's/^| 37 | grid frequency | one unsigned word, 0\.01 Hz | hertz |$/| 37 | grid frequency | one unsigned word, 0.1 Hz | hertz |/' \
+  "$protocol_ii_document" > "$growatt_fixture"
+expect_growatt_rule_failure row --check-growatt-protocol-ii-fc04-contract "$growatt_fixture"
+
+# row pin: the retained source digest no longer matches its commitment.
+"$repo_root/scripts/check_docs.sh" --check-growatt-protocol-ii-source-matrix "$protocol_ii_matrix"
+sed 's/`\([0-9a-f]\)\([0-9a-f]\{63\}\)`/`\2\1`/' "$protocol_ii_matrix" > "$growatt_fixture"
+if cmp -s "$protocol_ii_matrix" "$growatt_fixture"; then
+  echo 'Growatt row pin mutation did not change the document' >&2
+  exit 1
+fi
+expect_growatt_rule_failure row --check-growatt-protocol-ii-source-matrix "$growatt_fixture"
+
+# statement: a rewrapped statement passes; a statement moved out of its
+# section is missing.
+sed 's/^Every VPP read, control, and write remains `NO_SEND`\. The document includes$/Every VPP read, control,\
+and write remains `NO_SEND`. The document includes/' "$wit_document" > "$growatt_fixture"
+if cmp -s "$wit_document" "$growatt_fixture"; then
+  echo 'Growatt statement rewrap did not change the document' >&2
+  exit 1
+fi
+"$repo_root/scripts/check_docs.sh" --check-wit-matrix-contract "$growatt_fixture"
+sed 's/^The VPP tuple has no qualified firmware gate in this contract\. DTC readability,$/DTC readability,/' \
+  "$wit_document" > "$growatt_fixture"
+printf '\nThe VPP tuple has no qualified firmware gate in this contract.\n' >> "$growatt_fixture"
+expect_growatt_rule_failure statement --check-wit-matrix-contract "$growatt_fixture"
+
+# forbidden: an added contradictory admission statement.
+cp "$wit_document" "$growatt_fixture"
+printf '\nVPP writes are enabled.\n' >> "$growatt_fixture"
+expect_growatt_rule_failure forbidden --check-wit-matrix-contract "$growatt_fixture"
+
+# source_locator: a repeated committed locator passes; an added locator
+# outside the committed set fails.
+bms_page_one=$(grep -Eo '\(https://[^)]+#page=1\)' "$bms_document" | sed -n 1p)
+if [[ -z "$bms_page_one" ]]; then
+  echo 'Growatt source locator case found no committed locator' >&2
+  exit 1
+fi
+cp "$bms_document" "$growatt_fixture"
+printf '\nSee [page 1]%s again.\n' "$bms_page_one" >> "$growatt_fixture"
+"$repo_root/scripts/check_docs.sh" --check-bms-contract "$growatt_fixture"
+cp "$bms_document" "$growatt_fixture"
+printf '\n[synthetic](https://example.invalid/bms)\n' >> "$growatt_fixture"
+expect_growatt_rule_failure source_locator --check-bms-contract "$growatt_fixture"
+
+# slice: an offset line without a quantity passes; an added FC03 slice fails.
+awk '/^## Offline identity tuple$/ { print; print ""; print "- offset 0x0029 is cell-series count context."; next } { print }' \
+  "$bms_document" > "$growatt_fixture"
+"$repo_root/scripts/check_docs.sh" --check-bms-contract "$growatt_fixture"
+awk '/^- offset 0x010D, quantity 2,/ { print "- offset 0x0200, quantity 1, for an unqualified extra slice;" } { print }' \
+  "$bms_document" > "$growatt_fixture"
+expect_growatt_rule_failure slice --check-bms-contract "$growatt_fixture"
+
+# matrix_row: an unrelated table elsewhere passes; two family rows swapped fail.
+cp "$wit_document" "$growatt_fixture"
+printf '\n| Term | Meaning |\n| --- | --- |\n| branch | one family row |\n' >> "$growatt_fixture"
+"$repo_root/scripts/check_docs.sh" --check-wit-matrix-contract "$growatt_fixture"
+awk '/^\| `WIT 4-25K-HU` / { held = $0; next } { print } held != "" && /^\| `WIT 4-25K-XHU` / { print held; held = "" }' \
+  "$wit_document" > "$growatt_fixture"
+expect_growatt_rule_failure matrix_row --check-wit-matrix-contract "$growatt_fixture"
