@@ -16,8 +16,8 @@ The aggregate success link is separate from optional diagnostic acceptance. The 
 
 This is the family-local lifecycle port for supplied Growatt `1xSxxP ESS`
 RS-485 battery evidence. It composes the merged
-[aggregate offline provider](https://github.com/Project-Helianthus/helianthus-modbusreg/blob/main/growatt_aggregate_offline_provider.go) and
-[same-cycle diagnostic checker](https://github.com/Project-Helianthus/helianthus-modbusreg/blob/main/growatt_diagnostic_commit.go).
+[aggregate offline provider](https://github.com/Project-Helianthus/helianthus-modbusreg/blob/main/growatt/growatt_aggregate_offline_provider.go) and
+[same-cycle diagnostic checker](https://github.com/Project-Helianthus/helianthus-modbusreg/blob/main/growatt/growatt_diagnostic_commit.go).
 Nothing is stable before Helianthus 1.0.
 
 The public [native family contract](https://github.com/Project-Helianthus/helianthus-docs-modbus/blob/main/protocols/growatt/bms-rs485-1xsxxp-v202.md)
@@ -39,8 +39,10 @@ of those properties. Exact inverter FC04 automatic admission remains denied.
 
 ## Local API and ownership
 
-[Implementation](https://github.com/Project-Helianthus/helianthus-modbusreg/blob/main/growatt_aggregate_provider_port.go) and
-[focused tests](https://github.com/Project-Helianthus/helianthus-modbusreg/blob/main/growatt_aggregate_provider_port_test.go) define the concrete
+The Go identifiers named on this page are declared in package `growatt` of `helianthus-modbusreg` (import path `github.com/Project-Helianthus/helianthus-modbusreg/growatt`).
+
+[Implementation](https://github.com/Project-Helianthus/helianthus-modbusreg/blob/main/growatt/growatt_aggregate_provider_port.go) and
+[focused tests](https://github.com/Project-Helianthus/helianthus-modbusreg/blob/main/growatt/growatt_aggregate_provider_port_test.go) define the concrete
 signature. `I23NewGrowattProvider(maxTicks, maxSlices, maxWords, reader)` returns
 an `I23GrowattAdapter` implementing `I23GrowattProvider`:
 
@@ -58,7 +60,7 @@ Caller input must not be mutated concurrently with entry or copying. Optional
 diagnostic storage is frozen before supplier invocation; after refresh returns,
 input and returned snapshots may be changed without affecting stored evidence.
 
-A request carries the existing `GrowattAggregateOfflineCycle`, a positive,
+A request carries the existing `AggregateOfflineCycle`, a positive,
 strictly increasing local generation, a nonempty bounded opaque receipt, and an
 optional `I23GrowattDiagnostic`. Receipts name successful base records; a new
 refresh cannot reuse the last successful receipt. Generations are consumed when
@@ -142,7 +144,7 @@ retained base into an ordinary successful response would lose those distinctions
 eBUS MCP compatibility and G5 D1-D5/O8 remain unchanged; eeBUS output stays owned
 by helianthus-eebusreg.
 
-The focused command is `go test . -run '^TestI23' -count=1`. Documentation
+The focused command is `go test ./growatt -run '^TestI23' -count=1`. Documentation
 acceptance is manual source, claim, transition, loss, example and link review.
 Offline software tests establish no full CI, transport, smoke, passive-capture,
 runtime integration or hardware acceptance.

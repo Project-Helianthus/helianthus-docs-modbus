@@ -20,7 +20,9 @@ The canonical [Growatt battery group retention contract](https://github.com/Proj
 
 ## Reviewed API and implementation boundary
 
-`NewGrowattAggregateRetention(maxCycleTicks)` creates the offline owner with a positive finite maximum completion span. Tick arguments are caller-supplied monotonic logical counters in one consistent unit, with no default freshness policy.
+The Go identifiers named on this page are declared in package `growatt` of `helianthus-modbusreg` (import path `github.com/Project-Helianthus/helianthus-modbusreg/growatt`).
+
+`NewAggregateRetention(maxCycleTicks)` creates the offline owner with a positive finite maximum completion span. Tick arguments are caller-supplied monotonic logical counters in one consistent unit, with no default freshness policy.
 
 | Operation | Input and output boundary |
 | --- | --- |
@@ -32,13 +34,13 @@ The canonical [Growatt battery group retention contract](https://github.com/Proj
 
 The caller explicitly drives time and closure; there is no timer, scheduler, transport or polling loop. Without a caller operation, a pending snapshot stays pending. Time cannot move backwards, even across epoch changes on the same instance; a rejected callback for another context or cycle cannot advance the active clock.
 
-`GrowattAggregateContext` carries `SourceInstance`, `OwnerEpoch`, `UnitID`, `Function`, the entire `Revision`, `IdentityKnown` and `Identity`. Revision includes family, file revision, header version and cumulative revision and must match the existing decoder contract. Native identity compares MCU software version, BMS company and generation, pack company and generation, topology and cell-series count field by field. The source token is internal correlation; callers start a newer epoch on owner restart or source replacement.
+`AggregateContext` carries `SourceInstance`, `OwnerEpoch`, `UnitID`, `Function`, the entire `Revision`, `IdentityKnown` and `Identity`. Revision includes family, file revision, header version and cumulative revision and must match the existing decoder contract. Native identity compares MCU software version, BMS company and generation, pack company and generation, topology and cell-series count field by field. The source token is internal correlation; callers start a newer epoch on owner restart or source replacement.
 
 `IdentityKnown` asserts coherent evidence for every required identity field, including valid zeros; equal telemetry or a readable unit cannot establish it. Failed or partial acquisition cannot establish new continuity. Source tokens are bounded to 128 bytes, MCU version strings to 32 bytes and each revision component to 64 bytes; other context members are fixed-size. Public operations are serialized by an internal mutex; callers must not concurrently mutate input slices while passing them in.
 
 ## Retained state and loss states
 
-`GrowattAggregateHistoryLimit` is one last-success record, alongside one latest attempt. A new complete success discards the previous success and increments the replacement revision even for equal values and raw words; a validated zero replaces nonzero. Typed aggregate and all four ordered native slices commit together, preserving opaque words, exact offsets, selected unit and exact revision. Failure cannot update a field, native slice, success tick or success revision; partial words never become replacement data.
+`AggregateHistoryLimit` is one last-success record, alongside one latest attempt. A new complete success discards the previous success and increments the replacement revision even for equal values and raw words; a validated zero replaces nonzero. Typed aggregate and all four ordered native slices commit together, preserving opaque words, exact offsets, selected unit and exact revision. Failure cannot update a field, native slice, success tick or success revision; partial words never become replacement data.
 
 | State | Applicable value |
 | --- | --- |

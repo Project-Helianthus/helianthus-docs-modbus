@@ -27,9 +27,11 @@ boundary precedes this application check.
 
 ## Reviewed API and implementation boundary
 
+The Go identifiers named on this page are declared in package `growatt` of `helianthus-modbusreg` (import path `github.com/Project-Helianthus/helianthus-modbusreg/growatt`).
+
 After decoding a complete base with `DecodeGrowattBMSTypedReadOnlyStatus`,
-the caller passes it and a `GrowattDiagnosticCommitContext` to
-`NewGrowattDiagnosticCommitBase`. The constructor redecodes copied native
+the caller passes it and a `DiagnosticCommitContext` to
+`NewDiagnosticCommitBase`. The constructor redecodes copied native
 slices and freezes them; mutable exported typed fields do not establish success.
 Empty tokens, zero epoch or cycle, and a zero base are invalid.
 
@@ -39,10 +41,10 @@ the raw native continuity tuple: MCU version, BMS company/generation word,
 pack company/generation word, full topology word and cell-series count.
 Native continuity words must match the decoded base evidence.
 
-`CheckGrowattDiagnosticCommit` takes the frozen `GrowattDiagnosticCommitBase`,
+`CheckGrowattDiagnosticCommit` takes the frozen `DiagnosticCommitBase`,
 completion context, explicit `expectedReportedGroup` raw word and
-`GrowattBMSMultiGroupDiagnosticInput`; it returns a
-`GrowattDiagnosticCommitCandidate` and `GrowattDiagnosticCommitRejection`.
+`BMSMultiGroupDiagnosticInput`; it returns a
+`DiagnosticCommitCandidate` and `DiagnosticCommitRejection`.
 It matches the frozen context before running the existing diagnostic decoder.
 The expected group word may be zero and is neither a selector nor inferred
 pack identity.

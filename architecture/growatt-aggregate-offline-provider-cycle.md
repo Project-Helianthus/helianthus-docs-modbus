@@ -18,7 +18,7 @@ protocol facts or a rewrite of its group lifecycle.
 
 | Evidence status | Basis and boundary |
 | --- | --- |
-| Proven by source inspection | The supplied `GrowattAggregateRetention` source provides `Begin`, `Complete`, `Fail`, `Advance` and detached `Snapshot`, with one last success and one latest attempt. The merged component page reports its synthetic component verification; that is not provider-cycle implementation evidence. |
+| Proven by source inspection | The supplied `AggregateRetention` source provides `Begin`, `Complete`, `Fail`, `Advance` and detached `Snapshot`, with one last success and one latest attempt. The merged component page reports its synthetic component verification; that is not provider-cycle implementation evidence. |
 | Hypothesis / proposed acceptance | A family-local offline seam can compose those operations around exactly one injected reader returning supplied native records, under the ordering and bounds below. All new composition behavior on this page is required acceptance, pending implementation evidence and review. |
 | Unknown | The new exported signature, implemented callback/cancellation behavior, production integration, persistence, hardware continuity, wall-clock freshness budgets and consumer serialization. |
 
@@ -30,19 +30,21 @@ and no link to a proposed implementation as current evidence.
 
 ## Family-local boundary and existing types
 
-The proposed seam accepts caller-supplied `GrowattAggregateContext`, cycle,
+The Go identifiers named on this page are declared in package `growatt` of `helianthus-modbusreg` (import path `github.com/Project-Helianthus/helianthus-modbusreg/growatt`).
+
+The proposed seam accepts caller-supplied `AggregateContext`, cycle,
 logical start/completion ticks and deadline, finite work/input bounds, and one
 nonnil offline reader. The reader conceptually returns
-`(GrowattBMSReadOnlyInput, error)`. This notation is a behavioral description,
+`(BMSReadOnlyInput, error)`. This notation is a behavioral description,
 not an approved Go signature. The caller must supply a cancellation signal and
 make it observable before invocation and at completion.
 
 The existing native input carries `UnitID`, `Function`, `Revision` and ordered
 `Slices` with `Offset` and `Words`. Existing
 `DecodeGrowattBMSTypedReadOnlyStatus` produces
-`GrowattBMSTypedReadOnlyStatus`; its `NativeObservation()` preserves copied
-native evidence. The existing result envelope is `GrowattAggregateSnapshot`,
-including `GrowattAggregateAttempt`, applicability, success metadata and an
+`BMSTypedReadOnlyStatus`; its `NativeObservation()` preserves copied
+native evidence. The existing result envelope is `AggregateSnapshot`,
+including `AggregateAttempt`, applicability, success metadata and an
 optional typed `Value`. The composition must reuse that retention owner and
 envelope. An operation error is separate from the snapshot: retained content
 does not turn an error into native success.
@@ -65,9 +67,9 @@ by the seam.
 | `SourceInstance` | Nonempty opaque internal correlation token, at most 128 bytes; never a public installation identifier. A replacement source starts a newer epoch. |
 | `OwnerEpoch` | Positive; never decreases. An owner restart starts a newer epoch. |
 | `UnitID`, `Function` | Preserve the explicitly selected native unit and exact function. Only the canonical base contract can pass decoding; FC04 is not an alternative. |
-| Every `GrowattBMSRevisionTuple` field | Compare `Family`, `FileRevision`, `HeaderVersion`, `CumulativeRevision` independently. Each is bounded to 64 bytes; bounded strings alone do not make a revision supported. |
+| Every `BMSRevisionTuple` field | Compare `Family`, `FileRevision`, `HeaderVersion`, `CumulativeRevision` independently. Each is bounded to 64 bytes; bounded strings alone do not make a revision supported. |
 | `IdentityKnown` | Explicit coherent evidence for every identity member, including valid zeros. False cannot be repaired by a readable unit, default values or partial input. |
-| Every `GrowattAggregateIdentity` field | Compare `MCUSoftwareVersion` (at most 32 bytes), `BMSCompany`, `BMSGeneration`, `PackCompany`, `PackGeneration`, `Topology`, `CellSeriesCount` independently. Retain whole native topology evidence; do not infer another pack. |
+| Every `AggregateIdentity` field | Compare `MCUSoftwareVersion` (at most 32 bytes), `BMSCompany`, `BMSGeneration`, `PackCompany`, `PackGeneration`, `Topology`, `CellSeriesCount` independently. Retain whole native topology evidence; do not infer another pack. |
 | Cycle | Positive and strictly increasing within an epoch. A higher epoch permits resetting the cycle counter. Every completion carries the original exact context and cycle. |
 | Logical clock and deadline | One monotonic tick domain, including across epochs on the same retention instance. Require `deadline > now` and `deadline - now <= maxCycleTicks`, with positive finite `maxCycleTicks`. Completion at the deadline is already late. |
 
@@ -153,7 +155,7 @@ closure; cancellation does not authorize clock fabrication.
 
 ## Ownership, replacement and loss
 
-Reuse `GrowattAggregateHistoryLimit == 1`: one aggregate last success and one
+Reuse `AggregateHistoryLimit == 1`: one aggregate last success and one
 latest attempt. Do not add a second last-good cache, ledger or diagnostic bank.
 The existing component serializes its operations; composition must preserve
 that protection when callbacks overlap or a source is replaced.
