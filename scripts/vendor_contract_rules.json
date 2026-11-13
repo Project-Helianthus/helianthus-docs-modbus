@@ -1,0 +1,1469 @@
+{
+  "version": 1,
+  "rules": [
+    {
+      "contract": "private_function",
+      "page": "protocols/modbus/private-function-codes.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Scope and non-goals",
+      "reason": "Required section of the private-function transport contract: Scope and non-goals."
+    },
+    {
+      "contract": "private_function",
+      "page": "protocols/modbus/private-function-codes.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Selection and ownership",
+      "reason": "Required section of the private-function transport contract: Selection and ownership."
+    },
+    {
+      "contract": "private_function",
+      "page": "protocols/modbus/private-function-codes.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Transport exchange",
+      "reason": "Required section of the private-function transport contract: Transport exchange."
+    },
+    {
+      "contract": "private_function",
+      "page": "protocols/modbus/private-function-codes.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Function-code isolation",
+      "reason": "Required section of the private-function transport contract: Function-code isolation."
+    },
+    {
+      "contract": "private_function",
+      "page": "protocols/modbus/private-function-codes.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Standard and private function boundary",
+      "reason": "Required section of the private-function transport contract: Standard and private function boundary."
+    },
+    {
+      "contract": "private_function",
+      "page": "protocols/modbus/private-function-codes.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Ambiguity and no-send",
+      "reason": "Required section of the private-function transport contract: Ambiguity and no-send."
+    },
+    {
+      "contract": "private_function",
+      "page": "protocols/modbus/private-function-codes.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Response correlation and exceptions",
+      "reason": "Required section of the private-function transport contract: Response correlation and exceptions."
+    },
+    {
+      "contract": "private_function",
+      "page": "protocols/modbus/private-function-codes.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## RTU serialization",
+      "reason": "Required section of the private-function transport contract: RTU serialization."
+    },
+    {
+      "contract": "private_function",
+      "page": "protocols/modbus/private-function-codes.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Configured serial boundary",
+      "reason": "Required section of the private-function transport contract: Configured serial boundary."
+    },
+    {
+      "contract": "private_function",
+      "page": "protocols/modbus/private-function-codes.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Configured production read and private-function endpoint",
+      "reason": "Required section of the private-function transport contract: Configured production read and private-function endpoint."
+    },
+    {
+      "contract": "private_function",
+      "page": "protocols/modbus/private-function-codes.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Validation and compatibility",
+      "reason": "Required section of the private-function transport contract: Validation and compatibility."
+    },
+    {
+      "contract": "private_function",
+      "page": "protocols/modbus/private-function-codes.md",
+      "section": "## Standard and private function boundary",
+      "kind": "statement",
+      "value": "A function-code byte never identifies a vendor, vendor profile, or operation.",
+      "reason": "A function-code byte is never a vendor or operation selector."
+    },
+    {
+      "contract": "private_function",
+      "page": "protocols/modbus/private-function-codes.md",
+      "section": "## Standard and private function boundary",
+      "kind": "statement",
+      "value": "FC100, FC101, and FC102 may be reused by different qualified vendor profiles.",
+      "reason": "Private function-code values have no global owner."
+    },
+    {
+      "contract": "private_function",
+      "page": "protocols/modbus/private-function-codes.md",
+      "section": "## Standard and private function boundary",
+      "kind": "statement",
+      "value": "FC0x41 is profile-qualified and is not globally reserved by this contract.",
+      "reason": "FC0x41 is admitted per profile, never reserved globally."
+    },
+    {
+      "contract": "private_function",
+      "page": "protocols/modbus/private-function-codes.md",
+      "section": "## Standard and private function boundary",
+      "kind": "statement",
+      "value": "FC23 is a standard Modbus function code, not a private-function operation.",
+      "reason": "FC23 stays outside the raw private-function request contract."
+    },
+    {
+      "contract": "private_function",
+      "page": "protocols/modbus/private-function-codes.md",
+      "section": "## Standard and private function boundary",
+      "kind": "statement",
+      "value": "A vendor-specific allocation interpretation for FC23 requires a separately admitted standard-function operation and a typed standard-function codec.",
+      "reason": "A vendor reading of FC23 needs its own admitted operation and typed codec."
+    },
+    {
+      "contract": "private_function",
+      "page": "protocols/modbus/private-function-codes.md",
+      "section": "## Standard and private function boundary",
+      "kind": "statement",
+      "value": "This contract makes no claim about the meaning, sendability, or allocation workflow of such an operation.",
+      "reason": "The contract claims nothing about an FC23 allocation operation."
+    },
+    {
+      "contract": "private_function",
+      "page": "protocols/modbus/private-function-codes.md",
+      "section": "## Configured serial boundary",
+      "kind": "statement",
+      "value": "It must not discover endpoints, select a vendor profile, infer a codec from a function code, or admit an operation.",
+      "reason": "The serial stream has no discovery, selection, inference or admission authority."
+    },
+    {
+      "contract": "private_function",
+      "page": "protocols/modbus/private-function-codes.md",
+      "section": "## Configured serial boundary",
+      "kind": "statement",
+      "value": "Opening a serial stream makes transport available; it does not make any vendor operation eligible to be sent.",
+      "reason": "An open serial stream grants no send eligibility."
+    },
+    {
+      "contract": "private_function",
+      "page": "protocols/modbus/private-function-codes.md",
+      "section": "## Configured serial boundary",
+      "kind": "statement",
+      "value": "Profile selection and operation admission remain preconditions at the registry boundary. A serial stream must not be exposed as a raw external-operation bypass.",
+      "reason": "Admission stays at the registry; the stream is never a raw bypass."
+    },
+    {
+      "contract": "private_function",
+      "page": "protocols/modbus/private-function-codes.md",
+      "section": "## Configured serial boundary",
+      "kind": "statement",
+      "value": "They must preserve the in-flight exchange boundary: after an uncertain transmission, the endpoint must quarantine and recover before it accepts a successor request.",
+      "reason": "An uncertain transmission quarantines the endpoint until recovery."
+    },
+    {
+      "contract": "private_function",
+      "page": "protocols/modbus/private-function-codes.md",
+      "section": "## Configured serial boundary",
+      "kind": "statement",
+      "value": "A normal lifecycle close ends the local stream without creating a successor request or classifying itself as a failed exchange.",
+      "reason": "A lifecycle close is neither a successor request nor a failed exchange."
+    },
+    {
+      "contract": "private_function",
+      "page": "protocols/modbus/private-function-codes.md",
+      "section": "## Configured production read and private-function endpoint",
+      "kind": "statement",
+      "value": "The standard read path admits only FC03 and FC04 requests that have already passed the standard read-operation admission boundary.",
+      "reason": "The production read path admits only admitted FC03 and FC04 reads."
+    },
+    {
+      "contract": "private_function",
+      "page": "protocols/modbus/private-function-codes.md",
+      "section": "## Configured production read and private-function endpoint",
+      "kind": "statement",
+      "value": "Each endpoint instance has a nonzero lifecycle generation, incremented before a replacement or recovery successor admits a request.",
+      "reason": "Every successor runs in a new lifecycle generation."
+    },
+    {
+      "contract": "private_function",
+      "page": "protocols/modbus/private-function-codes.md",
+      "section": "## Configured production read and private-function endpoint",
+      "kind": "statement",
+      "value": "Accepted baud rates are 9600, 19200, 38400, 57600, 115200, and 230400; data bits are exactly eight; parity is none, even, or odd; and stop bits are one or two.",
+      "reason": "Value table of the admitted serial formats."
+    },
+    {
+      "contract": "private_function",
+      "page": "protocols/modbus/private-function-codes.md",
+      "section": "## Configured production read and private-function endpoint",
+      "kind": "statement",
+      "value": "The response timeout is greater than zero and no more than 30 seconds.",
+      "reason": "Bound of the response timeout."
+    },
+    {
+      "contract": "private_function",
+      "page": "protocols/modbus/private-function-codes.md",
+      "section": "## Configured production read and private-function endpoint",
+      "kind": "statement",
+      "value": "Recovery has one bounded attempt and completes within the response timeout plus t3.5, with an absolute maximum of 60 seconds.",
+      "reason": "Bound of recovery."
+    },
+    {
+      "contract": "private_function",
+      "page": "protocols/modbus/private-function-codes.md",
+      "section": "## Configured production read and private-function endpoint",
+      "kind": "statement",
+      "value": "An exchange has exactly one send attempt; no retry is admitted by this contract.",
+      "reason": "One send attempt per exchange; no retry."
+    },
+    {
+      "contract": "private_function",
+      "page": "protocols/modbus/private-function-codes.md",
+      "section": "## Configured production read and private-function endpoint",
+      "kind": "statement",
+      "value": "FC03 and FC04 permit a zero-based offset from 0 through 65535 and a quantity from 1 through 125 registers.",
+      "reason": "Admitted offset and quantity range of FC03 and FC04."
+    },
+    {
+      "contract": "private_function",
+      "page": "protocols/modbus/private-function-codes.md",
+      "section": "## Configured production read and private-function endpoint",
+      "kind": "statement",
+      "value": "Admission must calculate offset + quantity without 16-bit wrap and require it to be no greater than 65536; otherwise it is NO_SEND before transmission.",
+      "reason": "Address arithmetic never wraps; an overflow is NO_SEND."
+    },
+    {
+      "contract": "private_function",
+      "page": "protocols/modbus/private-function-codes.md",
+      "section": "## Configured production read and private-function endpoint",
+      "kind": "statement",
+      "value": "Offset 65535 with quantity 1 and offset 65411 with quantity 125 are admitted exact-boundary requests; offset 65535 with quantity 2 is NO_SEND.",
+      "reason": "Exact boundary examples of the address bound."
+    },
+    {
+      "contract": "private_function",
+      "page": "protocols/modbus/private-function-codes.md",
+      "section": "## Configured production read and private-function endpoint",
+      "kind": "statement",
+      "value": "The normal response byte-count is exactly two times the requested quantity; its RTU ADU is exactly 5 + (2 × quantity) bytes and never exceeds 255 bytes.",
+      "reason": "Exact normal-response size."
+    },
+    {
+      "contract": "private_function",
+      "page": "protocols/modbus/private-function-codes.md",
+      "section": "## Configured production read and private-function endpoint",
+      "kind": "statement",
+      "value": "The correlation identity binds endpoint generation, request identifier, unit identifier, FC03 or FC04 function, request offset, quantity, and the exact request ADU.",
+      "reason": "Identity tuple of read correlation."
+    },
+    {
+      "contract": "private_function",
+      "page": "protocols/modbus/private-function-codes.md",
+      "section": "## Configured production read and private-function endpoint",
+      "kind": "statement",
+      "value": "A response satisfies a read only when it arrives in the same unfenced generation and has the matching unit, function, valid RTU integrity, and response shape.",
+      "reason": "A read is satisfied only by a correlated response of the same generation."
+    },
+    {
+      "contract": "private_function",
+      "page": "protocols/modbus/private-function-codes.md",
+      "section": "## Configured production read and private-function endpoint",
+      "kind": "statement",
+      "value": "A structurally valid, correlated Modbus exception is terminal evidence for its request but does not fence the endpoint generation or require recovery.",
+      "reason": "A correlated exception is terminal evidence without a fence."
+    },
+    {
+      "contract": "private_function",
+      "page": "protocols/modbus/private-function-codes.md",
+      "section": "## Configured production read and private-function endpoint",
+      "kind": "statement",
+      "value": "A malformed, CRC-failed, late, unrelated, or prior-generation exception is a transport fault and enters quarantine.",
+      "reason": "An uncorrelated exception is a transport fault."
+    },
+    {
+      "contract": "private_function",
+      "page": "protocols/modbus/private-function-codes.md",
+      "section": "## Configured production read and private-function endpoint",
+      "kind": "statement",
+      "value": "Late, duplicate, unrelated, malformed, CRC-failed, or prior-generation frames enter quarantine and never satisfy a later request.",
+      "reason": "Quarantined frames never satisfy a later request."
+    },
+    {
+      "contract": "private_function",
+      "page": "protocols/modbus/private-function-codes.md",
+      "section": "## Configured production read and private-function endpoint",
+      "kind": "statement",
+      "value": "Every terminal exchange retains immutable request and response ADU bytes, integrity result, endpoint generation, correlation identifier, unit identifier, function, monotonic send and receipt bounds, retry disposition, and terminal outcome. Failed exchanges retain their available request and transport evidence without inventing response bytes.",
+      "reason": "Raw evidence retained for every terminal exchange; failed exchanges invent no response bytes."
+    },
+    {
+      "contract": "private_function",
+      "page": "protocols/modbus/private-function-codes.md",
+      "section": "## Configured production read and private-function endpoint",
+      "kind": "statement",
+      "value": "Endpoint identity in public evidence is a stable configured endpoint label, never a local serial path.",
+      "reason": "Public evidence never names a local serial path."
+    },
+    {
+      "contract": "private_function",
+      "page": "protocols/modbus/private-function-codes.md",
+      "section": "## Configured production read and private-function endpoint",
+      "kind": "statement",
+      "value": "Evidence from a closed, replaced, fenced, or quarantined generation is historical only and cannot authorize, correlate, or be rebound to a successor request.",
+      "reason": "Evidence of a past generation is historical only."
+    },
+    {
+      "contract": "private_function",
+      "page": "protocols/modbus/private-function-codes.md",
+      "section": "## Configured production read and private-function endpoint",
+      "kind": "statement",
+      "value": "The same endpoint has a separate opt-in private-function path through `RTUProductionConfig.PrivateFunction`: an upstream `RTUPrivateFunctionAdmission` and `MaxResponses` from 1 through 8, both or neither. The zero value (no admission and zero maximum responses) disables private exchanges; a partial configuration or an out-of-range bound is invalid.",
+      "reason": "The private-function path is opt-in with admission and response bound set together; the zero value disables it."
+    },
+    {
+      "contract": "private_function",
+      "page": "protocols/modbus/private-function-codes.md",
+      "section": "## Configured production read and private-function endpoint",
+      "kind": "statement",
+      "value": "`ExchangePrivateFunction` sends nothing unless that path is enabled, upstream admission approves the endpoint/generation/unit/function/payload candidate, the policy allows exactly one attempt, the unit is not broadcast, and the function code is in the user-defined ranges 65–72 or 100–110 (Modbus Application Protocol Specification V1.1b3, section 5).",
+      "reason": "Every precondition of a private send, including the user-defined function-code ranges."
+    },
+    {
+      "contract": "private_function",
+      "page": "protocols/modbus/private-function-codes.md",
+      "section": "## Configured production read and private-function endpoint",
+      "kind": "statement",
+      "value": "One endpoint has exactly one in-flight exchange, shared by FC03/FC04 reads and private-function exchanges.",
+      "reason": "Reads and private exchanges share one in-flight exchange."
+    },
+    {
+      "contract": "private_function",
+      "page": "protocols/modbus/private-function-codes.md",
+      "section": "## Configured production read and private-function endpoint",
+      "kind": "statement",
+      "value": "Each private response frame must complete within `ResponseTimeout`, including first-byte receipt and the t3.5 frame end.",
+      "reason": "Per-frame bound of a private response."
+    },
+    {
+      "contract": "private_function",
+      "page": "protocols/modbus/private-function-codes.md",
+      "section": "## Configured production read and private-function endpoint",
+      "kind": "statement",
+      "value": "RTU framing enforces t1.5 between bytes and t3.5 frame separation; the frame decoder bounds frame size and checks CRC before unit, function, and exception-shape correlation.",
+      "reason": "CRC is checked before any correlation."
+    },
+    {
+      "contract": "private_function",
+      "page": "protocols/modbus/private-function-codes.md",
+      "section": "## Configured production read and private-function endpoint",
+      "kind": "statement",
+      "value": "Without a classifier, the first good normal frame is terminal.",
+      "reason": "Default terminal rule of a private exchange."
+    },
+    {
+      "contract": "private_function",
+      "page": "protocols/modbus/private-function-codes.md",
+      "section": "## Configured production read and private-function endpoint",
+      "kind": "statement",
+      "value": "Reaching `MaxResponses` while still `Continue` is a `response_bound` failure; a terminal frame at the bound is accepted.",
+      "reason": "Behaviour at the response bound."
+    },
+    {
+      "contract": "private_function",
+      "page": "protocols/modbus/private-function-codes.md",
+      "section": "## Configured production read and private-function endpoint",
+      "kind": "statement",
+      "value": "Response collection allows at most `MaxResponses` frame timeouts plus caller classification time; transport does not bound classifier execution time.",
+      "reason": "Transport does not bound the classifier; the caller owns the whole-operation deadline."
+    },
+    {
+      "contract": "private_function",
+      "page": "protocols/modbus/private-function-codes.md",
+      "section": "## Configured production read and private-function endpoint",
+      "kind": "statement",
+      "value": "A correlated private-function exception ends the exchange with an error without fencing. Every other failure of a started private exchange fences the generation until `Recover` succeeds: write fault or short write, timeout, cancellation, read fault, malformed/CRC-failed/unit- or function-mismatched frame, classifier error or panic, invalid disposition, or response-bound exhaustion.",
+      "reason": "A correlated private exception does not fence; every other private failure fences the generation until recovery."
+    },
+    {
+      "contract": "private_function",
+      "page": "protocols/modbus/private-function-codes.md",
+      "section": "## Configured production read and private-function endpoint",
+      "kind": "statement",
+      "value": "It contains the exact request ADU and all received response frames in arrival order, including a failing final frame or partial bytes; no response bytes means no invented response frame.",
+      "reason": "Private evidence keeps every received frame, including partial bytes."
+    },
+    {
+      "contract": "private_function",
+      "page": "protocols/modbus/private-function-codes.md",
+      "section": "## Configured production read and private-function endpoint",
+      "kind": "statement",
+      "value": "Private exchanges retain a separate immutable-by-value `RTUPrivateFunctionEvidence` receipt, not an FC03/FC04 read receipt.",
+      "reason": "Private evidence is separate from read evidence."
+    },
+    {
+      "contract": "private_function",
+      "page": "protocols/modbus/private-function-codes.md",
+      "section": "## Configured production read and private-function endpoint",
+      "kind": "statement",
+      "value": "It reports `Current=false` once its generation is fenced, recovered, or closed.",
+      "reason": "Currentness follows the live lifecycle."
+    },
+    {
+      "contract": "private_function",
+      "page": "protocols/modbus/private-function-codes.md",
+      "section": "## Configured production read and private-function endpoint",
+      "kind": "statement",
+      "value": "Success at receipt time is recorded by `TerminalOutcome=success`, not by `Current`.",
+      "reason": "Success and currentness are separate fields."
+    },
+    {
+      "contract": "private_function",
+      "page": "protocols/modbus/private-function-codes.md",
+      "section": "## Configured production read and private-function endpoint",
+      "kind": "statement",
+      "value": "Cancellation observed after a frame is classified `Terminal` still fences the endpoint and returns no responses.",
+      "reason": "Late cancellation still fences and returns nothing."
+    },
+    {
+      "contract": "private_function",
+      "page": "protocols/modbus/private-function-codes.md",
+      "section": "## Configured production read and private-function endpoint",
+      "kind": "statement",
+      "value": "Unit identifiers above 247 are also rejected before transmission.",
+      "reason": "Unit identifiers above 247 are NO_SEND."
+    },
+    {
+      "contract": "private_function",
+      "page": "protocols/modbus/private-function-codes.md",
+      "section": "## Configured production read and private-function endpoint",
+      "kind": "statement",
+      "value": "The request payload format, operation-specific frame count, order, terminal rule, and read-only classification remain registry-owned.",
+      "reason": "Operation semantics stay with the registry."
+    },
+    {
+      "contract": "fronius_qualification",
+      "page": "protocols/fronius/qualification-readiness-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Scope and evidence state",
+      "reason": "Required section of the Fronius qualification readiness contract: Scope and evidence state."
+    },
+    {
+      "contract": "fronius_qualification",
+      "page": "protocols/fronius/qualification-readiness-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Qualification card",
+      "reason": "Required section of the Fronius qualification readiness contract: Qualification card."
+    },
+    {
+      "contract": "fronius_qualification",
+      "page": "protocols/fronius/qualification-readiness-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Complete-chain replay matrix",
+      "reason": "Required section of the Fronius qualification readiness contract: Complete-chain replay matrix."
+    },
+    {
+      "contract": "fronius_qualification",
+      "page": "protocols/fronius/qualification-readiness-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Typed native facts and retention",
+      "reason": "Required section of the Fronius qualification readiness contract: Typed native facts and retention."
+    },
+    {
+      "contract": "fronius_qualification",
+      "page": "protocols/fronius/qualification-readiness-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Sanitized expected result",
+      "reason": "Required section of the Fronius qualification readiness contract: Sanitized expected result."
+    },
+    {
+      "contract": "fronius_qualification",
+      "page": "protocols/fronius/qualification-readiness-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Failure and requalification boundary",
+      "reason": "Required section of the Fronius qualification readiness contract: Failure and requalification boundary."
+    },
+    {
+      "contract": "fronius_qualification",
+      "page": "protocols/fronius/qualification-readiness-v1.md",
+      "section": "## Scope and evidence state",
+      "kind": "statement",
+      "value": "The exact applicability tuple is manufacturer `Fronius`, model `Symo GEN24 10.0`, firmware `1.41.11-1`, Unit Identifier 1, and flavor `sunspec.flavor.fronius.gen24.float.observed@1.1.0`.",
+      "reason": "Identity tuple of the observed flavor: manufacturer, model, firmware, unit and flavor key."
+    },
+    {
+      "contract": "fronius_qualification",
+      "page": "protocols/fronius/qualification-readiness-v1.md",
+      "section": "## Scope and evidence state",
+      "kind": "statement",
+      "value": "The generic three-phase SunSpec monitoring capability is evaluated separately from this vendor tuple.",
+      "reason": "The generic capability never establishes the vendor flavor."
+    },
+    {
+      "contract": "fronius_qualification",
+      "page": "protocols/fronius/qualification-readiness-v1.md",
+      "section": "## Qualification card",
+      "kind": "statement",
+      "value": "The card identity is `sunspec.qualification.fronius.gen24.float.readonly@1.0.0`.",
+      "reason": "Identity of the qualification card."
+    },
+    {
+      "contract": "fronius_qualification",
+      "page": "protocols/fronius/qualification-readiness-v1.md",
+      "section": "## Qualification card",
+      "kind": "statement",
+      "value": "The initial base-candidate set is exactly `[40000]`; the maximum chain is 512 words and 64 model occurrences; and each individual read is bounded by the protocol acquisition adapter to at most 125 words.",
+      "reason": "Exact base candidate and chain bounds of the card."
+    },
+    {
+      "contract": "fronius_qualification",
+      "page": "protocols/fronius/qualification-readiness-v1.md",
+      "section": "## Typed native facts and retention",
+      "kind": "statement",
+      "value": "This list is a candidate boundary for a later semantic owner; it is not a promotion or publication decision.",
+      "reason": "The field list is not a promotion or publication decision."
+    },
+    {
+      "contract": "fronius_qualification",
+      "page": "protocols/fronius/qualification-readiness-v1.md",
+      "section": "## Sanitized expected result",
+      "kind": "statement",
+      "value": "retained-evidence markers for `raw_words`, `occurrence_order`, `source_spans`, and `logical_view_provenance`.",
+      "reason": "Native raw evidence markers retained by the expected result."
+    },
+    {
+      "contract": "fronius_qualification",
+      "page": "protocols/fronius/qualification-readiness-v1.md",
+      "section": "## Sanitized expected result",
+      "kind": "statement",
+      "value": "\"live_qualified\": false",
+      "reason": "Default-denied safety field of the expected result."
+    },
+    {
+      "contract": "fronius_qualification",
+      "page": "protocols/fronius/qualification-readiness-v1.md",
+      "section": "## Sanitized expected result",
+      "kind": "statement",
+      "value": "\"automatic_runtime_admission\": false",
+      "reason": "Default-denied safety field of the expected result."
+    },
+    {
+      "contract": "fronius_qualification",
+      "page": "protocols/fronius/qualification-readiness-v1.md",
+      "section": "## Sanitized expected result",
+      "kind": "statement",
+      "value": "\"write_authority\": false",
+      "reason": "Default-denied safety field of the expected result."
+    },
+    {
+      "contract": "fronius_qualification",
+      "page": "protocols/fronius/qualification-readiness-v1.md",
+      "section": "## Failure and requalification boundary",
+      "kind": "statement",
+      "value": "It does not prove a currently reachable device, a product support claim, a gateway integration, consumer output, semantic publication, or successful physical qualification.",
+      "reason": "An offline match is no device, support or physical qualification claim."
+    },
+    {
+      "contract": "fronius_qualification",
+      "page": "protocols/fronius/qualification-readiness-v1.md",
+      "section": "## Typed native facts and retention",
+      "kind": "statement",
+      "value": "`inverter.ac.current.total`",
+      "reason": "Candidate typed fact identifier of the fourteen-field list."
+    },
+    {
+      "contract": "fronius_qualification",
+      "page": "protocols/fronius/qualification-readiness-v1.md",
+      "section": "## Typed native facts and retention",
+      "kind": "statement",
+      "value": "`inverter.ac.current.phase_a`",
+      "reason": "Candidate typed fact identifier of the fourteen-field list."
+    },
+    {
+      "contract": "fronius_qualification",
+      "page": "protocols/fronius/qualification-readiness-v1.md",
+      "section": "## Typed native facts and retention",
+      "kind": "statement",
+      "value": "`inverter.ac.current.phase_b`",
+      "reason": "Candidate typed fact identifier of the fourteen-field list."
+    },
+    {
+      "contract": "fronius_qualification",
+      "page": "protocols/fronius/qualification-readiness-v1.md",
+      "section": "## Typed native facts and retention",
+      "kind": "statement",
+      "value": "`inverter.ac.current.phase_c`",
+      "reason": "Candidate typed fact identifier of the fourteen-field list."
+    },
+    {
+      "contract": "fronius_qualification",
+      "page": "protocols/fronius/qualification-readiness-v1.md",
+      "section": "## Typed native facts and retention",
+      "kind": "statement",
+      "value": "`inverter.ac.voltage.phase_a`",
+      "reason": "Candidate typed fact identifier of the fourteen-field list."
+    },
+    {
+      "contract": "fronius_qualification",
+      "page": "protocols/fronius/qualification-readiness-v1.md",
+      "section": "## Typed native facts and retention",
+      "kind": "statement",
+      "value": "`inverter.ac.voltage.phase_b`",
+      "reason": "Candidate typed fact identifier of the fourteen-field list."
+    },
+    {
+      "contract": "fronius_qualification",
+      "page": "protocols/fronius/qualification-readiness-v1.md",
+      "section": "## Typed native facts and retention",
+      "kind": "statement",
+      "value": "`inverter.ac.voltage.phase_c`",
+      "reason": "Candidate typed fact identifier of the fourteen-field list."
+    },
+    {
+      "contract": "fronius_qualification",
+      "page": "protocols/fronius/qualification-readiness-v1.md",
+      "section": "## Typed native facts and retention",
+      "kind": "statement",
+      "value": "`inverter.ac.power.active`",
+      "reason": "Candidate typed fact identifier of the fourteen-field list."
+    },
+    {
+      "contract": "fronius_qualification",
+      "page": "protocols/fronius/qualification-readiness-v1.md",
+      "section": "## Typed native facts and retention",
+      "kind": "statement",
+      "value": "`inverter.ac.frequency`",
+      "reason": "Candidate typed fact identifier of the fourteen-field list."
+    },
+    {
+      "contract": "fronius_qualification",
+      "page": "protocols/fronius/qualification-readiness-v1.md",
+      "section": "## Typed native facts and retention",
+      "kind": "statement",
+      "value": "`inverter.ac.energy_lifetime`",
+      "reason": "Candidate typed fact identifier of the fourteen-field list."
+    },
+    {
+      "contract": "fronius_qualification",
+      "page": "protocols/fronius/qualification-readiness-v1.md",
+      "section": "## Typed native facts and retention",
+      "kind": "statement",
+      "value": "`inverter.temperature.cabinet`",
+      "reason": "Candidate typed fact identifier of the fourteen-field list."
+    },
+    {
+      "contract": "fronius_qualification",
+      "page": "protocols/fronius/qualification-readiness-v1.md",
+      "section": "## Typed native facts and retention",
+      "kind": "statement",
+      "value": "`inverter.operating_state`",
+      "reason": "Candidate typed fact identifier of the fourteen-field list."
+    },
+    {
+      "contract": "fronius_qualification",
+      "page": "protocols/fronius/qualification-readiness-v1.md",
+      "section": "## Typed native facts and retention",
+      "kind": "statement",
+      "value": "`inverter.events.1`",
+      "reason": "Candidate typed fact identifier of the fourteen-field list."
+    },
+    {
+      "contract": "fronius_qualification",
+      "page": "protocols/fronius/qualification-readiness-v1.md",
+      "section": "## Typed native facts and retention",
+      "kind": "statement",
+      "value": "`inverter.events.2`",
+      "reason": "Candidate typed fact identifier of the fourteen-field list."
+    },
+    {
+      "contract": "fronius_qualification",
+      "page": "protocols/fronius/qualification-readiness-v1.md",
+      "section": "## Complete-chain replay matrix",
+      "kind": "row",
+      "value": "| Structurally valid unknown model | retain the opaque occurrence, raw words, order, and source spans; generic capability may remain admitted; exact flavor does not match |",
+      "reason": "Value-table row of the complete-chain replay matrix."
+    },
+    {
+      "contract": "fronius_qualification",
+      "page": "protocols/fronius/qualification-readiness-v1.md",
+      "section": "## Complete-chain replay matrix",
+      "kind": "row",
+      "value": "| Duplicate known model | retain each occurrence separately; exact flavor does not match |",
+      "reason": "Value-table row of the complete-chain replay matrix."
+    },
+    {
+      "contract": "fronius_qualification",
+      "page": "protocols/fronius/qualification-readiness-v1.md",
+      "section": "## Complete-chain replay matrix",
+      "kind": "row",
+      "value": "| Known model with an unsupported length | retain it as `unsupported_length`; exact flavor does not match |",
+      "reason": "Value-table row of the complete-chain replay matrix."
+    },
+    {
+      "contract": "fronius_qualification",
+      "page": "protocols/fronius/qualification-readiness-v1.md",
+      "section": "## Complete-chain replay matrix",
+      "kind": "row",
+      "value": "| Missing payload chunk or terminal chunk | remain incomplete and produce no qualification observation |",
+      "reason": "Value-table row of the complete-chain replay matrix."
+    },
+    {
+      "contract": "fronius_qualification",
+      "page": "protocols/fronius/qualification-readiness-v1.md",
+      "section": "## Complete-chain replay matrix",
+      "kind": "row",
+      "value": "| Unavailable sentinel in a required Model 113 fact | retain the raw value; reject the generic capability and exact flavor |",
+      "reason": "Value-table row of the complete-chain replay matrix."
+    },
+    {
+      "contract": "fronius_qualification",
+      "page": "protocols/fronius/qualification-readiness-v1.md",
+      "section": "## Complete-chain replay matrix",
+      "kind": "row",
+      "value": "| Different manufacturer, model, or firmware | generic standard capability may remain admitted; exact Fronius flavor does not match |",
+      "reason": "Value-table row of the complete-chain replay matrix."
+    },
+    {
+      "contract": "fronius_qualification",
+      "page": "protocols/fronius/qualification-readiness-v1.md",
+      "section": null,
+      "kind": "forbidden",
+      "value": "live_qualified[=: ]+true|automatic_runtime_admission[=: ]+true|write_authority[=: ]+true|support claim is established|partial positive result is permitted",
+      "reason": "The page must not exceed its offline read-only boundary."
+    },
+    {
+      "contract": "fronius_float_page",
+      "page": "protocols/fronius/sunspec-float-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Exact chain geometry",
+      "reason": "Required section of the Fronius float flavor: the exact ordered chain."
+    },
+    {
+      "contract": "huawei_qualification",
+      "page": "protocols/huawei/qualification-readiness-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Scope and class outcomes",
+      "reason": "Required section of the Huawei qualification readiness contract: Scope and class outcomes."
+    },
+    {
+      "contract": "huawei_qualification",
+      "page": "protocols/huawei/qualification-readiness-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## SmartLogger qualification card",
+      "reason": "Required section of the Huawei qualification readiness contract: SmartLogger qualification card."
+    },
+    {
+      "contract": "huawei_qualification",
+      "page": "protocols/huawei/qualification-readiness-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## EMMA qualification card",
+      "reason": "Required section of the Huawei qualification readiness contract: EMMA qualification card."
+    },
+    {
+      "contract": "huawei_qualification",
+      "page": "protocols/huawei/qualification-readiness-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## S-Dongle evidence-blocked card",
+      "reason": "Required section of the Huawei qualification readiness contract: S-Dongle evidence-blocked card."
+    },
+    {
+      "contract": "huawei_qualification",
+      "page": "protocols/huawei/qualification-readiness-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Shared resolution and negative overlap",
+      "reason": "Required section of the Huawei qualification readiness contract: Shared resolution and negative overlap."
+    },
+    {
+      "contract": "huawei_qualification",
+      "page": "protocols/huawei/qualification-readiness-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Sanitized expected result",
+      "reason": "Required section of the Huawei qualification readiness contract: Sanitized expected result."
+    },
+    {
+      "contract": "huawei_qualification",
+      "page": "protocols/huawei/qualification-readiness-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Integration and hardware boundary",
+      "reason": "Required section of the Huawei qualification readiness contract: Integration and hardware boundary."
+    },
+    {
+      "contract": "huawei_qualification",
+      "page": "protocols/huawei/qualification-readiness-v1.md",
+      "section": "## Scope and class outcomes",
+      "kind": "statement",
+      "value": "| SmartLogger | `QUALIFICATION_TEST_READY` |",
+      "reason": "Class and provider-local status of SmartLogger."
+    },
+    {
+      "contract": "huawei_qualification",
+      "page": "protocols/huawei/qualification-readiness-v1.md",
+      "section": "## Scope and class outcomes",
+      "kind": "statement",
+      "value": "| EMMA | `QUALIFICATION_EVIDENCE_BLOCKED` |",
+      "reason": "Class and provider-local status of EMMA."
+    },
+    {
+      "contract": "huawei_qualification",
+      "page": "protocols/huawei/qualification-readiness-v1.md",
+      "section": "## Scope and class outcomes",
+      "kind": "statement",
+      "value": "| S-Dongle | `QUALIFICATION_EVIDENCE_BLOCKED` |",
+      "reason": "Class and provider-local status of S-Dongle."
+    },
+    {
+      "contract": "huawei_qualification",
+      "page": "protocols/huawei/qualification-readiness-v1.md",
+      "section": "## Scope and class outcomes",
+      "kind": "statement",
+      "value": "No class is `HARDWARE_TEST_READY`.",
+      "reason": "No Huawei class is hardware-test ready."
+    },
+    {
+      "contract": "huawei_qualification",
+      "page": "protocols/huawei/qualification-readiness-v1.md",
+      "section": "## SmartLogger qualification card",
+      "kind": "statement",
+      "value": "The card identity is `huawei.qualification.smartlogger.readonly@1.0.0`.",
+      "reason": "Identity of the SmartLogger card."
+    },
+    {
+      "contract": "huawei_qualification",
+      "page": "protocols/huawei/qualification-readiness-v1.md",
+      "section": "## SmartLogger qualification card",
+      "kind": "statement",
+      "value": "an FC03 read at PDU offset 65521, quantity 1, for the U16 inventory change counter;",
+      "reason": "Exact counter read of the SmartLogger card."
+    },
+    {
+      "contract": "huawei_qualification",
+      "page": "protocols/huawei/qualification-readiness-v1.md",
+      "section": "## SmartLogger qualification card",
+      "kind": "statement",
+      "value": "Inventory is limited to 15 seconds, 248 pages, 248 objects, 65536 response bytes, and 247 children.",
+      "reason": "Inventory bounds of the SmartLogger card."
+    },
+    {
+      "contract": "huawei_qualification",
+      "page": "protocols/huawei/qualification-readiness-v1.md",
+      "section": "## SmartLogger qualification card",
+      "kind": "statement",
+      "value": "The first record is the self entry and its model must be exactly `SmartLogger`.",
+      "reason": "Exact self-entry model of the documentary card."
+    },
+    {
+      "contract": "huawei_qualification",
+      "page": "protocols/huawei/qualification-readiness-v1.md",
+      "section": "## SmartLogger qualification card",
+      "kind": "statement",
+      "value": "A counter change, count mismatch, cursor loop, second wrap, or any exhausted limit rejects the whole inventory.",
+      "reason": "Inventory instability rejects the whole inventory."
+    },
+    {
+      "contract": "huawei_qualification",
+      "page": "protocols/huawei/qualification-readiness-v1.md",
+      "section": "## SmartLogger qualification card",
+      "kind": "statement",
+      "value": "An EMMA self entry is a SmartLogger negative control and produces no SmartLogger selection.",
+      "reason": "Negative overlap between EMMA and SmartLogger."
+    },
+    {
+      "contract": "huawei_qualification",
+      "page": "protocols/huawei/qualification-readiness-v1.md",
+      "section": "## EMMA qualification card",
+      "kind": "statement",
+      "value": "The card identity is `huawei.qualification.emma.readonly@1.0.0`.",
+      "reason": "Identity of the EMMA card."
+    },
+    {
+      "contract": "huawei_qualification",
+      "page": "protocols/huawei/qualification-readiness-v1.md",
+      "section": "## EMMA qualification card",
+      "kind": "statement",
+      "value": "It applies only to logical unit 0 and consumes the exact FC03 identity tuple: offset 30000 quantity 15 for offering, offset 30222 quantity 20 for model, and offset 30035 quantity 15 for software version.",
+      "reason": "Exact identity tuple of the EMMA card."
+    },
+    {
+      "contract": "huawei_qualification",
+      "page": "protocols/huawei/qualification-readiness-v1.md",
+      "section": "## EMMA qualification card",
+      "kind": "statement",
+      "value": "Firmware meets the floor of its branch: R024C00 requires SPC100 or greater within R024C00, and R025C00 requires SPC102 or greater within R025C00.",
+      "reason": "Per-branch firmware floors of the EMMA card."
+    },
+    {
+      "contract": "huawei_qualification",
+      "page": "protocols/huawei/qualification-readiness-v1.md",
+      "section": "## EMMA qualification card",
+      "kind": "statement",
+      "value": "No comparison crosses branches.",
+      "reason": "Firmware floors never compare across branches."
+    },
+    {
+      "contract": "huawei_qualification",
+      "page": "protocols/huawei/qualification-readiness-v1.md",
+      "section": "## EMMA qualification card",
+      "kind": "statement",
+      "value": "Identity is reproducibly qualified, but the card does not invent a capability acquisition map.",
+      "reason": "The EMMA card invents no capability map."
+    },
+    {
+      "contract": "huawei_qualification",
+      "page": "protocols/huawei/qualification-readiness-v1.md",
+      "section": "## EMMA qualification card",
+      "kind": "statement",
+      "value": "`sanitized_readonly_capability_fixture`",
+      "reason": "Named missing evidence of the EMMA card."
+    },
+    {
+      "contract": "huawei_qualification",
+      "page": "protocols/huawei/qualification-readiness-v1.md",
+      "section": "## EMMA qualification card",
+      "kind": "statement",
+      "value": "`negative_overlap_with_smartlogger`",
+      "reason": "Named missing evidence of the EMMA card."
+    },
+    {
+      "contract": "huawei_qualification",
+      "page": "protocols/huawei/qualification-readiness-v1.md",
+      "section": "## EMMA qualification card",
+      "kind": "statement",
+      "value": "`model_specific_capability_fixture`",
+      "reason": "Named missing evidence of the EMMA card."
+    },
+    {
+      "contract": "huawei_qualification",
+      "page": "protocols/huawei/qualification-readiness-v1.md",
+      "section": "## S-Dongle evidence-blocked card",
+      "kind": "statement",
+      "value": "The card identity is `huawei.qualification.sdongle.evidence-blocked@1.0.0`.",
+      "reason": "Identity of the S-Dongle card."
+    },
+    {
+      "contract": "huawei_qualification",
+      "page": "protocols/huawei/qualification-readiness-v1.md",
+      "section": "## S-Dongle evidence-blocked card",
+      "kind": "statement",
+      "value": "Its retained outcome is `LIVE_STOPPED_PERSISTENT_NON_RESPONSE` at logical unit 100.",
+      "reason": "Retained outcome of the S-Dongle card."
+    },
+    {
+      "contract": "huawei_qualification",
+      "page": "protocols/huawei/qualification-readiness-v1.md",
+      "section": "## S-Dongle evidence-blocked card",
+      "kind": "statement",
+      "value": "Further I/O remains a hard stop.",
+      "reason": "The S-Dongle stop is a hard stop."
+    },
+    {
+      "contract": "huawei_qualification",
+      "page": "protocols/huawei/qualification-readiness-v1.md",
+      "section": "## S-Dongle evidence-blocked card",
+      "kind": "statement",
+      "value": "`gateway_unit_100_topology`",
+      "reason": "Named resumption evidence of the S-Dongle card."
+    },
+    {
+      "contract": "huawei_qualification",
+      "page": "protocols/huawei/qualification-readiness-v1.md",
+      "section": "## S-Dongle evidence-blocked card",
+      "kind": "statement",
+      "value": "`sanitized_basic_mei_product_model_fixture`",
+      "reason": "Named resumption evidence of the S-Dongle card."
+    },
+    {
+      "contract": "huawei_qualification",
+      "page": "protocols/huawei/qualification-readiness-v1.md",
+      "section": "## S-Dongle evidence-blocked card",
+      "kind": "statement",
+      "value": "`exact_protocol_version_encoding_fixture`",
+      "reason": "Named resumption evidence of the S-Dongle card."
+    },
+    {
+      "contract": "huawei_qualification",
+      "page": "protocols/huawei/qualification-readiness-v1.md",
+      "section": "## S-Dongle evidence-blocked card",
+      "kind": "statement",
+      "value": "`completed_search_stable_sequence_capacity_fixture`",
+      "reason": "Named resumption evidence of the S-Dongle card."
+    },
+    {
+      "contract": "huawei_qualification",
+      "page": "protocols/huawei/qualification-readiness-v1.md",
+      "section": "## S-Dongle evidence-blocked card",
+      "kind": "statement",
+      "value": "`separately_qualified_child_unit_inventory_fixture`",
+      "reason": "Named resumption evidence of the S-Dongle card."
+    },
+    {
+      "contract": "huawei_qualification",
+      "page": "protocols/huawei/qualification-readiness-v1.md",
+      "section": "## Shared resolution and negative overlap",
+      "kind": "statement",
+      "value": "More than one positive result produces `AMBIGUOUS`, retains the candidate class names, and selects no class.",
+      "reason": "Ambiguity selects no class."
+    },
+    {
+      "contract": "huawei_qualification",
+      "page": "protocols/huawei/qualification-readiness-v1.md",
+      "section": "## Shared resolution and negative overlap",
+      "kind": "statement",
+      "value": "A mixed resolution set containing one positive class and any failed class stays `INSUFFICIENT_EVIDENCE` with no selected class.",
+      "reason": "A failed class keeps a mixed set unresolved."
+    },
+    {
+      "contract": "huawei_qualification",
+      "page": "protocols/huawei/qualification-readiness-v1.md",
+      "section": "## Shared resolution and negative overlap",
+      "kind": "statement",
+      "value": "No other result can downgrade that hard stop or select another class around it.",
+      "reason": "A hard stop is never bypassed by another class."
+    },
+    {
+      "contract": "huawei_qualification",
+      "page": "protocols/huawei/qualification-readiness-v1.md",
+      "section": "## Shared resolution and negative overlap",
+      "kind": "statement",
+      "value": "Failed and ambiguous results have an empty selected class, zero native facts, zero automatic requests, and `fallback_attempted=false`.",
+      "reason": "Failed and ambiguous results send nothing and fall back nowhere."
+    },
+    {
+      "contract": "huawei_qualification",
+      "page": "protocols/huawei/qualification-readiness-v1.md",
+      "section": "## Shared resolution and negative overlap",
+      "kind": "statement",
+      "value": "Missing or unavailable native values remain unknown; they are never emitted as numeric zero, an empty telemetry record, or a support claim.",
+      "reason": "Unknown native values are never zero."
+    },
+    {
+      "contract": "huawei_qualification",
+      "page": "protocols/huawei/qualification-readiness-v1.md",
+      "section": "## Sanitized expected result",
+      "kind": "statement",
+      "value": "\"automatic_runtime_admission\": false",
+      "reason": "Default-denied safety field of the expected result."
+    },
+    {
+      "contract": "huawei_qualification",
+      "page": "protocols/huawei/qualification-readiness-v1.md",
+      "section": "## Sanitized expected result",
+      "kind": "statement",
+      "value": "Each class row also has `hardware_test_ready=false`, `live_qualified=false`, `automatic_request_count=0`, and `native_fact_count=0`.",
+      "reason": "Default-denied per-class fields of the expected result."
+    },
+    {
+      "contract": "huawei_qualification",
+      "page": "protocols/huawei/qualification-readiness-v1.md",
+      "section": null,
+      "kind": "forbidden",
+      "value": "automatic_runtime_admission[=: ]+true|live_qualified[=: ]+true|support_claim[=: ]+true|write_authority[=: ]+true|automatic_request_count[=: ]+[1-9]|fallback_attempted[=: ]+true|missing or unavailable native values.*numeric zero",
+      "reason": "The page must not exceed its default-denied offline boundary."
+    },
+    {
+      "contract": "huawei_disposition",
+      "page": "protocols/huawei/inverter-battery-readonly-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Scope",
+      "reason": "Required section of the Huawei inverter and battery disposition: Scope."
+    },
+    {
+      "contract": "huawei_disposition",
+      "page": "protocols/huawei/inverter-battery-readonly-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Evidence status",
+      "reason": "Required section of the Huawei inverter and battery disposition: Evidence status."
+    },
+    {
+      "contract": "huawei_disposition",
+      "page": "protocols/huawei/inverter-battery-readonly-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Disposition",
+      "reason": "Required section of the Huawei inverter and battery disposition: Disposition."
+    },
+    {
+      "contract": "huawei_disposition",
+      "page": "protocols/huawei/inverter-battery-readonly-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Reopen requirements",
+      "reason": "Required section of the Huawei inverter and battery disposition: Reopen requirements."
+    },
+    {
+      "contract": "huawei_disposition",
+      "page": "protocols/huawei/inverter-battery-readonly-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Detection contract",
+      "reason": "Required section of the Huawei inverter and battery disposition: Detection contract."
+    },
+    {
+      "contract": "huawei_disposition",
+      "page": "protocols/huawei/inverter-battery-readonly-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "### SUN2000 decision rows",
+      "reason": "Required section of the Huawei inverter and battery disposition: SUN2000 decision rows."
+    },
+    {
+      "contract": "huawei_disposition",
+      "page": "protocols/huawei/inverter-battery-readonly-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "### LUNA2000 decision rows",
+      "reason": "Required section of the Huawei inverter and battery disposition: LUNA2000 decision rows."
+    },
+    {
+      "contract": "huawei_disposition",
+      "page": "protocols/huawei/inverter-battery-readonly-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Optional groups",
+      "reason": "Required section of the Huawei inverter and battery disposition: Optional groups."
+    },
+    {
+      "contract": "huawei_disposition",
+      "page": "protocols/huawei/inverter-battery-readonly-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Safety",
+      "reason": "Required section of the Huawei inverter and battery disposition: Safety."
+    },
+    {
+      "contract": "huawei_disposition",
+      "page": "protocols/huawei/inverter-battery-readonly-v1.md",
+      "section": "## Evidence status",
+      "kind": "row",
+      "value": "| SUN2000 | `unknown`; nothing is observed, inferred, or qualified | none covered; all unsupported | none covered; all unsupported | all unknown |",
+      "reason": "Value-table row of the evidence status: nothing is covered or supported."
+    },
+    {
+      "contract": "huawei_disposition",
+      "page": "protocols/huawei/inverter-battery-readonly-v1.md",
+      "section": "## Evidence status",
+      "kind": "row",
+      "value": "| LUNA2000 | `unknown`; nothing is observed, inferred, or qualified | none covered; all unsupported | none covered; all unsupported | all unknown |",
+      "reason": "Value-table row of the evidence status: nothing is covered or supported."
+    },
+    {
+      "contract": "huawei_disposition",
+      "page": "protocols/huawei/inverter-battery-readonly-v1.md",
+      "section": "## Scope",
+      "kind": "statement",
+      "value": "They are not SunSpec profiles and do not fall back to SmartLogger, EMMA, S-Dongle, or each other.",
+      "reason": "No fallback between Huawei classes."
+    },
+    {
+      "contract": "huawei_disposition",
+      "page": "protocols/huawei/inverter-battery-readonly-v1.md",
+      "section": "## Evidence status",
+      "kind": "statement",
+      "value": "They are never inferred from another Huawei class.",
+      "reason": "Registers are never inferred from another class."
+    },
+    {
+      "contract": "huawei_disposition",
+      "page": "protocols/huawei/inverter-battery-readonly-v1.md",
+      "section": "## Disposition",
+      "kind": "statement",
+      "value": "Both classes have the outcome `NO_ADMISSIBLE_PROFILE` in this revision.",
+      "reason": "Disposition outcome of both classes."
+    },
+    {
+      "contract": "huawei_disposition",
+      "page": "protocols/huawei/inverter-battery-readonly-v1.md",
+      "section": "## Disposition",
+      "kind": "statement",
+      "value": "The only candidate source is the vendor interface definition document named `Huawei SUN2000 MODBUS Interface Definitions`. It is `vendor-copyright-inspection-only` and no exact version is pinned, so no register address, scale, unit, access mode, or string is published here or in the registry. No model family and no firmware range is covered.",
+      "reason": "The only candidate source is unpinned and publishes nothing."
+    },
+    {
+      "contract": "huawei_disposition",
+      "page": "protocols/huawei/inverter-battery-readonly-v1.md",
+      "section": "## Disposition",
+      "kind": "statement",
+      "value": "Both classes remain default denied: `catalog_registered=false`, `automatic_runtime_admission=false`, `support_claim=false`, and `write_authority=false`. No live qualification has been performed.",
+      "reason": "Default-denied fields of both classes."
+    },
+    {
+      "contract": "huawei_disposition",
+      "page": "protocols/huawei/inverter-battery-readonly-v1.md",
+      "section": "## Reopen requirements",
+      "kind": "statement",
+      "value": "- a pinned vendor document name and version;",
+      "reason": "Reopen requirement."
+    },
+    {
+      "contract": "huawei_disposition",
+      "page": "protocols/huawei/inverter-battery-readonly-v1.md",
+      "section": "## Reopen requirements",
+      "kind": "statement",
+      "value": "- a clean-room sanitized identity fixture;",
+      "reason": "Reopen requirement."
+    },
+    {
+      "contract": "huawei_disposition",
+      "page": "protocols/huawei/inverter-battery-readonly-v1.md",
+      "section": "## Reopen requirements",
+      "kind": "statement",
+      "value": "- a clean-room sanitized monitoring fixture; and",
+      "reason": "Reopen requirement."
+    },
+    {
+      "contract": "huawei_disposition",
+      "page": "protocols/huawei/inverter-battery-readonly-v1.md",
+      "section": "## Reopen requirements",
+      "kind": "statement",
+      "value": "- executable negative overlap against SmartLogger, EMMA, and S-Dongle.",
+      "reason": "Reopen requirement."
+    },
+    {
+      "contract": "huawei_disposition",
+      "page": "protocols/huawei/inverter-battery-readonly-v1.md",
+      "section": "## Reopen requirements",
+      "kind": "statement",
+      "value": "The existence of this page satisfies only the registry's companion-page requirement. It satisfies none of the four requirements above, and reopening also requires a revision of this page that replaces the disposition with an exact applicability contract.",
+      "reason": "This page reopens nothing."
+    },
+    {
+      "contract": "huawei_disposition",
+      "page": "protocols/huawei/inverter-battery-readonly-v1.md",
+      "section": "## Detection contract",
+      "kind": "statement",
+      "value": "A future profile selection requires all of: exact model identity, exact firmware identity, unit identity, and a pinned register map.",
+      "reason": "Identity tuple of a future profile selection."
+    },
+    {
+      "contract": "huawei_disposition",
+      "page": "protocols/huawei/inverter-battery-readonly-v1.md",
+      "section": "## Detection contract",
+      "kind": "statement",
+      "value": "Not identity: serial number, ESN, writable alias, register readability, a model string in a SmartLogger or EMMA child inventory, or a prefix or wildcard model match.",
+      "reason": "Inputs that are never identity."
+    },
+    {
+      "contract": "huawei_disposition",
+      "page": "protocols/huawei/inverter-battery-readonly-v1.md",
+      "section": "## Detection contract",
+      "kind": "statement",
+      "value": "The default outcome is `INSUFFICIENT_EVIDENCE`. More than one positive candidate for one endpoint and unit is `AMBIGUOUS` with no selection and no ordering or priority rule. Every row selects no profile and emits zero native facts. The table is a decision contract only; it is not executable detection.",
+      "reason": "Default and ambiguity outcomes of the decision table."
+    },
+    {
+      "contract": "huawei_disposition",
+      "page": "protocols/huawei/inverter-battery-readonly-v1.md",
+      "section": "### LUNA2000 decision rows",
+      "kind": "statement",
+      "value": "A SmartLogger or EMMA child inventory that lists a SUN2000 or LUNA2000 model does not make either class a candidate of that gateway and does not select either class.",
+      "reason": "A gateway child listing selects neither class."
+    },
+    {
+      "contract": "huawei_disposition",
+      "page": "protocols/huawei/inverter-battery-readonly-v1.md",
+      "section": "## Optional groups",
+      "kind": "statement",
+      "value": "The SUN2000 battery attachment and the LUNA2000 battery unit presence are optional groups. An absent group yields unknown values, never numeric zero. A read exception on an optional group does not negate an already identified unit and retains last-known-good values where a future profile permits.",
+      "reason": "Optional groups stay unknown, never zero, and keep last-known-good state."
+    },
+    {
+      "contract": "huawei_disposition",
+      "page": "protocols/huawei/inverter-battery-readonly-v1.md",
+      "section": "## Safety",
+      "kind": "statement",
+      "value": "All writes and control paths are default denied. Huawei FC0x41 and FC0x17 are `NO_SEND` for both classes, consistent with the profile-scoped rule in",
+      "reason": "Writes, control, FC0x41 and FC0x17 are NO_SEND."
+    },
+    {
+      "contract": "huawei_disposition",
+      "page": "protocols/huawei/inverter-battery-readonly-v1.md",
+      "section": "### SUN2000 decision rows",
+      "kind": "decision_rows",
+      "value": "| `no_identity_evidence` | `INSUFFICIENT_EVIDENCE` |\n| `gateway_inventory_child_model_only` | `INSUFFICIENT_EVIDENCE` |\n| `model_without_firmware` | `INSUFFICIENT_EVIDENCE` |\n| `serial_or_esn_only` | `INSUFFICIENT_EVIDENCE` |\n| `firmware_without_model` | `INSUFFICIENT_EVIDENCE` |\n| `register_readability_only` | `INSUFFICIENT_EVIDENCE` |\n| `battery_group_absent` | `INSUFFICIENT_EVIDENCE` |\n| `battery_group_exception` | `INSUFFICIENT_EVIDENCE` |\n| `multiple_positive_candidates` | `AMBIGUOUS` |\n| `exact_identity_with_pinned_register_map` | `NO_ADMISSIBLE_PROFILE` |",
+      "reason": "Exact ordered SUN2000 decision rows and outcomes."
+    },
+    {
+      "contract": "huawei_disposition",
+      "page": "protocols/huawei/inverter-battery-readonly-v1.md",
+      "section": "### LUNA2000 decision rows",
+      "kind": "decision_rows",
+      "value": "| `no_identity_evidence` | `INSUFFICIENT_EVIDENCE` |\n| `gateway_inventory_child_model_only` | `INSUFFICIENT_EVIDENCE` |\n| `parent_inverter_unidentified` | `INSUFFICIENT_EVIDENCE` |\n| `model_without_firmware` | `INSUFFICIENT_EVIDENCE` |\n| `serial_or_esn_only` | `INSUFFICIENT_EVIDENCE` |\n| `register_readability_only` | `INSUFFICIENT_EVIDENCE` |\n| `battery_group_absent` | `INSUFFICIENT_EVIDENCE` |\n| `battery_group_exception` | `INSUFFICIENT_EVIDENCE` |\n| `multiple_positive_candidates` | `AMBIGUOUS` |\n| `exact_identity_with_pinned_register_map` | `NO_ADMISSIBLE_PROFILE` |",
+      "reason": "Exact ordered LUNA2000 decision rows and outcomes."
+    },
+    {
+      "contract": "huawei_disposition",
+      "page": "protocols/huawei/inverter-battery-readonly-v1.md",
+      "section": null,
+      "kind": "forbidden",
+      "value": "registers? (is|are) (inferred|assumed) from|(is|are) (supported|qualified|admitted)\\.|FC0x(41|17) (is|are) (permitted|allowed|enabled)|absent group (yields|reports) (numeric )?zero",
+      "reason": "The page must not contradict its fail-closed boundary."
+    },
+    {
+      "contract": "huawei_gateway_page",
+      "page": "protocols/huawei/gateway-readonly-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## SmartLogger candidate",
+      "reason": "Required section of the Huawei gateway contract: SmartLogger candidate."
+    },
+    {
+      "contract": "huawei_gateway_page",
+      "page": "protocols/huawei/gateway-readonly-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## S-Dongle candidate",
+      "reason": "Required section of the Huawei gateway contract: S-Dongle candidate."
+    },
+    {
+      "contract": "huawei_gateway_page",
+      "page": "protocols/huawei/gateway-readonly-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## EMMA candidate",
+      "reason": "Required section of the Huawei gateway contract: EMMA candidate."
+    },
+    {
+      "contract": "huawei_gateway_page",
+      "page": "protocols/huawei/gateway-readonly-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Private function codes",
+      "reason": "Required section of the Huawei gateway contract: Private function codes."
+    },
+    {
+      "contract": "huawei_gateway_page",
+      "page": "protocols/huawei/gateway-readonly-v1.md",
+      "section": "## S-Dongle candidate",
+      "kind": "statement",
+      "value": "A gateway-unit timeout never authorizes a child-unit scan or an extended-MEI fallback.",
+      "reason": "A gateway-unit timeout authorizes no scan or fallback."
+    },
+    {
+      "contract": "huawei_gateway_page",
+      "page": "protocols/huawei/gateway-readonly-v1.md",
+      "section": "## EMMA candidate",
+      "kind": "statement",
+      "value": "the model is admitted by family, through the editions and model rows that the gateway catalogue holds for the EMMA family",
+      "reason": "EMMA admission is by family through the catalogue rows."
+    },
+    {
+      "contract": "huawei_gateway_page",
+      "page": "protocols/huawei/gateway-readonly-v1.md",
+      "section": "## EMMA candidate",
+      "kind": "statement",
+      "value": "`EMMA-A01` and `EMMA-A02` are the observed models of this contract",
+      "reason": "Observed EMMA models of the contract."
+    },
+    {
+      "contract": "huawei_gateway_page",
+      "page": "protocols/huawei/gateway-readonly-v1.md",
+      "section": "## EMMA candidate",
+      "kind": "statement",
+      "value": "EMMA-A01 never inherits an EMMA-A02-only capability.",
+      "reason": "EMMA capability variants stay distinct."
+    },
+    {
+      "contract": "huawei_gateway_page",
+      "page": "protocols/huawei/gateway-readonly-v1.md",
+      "section": "## EMMA candidate",
+      "kind": "statement",
+      "value": "Basic and extended MEI are optional enrichment, never initial EMMA identification.",
+      "reason": "MEI never identifies an EMMA."
+    },
+    {
+      "contract": "sdongle_page",
+      "page": "architecture/sdongle-qualification-disposition-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Scope",
+      "reason": "Required section of the S-Dongle qualification disposition: Scope."
+    },
+    {
+      "contract": "sdongle_page",
+      "page": "architecture/sdongle-qualification-disposition-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Sanitized qualification boundary",
+      "reason": "Required section of the S-Dongle qualification disposition: Sanitized qualification boundary."
+    },
+    {
+      "contract": "sdongle_page",
+      "page": "architecture/sdongle-qualification-disposition-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Disposition",
+      "reason": "Required section of the S-Dongle qualification disposition: Disposition."
+    },
+    {
+      "contract": "sdongle_page",
+      "page": "architecture/sdongle-qualification-disposition-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Requalification gate",
+      "reason": "Required section of the S-Dongle qualification disposition: Requalification gate."
+    },
+    {
+      "contract": "sdongle_page",
+      "page": "architecture/sdongle-qualification-disposition-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Gateway-unit and child boundary",
+      "reason": "Required section of the S-Dongle qualification disposition: Gateway-unit and child boundary."
+    },
+    {
+      "contract": "sdongle_page",
+      "page": "architecture/sdongle-qualification-disposition-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Publication boundary",
+      "reason": "Required section of the S-Dongle qualification disposition: Publication boundary."
+    },
+    {
+      "contract": "sdongle_page",
+      "page": "architecture/sdongle-qualification-disposition-v1.md",
+      "section": "## Sanitized qualification boundary",
+      "kind": "statement",
+      "value": "The matrix order was basic Read Device Identification, FC03 Device Search Status, basic Read Device Identification, and FC03 Device Search Status.",
+      "reason": "Exact order of the bounded retry matrix."
+    },
+    {
+      "contract": "sdongle_page",
+      "page": "architecture/sdongle-qualification-disposition-v1.md",
+      "section": "## Sanitized qualification boundary",
+      "kind": "statement",
+      "value": "All four requests expired. No subsequent Modbus request was sent.",
+      "reason": "The bounded matrix ended without a further request."
+    },
+    {
+      "contract": "sdongle_page",
+      "page": "architecture/sdongle-qualification-disposition-v1.md",
+      "section": "## Sanitized qualification boundary",
+      "kind": "statement",
+      "value": "Each retry began after at least five seconds of idle time.",
+      "reason": "Idle bound between retries."
+    }
+  ]
+}

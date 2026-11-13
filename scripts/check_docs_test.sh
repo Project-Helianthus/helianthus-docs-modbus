@@ -206,7 +206,8 @@ done
 
 cp "$source_document" "$fixture_document"
 "$repo_root/scripts/check_docs.sh" --check-sdongle-admission "$fixture_document"
-grep -Fq 'Each retry began after at least five seconds of idle time.' "$source_document"
+python3 "$repo_root/scripts/check_vendor_contract.py" "$repo_root/scripts/vendor_contract_rules.json" \
+  sdongle_page "architecture/sdongle-qualification-disposition-v1.md=$fixture_document"
 
 tesla_document="$repo_root/protocols/tesla/tedapi.md"
 tesla_fixture="$fixture_root/tesla-tedapi.md"
@@ -1511,3 +1512,72 @@ printf '\n| Term | Meaning |\n| --- | --- |\n| branch | one family row |\n' >> "
 awk '/^\| `WIT 4-25K-HU` / { held = $0; next } { print } held != "" && /^\| `WIT 4-25K-XHU` / { print held; held = "" }' \
   "$wit_document" > "$growatt_fixture"
 expect_growatt_rule_failure matrix_row --check-wit-matrix-contract "$growatt_fixture"
+
+# One passing and one failing case per vendor rule kind (Huawei, Fronius,
+# private function codes, S-Dongle). The failing run must name the rule kind it
+# violated, so an unrelated failure cannot mask a gap.
+vendor_fixture="$fixture_root/vendor-rule-kind.md"
+expect_vendor_rule_failure() {
+  local kind="$1"
+  shift
+  if "$repo_root/scripts/check_docs.sh" "$@" 2> "$fixture_root/vendor-rule-kind.stderr"; then
+    echo "Vendor $kind rule accepted a violating page" >&2
+    exit 1
+  fi
+  if ! grep -q " $kind " "$fixture_root/vendor-rule-kind.stderr"; then
+    echo "Vendor $kind rule did not report the violation" >&2
+    cat "$fixture_root/vendor-rule-kind.stderr" >&2
+    exit 1
+  fi
+}
+
+# heading: an added unrelated heading passes; a renamed required heading fails.
+cp "$huawei_qualification_document" "$vendor_fixture"
+printf '\n## Notes\n\nSynthetic note.\n' >> "$vendor_fixture"
+"$repo_root/scripts/check_docs.sh" --check-huawei-qualification-readiness "$vendor_fixture"
+sed 's/^## Integration and hardware boundary$/## Integration/' "$huawei_qualification_document" > "$vendor_fixture"
+expect_vendor_rule_failure heading --check-huawei-qualification-readiness "$vendor_fixture"
+
+# row: an unrelated table elsewhere passes; a replay-matrix row with a changed
+# result fails.
+cp "$fronius_qualification_document" "$vendor_fixture"
+printf '\n| Term | Meaning |\n| --- | --- |\n| chain | one ordered model sequence |\n' >> "$vendor_fixture"
+"$repo_root/scripts/check_docs.sh" --check-fronius-qualification-readiness "$vendor_fixture"
+sed 's/^| Duplicate known model | retain each occurrence separately; exact flavor does not match |$/| Duplicate known model | keep the first occurrence; exact flavor does not match |/' \
+  "$fronius_qualification_document" > "$vendor_fixture"
+expect_vendor_rule_failure row --check-fronius-qualification-readiness "$vendor_fixture"
+
+# statement: a rewrapped statement passes; a statement moved out of its
+# section is missing.
+sed 's/^Unit identifiers above 247 are also rejected before transmission\.$/Unit identifiers above 247 are also\
+rejected before transmission./' "$private_function_document" > "$vendor_fixture"
+if cmp -s "$private_function_document" "$vendor_fixture"; then
+  echo 'Vendor statement rewrap did not change the document' >&2
+  exit 1
+fi
+"$repo_root/scripts/check_docs.sh" --check-private-function-contract "$vendor_fixture"
+sed 's/^Further I\/O remains a hard stop\. Resumption/Resumption/' "$huawei_qualification_document" > "$vendor_fixture"
+printf '\nFurther I/O remains a hard stop.\n' >> "$vendor_fixture"
+expect_vendor_rule_failure statement --check-huawei-qualification-readiness "$vendor_fixture"
+
+# forbidden: a near-miss sentence passes; a granted write authority fails.
+cp "$fronius_qualification_document" "$vendor_fixture"
+printf '\nThe card keeps `write_authority=false`; it never becomes true.\n' >> "$vendor_fixture"
+"$repo_root/scripts/check_docs.sh" --check-fronius-qualification-readiness "$vendor_fixture"
+cp "$fronius_qualification_document" "$vendor_fixture"
+printf '\nA later card sets `write_authority=true`.\n' >> "$vendor_fixture"
+expect_vendor_rule_failure forbidden --check-fronius-qualification-readiness "$vendor_fixture"
+
+# decision_rows: a changed reason cell passes; two SUN2000 rows swapped fail.
+sed 's/| no winner is chosen by order or priority |$/| no winner is chosen |/' \
+  "$huawei_inverter_battery_document" > "$vendor_fixture"
+if cmp -s "$huawei_inverter_battery_document" "$vendor_fixture"; then
+  echo 'Vendor decision-row reason change did not change the document' >&2
+  exit 1
+fi
+"$repo_root/scripts/check_docs.sh" --check-huawei-inverter-battery-disposition "$vendor_fixture"
+awk '/^### SUN2000 decision rows$/ { in_rows = 1 } /^### LUNA2000 decision rows$/ { in_rows = 0 }
+  in_rows && /^\| `serial_or_esn_only` / { held = $0; next } { print }
+  in_rows && held != "" && /^\| `firmware_without_model` / { print held; held = "" }' \
+  "$huawei_inverter_battery_document" > "$vendor_fixture"
+expect_vendor_rule_failure decision_rows --check-huawei-inverter-battery-disposition "$vendor_fixture"
