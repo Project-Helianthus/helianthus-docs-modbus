@@ -555,294 +555,49 @@ check_x2_publication() {
   fi
 }
 
-check_x2_contract() {
-  local document="$1"
+growatt_x2_page='protocols/growatt/shinewilan-x2-bridge-v1.md'
+growatt_bms_page='protocols/growatt/bms-rs485-1xsxxp-v202.md'
+growatt_protocol_ii_page='protocols/growatt/protocol-ii-readonly-v1.md'
+growatt_protocol_ii_matrix_page='protocols/growatt/protocol-ii-source-profile-matrix-v1.md'
+growatt_wit_page='protocols/growatt/wit-family-protocol-matrix-v1.md'
+growatt_contracts='x2_page,x2_contract,bms_page,bms_contract,protocol_ii_identity,protocol_ii_fc04,protocol_ii_source_matrix,wit_matrix'
 
-  grep -Fq 'MBAP Unit Identifier as the downstream Modbus RTU unit address and forwards' "$document"
-  grep -Fq 'without changing its function code, register offset, quantity,' "$document"
-  grep -Fq 'or payload.' "$document"
-  grep -Fq 'The MBAP Protocol Identifier must be 0x0000.' "$document"
-  grep -Fq 'The MBAP Length must equal one' "$document"
-  grep -Fq 'Only Unit Identifiers 1 through 247 are admitted' "$document"
-  grep -Fq 'Unit Identifier 0 is RTU broadcast and is `NO_SEND`' "$document"
-  grep -Fq 'not infer a unit, scan unit addresses' "$document"
-  grep -Fq 'The read-only candidate surface consists of FC03 holding-register reads and' "$document"
-  grep -Fq 'FC04 input-register reads.' "$document"
-  grep -Fq 'The bridge has no semantic registry profile of its own.' "$document"
+# The Growatt contract rules live in scripts/growatt_contract_rules.json. The
+# first argument selects comma-separated contracts; each further argument maps
+# a repository page to the document checked in its place.
+check_growatt_contract() {
+  local contracts="$1"
+  shift
+  local root
+  root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+  python3 "$root/scripts/check_growatt_contract.py" "$root/scripts/growatt_contract_rules.json" "$contracts" "$@"
+}
+
+check_x2_contract() {
+  check_growatt_contract x2_contract "$growatt_x2_page=$1"
 }
 
 check_bms_contract() {
-  local document="$1"
-  local private_material='(^|[^[:xdigit:]])[[:xdigit:]]{40}([^[:xdigit:]]|$)|(^|[^[:xdigit:]])[[:xdigit:]]{64}([^[:xdigit:]]|$)|([0-9]{1,3}\.){3}[0-9]{1,3}|([[:alnum:]][[:alnum:].-]*):([0-9]{1,5}|[[:alpha:]][[:alnum:].-]*)|[Pp]ort[[:space:]]+[0-9]{1,5}'
-  local public_forbidden='(/[Uu]sers/|sha(-?256)?[-:]?[0-9a-f]{8,}|(source|vendor material) (is|are) public domain|sunspec\.inverter\.|canonical facts)'
-  local expected_slices actual_slices expected_diagnostic_slices actual_diagnostic_slices url
-  local allowed_urls=(
-    'https://www.amosplanet.org/wp-content/uploads/2022/04/Growatt_BMS_RS485_protocal_1xSxxP_ESS_V2.02-1.pdf#page=1'
-    'https://www.amosplanet.org/wp-content/uploads/2022/04/Growatt_BMS_RS485_protocal_1xSxxP_ESS_V2.02-1.pdf#page=2'
-    'https://www.amosplanet.org/wp-content/uploads/2022/04/Growatt_BMS_RS485_protocal_1xSxxP_ESS_V2.02-1.pdf#page=12'
-    'https://www.amosplanet.org/wp-content/uploads/2022/04/Growatt_BMS_RS485_protocal_1xSxxP_ESS_V2.02-1.pdf#page=14'
-    'https://www.amosplanet.org/wp-content/uploads/2022/04/Growatt_BMS_RS485_protocal_1xSxxP_ESS_V2.02-1.pdf#page=15'
-    'https://www.amosplanet.org/wp-content/uploads/2022/04/Growatt_BMS_RS485_protocal_1xSxxP_ESS_V2.02-1.pdf#page=19'
-    'https://www.amosplanet.org/wp-content/uploads/2022/04/Growatt_BMS_RS485_protocal_1xSxxP_ESS_V2.02-1.pdf#page=20'
-  )
-
-  expected_slices=$(printf '%s\n' \
-    'offset 0x0001, quantity 7' \
-    'offset 0x000D, quantity 29' \
-    'offset 0x0100, quantity 12' \
-    'offset 0x010D, quantity 2')
-  actual_slices=$(sed -n \
-    '/An offline fixture may contain these/,/Only the typed extension words listed below are decoded/p' \
-    "$document" | sed -nE 's/^- (offset 0x[[:xdigit:]]+, quantity [0-9]+).*/\1/p')
-  if [[ "$actual_slices" != "$expected_slices" ]]; then
-    echo 'BMS FC03 slice allowlist is not exact' >&2
-    return 1
-  fi
-
-  expected_diagnostic_slices=$(printf '%s\n' \
-    'offset 0x0070, quantity 1' \
-    'offset 0x0071, quantity 16' \
-    'offset 0x0081, quantity 16')
-  actual_diagnostic_slices=$(sed -n \
-    '/It adds exactly these three FC03 slices/,/The two cell blocks are exactly/p' \
-    "$document" | sed -nE 's/^- (offset 0x[[:xdigit:]]+, quantity [0-9]+).*/\1/p')
-  if [[ "$actual_diagnostic_slices" != "$expected_diagnostic_slices" ]]; then
-    echo 'BMS diagnostic FC03 slice allowlist is not exact' >&2
-    return 1
-  fi
-
-  if grep -Ein "$public_forbidden" "$document"; then
-    echo 'BMS protocol specification contains prohibited public-contract material' >&2
-    return 1
-  fi
-  for url in "${allowed_urls[@]}"; do
-    if ! grep -Fq "$url" "$document"; then
-      echo 'BMS protocol specification is missing a required public source page' >&2
-      return 1
-    fi
-  done
-  while IFS= read -r url; do
-    case " ${allowed_urls[*]} " in
-      *" $url "*) ;;
-      *)
-        echo 'BMS protocol specification contains an unapproved source locator' >&2
-        return 1
-        ;;
-    esac
-  done < <(grep -Eo 'https://[^)]+' "$document" || true)
-  if grep -Ein "$private_material" "$document"; then
-    echo 'BMS protocol specification contains private endpoint or source revision material' >&2
-    return 1
-  fi
-  grep -Fq 'protocol family label `1xSxxP ESS`' "$document"
-  grep -Fq 'file revision family `Rev2.01`' "$document"
-  grep -Fq 'document header version `V2.0`' "$document"
-  grep -Fq 'cumulative change record through revision `2.02`' "$document"
-  grep -Fq 'Unit 0 is broadcast and is always `NO_SEND`.' "$document"
-  grep -Fq 'function is FC03 Read Holding Registers.' "$document"
-  grep -Fq 'offset 0x0001, quantity 7' "$document"
-  grep -Fq 'offset 0x000D, quantity 29' "$document"
-  grep -Fq 'The base observation remains complete with its four FC03 slices.' "$document"
-  grep -Fq 'multi-group diagnostic may be evaluated only after that base observation and' "$document"
-  grep -Fq 'It adds exactly these three FC03 slices, in' "$document"
-  grep -Fq 'offset 0x0100, quantity 12' "$document"
-  grep -Fq 'offset 0x010D, quantity 2' "$document"
-  grep -Fq 'The two cell blocks are exactly 0x0071 through 0x0080 and 0x0081 through' "$document"
-  grep -Fq '0x0090. They are fixed bounds, not an example from which another group, block,' "$document"
-  grep -Fq 'At offset 0x001F, bits 8 through 13 are the reported Battery ID; bits 14 and' "$document"
-  grep -Fq '15 are reserved.' "$document"
-  grep -Fq 'At offset 0x0070, the whole raw word is the reported' "$document"
-  grep -Fq 'Neither value is a Modbus unit identifier, an address' "$document"
-  grep -Fq 'Offset 0x0109 is a native, revision-scoped balance-state word.' "$document"
-  grep -Fq 'Bits 0 through 15 retain the documented per-cell off/on states in native bit order.' "$document"
-  grep -Fq 'Offset 0x010C is excluded from every admitted slice.' "$document"
-  grep -Fq 'This contract defines no selector, scan, broadcast, handshake, write, or read-modify-write operation.' "$document"
-  grep -Fq 'Missing, contradictory, malformed, or reserved-bit-invalid identity evidence;' "$document"
-  grep -Fq '`insufficient_evidence`, with no repeated diagnostic facts and no diagnostic' "$document"
-  grep -Fq 'send. It does not erase qualified base status telemetry.' "$document"
-  grep -Fq 'Only the typed extension words listed below are decoded.' "$document"
-  grep -Fq '## Typed read-only fields' "$document"
-  grep -Fq 'The typed subset is limited to the fields listed below.' "$document"
-  grep -Fq 'Company and generation occupy the low and high bytes, respectively,' "$document"
-  grep -Fq 'SOC is the low byte at `0x0015` and must be in the inclusive range 0 through' "$document"
-  grep -Fq "Current at \`0x0017\` is signed two's-complement and uses 10 mA units." "$document"
-  grep -Fq 'Only `0x0100`, `0x0101`, `0x0102`, `0x0104`, `0x0105`, and `0x0106` have typed' "$document"
-  grep -Fq '`0x0103`, `0x0107`' "$document"
-  grep -Fq 'through `0x010B`, and both `0x010D` slice words remain opaque.' "$document"
-  grep -Fq 'Offsets 0x0009 through 0x000C contain barcode material and are not read' "$document"
-  grep -Fq 'FC10 Preset Multiple Registers, address allocation' "$document"
-  grep -Fq 'every field marked' "$document"
-  grep -Fq 'W or WR require an exact operation contract that names function, address,' "$document"
-  grep -Fq 'A bounded decoder is permitted only for an externally declared' "$document"
-  grep -Fqx '## MCP native observation projection' "$document"
-  grep -Fq 'For a qualified observation, an MCP status result must return the selected' "$document"
-  grep -Fq 'base observation. It must preserve every retained word at its native offset, in' "$document"
-  grep -Fq 'all four exact FC03 slices that formed the bounded' "$document"
-  grep -Fq 'A failed diagnostic evaluation emits no repeated diagnostic facts and' "$document"
-  grep -Fq 'does not erase qualified base status telemetry.' "$document"
-  grep -Fq 'No bounded decoder creates catalog registration, executable detection,' "$document"
-  grep -Fq 'synthetic identity assembled from the document is not a substitute for a' "$document"
-  grep -Fq 'does not automatically apply the contract to any commercial battery' "$document"
-  grep -Fq 'revision-declared tuple remains required.' "$document"
-  grep -Fq 'An observation that also satisfies Growatt Protocol II, SunSpec/Fronius, or a' "$document"
-  grep -Fq 'automatic runtime admission, telemetry publication, or a support claim.' "$document"
-  grep -Fq 'is ambiguous and produces no match.' "$document"
-  grep -Fq 'produces `insufficient_evidence`, no send, and no partial' "$document"
+  check_growatt_contract bms_contract "$growatt_bms_page=$1"
 }
 
 check_growatt_protocol_ii_identity_projection() {
-  local document="$1"
-
-  check_public_protocol "$document"
-  grep -Fqx '## Identity tuple' "$document"
-  grep -Fqx '## Native identity capability' "$document"
-  grep -Fqx '## MCP native identity projection' "$document"
-  grep -Fq 'offsets 23 through 27, five words, for native serial text;' "$document"
-  grep -Fq 'A qualified runtime identity contains the selected family, unicast unit,' "$document"
-  grep -Fq 'model-build pair, Modbus protocol version, and the five exact FC03 identity' "$document"
-  grep -Fq 'The runtime API may carry its configured endpoint and transport context with' "$document"
-  grep -Fq 'this native observation. Public documentation and fixtures use synthetic' "$document"
-  grep -Fq 'identity values and do not publish installation-specific identifiers, captures,' "$document"
-  grep -Fq '`native_identity` without a redaction marker or a substitute digest.' "$document"
-  grep -Fq 'identity projection. The identity projection does not authorize an FC06, FC16,' "$document"
-  grep -Fq 'The currently enumerated operation is FC03 identity acquisition. This contract' "$document"
-  grep -Fq 'does not define an FC06 or FC16 control operation, so no control command is' "$document"
-  grep -Fq 'partial publication. This version enumerates no control operation.' "$document"
+  check_public_protocol "$1" || return 1
+  check_growatt_contract protocol_ii_identity "$growatt_protocol_ii_page=$1"
 }
 
 check_growatt_protocol_ii_fc04_contract() {
-  local document="$1"
-
-  check_public_protocol "$document"
-  grep -Fqx '## FC04 monitoring foundation' "$document"
-  grep -Fqx '### Monitoring feature inventory' "$document"
-  grep -Fq 'There is no current publicly admitted typed FC04 profile.' "$document"
-  grep -Fq 'The exported opaque' "$document"
-  grep -Fq 'applicability value has no public successful constructor;' "$document"
-  grep -Fq 'externally constructible forms fail closed.' "$document"
-  grep -Fq 'Only an unexported synthetic' "$document"
-  grep -Fq 'in-package fixture helper may exercise the source-backed FC04 schema and' "$document"
-  grep -Fq 'mechanics. That helper cannot establish real-build qualification.' "$document"
-  grep -Fq 'Before enabling public typed admission,' "$document"
-  grep -Fq 'an owning source must establish one exact device-type, model-build, and' "$document"
-  grep -Fq 'protocol-value tuple tied to the FC04 schema.' "$document"
-  grep -Fq 'its revision `1.24` is not treated as a' "$document"
-  grep -Fq 'protocol-register value.' "$document"
-  grep -Fq 'Because no public FC04 profile is admitted, the public FC04 decoder and observer' "$document"
-  grep -Fq 'fail closed and create no typed telemetry or observer.' "$document"
-  grep -Fq 'fixture exercises exactly one input-register slice: zero-based offsets 0 through 58 inclusive (59 words).' "$document"
-  grep -Fq 'offset, word count, table/provenance, timeout, Modbus exception, missing' "$document"
-  grep -Fq 'admission, identity/applicability mismatch, malformed response,' "$document"
-  grep -Fq 'Multiword values below are unsigned 32-bit integers, high word first.' "$document"
-  grep -Fq 'manual does not state a sentinel for these rows, so this contract invents none.' "$document"
-  for row in \
-    '| 0 | inverter run state | one unsigned word; only 0, 1, 3 | waiting, normal, fault |' \
-    '| 1-2 | aggregate PV input power | unsigned 32-bit, high word first, 0.1 W | watts |' \
-    '| 35-36 | aggregate output power | unsigned 32-bit, high word first, 0.1 W | watts |' \
-    '| 37 | grid frequency | one unsigned word, 0.01 Hz | hertz |' \
-    '| 38, 39 | phase 1 grid voltage and output current | one unsigned word each, 0.1 V and 0.1 A | volts and amperes |' \
-    '| 42, 43 | phase 2 grid voltage and output current | one unsigned word each, 0.1 V and 0.1 A | volts and amperes |' \
-    '| 46, 47 | phase 3 grid voltage and output current | one unsigned word each, 0.1 V and 0.1 A | volts and amperes |' \
-    '| 53-54 | generated energy today | unsigned 32-bit, high word first, 0.1 kWh | kWh |' \
-    '| 55-56 | generated energy total | unsigned 32-bit, high word first, 0.1 kWh | kWh |' \
-    '| 57-58 | total work time | unsigned 32-bit, high word first, 0.5 s | seconds |'; do
-    grep -Fqx "$row" "$document"
-  done
-  grep -Fq 'The bounded result is `NO_ADMISSIBLE_PROFILE`: there is no exact tuple and no' "$document"
-  grep -Fq 'typed field. There is no current publicly admitted typed FC04 profile.' "$document"
-  grep -Fq '[Growatt Protocol II source and profile evidence matrix](protocol-ii-source-profile-matrix-v1.md).' "$document"
-  grep -Fq 'It does not currently admit a typed profile or' "$document"
-  grep -Fq 'close the broader `NATIVE-07-GROWATT-II` monitoring feature.' "$document"
+  check_public_protocol "$1" || return 1
+  check_growatt_contract protocol_ii_fc04 "$growatt_protocol_ii_page=$1"
 }
 
 check_growatt_protocol_ii_source_matrix() {
-  local document="$1"
-  local forbidden='https?://|/[Uu]sers/|([0-9]{1,3}\.){3}[0-9]{1,3}|([[:alnum:]][[:alnum:].-]*):([0-9]{1,5}|[[:alpha:]][[:alnum:].-]*)|[Pp]ort[[:space:]]+[0-9]{1,5}'
-
-  if grep -Ein "$forbidden" "$document"; then
-    echo 'Growatt Protocol II source matrix contains a private locator or endpoint' >&2
-    return 1
-  fi
-  grep -Fqx '# Growatt Protocol II Source and Profile Evidence Matrix V1' "$document"
-  grep -Fqx '| `growatt-rtu-v1.24` | *Growatt Inverter Modbus RTU Protocol V1.24* | 85 pages | `fac88d609d74ff6b3c9c31ed65370d166d1fb17461e91b4b4855018fe232a320` | `vendor-copyright-inspection-only`; non-redistributed |' "$document"
-  grep -Fq 'It does not redistribute the source or vendor schema text.' "$document"
-  grep -Fq '`NO_ADMISSIBLE_PROFILE`: there is no exact device-type, model-build, and' "$document"
-  grep -Fq 'device-reported protocol-value tuple, and there is no typed field.' "$document"
-  grep -Fq '`implemented` would require a publicly admitted exact tuple and is absent.' "$document"
-  for row in \
-    '| exact device type, model-build pair, and device-reported protocol value | evidence-needed | the source identifies the TL3-X MAX/MID/MAC map but does not map these three values together | publishable provider-owned evidence that binds one exact tuple to this FC04 schema |' \
-    '| inverter run state | evidence-needed | schema-only synthetic fixture mechanics at offset 0 | the exact tuple plus an admitted bounded FC04 acquisition and decoder test |' \
-    '| aggregate PV input power | evidence-needed | schema-only synthetic fixture mechanics at offsets 1-2 | the exact tuple plus an admitted bounded FC04 acquisition and decoder test |' \
-    '| aggregate output power | evidence-needed | schema-only synthetic fixture mechanics at offsets 35-36 | the exact tuple plus an admitted bounded FC04 acquisition and decoder test |' \
-    '| grid frequency | evidence-needed | schema-only synthetic fixture mechanics at offset 37 | the exact tuple plus an admitted bounded FC04 acquisition and decoder test |' \
-    '| phase 1 grid voltage and output current | evidence-needed | schema-only synthetic fixture mechanics at offsets 38-39 | the exact tuple plus an admitted bounded FC04 acquisition and decoder test |' \
-    '| phase 2 grid voltage and output current | evidence-needed | schema-only synthetic fixture mechanics at offsets 42-43 | the exact tuple plus an admitted bounded FC04 acquisition and decoder test |' \
-    '| phase 3 grid voltage and output current | evidence-needed | schema-only synthetic fixture mechanics at offsets 46-47 | the exact tuple plus an admitted bounded FC04 acquisition and decoder test |' \
-    '| generated energy today | evidence-needed | schema-only synthetic fixture mechanics at offsets 53-54 | the exact tuple plus an admitted bounded FC04 acquisition and decoder test |' \
-    '| generated energy total | evidence-needed | schema-only synthetic fixture mechanics at offsets 55-56 | the exact tuple plus an admitted bounded FC04 acquisition and decoder test |' \
-    '| total work time | evidence-needed | schema-only synthetic fixture mechanics at offsets 57-58 | the exact tuple plus an admitted bounded FC04 acquisition and decoder test |' \
-    '| per-PV voltage | unknown | no selected-tuple applicability or bounded acquisition is established | an exact field definition, selected-tuple applicability, and bounded acquisition/decoder tests |' \
-    '| per-PV current | unknown | no selected-tuple applicability, signedness, or bounded acquisition is established | an exact field definition, selected-tuple applicability and signedness, and bounded acquisition/decoder tests |' \
-    '| per-PV power | unknown | no selected-tuple applicability or bounded acquisition is established | an exact field definition, selected-tuple applicability, and bounded acquisition/decoder tests |' \
-    '| per-phase output power | unknown | no selected-tuple semantics, units, or composition are established | an exact field definition, selected-tuple applicability, units/composition, and bounded acquisition/decoder tests |' \
-    '| line-to-line voltage | unknown | no selected-tuple semantics, units, or composition are established | an exact field definition, selected-tuple applicability, units/composition, and bounded acquisition/decoder tests |' \
-    '| inverter temperature | evidence-needed | the source supplies 0.1 C at offset 93, but not signedness, invalid handling, or selected-tuple applicability | an exact field definition with signedness and invalid handling, selected-tuple applicability, and bounded acquisition/decoder tests |' \
-    '| internal IPM temperature | unknown | no field-specific selected-tuple definition is established | an exact field definition, selected-tuple applicability, and bounded acquisition/decoder tests |' \
-    '| boost temperature | unknown | no field-specific selected-tuple definition is established | an exact field definition, selected-tuple applicability, and bounded acquisition/decoder tests |' \
-    '| power factor | unknown | no field-specific selected-tuple definition is established | an exact field definition, selected-tuple applicability, and bounded acquisition/decoder tests |' \
-    '| derating | unknown | no field-specific selected-tuple definition is established | an exact field definition, selected-tuple applicability, enum/sentinel handling, and bounded acquisition/decoder tests |' \
-    '| fault facts | unknown | no field-specific selected-tuple definition is established | an exact field definition, selected-tuple applicability, enum/bitfield/sentinel handling, and bounded acquisition/decoder tests |' \
-    '| warning facts | unknown | no field-specific selected-tuple definition is established | an exact field definition, selected-tuple applicability, enum/bitfield/sentinel handling, and bounded acquisition/decoder tests |' \
-    '| storage or battery overlays | unknown | no selected-tuple overlay definition is established | an exact overlay contract with selected-tuple applicability, bounded acquisition, and decoder tests |' \
-    '| every otherwise unlisted offset 59-124 | unknown | no field-specific selected-tuple definition is established | an exact field definition, selected-tuple applicability, and bounded acquisition/decoder tests for each offset |' \
-    '| FC06, FC16, and every other control operation | unsupported | this read-only version enumerates no control operation | a separate exact operation contract; this matrix does not authorize a real-device write |'; do
-    grep -Fqx "$row" "$document"
-  done
+  check_growatt_contract protocol_ii_source_matrix "$growatt_protocol_ii_matrix_page=$1"
 }
 
 check_wit_matrix_contract() {
-  local document="$1"
-  local expected_rows actual_rows
-  local contradiction
-
-  expected_rows=$(printf '%s\n' \
-    '| `WIT 4-25K-HU` | worldwide, 380/400 Vac, low-voltage battery | Modbus TCP available; ShineWiLAN-X2 listed | `UNKNOWN` | `UNKNOWN` | `INSUFFICIENT_EVIDENCE`; `NO_SEND` |' \
-    '| `WIT 4-25K-XHU` | worldwide, 380/400 Vac, high-voltage battery | Modbus TCP available; ShineWiLAN-X2 listed | `UNKNOWN` | `UNKNOWN` | `INSUFFICIENT_EVIDENCE`; `NO_SEND` |' \
-    '| `WIT 29.9-50K-XHU` | worldwide, 380/400 Vac, high-voltage battery | ShineWiLan-X2 and ShineSEM-XA-R listed; wire exposure not established | `UNKNOWN` | `UNKNOWN` | `INSUFFICIENT_EVIDENCE`; `NO_SEND` |' \
-    '| `WIT 50-100K-HU` | APAC, 380/400/415 Vac, high-voltage battery | ShineWiLan-X2 and ShineSEM-XA-R listed; wire exposure not established | `UNKNOWN` | `UNKNOWN` | `INSUFFICIENT_EVIDENCE`; `NO_SEND` |' \
-    '| `WIT 50-100K-AU` | APAC, 380/400/415 Vac, high-voltage battery | ShineWiLan-X2 and ShineSEM-XA-R listed; wire exposure not established | `UNKNOWN` | `UNKNOWN` | `INSUFFICIENT_EVIDENCE`; `NO_SEND` |' \
-    '| `WIT 50-100K-HU-US` | US branch; product context not established | not established by this contract | `UNKNOWN` | `UNKNOWN` | `INSUFFICIENT_EVIDENCE`; `NO_SEND` |' \
-    '| `WIT 50-100K-AU-US` | US branch; product context not established | not established by this contract | `UNKNOWN` | `UNKNOWN` | `INSUFFICIENT_EVIDENCE`; `NO_SEND` |' \
-    '| `WIT 63-125K-XHU` | worldwide, 380/400 Vac, high-voltage battery | not established by this contract | `UNKNOWN` | `UNKNOWN` | `INSUFFICIENT_EVIDENCE`; `NO_SEND` |' \
-    '| `WIT 28-55K-HU-US L2` | US L2, 208/220 Vac, high-voltage battery | ShineMaster listed; wire exposure not established | `UNKNOWN` | `UNKNOWN` | `INSUFFICIENT_EVIDENCE`; `NO_SEND` |' \
-    '| `WIT 28-55K-AU-US L2` | US L2, 208/220 Vac, high-voltage battery | ShineMaster listed; wire exposure not established | `UNKNOWN` | `UNKNOWN` | `INSUFFICIENT_EVIDENCE`; `NO_SEND` |' \
-    '| `WIT 50-150K-XHU-US` | US, 277/480 Vac, high-voltage battery | not established by this contract | `UNKNOWN` | `UNKNOWN` | `INSUFFICIENT_EVIDENCE`; `NO_SEND` |')
-  actual_rows=$(sed -n \
-    '/^## Family qualification matrix$/,/^## Explicit VPP V2.01 tuple$/p' \
-    "$document" | sed -n '/^| `WIT /p')
-  if [[ "$actual_rows" != "$expected_rows" ]]; then
-    echo 'WIT family matrix is not exact' >&2
-    return 1
-  fi
-
-  contradiction='VPP (read|reads|control|controls|write|writes) (is|are) (permitted|allowed|enabled|supported)|Protocol II[^.]*(applies|is applicable)[[:space:]]+to[[:space:]]+(a[[:space:]]+|the[[:space:]]+|any[[:space:]]+)?WIT|`WIT [^`]+` firmware (version |gate )?(is|=)'
-  if grep -Ein "$contradiction" "$document"; then
-    echo 'WIT protocol specification contains a contradictory admission statement' >&2
-    return 1
-  fi
-
-  check_public_protocol "$document"
-  grep -Fq 'Each row is an independent, case-sensitive family branch.' "$document"
-  grep -Fq 'A combined marketing page does not make HU, AU, XHU, worldwide, or US branches protocol aliases.' "$document"
-  grep -Fq 'Modbus TCP availability and a listed logger or bridge are transport facts only.' "$document"
-  grep -Fq 'They do not establish a register map, firmware gate, identity tuple, or semantic profile.' "$document"
-  grep -Fq '`WIT 100KTL3-H` with DTC `5601` is the only WIT tuple explicitly associated with VPP protocol `V2.01`.' "$document"
-  grep -Fq 'It does not admit `WIT 50-100K-HU`, `WIT 50-100K-AU`, or any other WIT row.' "$document"
-  grep -Fq 'The VPP tuple has no qualified firmware gate in this contract.' "$document"
-  grep -Fq 'Growatt Protocol II v1.24 TL3-X does not apply to a WIT row by vendor or name similarity.' "$document"
-  grep -Fq 'Every VPP read, control, and write remains `NO_SEND`.' "$document"
-  grep -Fq 'No decoder, fixture, catalog registration, runtime admission, telemetry publication, or support claim is created.' "$document"
-  grep -Fq 'Missing or conflicting evidence produces `INSUFFICIENT_EVIDENCE`, no match, and no send.' "$document"
+  check_public_protocol "$1" || return 1
+  check_growatt_contract wit_matrix "$growatt_wit_page=$1"
 }
 
 check_huawei_inverter_battery_disposition() {
@@ -1158,27 +913,12 @@ grep -Fq 'admitted by family, through the editions and model rows that the gatew
 grep -Fq '`EMMA-A02` are the observed models of this contract' 'protocols/huawei/gateway-readonly-v1.md'
 grep -Fq 'EMMA-A01 never inherits an EMMA-A02-only capability.' 'protocols/huawei/gateway-readonly-v1.md'
 grep -Fq 'Basic and extended MEI are optional enrichment, never initial EMMA identification.' 'protocols/huawei/gateway-readonly-v1.md'
-check_growatt_protocol_ii_identity_projection 'protocols/growatt/protocol-ii-readonly-v1.md'
-check_growatt_protocol_ii_fc04_contract 'protocols/growatt/protocol-ii-readonly-v1.md'
-check_growatt_protocol_ii_source_matrix 'protocols/growatt/protocol-ii-source-profile-matrix-v1.md'
-grep -Fqx '## Request mapping' 'protocols/growatt/shinewilan-x2-bridge-v1.md'
-grep -Fqx '## Response mapping' 'protocols/growatt/shinewilan-x2-bridge-v1.md'
-grep -Fqx '## Read-only boundary' 'protocols/growatt/shinewilan-x2-bridge-v1.md'
-grep -Fqx '## Identity and admission' 'protocols/growatt/shinewilan-x2-bridge-v1.md'
-grep -Fqx '## Transparency limits' 'protocols/growatt/shinewilan-x2-bridge-v1.md'
-grep -Fq 'The bridge has no semantic registry profile of its own.' 'protocols/growatt/shinewilan-x2-bridge-v1.md'
-grep -Fq 'Unsupported or undocumented operations are' 'protocols/growatt/shinewilan-x2-bridge-v1.md'
-grep -Fq 'Unit Identifier 0 is RTU broadcast and is `NO_SEND`' 'protocols/growatt/shinewilan-x2-bridge-v1.md'
-check_x2_contract 'protocols/growatt/shinewilan-x2-bridge-v1.md'
-check_x2_publication 'protocols/growatt/shinewilan-x2-bridge-v1.md'
-grep -Fqx '## Exact applicability and revision' 'protocols/growatt/bms-rs485-1xsxxp-v202.md'
-grep -Fqx '## FC03 read-only boundary' 'protocols/growatt/bms-rs485-1xsxxp-v202.md'
-grep -Fqx '## Writes and controls' 'protocols/growatt/bms-rs485-1xsxxp-v202.md'
-grep -Fq 'Runtime observations retain the selected unit, transport context, and exact' 'protocols/growatt/bms-rs485-1xsxxp-v202.md'
-grep -Fq 'Public fixtures use synthetic values and do not publish installation data.' 'protocols/growatt/bms-rs485-1xsxxp-v202.md'
-grep -Fqx '## Decoder and runtime boundary' 'protocols/growatt/bms-rs485-1xsxxp-v202.md'
-check_bms_contract 'protocols/growatt/bms-rs485-1xsxxp-v202.md'
-check_wit_matrix_contract 'protocols/growatt/wit-family-protocol-matrix-v1.md'
+check_growatt_contract "$growatt_contracts" \
+  "$growatt_x2_page=$growatt_x2_page" "$growatt_bms_page=$growatt_bms_page" \
+  "$growatt_protocol_ii_page=$growatt_protocol_ii_page" \
+  "$growatt_protocol_ii_matrix_page=$growatt_protocol_ii_matrix_page" \
+  "$growatt_wit_page=$growatt_wit_page"
+check_x2_publication "$growatt_x2_page"
 check_outback_axs_contract 'protocols/outback/axs-port-sunspec-readonly-v1.md'
 
 sdongle_admission_required=(
