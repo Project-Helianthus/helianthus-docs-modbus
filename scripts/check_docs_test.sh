@@ -945,8 +945,12 @@ for mutation in \
 	's/803 variable geometry/803 fixed geometry/' \
 	's/804 variable geometry/804 fixed geometry/' \
   's/offline decoder contract; runtime, vendor, and catalog admission default denied/runtime catalog approved/' \
-  's/90b4a331dcca1d6eac69c1bead952fddcc5852e0/0000000000000000000000000000000000000000/'; do
+  's/`\([0-9a-f]\)\([0-9a-f]\{39\}\)`/`\2\1`/'; do
   sed "$mutation" "$sunspec_v2_licensing_document" > "$sunspec_v2_licensing_fixture"
+  if cmp -s "$sunspec_v2_licensing_document" "$sunspec_v2_licensing_fixture"; then
+    echo "SunSpec V2 licensing mutation did not change the document: $mutation" >&2
+    exit 1
+  fi
   if "$repo_root/scripts/check_docs.sh" --check-sunspec-v2-licensing "$sunspec_v2_licensing_fixture"; then
     echo "SunSpec V2 licensing mutation was accepted: $mutation" >&2
     exit 1
@@ -965,6 +969,77 @@ for contradiction in \
     exit 1
   fi
 done
+
+# One passing and one failing case per SunSpec rule kind. The failing run must
+# name the rule kind it violated, so an unrelated failure cannot mask a gap.
+sunspec_fixture="$fixture_root/sunspec-rule-kind.md"
+expect_sunspec_rule_failure() {
+  local kind="$1"
+  shift
+  if "$repo_root/scripts/check_docs.sh" "$@" 2> "$fixture_root/sunspec-rule-kind.stderr"; then
+    echo "SunSpec $kind rule accepted a violating page" >&2
+    exit 1
+  fi
+  if ! grep -Fq " $kind " "$fixture_root/sunspec-rule-kind.stderr"; then
+    echo "SunSpec $kind rule did not report the violation" >&2
+    cat "$fixture_root/sunspec-rule-kind.stderr" >&2
+    exit 1
+  fi
+}
+
+# heading: an added unrelated heading passes; a renamed required heading fails.
+cp "$nested_layout_document" "$sunspec_fixture"
+printf '\n## Notes\n\nSynthetic note.\n' >> "$sunspec_fixture"
+"$repo_root/scripts/check_docs.sh" --check-sunspec-nested-layout-contract "$sunspec_fixture"
+sed 's/^## Bounded examples$/## Examples/' "$nested_layout_document" > "$sunspec_fixture"
+expect_sunspec_rule_failure heading --check-sunspec-nested-layout-contract "$sunspec_fixture"
+
+# row: an unrelated table elsewhere passes; a model-table row with a changed
+# length fails.
+cp "$sunspec_v2_document" "$sunspec_fixture"
+printf '\n| Term | Meaning |\n| --- | --- |\n| tuple | one model and length |\n' >> "$sunspec_fixture"
+"$repo_root/scripts/check_docs.sh" --check-sunspec-v2-contract "$sunspec_fixture"
+sed 's/^| 701 | 153 | DER AC measurement |$/| 701 | 154 | DER AC measurement |/' \
+  "$sunspec_v2_document" > "$sunspec_fixture"
+expect_sunspec_rule_failure row --check-sunspec-v2-contract "$sunspec_fixture"
+
+# statement: a rewrapped statement passes; a statement moved out of its
+# section is missing.
+sed 's/^occur first and exactly once\. Common Model 1 with declared length 66 is the$/occur first and exactly once. Common Model 1 with declared\
+length 66 is the/' "$sunspec_v2_document" > "$sunspec_fixture"
+if cmp -s "$sunspec_v2_document" "$sunspec_fixture"; then
+  echo 'SunSpec statement rewrap did not change the document' >&2
+  exit 1
+fi
+"$repo_root/scripts/check_docs.sh" --check-sunspec-v2-contract "$sunspec_fixture"
+sed 's/^A candidate does not terminate a chain\. Only/Only/' \
+  "$dynamic_structural_selection_document" > "$sunspec_fixture"
+printf '\nA candidate does not terminate a chain.\n' >> "$sunspec_fixture"
+expect_sunspec_rule_failure statement --check-sunspec-dynamic-structural-selection-v2 "$sunspec_fixture"
+
+# statement pin: the catalogue revision rewrapped onto its own line passes; a
+# revision that no longer matches its commitment fails.
+sed 's/^catalogue at commit$/catalogue at\
+commit/' "$sunspec_v2_licensing_document" > "$sunspec_fixture"
+if cmp -s "$sunspec_v2_licensing_document" "$sunspec_fixture"; then
+  echo 'SunSpec statement pin rewrap did not change the document' >&2
+  exit 1
+fi
+"$repo_root/scripts/check_docs.sh" --check-sunspec-v2-licensing "$sunspec_fixture"
+sed 's/`\([0-9a-f]\)\([0-9a-f]\{39\}\)`/`\2\1`/' "$sunspec_v2_licensing_document" > "$sunspec_fixture"
+if cmp -s "$sunspec_v2_licensing_document" "$sunspec_fixture"; then
+  echo 'SunSpec statement pin mutation did not change the document' >&2
+  exit 1
+fi
+expect_sunspec_rule_failure statement --check-sunspec-v2-licensing "$sunspec_fixture"
+
+# forbidden: a near-miss sentence passes; a Model 708 candidate fails.
+cp "$dynamic_structural_selection_document" "$sunspec_fixture"
+printf '\nModel 708 is outside this contract. Model 707 alone can be a candidate.\n' >> "$sunspec_fixture"
+"$repo_root/scripts/check_docs.sh" --check-sunspec-dynamic-structural-selection-v2 "$sunspec_fixture"
+cp "$dynamic_structural_selection_document" "$sunspec_fixture"
+printf '\nModel 708 data can form a candidate.\n' >> "$sunspec_fixture"
+expect_sunspec_rule_failure forbidden --check-sunspec-dynamic-structural-selection-v2 "$sunspec_fixture"
 
 for leak in \
   'gateway.example.internal:1502' \
