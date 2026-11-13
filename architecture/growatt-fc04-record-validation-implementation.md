@@ -25,11 +25,13 @@ and `types/`.
 
 ## Reviewed API and implementation boundary
 
+The Go identifiers named on this page are declared in package `growatt` of `helianthus-modbusreg` (import path `github.com/Project-Helianthus/helianthus-modbusreg/growatt`).
+
 `ParseGrowattFC04Record` accepts one JSON object with exactly eleven mandatory
 scalar keys: `family`, `device_type`, `model_build_word_82`,
 `model_build_word_83`, `reported_protocol_word`, `source_schema_ref`, `function`,
 `offset`, `width_words`, `field_schema_ref`, and `tuple_evidence_ref`.
-It returns a `GrowattFC04Record` and an error; no partially parsed record is
+It returns an `FC04Record` and an error; no partially parsed record is
 returned on error.
 Duplicate keys, including escaped equivalents, unknown keys, nulls, wrong
 types, coercions, trailing values, malformed references and invalid extents
@@ -40,7 +42,7 @@ References are nonempty exact identifiers without whitespace or control
 characters; parsing does not resolve them or verify publication or review.
 
 `CompareGrowattFC04Record` takes a proposed record, a coherent
-`GrowattProtocolIIIdentityObservation`, symbolic tuple entries and symbolic
+`ProtocolIIIdentityObservation`, symbolic tuple entries and symbolic
 schemas, returning a diagnostic error.
 It rechecks the full observation through the existing identity decoder,
 resolves exactly one tuple entry by `tuple_evidence_ref` and one schema by
@@ -49,7 +51,7 @@ Candidate ordering cannot select a winner among conflicting definitions.
 Both model words remain separate in FC03 register order 82, 83; source document
 edition remains metadata, separate from the reported protocol word at 88.
 
-The caller supplies `GrowattFC04SymbolicSchema` operands with exact source and
+The caller supplies `FC04SymbolicSchema` operands with exact source and
 field-definition references, document edition, amendment identity, function,
 source extent and symbolic field extents.
 Each field extent must have positive width and fit wholly inside the source

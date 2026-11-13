@@ -28,12 +28,14 @@ acquisition range, request, authentication, or authorization check.
 
 ## Current native boundary
 
+The Go identifiers named on this page are declared in package `growatt` of `helianthus-modbusreg` (import path `github.com/Project-Helianthus/helianthus-modbusreg/growatt`).
+
 The native contract precedes every lifecycle rule here. The following public
 source files explain the current boundary:
 
-- [Typed base decoder](https://github.com/Project-Helianthus/helianthus-modbusreg/blob/main/growatt_bms_rs485_typed.go): `DecodeGrowattBMSTypedReadOnlyStatus` requires a complete validated base observation and returns no partial status. `NativeObservation()` copies all four slices.
-- [Diagnostic decoder](https://github.com/Project-Helianthus/helianthus-modbusreg/blob/main/growatt_bms_rs485_multigroup.go): `DecodeGrowattBMSMultiGroupDiagnostic` requires a valid base from the same selected unit and exact revision and all three diagnostic slices in order. It returns no partial diagnostic and establishes no cross-observation identity continuity. `RawSlices()` returns independent copies.
-- [RTU base observer](https://github.com/Project-Helianthus/helianthus-modbusreg/blob/main/growatt_bms_rs485_rtu_observer.go): `Observe` performs only the four base reads in order, checks response provenance and lengths, and returns only after complete decoding. It owns no diagnostic acquisition, discovery, retries, or publication.
+- [Typed base decoder](https://github.com/Project-Helianthus/helianthus-modbusreg/blob/main/growatt/growatt_bms_rs485_typed.go): `DecodeGrowattBMSTypedReadOnlyStatus` requires a complete validated base observation and returns no partial status. `NativeObservation()` copies all four slices.
+- [Diagnostic decoder](https://github.com/Project-Helianthus/helianthus-modbusreg/blob/main/growatt/growatt_bms_rs485_multigroup.go): `DecodeGrowattBMSMultiGroupDiagnostic` requires a valid base from the same selected unit and exact revision and all three diagnostic slices in order. It returns no partial diagnostic and establishes no cross-observation identity continuity. `RawSlices()` returns independent copies.
+- [RTU base observer](https://github.com/Project-Helianthus/helianthus-modbusreg/blob/main/growatt/growatt_bms_rs485_rtu_observer.go): `Observe` performs only the four base reads in order, checks response provenance and lengths, and returns only after complete decoding. It owns no diagnostic acquisition, discovery, retries, or publication.
 
 The diagnostic decoder's base reference is not proof that measurements were
 simultaneous or acquired in one cycle. A future owner must establish that
