@@ -1,0 +1,1789 @@
+{
+  "version": 1,
+  "rules": [
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Schema revision",
+      "reason": "Required section of the V2 contract: the executable V2 schema key and its isolation from V1."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Model scope",
+      "reason": "Required section of the V2 contract: the bounded V2 model table."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Model 714 geometry",
+      "reason": "Required section of the V2 contract: the repeated-port geometry of Model 714."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Value interpretation boundary",
+      "reason": "Required section of the V2 contract: byte order, scaling, sentinel and string rules."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Offline implementation boundary",
+      "reason": "Required section of the V2 contract: the offline-only implementation boundary."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## DER Trip nested geometry",
+      "reason": "Required section of the V2 contract: the nested curve geometry of Models 707 to 709."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## DER Trip model-specific observed fields",
+      "reason": "Required section of the V2 contract: the point spans and length formulas of Models 707 to 709."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## BESS bank and string geometry",
+      "reason": "Required section of the V2 contract: the repeated-group geometry of Models 803 and 804."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## Schema revision",
+      "kind": "statement",
+      "value": "The executable offline schema key is `sunspec.models@<pin:ckQ2uP27CpjlmYQh/WyybJOZKAY+hs+GaBYnGQ0MGNE>-v2`.",
+      "reason": "Identity of the V2 schema revision; the pin binds the exact revision token."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## Chain boundary",
+      "kind": "statement",
+      "value": "Common Model 1 with declared length 66 is the only V2 Common tuple.",
+      "reason": "Admitted V2 Common tuple: model 1 with length 66 only."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## Chain boundary",
+      "kind": "statement",
+      "value": "Common Model 1 length 65 is a V1 compatibility tuple and remains opaque under V2.",
+      "reason": "The V1 Common length 65 is never decoded under V2."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## Scope",
+      "kind": "statement",
+      "value": "The contract covers the `SunS` signature, Common Model 1, Models 701, 702, 703, 707, 708, 709, 713, 714, 715, 802, 803, 804, 805, 806, 807, 808, and 809, and the terminal block.",
+      "reason": "Exact list of model identifiers covered by the V2 contract."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## Model scope",
+      "kind": "statement",
+      "value": "The bounded V2 scope contains Common Model 1 and Models 701, 702, 703, 707, 708, 709, 713, 714, 715, 802, 803, 804, 805, 806, 807, 808, and 809.",
+      "reason": "Exact bounded V2 model scope above the model table."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## Model scope",
+      "kind": "row",
+      "value": "| 1 | 66 | Common device information |",
+      "reason": "Model table value: Common Model 1, length 66."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## Model scope",
+      "kind": "row",
+      "value": "| 701 | 153 | DER AC measurement |",
+      "reason": "Model table value: Model 701, length 153."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## Model scope",
+      "kind": "row",
+      "value": "| 702 | 50 | DER capacity |",
+      "reason": "Model table value: Model 702, length 50."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## Model scope",
+      "kind": "row",
+      "value": "| 703 | 17 | DER enter-service observed state |",
+      "reason": "Model table value: Model 703, length 17."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## Model scope",
+      "kind": "row",
+      "value": "| 707 | `7 + NCrvSet*(4 + 9*NPt)` | DER Trip LV nested geometry, raw-only quarantine |",
+      "reason": "Model table value: Model 707 length formula and raw-only quarantine."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## Model scope",
+      "kind": "row",
+      "value": "| 708 | `7 + NCrvSet*(4 + 9*NPt)` | DER Trip HV nested geometry, raw-only quarantine |",
+      "reason": "Model table value: Model 708 length formula and raw-only quarantine."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## Model scope",
+      "kind": "row",
+      "value": "| 709 | `7 + NCrvSet*(4 + 12*NPt)` | DER Trip LF nested geometry, raw-only quarantine |",
+      "reason": "Model table value: Model 709 length formula and raw-only quarantine."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## Model scope",
+      "kind": "row",
+      "value": "| 713 | 7 | DER storage capacity |",
+      "reason": "Model table value: Model 713, length 7."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## Model scope",
+      "kind": "row",
+      "value": "| 714 | `18 + 25*NPrt` | DER DC measurement with repeated ports |",
+      "reason": "Model table value: Model 714 length formula."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## Model scope",
+      "kind": "row",
+      "value": "| 715 | 7 | DER controller observed state |",
+      "reason": "Model table value: Model 715, length 7."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## Model scope",
+      "kind": "row",
+      "value": "| 802 | 62 | BESS base observed state |",
+      "reason": "Model table value: Model 802, length 62."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## Model scope",
+      "kind": "row",
+      "value": "| 803 | `26 + 32*NStr` | BESS bank observed state with repeated strings |",
+      "reason": "Model table value: Model 803 length formula."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## Model scope",
+      "kind": "row",
+      "value": "| 804 | `46 + 16*NMod` | BESS string observed state with repeated modules |",
+      "reason": "Model table value: Model 804 length formula."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## Model scope",
+      "kind": "row",
+      "value": "| 805 | 42 | BESS module observed state |",
+      "reason": "Model table value: Model 805, length 42."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## Model scope",
+      "kind": "row",
+      "value": "| 806 | 1 | Flow battery structural observed state |",
+      "reason": "Model table value: Model 806, length 1."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## Model scope",
+      "kind": "row",
+      "value": "| 807 | 34 | Flow battery string observed state |",
+      "reason": "Model table value: Model 807, length 34."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## Model scope",
+      "kind": "row",
+      "value": "| 808 | 1 | Flow battery module structural observed state |",
+      "reason": "Model table value: Model 808, length 1."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## Model scope",
+      "kind": "row",
+      "value": "| 809 | 1 | Flow battery stack structural observed state |",
+      "reason": "Model table value: Model 809, length 1."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## Control-observability boundary",
+      "kind": "statement",
+      "value": "Models 703 and 715 are control-observability only.",
+      "reason": "Models 703 and 715 are observed, never a control interface."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## Control-observability boundary",
+      "kind": "statement",
+      "value": "No point in either model creates a write method, send authority, operation admission, dispatch, retry, runtime activation, vendor activation, or catalog activation.",
+      "reason": "No point of Models 703 or 715 creates write, send or activation authority."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## Control-observability boundary",
+      "kind": "statement",
+      "value": "Models 704 through 706 and 710 through 712 remain outside this V2 wave and remain opaque.",
+      "reason": "Models outside the wave stay opaque."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## DER Trip nested geometry",
+      "kind": "statement",
+      "value": "`NPt` is at payload-register offset 3 and absolute model word 5.",
+      "reason": "Location of the point count of the DER Trip models."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## DER Trip nested geometry",
+      "kind": "statement",
+      "value": "`NCrvSet` is at payload-register offset 4 and absolute model word 6.",
+      "reason": "Location of the curve count of the DER Trip models."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## DER Trip nested geometry",
+      "kind": "statement",
+      "value": "Their formal non-sentinel domains are each 0 through 65534; zero is valid.",
+      "reason": "Count domain of `NPt` and `NCrvSet`, with zero valid."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## DER Trip nested geometry",
+      "kind": "statement",
+      "value": "`Crv[i].MustTrip.Pt[j]`, `Crv[i].MayTrip.Pt[j]`, and `Crv[i].MomCess.Pt[j]` are distinct nested paths.",
+      "reason": "The three nested curves keep distinct paths."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## DER Trip nested geometry",
+      "kind": "statement",
+      "value": "it must not infer `P` or `C` from `L`, `ActPt`, or trailing words.",
+      "reason": "Counts are read, never inferred from the length, an activation point or trailing words."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## DER Trip nested geometry",
+      "kind": "statement",
+      "value": "For a model-specific point span `S`, the zero-based payload offset of `Crv[i]` is `7 + (i-1)*(4 + 3*S*P)`.",
+      "reason": "Offset formula of each curve."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## DER Trip nested geometry",
+      "kind": "statement",
+      "value": "`MustTrip.ActPt`, `MayTrip.ActPt`, and `MomCess.ActPt` are respectively at offsets `+1`, `+2 + S*P`, and `+3 + 2*S*P`.",
+      "reason": "Relative offsets of the three activation points."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## DER Trip nested geometry",
+      "kind": "statement",
+      "value": "Within each nested curve, `Pt[j]` begins one data register after `ActPt` plus `(j-1)*S`.",
+      "reason": "Offset formula of each point inside a nested curve."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## DER Trip nested geometry",
+      "kind": "statement",
+      "value": "Models 707, 708, and 709 are inventory-known raw-only quarantine blocks.",
+      "reason": "The DER Trip models emit no typed facts under this contract."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## DER Trip nested geometry",
+      "kind": "statement",
+      "value": "A separate occurrence-aware nested-layout contract is required before any typed facts may be emitted.",
+      "reason": "Typed DER Trip facts need a separate nested-layout contract."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## DER Trip nested geometry",
+      "kind": "statement",
+      "value": "Every field in Models 707, 708, and 709, including `Ena`, `AdptCrvReq`, `ReadOnly`, `ActPt`, and every nested point, is observed state only and is `NO_SEND`.",
+      "reason": "Every DER Trip field, including the writable-looking ones, is observed state only."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## DER Trip nested geometry",
+      "kind": "statement",
+      "value": "No field creates a write method, send authority, operation admission, dispatch, retry, control behavior, runtime activation, vendor activation, catalog activation, transport behavior, gateway behavior, or live I/O.",
+      "reason": "No DER Trip field creates write, send, control or activation behavior."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## DER Trip model-specific observed fields",
+      "kind": "statement",
+      "value": "Model 707 has `V_SF` and `Tms_SF`. Every nested `Pt[j]` is `V:uint16` scaled by `V_SF` followed by `Tms:uint32` scaled by `Tms_SF`, consuming three data registers. Its exact declared data-register length is `L = 7 + C*(4 + 9*P)`.",
+      "reason": "Model 707 point types, scale factors, span and length formula."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## DER Trip model-specific observed fields",
+      "kind": "statement",
+      "value": "Model 708 has the same source-derived point spans as Model 707: `V:uint16` scaled by `V_SF` followed by `Tms:uint32` scaled by `Tms_SF`, consuming three data registers per `Pt[j]`. Its exact declared data-register length is `L = 7 + C*(4 + 9*P)`.",
+      "reason": "Model 708 point types, scale factors, span and length formula."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## DER Trip model-specific observed fields",
+      "kind": "statement",
+      "value": "Model 709 has `Hz_SF` and `Tms_SF`. Every nested `Pt[j]` is `Hz:uint32` scaled by `Hz_SF` followed by `Tms:uint32` scaled by `Tms_SF`, consuming four data registers. Its exact declared data-register length is `L = 7 + C*(4 + 12*P)`.",
+      "reason": "Model 709 point types, scale factors, span and length formula."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## DER Trip model-specific observed fields",
+      "kind": "statement",
+      "value": "For Models 707 and 708, `S` is 3; for Model 709, `S` is 4.",
+      "reason": "Point span `S` per DER Trip model."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## BESS base observed-state boundary",
+      "kind": "statement",
+      "value": "Model 802 is a fixed-geometry battery base block with declared length 62.",
+      "reason": "Model 802 has fixed geometry and length 62."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## BESS base observed-state boundary",
+      "kind": "statement",
+      "value": "It occupies 64 total words including its header and has no repeated group.",
+      "reason": "Total Model 802 extent including the header."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## BESS base observed-state boundary",
+      "kind": "statement",
+      "value": "Every Model 802 field is observed state only and is `NO_SEND`.",
+      "reason": "Model 802 is observed state only."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## BESS base observed-state boundary",
+      "kind": "statement",
+      "value": "No Model 802 field creates a write method, operation dispatch, control behavior, runtime activation, vendor activation, catalog activation, transport behavior, gateway behavior, or live I/O.",
+      "reason": "No Model 802 field creates write, control or activation behavior."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## BESS base observed-state boundary",
+      "kind": "statement",
+      "value": "Model 801 remains excluded as deprecated.",
+      "reason": "Model 801 is excluded."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## BESS base observed-state boundary",
+      "kind": "statement",
+      "value": "Models 806 through 809 remain separately bounded flow battery structural leaves.",
+      "reason": "The flow battery models are bounded separately."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## Model 714 geometry",
+      "kind": "statement",
+      "value": "Model 714 has data-register length `18 + 25*NPrt`.",
+      "reason": "Model 714 length formula."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## Model 714 geometry",
+      "kind": "statement",
+      "value": "`NPrt` is bounded from 0 through 2620 so the computed length remains representable by the 16-bit model-length field.",
+      "reason": "Port count domain of Model 714."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## Model 714 geometry",
+      "kind": "statement",
+      "value": "If `NPrt` is unavailable, an unavailable sentinel, overflows, or does not match the declared length, Model 714 is a raw-only opaque block.",
+      "reason": "Invalid Model 714 geometry stays raw-only."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## BESS bank and string geometry",
+      "kind": "statement",
+      "value": "Model 803 has data-register length `26 + 32*NStr`.",
+      "reason": "Model 803 length formula."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## BESS bank and string geometry",
+      "kind": "statement",
+      "value": "`NStr` is at payload-register offset 0. It is bounded from 0 through 2047 so the computed length remains representable by the 16-bit model-length field.",
+      "reason": "Location and domain of the Model 803 string count."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## BESS bank and string geometry",
+      "kind": "statement",
+      "value": "Each repeated string consumes exactly 32 data registers.",
+      "reason": "Model 803 repeated-string span."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## BESS bank and string geometry",
+      "kind": "statement",
+      "value": "Model 804 has data-register length `46 + 16*NMod`.",
+      "reason": "Model 804 length formula."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## BESS bank and string geometry",
+      "kind": "statement",
+      "value": "`NMod` is at payload-register offset 1. It is bounded from 0 through 4093 so the computed length remains representable by the 16-bit model-length field.",
+      "reason": "Location and domain of the Model 804 module count."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## BESS bank and string geometry",
+      "kind": "statement",
+      "value": "Each repeated module consumes exactly 16 data registers.",
+      "reason": "Model 804 repeated-module span."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## BESS bank and string geometry",
+      "kind": "statement",
+      "value": "At NMod=4093, Model 804 has declared data-register length 65534 and occupies 65536 words including header.",
+      "reason": "Maximum Model 804 extent."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## BESS bank and string geometry",
+      "kind": "statement",
+      "value": "The maximum is valid only for an isolated synthetic offline occurrence.",
+      "reason": "The maximum extent is offline-only."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## BESS bank and string geometry",
+      "kind": "statement",
+      "value": "It must not be used as a terminal-qualified live chain or acquisition map.",
+      "reason": "The maximum extent never becomes a live acquisition map."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## BESS bank and string geometry",
+      "kind": "statement",
+      "value": "Maximum provenance retains fragmented bounded source spans whose cumulative extent is exactly 65536 words.",
+      "reason": "Provenance of the maximum extent is bounded and exact."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## BESS bank and string geometry",
+      "kind": "statement",
+      "value": "For either model, an unavailable sentinel, missing count, overflow, declared length mismatch, partial repeated group, or source-span extent overrun makes the block raw-only opaque with zero decoded facts.",
+      "reason": "Invalid Model 803 or 804 geometry stays raw-only with zero facts."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## BESS bank and string geometry",
+      "kind": "statement",
+      "value": "No count is inferred from trailing words.",
+      "reason": "Model 803 and 804 counts are never inferred."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## BESS bank and string geometry",
+      "kind": "statement",
+      "value": "A repeated group retains a model-local stable index and its exact raw source span; repeated Model 803 and Model 804 occurrences remain distinct.",
+      "reason": "Repeated groups keep their index and raw span; occurrences stay distinct."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## BESS bank and string geometry",
+      "kind": "statement",
+      "value": "Model 803 does not infer Model 804 child occurrences from ordering, `Idx`, `NStr`, or any other field.",
+      "reason": "No parent-to-child inference between Models 803 and 804."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## BESS bank and string geometry",
+      "kind": "statement",
+      "value": "Model 804 does not infer a Model 803 parent from ordering, `Idx`, `NMod`, or any other field.",
+      "reason": "No child-to-parent inference between Models 804 and 803."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## BESS bank and string geometry",
+      "kind": "statement",
+      "value": "Every field in both models, including `SetEna`, `SetCon`, and any upstream read/write field, is observed state only and is `NO_SEND`.",
+      "reason": "Every Model 803 and 804 field, including the control-named ones, is observed state only."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## BESS bank and string geometry",
+      "kind": "statement",
+      "value": "No Model 803 or Model 804 field creates a write method, send authority, operation admission, dispatch, retry, control behavior, runtime activation, vendor activation, catalog activation, transport behavior, gateway behavior, or live I/O.",
+      "reason": "No Model 803 or 804 field creates write, send, control or activation behavior."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## BESS module boundary",
+      "kind": "statement",
+      "value": "Model 805 has fixed data-register length 42 and has no repeated group.",
+      "reason": "Model 805 fixed length."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## BESS module boundary",
+      "kind": "statement",
+      "value": "`StrIdx` and `ModIdx` are observed fields only.",
+      "reason": "Model 805 index fields are observed only."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## BESS module boundary",
+      "kind": "statement",
+      "value": "Neither establishes any inferred relationship to Model 803 or Model 804.",
+      "reason": "Model 805 indices infer no hierarchy."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## BESS module boundary",
+      "kind": "statement",
+      "value": "Every Model 805 field is observed state only and is `NO_SEND`.",
+      "reason": "Model 805 is observed state only."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## BESS module boundary",
+      "kind": "statement",
+      "value": "No Model 805 field creates a write method, send authority, operation admission, dispatch, retry, control behavior, runtime activation, vendor activation, catalog activation, transport behavior, gateway behavior, or live I/O.",
+      "reason": "No Model 805 field creates write, send, control or activation behavior."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## Flow battery structural boundary",
+      "kind": "statement",
+      "value": "Model 806 has fixed data-register length 1 and no effective repeated group.",
+      "reason": "Model 806 fixed length."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## Flow battery structural boundary",
+      "kind": "statement",
+      "value": "`BatTBD` remains uninterpreted structural observed state.",
+      "reason": "Model 806 placeholder stays uninterpreted."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## Flow battery structural boundary",
+      "kind": "statement",
+      "value": "Model 806 does not infer a relationship to Models 803, 804, 805, or 807 through 809.",
+      "reason": "Model 806 infers no relationship."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## Flow battery structural boundary",
+      "kind": "statement",
+      "value": "Every Model 806 field is observed state only and is `NO_SEND`.",
+      "reason": "Model 806 is observed state only."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## Flow battery structural boundary",
+      "kind": "statement",
+      "value": "No Model 806 field creates a write method, send authority, operation admission, dispatch, retry, control behavior, runtime activation, vendor activation, catalog activation, transport behavior, gateway behavior, or live I/O.",
+      "reason": "No Model 806 field creates write, send, control or activation behavior."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## Flow battery string boundary",
+      "kind": "statement",
+      "value": "Model 807 has fixed data-register length 34 and no effective repeated group.",
+      "reason": "Model 807 fixed length."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## Flow battery string boundary",
+      "kind": "statement",
+      "value": "`Idx` and `NMod` remain observed structural fields only.",
+      "reason": "Model 807 structural fields are observed only."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## Flow battery string boundary",
+      "kind": "statement",
+      "value": "Model 807 does not infer a relationship to Models 806, 808, or 809.",
+      "reason": "Model 807 infers no relationship."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## Flow battery string boundary",
+      "kind": "statement",
+      "value": "Every Model 807 field, including control-adjacent zero-count group names, is observed state only and is `NO_SEND`.",
+      "reason": "Model 807 is observed state only."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## Flow battery string boundary",
+      "kind": "statement",
+      "value": "No Model 807 field creates a write method, send authority, operation admission, dispatch, retry, control behavior, runtime activation, vendor activation, catalog activation, transport behavior, gateway behavior, or live I/O.",
+      "reason": "No Model 807 field creates write, send, control or activation behavior."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## Flow battery module boundary",
+      "kind": "statement",
+      "value": "Model 808 has fixed data-register length 1 and no effective repeated group.",
+      "reason": "Model 808 fixed length."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## Flow battery module boundary",
+      "kind": "statement",
+      "value": "`ModuleTBD` remains uninterpreted structural observed state.",
+      "reason": "Model 808 placeholder stays uninterpreted."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## Flow battery module boundary",
+      "kind": "statement",
+      "value": "The declared stack group has count zero and is not materialized.",
+      "reason": "Model 808 stack group is not materialized."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## Flow battery module boundary",
+      "kind": "statement",
+      "value": "Model 808 does not infer a relationship to Models 803 through 807 or 809.",
+      "reason": "Model 808 infers no relationship."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## Flow battery module boundary",
+      "kind": "statement",
+      "value": "Every Model 808 field, including the zero-count `StackTBD` group name, is observed state only and is `NO_SEND`.",
+      "reason": "Model 808 is observed state only."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## Flow battery module boundary",
+      "kind": "statement",
+      "value": "No Model 808 field creates a write method, send authority, operation admission, dispatch, retry, control behavior, runtime activation, vendor activation, catalog activation, transport behavior, gateway behavior, or live I/O.",
+      "reason": "No Model 808 field creates write, send, control or activation behavior."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## Flow battery stack boundary",
+      "kind": "statement",
+      "value": "Model 809 has fixed data-register length 1 and no effective repeated group.",
+      "reason": "Model 809 fixed length."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## Flow battery stack boundary",
+      "kind": "statement",
+      "value": "`StackTBD` remains uninterpreted structural observed state.",
+      "reason": "Model 809 placeholder stays uninterpreted."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## Flow battery stack boundary",
+      "kind": "statement",
+      "value": "The declared cell group has count zero and is not materialized.",
+      "reason": "Model 809 cell group is not materialized."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## Flow battery stack boundary",
+      "kind": "statement",
+      "value": "Model 809 does not infer a relationship to Models 803 through 808.",
+      "reason": "Model 809 infers no relationship."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## Flow battery stack boundary",
+      "kind": "statement",
+      "value": "Every Model 809 field, including the zero-count `CellTBD` group name, is observed state only and is `NO_SEND`.",
+      "reason": "Model 809 is observed state only."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## Flow battery stack boundary",
+      "kind": "statement",
+      "value": "No Model 809 field creates a write method, send authority, operation admission, dispatch, retry, control behavior, runtime activation, vendor activation, catalog activation, transport behavior, gateway behavior, or live I/O.",
+      "reason": "No Model 809 field creates write, send, control or activation behavior."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## Value interpretation boundary",
+      "kind": "statement",
+      "value": "A SunSpec `uint64` uses four big-endian words; zero is a valid value and all one-bits means not implemented. Exact unsigned scaling must not pass through an `int64` or floating-point representation, truncate, or round.",
+      "reason": "Width, byte order, sentinel and exact scaling of `uint64` values."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## Value interpretation boundary",
+      "kind": "statement",
+      "value": "A string beginning with word `0x0080` followed only by zero padding is a valid empty string.",
+      "reason": "Encoding of the valid empty string."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## Value interpretation boundary",
+      "kind": "statement",
+      "value": "An all-zero string extent is unavailable. Otherwise, the first NUL requires a zero-only tail.",
+      "reason": "Unavailable string and NUL termination rule."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## Value interpretation boundary",
+      "kind": "statement",
+      "value": "Spaces before the terminator are data and are not trimmed.",
+      "reason": "String spaces are preserved."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## Schema revision",
+      "kind": "statement",
+      "value": "This key is separate from `sunspec.models@<pin:emfP8rGlYFMdguWeJvOHy2m9VMcVmLUHC8idXlDHNAY>-v1`. V1 and V2 decoder definitions and caches are revision-isolated. V1 outputs remain unchanged.",
+      "reason": "V1 and V2 schema revisions stay isolated; the pin binds the exact V1 revision token."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## Fixture boundary",
+      "kind": "statement",
+      "value": "Offline conformance uses synthetic, non-vendor fixtures.",
+      "reason": "Fixtures are synthetic and non-vendor."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## Offline implementation boundary",
+      "kind": "statement",
+      "value": "This contract permits a separate offline registry implementation to use the V2 schema key and synthetic fixtures.",
+      "reason": "The only permitted use of the contract is an offline implementation."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## Offline implementation boundary",
+      "kind": "statement",
+      "value": "No standard profile admission, runtime catalog registration, vendor admission, automatic acquisition, telemetry publication, capability admission, or consumer exposure may be derived from this contract.",
+      "reason": "Admission, acquisition and exposure stay default denied."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": null,
+      "kind": "forbidden",
+      "value": "sunspec\\.models\\.candidate\\.v2|Common\\s+1/65[^.]*V2 decoder|V2 runtime catalog registration is enabled|V2 automatic acquisition is enabled|trailing spaces[^.]*trimmed",
+      "reason": "The page must not contradict its offline-only boundary: no candidate key, no V1 Common in the V2 decoder, no runtime registration or acquisition, no trimmed spaces."
+    },
+    {
+      "contract": "v2_licensing",
+      "page": "protocols/applicability-and-licensing.md",
+      "section": "## Applicability classes",
+      "kind": "row",
+      "value": "| `sunspec.der.readonly.v2` | Common 1/66 plus Models 701/153, 702/50, 703/17, 713/7, 714 variable geometry, 715/7, 802/62, 803 variable geometry, and 804 variable geometry at the exact pinned V2 schema revision | public Apache-2.0 model catalogue and independently stated interoperability facts | offline decoder contract; runtime, vendor, and catalog admission default denied |",
+      "reason": "Applicability row of the V2 profile: exact model tuples, evidence class and default-denied disposition."
+    },
+    {
+      "contract": "v2_licensing",
+      "page": "protocols/applicability-and-licensing.md",
+      "section": "## Applicability classes",
+      "kind": "statement",
+      "value": "The SunSpec V2 offline contract is pinned to the public Apache-2.0 SunSpec model catalogue at commit `<pin:f/jzI2+NVYViu6r5Zz1zF4pLXd09KfrwZdtHISHWBCU>`.",
+      "reason": "Exact upstream catalogue revision of the V2 contract; the pin binds the exact revision."
+    },
+    {
+      "contract": "v2_licensing",
+      "page": "protocols/applicability-and-licensing.md",
+      "section": "## Applicability classes",
+      "kind": "statement",
+      "value": "That upstream license applies to the catalogue input.",
+      "reason": "The upstream license is confined to the catalogue input."
+    },
+    {
+      "contract": "licensing_page",
+      "page": "protocols/applicability-and-licensing.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Publication boundary",
+      "reason": "Required section of the applicability page: publication boundary."
+    },
+    {
+      "contract": "licensing_page",
+      "page": "protocols/applicability-and-licensing.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Admission rules",
+      "reason": "Required section of the applicability page: admission rules."
+    },
+    {
+      "contract": "licensing_page",
+      "page": "protocols/applicability-and-licensing.md",
+      "section": "## Applicability classes",
+      "kind": "row",
+      "value": "| `huawei.sun2000.readonly.v1` / `huawei.luna2000.readonly.v1` | no covered model family or firmware range; SUN2000 inverter and optional LUNA2000 battery | vendor-copyright-inspection-only | `NO_ADMISSIBLE_PROFILE`; default denied, no register map, no decoder |",
+      "reason": "Applicability row of the SUN2000 and LUNA2000 profiles: no admissible profile, default denied."
+    },
+    {
+      "contract": "v1_core_page",
+      "page": "protocols/sunspec/read-only-core-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Initial model catalog",
+      "reason": "Required section of the V1 core: the initial model catalog."
+    },
+    {
+      "contract": "v1_model_families",
+      "page": "protocols/sunspec/read-only-core-v1-model-families.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Scope",
+      "reason": "Required section of the V1 model-families guide: scope."
+    },
+    {
+      "contract": "v1_model_families",
+      "page": "protocols/sunspec/read-only-core-v1-model-families.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Decoder Catalog Boundary",
+      "reason": "Required section of the V1 model-families guide: decoder catalog boundary."
+    },
+    {
+      "contract": "v1_model_families",
+      "page": "protocols/sunspec/read-only-core-v1-model-families.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Inverter Families",
+      "reason": "Required section of the V1 model-families guide: inverter families."
+    },
+    {
+      "contract": "v1_model_families",
+      "page": "protocols/sunspec/read-only-core-v1-model-families.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Inverter Extensions",
+      "reason": "Required section of the V1 model-families guide: inverter extensions."
+    },
+    {
+      "contract": "v1_model_families",
+      "page": "protocols/sunspec/read-only-core-v1-model-families.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Meter Families",
+      "reason": "Required section of the V1 model-families guide: meter families."
+    },
+    {
+      "contract": "v1_model_families",
+      "page": "protocols/sunspec/read-only-core-v1-model-families.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Environmental Families",
+      "reason": "Required section of the V1 model-families guide: environmental families."
+    },
+    {
+      "contract": "v1_model_families",
+      "page": "protocols/sunspec/read-only-core-v1-model-families.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Safety and Non-Claims",
+      "reason": "Required section of the V1 model-families guide: safety and non-claims."
+    },
+    {
+      "contract": "v1_model_families",
+      "page": "protocols/sunspec/read-only-core-v1-model-families.md",
+      "section": "## Scope",
+      "kind": "statement",
+      "value": "It covers 28 distinct standard model identifiers and 29 exact decoder tuples.",
+      "reason": "Size of the V1 catalogue: identifiers and exact decoder tuples."
+    },
+    {
+      "contract": "v1_model_families",
+      "page": "protocols/sunspec/read-only-core-v1-model-families.md",
+      "section": "## Decoder Catalog Boundary",
+      "kind": "statement",
+      "value": "Model 1 length 66 is current and length 65 is a compatibility tuple.",
+      "reason": "The Common length 65 is a compatibility tuple, not a product."
+    },
+    {
+      "contract": "v1_model_families",
+      "page": "protocols/sunspec/read-only-core-v1-model-families.md",
+      "section": "## Inverter Families",
+      "kind": "statement",
+      "value": "Models 101, 102, and 103 use integer values with declared scale factors.",
+      "reason": "Encoding of the integer inverter models."
+    },
+    {
+      "contract": "v1_model_families",
+      "page": "protocols/sunspec/read-only-core-v1-model-families.md",
+      "section": "## Inverter Families",
+      "kind": "statement",
+      "value": "Models 111, 112, and 113 use IEEE FLOAT values.",
+      "reason": "Encoding of the FLOAT inverter models."
+    },
+    {
+      "contract": "v1_model_families",
+      "page": "protocols/sunspec/read-only-core-v1-model-families.md",
+      "section": "## Inverter Extensions",
+      "kind": "statement",
+      "value": "Models 123 and 124 are observed state only.",
+      "reason": "The control models are observed state only."
+    },
+    {
+      "contract": "v1_model_families",
+      "page": "protocols/sunspec/read-only-core-v1-model-families.md",
+      "section": "## Decoder Catalog Boundary",
+      "kind": "statement",
+      "value": "Unknown model identifiers or lengths remain opaque blocks.",
+      "reason": "Unknown blocks are never decoded."
+    },
+    {
+      "contract": "v1_model_families",
+      "page": "protocols/sunspec/read-only-core-v1-model-families.md",
+      "section": "## Safety and Non-Claims",
+      "kind": "statement",
+      "value": "It does not create a product, profile, or support claim.",
+      "reason": "The guide is not a support claim."
+    },
+    {
+      "contract": "v1_model_families",
+      "page": "protocols/sunspec/read-only-core-v1-model-families.md",
+      "section": null,
+      "kind": "forbidden",
+      "value": "sunspec\\.models\\.candidate\\.v2|V2 registry|PROFILE_ADMITTED|write authority",
+      "reason": "The V1 guide must not exceed its docs-only boundary: no V2 key or registry, no admission, no write authority."
+    },
+    {
+      "contract": "nested_layout",
+      "page": "protocols/sunspec/nested-layout-contract-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Scope",
+      "reason": "Required section of the nested-layout contract: scope."
+    },
+    {
+      "contract": "nested_layout",
+      "page": "protocols/sunspec/nested-layout-contract-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Template selection",
+      "reason": "Required section of the nested-layout contract: template selection."
+    },
+    {
+      "contract": "nested_layout",
+      "page": "protocols/sunspec/nested-layout-contract-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Per-occurrence validation",
+      "reason": "Required section of the nested-layout contract: per-occurrence validation."
+    },
+    {
+      "contract": "nested_layout",
+      "page": "protocols/sunspec/nested-layout-contract-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Hierarchical paths and offsets",
+      "reason": "Required section of the nested-layout contract: hierarchical paths and offsets."
+    },
+    {
+      "contract": "nested_layout",
+      "page": "protocols/sunspec/nested-layout-contract-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Bounds and allocation",
+      "reason": "Required section of the nested-layout contract: bounds and allocation."
+    },
+    {
+      "contract": "nested_layout",
+      "page": "protocols/sunspec/nested-layout-contract-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Failure and isolation",
+      "reason": "Required section of the nested-layout contract: failure and isolation."
+    },
+    {
+      "contract": "nested_layout",
+      "page": "protocols/sunspec/nested-layout-contract-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## No-send boundary",
+      "reason": "Required section of the nested-layout contract: no-send boundary."
+    },
+    {
+      "contract": "nested_layout",
+      "page": "protocols/sunspec/nested-layout-contract-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Bounded examples",
+      "reason": "Required section of the nested-layout contract: bounded examples."
+    },
+    {
+      "contract": "nested_layout",
+      "page": "protocols/sunspec/nested-layout-contract-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Compatibility",
+      "reason": "Required section of the nested-layout contract: compatibility."
+    },
+    {
+      "contract": "nested_layout",
+      "page": "protocols/sunspec/nested-layout-contract-v1.md",
+      "section": "## Template selection",
+      "kind": "statement",
+      "value": "An immutable schema template is selected only by the exact schema revision and model identifier.",
+      "reason": "Template selection key."
+    },
+    {
+      "contract": "nested_layout",
+      "page": "protocols/sunspec/nested-layout-contract-v1.md",
+      "section": "## Template selection",
+      "kind": "statement",
+      "value": "A declared length never selects a template and is never an expanded-layout cache key.",
+      "reason": "A length never selects a template or keys a cache."
+    },
+    {
+      "contract": "nested_layout",
+      "page": "protocols/sunspec/nested-layout-contract-v1.md",
+      "section": "## Per-occurrence validation",
+      "kind": "statement",
+      "value": "A layout is instantiated for one occurrence only after every documented count and its declared length validate together.",
+      "reason": "Layouts are instantiated only after validation."
+    },
+    {
+      "contract": "nested_layout",
+      "page": "protocols/sunspec/nested-layout-contract-v1.md",
+      "section": "## Per-occurrence validation",
+      "kind": "statement",
+      "value": "It must not infer counts from a declared length, an activation point, or trailing words.",
+      "reason": "Counts are never inferred."
+    },
+    {
+      "contract": "nested_layout",
+      "page": "protocols/sunspec/nested-layout-contract-v1.md",
+      "section": "## Hierarchical paths and offsets",
+      "kind": "statement",
+      "value": "`Crv[2].MustTrip.Pt[5].Hz` is a hierarchical path, not a flattened repeat index.",
+      "reason": "Nested paths stay hierarchical."
+    },
+    {
+      "contract": "nested_layout",
+      "page": "protocols/sunspec/nested-layout-contract-v1.md",
+      "section": "## Hierarchical paths and offsets",
+      "kind": "statement",
+      "value": "Offsets are relative to the occurrence and map each decoded point to exact source spans.",
+      "reason": "Offsets are occurrence-relative with exact spans."
+    },
+    {
+      "contract": "nested_layout",
+      "page": "protocols/sunspec/nested-layout-contract-v1.md",
+      "section": "## Bounds and allocation",
+      "kind": "statement",
+      "value": "Checked arithmetic applies before every extent, aggregate, fact-count, or allocation decision.",
+      "reason": "Checked arithmetic before every bound."
+    },
+    {
+      "contract": "nested_layout",
+      "page": "protocols/sunspec/nested-layout-contract-v1.md",
+      "section": "## Failure and isolation",
+      "kind": "statement",
+      "value": "Invalid geometry remains raw-only with zero typed facts.",
+      "reason": "Invalid geometry emits no typed facts."
+    },
+    {
+      "contract": "nested_layout",
+      "page": "protocols/sunspec/nested-layout-contract-v1.md",
+      "section": "## Failure and isolation",
+      "kind": "statement",
+      "value": "V1 templates, caches, and outputs remain isolated and unchanged.",
+      "reason": "V1 isolation."
+    },
+    {
+      "contract": "nested_layout",
+      "page": "protocols/sunspec/nested-layout-contract-v1.md",
+      "section": "## No-send boundary",
+      "kind": "statement",
+      "value": "This contract creates no runtime, vendor, transport, gateway, live-I/O, write, send, or operation behavior.",
+      "reason": "No-send boundary."
+    },
+    {
+      "contract": "nested_layout",
+      "page": "protocols/sunspec/nested-layout-contract-v1.md",
+      "section": "## Bounded examples",
+      "kind": "statement",
+      "value": "Models 707, 708, and 709 are bounded examples only and do not define Model 710 or any other model.",
+      "reason": "The examples define no other model."
+    },
+    {
+      "contract": "der_trip_lv_template",
+      "page": "protocols/sunspec/der-trip-lv-template-v2.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Scope and isolation",
+      "reason": "Required section of the Model 707 template: scope and isolation."
+    },
+    {
+      "contract": "der_trip_lv_template",
+      "page": "protocols/sunspec/der-trip-lv-template-v2.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Template identity and top-level map",
+      "reason": "Required section of the Model 707 template: template identity and top-level map."
+    },
+    {
+      "contract": "der_trip_lv_template",
+      "page": "protocols/sunspec/der-trip-lv-template-v2.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Nested curve layout",
+      "reason": "Required section of the Model 707 template: nested curve layout."
+    },
+    {
+      "contract": "der_trip_lv_template",
+      "page": "protocols/sunspec/der-trip-lv-template-v2.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Per-occurrence validation and bounds",
+      "reason": "Required section of the Model 707 template: per-occurrence validation and bounds."
+    },
+    {
+      "contract": "der_trip_lv_template",
+      "page": "protocols/sunspec/der-trip-lv-template-v2.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Failure boundary",
+      "reason": "Required section of the Model 707 template: failure boundary."
+    },
+    {
+      "contract": "der_trip_lv_template",
+      "page": "protocols/sunspec/der-trip-lv-template-v2.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Observed-state boundary",
+      "reason": "Required section of the Model 707 template: observed-state boundary."
+    },
+    {
+      "contract": "der_trip_lv_template",
+      "page": "protocols/sunspec/der-trip-lv-template-v2.md",
+      "section": "## Template identity and top-level map",
+      "kind": "statement",
+      "value": "The template identity is exactly schema revision `sunspec.models@<pin:ckQ2uP27CpjlmYQh/WyybJOZKAY+hs+GaBYnGQ0MGNE>-v2` and Model 707.",
+      "reason": "Template identity: exact V2 schema revision and Model 707; the pin binds the exact revision token."
+    },
+    {
+      "contract": "der_trip_lv_template",
+      "page": "protocols/sunspec/der-trip-lv-template-v2.md",
+      "section": "## Template identity and top-level map",
+      "kind": "statement",
+      "value": "`NPt` and `NCrvSet` are at occurrence-word offsets 5 and 6.",
+      "reason": "Count locations."
+    },
+    {
+      "contract": "der_trip_lv_template",
+      "page": "protocols/sunspec/der-trip-lv-template-v2.md",
+      "section": "## Template identity and top-level map",
+      "kind": "statement",
+      "value": "`P` and `C` each accept 0 through 65534; `0xffff` is unavailable and zero is valid.",
+      "reason": "Count domains and sentinel."
+    },
+    {
+      "contract": "der_trip_lv_template",
+      "page": "protocols/sunspec/der-trip-lv-template-v2.md",
+      "section": "## Nested curve layout",
+      "kind": "statement",
+      "value": "The exact declared payload length is `L = 7 + C*(4 + 9*P)`.",
+      "reason": "Length formula."
+    },
+    {
+      "contract": "der_trip_lv_template",
+      "page": "protocols/sunspec/der-trip-lv-template-v2.md",
+      "section": "## Per-occurrence validation and bounds",
+      "kind": "statement",
+      "value": "The current isolated offline boundary requires `L <= 65534`.",
+      "reason": "Offline length bound."
+    },
+    {
+      "contract": "der_trip_lv_template",
+      "page": "protocols/sunspec/der-trip-lv-template-v2.md",
+      "section": "## Nested curve layout",
+      "kind": "statement",
+      "value": "`Crv[i].MustTrip.Pt[j].V` and `Crv[i].MustTrip.Pt[j].Tms` are separate paths.",
+      "reason": "Point fields keep separate paths."
+    },
+    {
+      "contract": "der_trip_lv_template",
+      "page": "protocols/sunspec/der-trip-lv-template-v2.md",
+      "section": "## Nested curve layout",
+      "kind": "statement",
+      "value": "`V` is one `uint16` word scaled by `V_SF`; `Tms` is two big-endian `uint32` words scaled by `Tms_SF`.",
+      "reason": "Point field types, widths and scale factors."
+    },
+    {
+      "contract": "der_trip_lv_template",
+      "page": "protocols/sunspec/der-trip-lv-template-v2.md",
+      "section": "## Failure boundary",
+      "kind": "statement",
+      "value": "Invalid geometry remains raw-only with zero typed facts and exact raw spans.",
+      "reason": "Invalid geometry emits no typed facts."
+    },
+    {
+      "contract": "der_trip_lv_template",
+      "page": "protocols/sunspec/der-trip-lv-template-v2.md",
+      "section": "## Observed-state boundary",
+      "kind": "statement",
+      "value": "Every field is observed state only and is `NO_SEND`.",
+      "reason": "Observed-state boundary."
+    },
+    {
+      "contract": "der_trip_lv_template",
+      "page": "protocols/sunspec/der-trip-lv-template-v2.md",
+      "section": null,
+      "kind": "forbidden",
+      "value": "decoder|catalog|admission|support|runtime|(^|[^0-9])708([^0-9]|$)|(^|[^0-9])709([^0-9]|$)",
+      "reason": "The template must not exceed its docs-only boundary: no decoder, catalog, admission, support or runtime claim, and no Model 708 or 709."
+    },
+    {
+      "contract": "der_trip_lv_projection",
+      "page": "protocols/sunspec/der-trip-lv-typed-fact-projection-v2.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Scope and non-emission",
+      "reason": "Required section of the Model 707 projection: scope and non-emission."
+    },
+    {
+      "contract": "der_trip_lv_projection",
+      "page": "protocols/sunspec/der-trip-lv-typed-fact-projection-v2.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Public offline projection API",
+      "reason": "Required section of the Model 707 projection: public offline projection api."
+    },
+    {
+      "contract": "der_trip_lv_projection",
+      "page": "protocols/sunspec/der-trip-lv-typed-fact-projection-v2.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Stable identity and nested paths",
+      "reason": "Required section of the Model 707 projection: stable identity and nested paths."
+    },
+    {
+      "contract": "der_trip_lv_projection",
+      "page": "protocols/sunspec/der-trip-lv-typed-fact-projection-v2.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Requiredness and observation state",
+      "reason": "Required section of the Model 707 projection: requiredness and observation state."
+    },
+    {
+      "contract": "der_trip_lv_projection",
+      "page": "protocols/sunspec/der-trip-lv-typed-fact-projection-v2.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Types, units, and symbols",
+      "reason": "Required section of the Model 707 projection: types, units, and symbols."
+    },
+    {
+      "contract": "der_trip_lv_projection",
+      "page": "protocols/sunspec/der-trip-lv-typed-fact-projection-v2.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Geometry, provenance, and isolation",
+      "reason": "Required section of the Model 707 projection: geometry, provenance, and isolation."
+    },
+    {
+      "contract": "der_trip_lv_projection",
+      "page": "protocols/sunspec/der-trip-lv-typed-fact-projection-v2.md",
+      "section": "## Scope and non-emission",
+      "kind": "statement",
+      "value": "It does not change the current raw-only behavior, select a model, or authorize a profile.",
+      "reason": "The projection changes no raw-only behavior."
+    },
+    {
+      "contract": "der_trip_lv_projection",
+      "page": "protocols/sunspec/der-trip-lv-typed-fact-projection-v2.md",
+      "section": "## Scope and non-emission",
+      "kind": "statement",
+      "value": "Every observation in this contract is `NO_SEND`, including fields whose wire access permits modification.",
+      "reason": "Every observation is `NO_SEND`."
+    },
+    {
+      "contract": "der_trip_lv_projection",
+      "page": "protocols/sunspec/der-trip-lv-typed-fact-projection-v2.md",
+      "section": "## Public offline projection API",
+      "kind": "statement",
+      "value": "`ProjectSunSpecStructuralFacts(snapshot SunSpecChainSnapshot)` accepts exactly one immutable `SunSpecChainSnapshot` and returns zero or more immutable `SunSpecStructuralProjection` records.",
+      "reason": "Signature and result of the projection query."
+    },
+    {
+      "contract": "der_trip_lv_projection",
+      "page": "protocols/sunspec/der-trip-lv-typed-fact-projection-v2.md",
+      "section": "## Public offline projection API",
+      "kind": "statement",
+      "value": "Each record provides `WireKey()`, `SchemaRevision()`, `Ordinal()`, `RawWords()`, `SourceSpans()`, and `Facts()`.",
+      "reason": "Exact accessor set of a projection record."
+    },
+    {
+      "contract": "der_trip_lv_projection",
+      "page": "protocols/sunspec/der-trip-lv-typed-fact-projection-v2.md",
+      "section": "## Public offline projection API",
+      "kind": "statement",
+      "value": "It has no `DecoderKey()`, admission, qualification, topology, or `SunSpecDecodedChain` identity.",
+      "reason": "A projection is not a decoder selection."
+    },
+    {
+      "contract": "der_trip_lv_projection",
+      "page": "protocols/sunspec/der-trip-lv-typed-fact-projection-v2.md",
+      "section": "## Public offline projection API",
+      "kind": "statement",
+      "value": "Only a complete V2 Model 707 `structural_candidate` may produce a projection.",
+      "reason": "Projection input."
+    },
+    {
+      "contract": "der_trip_lv_projection",
+      "page": "protocols/sunspec/der-trip-lv-typed-fact-projection-v2.md",
+      "section": "## Public offline projection API",
+      "kind": "statement",
+      "value": "It must not accept or derive a projection from `SunSpecDecodedChain` or `SunSpecQualificationObservation`.",
+      "reason": "Decoded chains and qualification observations are never projection input."
+    },
+    {
+      "contract": "der_trip_lv_projection",
+      "page": "protocols/sunspec/der-trip-lv-typed-fact-projection-v2.md",
+      "section": "## Public offline projection API",
+      "kind": "statement",
+      "value": "It must not recompute structural state from a wire key, words, spans, or declared length; it uses only the retained private candidate sidecar.",
+      "reason": "Structural state is never recomputed."
+    },
+    {
+      "contract": "der_trip_lv_projection",
+      "page": "protocols/sunspec/der-trip-lv-typed-fact-projection-v2.md",
+      "section": "## Public offline projection API",
+      "kind": "statement",
+      "value": "Candidate absence or malformed structural geometry produces no projection and zero facts.",
+      "reason": "Fail-closed projection."
+    },
+    {
+      "contract": "der_trip_lv_projection",
+      "page": "protocols/sunspec/der-trip-lv-typed-fact-projection-v2.md",
+      "section": "## Public offline projection API",
+      "kind": "statement",
+      "value": "The projection query does not modify an occurrence, chain snapshot, or qualification-observation JSON.",
+      "reason": "The query is read-only."
+    },
+    {
+      "contract": "der_trip_lv_projection",
+      "page": "protocols/sunspec/der-trip-lv-typed-fact-projection-v2.md",
+      "section": "## Public offline projection API",
+      "kind": "statement",
+      "value": "Repeated Model 707 occurrences produce independent projections.",
+      "reason": "Occurrences stay independent."
+    },
+    {
+      "contract": "der_trip_lv_projection",
+      "page": "protocols/sunspec/der-trip-lv-typed-fact-projection-v2.md",
+      "section": "## Public offline projection API",
+      "kind": "statement",
+      "value": "V1, Model 708, and Model 709 produce no projection.",
+      "reason": "Projection scope is Model 707 only."
+    },
+    {
+      "contract": "der_trip_lv_projection",
+      "page": "protocols/sunspec/der-trip-lv-typed-fact-projection-v2.md",
+      "section": "## Public offline projection API",
+      "kind": "statement",
+      "value": "The projection query does not change acquisition, queueing, retry, deadline, limit, or terminal behavior.",
+      "reason": "The query changes no acquisition behavior."
+    },
+    {
+      "contract": "der_trip_lv_projection",
+      "page": "protocols/sunspec/der-trip-lv-typed-fact-projection-v2.md",
+      "section": "## Stable identity and nested paths",
+      "kind": "statement",
+      "value": "A FieldID names a field template and never embeds an occurrence, curve, or point index.",
+      "reason": "FieldIDs are templates without indexes."
+    },
+    {
+      "contract": "der_trip_lv_projection",
+      "page": "protocols/sunspec/der-trip-lv-typed-fact-projection-v2.md",
+      "section": "## Stable identity and nested paths",
+      "kind": "statement",
+      "value": "`sunspec.der.v2.707.Crv.MustTrip.Pt.V` and `sunspec.der.v2.707.Crv.MustTrip.Pt.Tms` map to `Crv[i].MustTrip.Pt[j].V` and `Crv[i].MustTrip.Pt[j].Tms`.",
+      "reason": "Canonical FieldIDs and paths of the MustTrip points."
+    },
+    {
+      "contract": "der_trip_lv_projection",
+      "page": "protocols/sunspec/der-trip-lv-typed-fact-projection-v2.md",
+      "section": "## Stable identity and nested paths",
+      "kind": "statement",
+      "value": "`sunspec.der.v2.707.Crv.MayTrip.Pt.V` and `sunspec.der.v2.707.Crv.MayTrip.Pt.Tms` map to `Crv[i].MayTrip.Pt[j].V` and `Crv[i].MayTrip.Pt[j].Tms`.",
+      "reason": "Canonical FieldIDs and paths of the MayTrip points."
+    },
+    {
+      "contract": "der_trip_lv_projection",
+      "page": "protocols/sunspec/der-trip-lv-typed-fact-projection-v2.md",
+      "section": "## Stable identity and nested paths",
+      "kind": "statement",
+      "value": "`sunspec.der.v2.707.Crv.MomCess.Pt.V` and `sunspec.der.v2.707.Crv.MomCess.Pt.Tms` map to `Crv[i].MomCess.Pt[j].V` and `Crv[i].MomCess.Pt[j].Tms`.",
+      "reason": "Canonical FieldIDs and paths of the MomCess points."
+    },
+    {
+      "contract": "der_trip_lv_projection",
+      "page": "protocols/sunspec/der-trip-lv-typed-fact-projection-v2.md",
+      "section": "## Requiredness and observation state",
+      "kind": "statement",
+      "value": "For a valid occurrence, every listed template field is an observed fact with `Required=false`.",
+      "reason": "Template fields are not required for qualification."
+    },
+    {
+      "contract": "der_trip_lv_projection",
+      "page": "protocols/sunspec/der-trip-lv-typed-fact-projection-v2.md",
+      "section": "## Requiredness and observation state",
+      "kind": "statement",
+      "value": "`NPt` and `NCrvSet` accept zero and reject `0xffff` as unavailable.",
+      "reason": "Count domain and sentinel."
+    },
+    {
+      "contract": "der_trip_lv_projection",
+      "page": "protocols/sunspec/der-trip-lv-typed-fact-projection-v2.md",
+      "section": "## Requiredness and observation state",
+      "kind": "statement",
+      "value": "A count sentinel, count/length mismatch, arithmetic overflow, partial group, or source span overrun makes the entire occurrence raw-only with zero typed facts.",
+      "reason": "Invalid geometry emits no typed facts."
+    },
+    {
+      "contract": "der_trip_lv_projection",
+      "page": "protocols/sunspec/der-trip-lv-typed-fact-projection-v2.md",
+      "section": "## Types, units, and symbols",
+      "kind": "statement",
+      "value": "A nested `V` has unit `VNomPct`; a nested `Tms` has unit `Secs`.",
+      "reason": "Units of the nested point fields."
+    },
+    {
+      "contract": "der_trip_lv_projection",
+      "page": "protocols/sunspec/der-trip-lv-typed-fact-projection-v2.md",
+      "section": "## Types, units, and symbols",
+      "kind": "statement",
+      "value": "Known symbols are `Ena`: `0=DISABLED`, `1=ENABLED`; `AdptCrvRslt`: `0=IN_PROGRESS`, `1=COMPLETED`, `2=FAILED`; and `ReadOnly`: `0=RW`, `1=R`.",
+      "reason": "Enumeration value table."
+    },
+    {
+      "contract": "der_trip_lv_projection",
+      "page": "protocols/sunspec/der-trip-lv-typed-fact-projection-v2.md",
+      "section": "## Types, units, and symbols",
+      "kind": "statement",
+      "value": "An otherwise valid enum number remains its numeric observation with no substituted symbol.",
+      "reason": "Unknown enum numbers keep their numeric value."
+    },
+    {
+      "contract": "der_trip_lv_projection",
+      "page": "protocols/sunspec/der-trip-lv-typed-fact-projection-v2.md",
+      "section": "## Types, units, and symbols",
+      "kind": "statement",
+      "value": "A missing scale binding, unavailable scale, or invalid scale leaves the dependent raw fact intact but produces no scaled value.",
+      "reason": "Invalid scale factors produce no scaled value."
+    },
+    {
+      "contract": "der_trip_lv_projection",
+      "page": "protocols/sunspec/der-trip-lv-typed-fact-projection-v2.md",
+      "section": "## Stable identity and nested paths",
+      "kind": "statement",
+      "value": "Every fact retains its occurrence-relative source range and the exact ordered, possibly fragmented raw source spans for that range.",
+      "reason": "Every fact keeps its raw provenance."
+    },
+    {
+      "contract": "der_trip_lv_projection",
+      "page": "protocols/sunspec/der-trip-lv-typed-fact-projection-v2.md",
+      "section": "## Geometry, provenance, and isolation",
+      "kind": "statement",
+      "value": "Malformed geometry produces zero typed facts and preserves the complete raw occurrence and its source spans.",
+      "reason": "Malformed geometry preserves raw evidence."
+    },
+    {
+      "contract": "der_trip_lv_projection",
+      "page": "protocols/sunspec/der-trip-lv-typed-fact-projection-v2.md",
+      "section": null,
+      "kind": "forbidden",
+      "value": "projection is admitted|projection has a decoder key|projection is a `SunSpecDecodedChain`|projection authorizes a profile|projection permits sends|projection writes to a device|projection creates an operation|projection creates live-system behavior",
+      "reason": "The projection must not exceed its docs-only boundary: no admission, decoder key, profile, send, write, operation or live behavior."
+    },
+    {
+      "contract": "dynamic_structural_selection",
+      "page": "protocols/sunspec/dynamic-structural-selection-v2.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Scope and classification",
+      "reason": "Required section of the dynamic structural selection contract: scope and classification."
+    },
+    {
+      "contract": "dynamic_structural_selection",
+      "page": "protocols/sunspec/dynamic-structural-selection-v2.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Post-payload candidate rule",
+      "reason": "Required section of the dynamic structural selection contract: post-payload candidate rule."
+    },
+    {
+      "contract": "dynamic_structural_selection",
+      "page": "protocols/sunspec/dynamic-structural-selection-v2.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Failure and raw retention",
+      "reason": "Required section of the dynamic structural selection contract: failure and raw retention."
+    },
+    {
+      "contract": "dynamic_structural_selection",
+      "page": "protocols/sunspec/dynamic-structural-selection-v2.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Acquisition and terminal boundary",
+      "reason": "Required section of the dynamic structural selection contract: acquisition and terminal boundary."
+    },
+    {
+      "contract": "dynamic_structural_selection",
+      "page": "protocols/sunspec/dynamic-structural-selection-v2.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Isolation and no activation",
+      "reason": "Required section of the dynamic structural selection contract: isolation and no activation."
+    },
+    {
+      "contract": "dynamic_structural_selection",
+      "page": "protocols/sunspec/dynamic-structural-selection-v2.md",
+      "section": "## Scope and classification",
+      "kind": "statement",
+      "value": "A `structural_candidate` is a post-payload observation state.",
+      "reason": "Classification of a candidate."
+    },
+    {
+      "contract": "dynamic_structural_selection",
+      "page": "protocols/sunspec/dynamic-structural-selection-v2.md",
+      "section": "## Scope and classification",
+      "kind": "statement",
+      "value": "It is not `admitted`, has no decoder key, emits no typed fact, and does not establish a product or profile.",
+      "reason": "A candidate is not an admission."
+    },
+    {
+      "contract": "dynamic_structural_selection",
+      "page": "protocols/sunspec/dynamic-structural-selection-v2.md",
+      "section": "## Post-payload candidate rule",
+      "kind": "statement",
+      "value": "A `structural_candidate` is considered only after the complete occurrence payload and every ordered source span are present.",
+      "reason": "Candidates are post-payload only."
+    },
+    {
+      "contract": "dynamic_structural_selection",
+      "page": "protocols/sunspec/dynamic-structural-selection-v2.md",
+      "section": "## Post-payload candidate rule",
+      "kind": "statement",
+      "value": "It must never be selected from a header, model identifier, declared length, or any partial payload.",
+      "reason": "Candidates are never selected from partial input."
+    },
+    {
+      "contract": "dynamic_structural_selection",
+      "page": "protocols/sunspec/dynamic-structural-selection-v2.md",
+      "section": "## Post-payload candidate rule",
+      "kind": "statement",
+      "value": "`P` from occurrence-word offset 5 and `C` from occurrence-word offset 6;",
+      "reason": "Count locations."
+    },
+    {
+      "contract": "dynamic_structural_selection",
+      "page": "protocols/sunspec/dynamic-structural-selection-v2.md",
+      "section": "## Post-payload candidate rule",
+      "kind": "statement",
+      "value": "`P` and `C` each in the inclusive range 0 through 65534, excluding `0xffff`",
+      "reason": "Count domains and sentinel."
+    },
+    {
+      "contract": "dynamic_structural_selection",
+      "page": "protocols/sunspec/dynamic-structural-selection-v2.md",
+      "section": "## Post-payload candidate rule",
+      "kind": "statement",
+      "value": "checked `L = 7 + C*(4 + 9*P)`, within the existing isolated extent boundary, with every occurrence word covered by exact ordered source spans.",
+      "reason": "Checked length formula and span coverage."
+    },
+    {
+      "contract": "dynamic_structural_selection",
+      "page": "protocols/sunspec/dynamic-structural-selection-v2.md",
+      "section": "## Post-payload candidate rule",
+      "kind": "statement",
+      "value": "The candidate rule does not enumerate Model 707 lengths and does not create decoder keys for those lengths.",
+      "reason": "No length enumeration or decoder key."
+    },
+    {
+      "contract": "dynamic_structural_selection",
+      "page": "protocols/sunspec/dynamic-structural-selection-v2.md",
+      "section": "## Failure and raw retention",
+      "kind": "statement",
+      "value": "The complete occurrence remains raw-only with its wire order, declared length, ordinal, raw words, and exact source spans.",
+      "reason": "Failure keeps raw evidence."
+    },
+    {
+      "contract": "dynamic_structural_selection",
+      "page": "protocols/sunspec/dynamic-structural-selection-v2.md",
+      "section": "## Acquisition and terminal boundary",
+      "kind": "statement",
+      "value": "A `structural_candidate` does not cause a new request, retry, reconnect, deadline extension, or read-plan change.",
+      "reason": "A candidate changes no acquisition."
+    },
+    {
+      "contract": "dynamic_structural_selection",
+      "page": "protocols/sunspec/dynamic-structural-selection-v2.md",
+      "section": "## Acquisition and terminal boundary",
+      "kind": "statement",
+      "value": "A candidate does not terminate a chain.",
+      "reason": "A candidate has no terminal meaning."
+    },
+    {
+      "contract": "dynamic_structural_selection",
+      "page": "protocols/sunspec/dynamic-structural-selection-v2.md",
+      "section": "## Isolation and no activation",
+      "kind": "statement",
+      "value": "V1 selection, keys, raw outputs, and behavior remain unchanged.",
+      "reason": "V1 isolation."
+    },
+    {
+      "contract": "dynamic_structural_selection",
+      "page": "protocols/sunspec/dynamic-structural-selection-v2.md",
+      "section": "## Isolation and no activation",
+      "kind": "statement",
+      "value": "Models 708 and 709 remain outside this contract and do not become candidates through Model 707 data or structure.",
+      "reason": "Scope is Model 707 only."
+    },
+    {
+      "contract": "dynamic_structural_selection",
+      "page": "protocols/sunspec/dynamic-structural-selection-v2.md",
+      "section": "## Isolation and no activation",
+      "kind": "statement",
+      "value": "This contract creates no operation, write, send authority, vendor activation, catalog activation, transport behavior, gateway behavior, or live I/O.",
+      "reason": "No operation, write or activation."
+    },
+    {
+      "contract": "dynamic_structural_selection",
+      "page": "protocols/sunspec/dynamic-structural-selection-v2.md",
+      "section": null,
+      "kind": "forbidden",
+      "value": "candidate creates a decoder key|candidate is admitted|candidate emits a typed fact|candidate causes a new request|candidate terminates a chain|Model 708[^.]*candidate|Model 709[^.]*candidate",
+      "reason": "The selection contract must not exceed its docs-only boundary: no decoder key, admission, typed fact, request or termination, and no Model 708 or 709 candidate."
+    }
+  ]
+}

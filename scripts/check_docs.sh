@@ -154,193 +154,40 @@ check_private_function_contract() {
   done
 }
 
-check_sunspec_v2_contract() {
-  local document="$1"
-  local contradiction='sunspec\.models\.candidate\.v2|Common[[:space:]]+1/65[^.]*V2 decoder|V2 runtime catalog registration is enabled|V2 automatic acquisition is enabled|trailing spaces[^.]*trimmed'
+sunspec_v2_page='protocols/sunspec/read-only-core-v2.md'
+sunspec_licensing_page='protocols/applicability-and-licensing.md'
+sunspec_v1_core_page='protocols/sunspec/read-only-core-v1.md'
+sunspec_v1_families_page='protocols/sunspec/read-only-core-v1-model-families.md'
+sunspec_nested_layout_page='protocols/sunspec/nested-layout-contract-v1.md'
+sunspec_der_trip_lv_template_page='protocols/sunspec/der-trip-lv-template-v2.md'
+sunspec_der_trip_lv_projection_page='protocols/sunspec/der-trip-lv-typed-fact-projection-v2.md'
+sunspec_dynamic_selection_page='protocols/sunspec/dynamic-structural-selection-v2.md'
+sunspec_contracts='v2_contract,v2_licensing,licensing_page,v1_core_page,v1_model_families,nested_layout,der_trip_lv_template,der_trip_lv_projection,dynamic_structural_selection'
 
-  check_public_protocol "$document"
-  grep -Fqx '## Schema revision' "$document"
-  grep -Fqx '## Model scope' "$document"
-  grep -Fqx '## Model 714 geometry' "$document"
-  grep -Fqx '## Value interpretation boundary' "$document"
-  grep -Fqx '## Offline implementation boundary' "$document"
-  grep -Fq '`sunspec.models@90b4a331-v2`' "$document"
-  grep -Fq 'Common Model 1 with declared length 66 is the' "$document"
-  grep -Fq 'only V2 Common tuple.' "$document"
-  grep -Fq 'Common Model 1 length 65 is a V1 compatibility tuple and' "$document"
-  grep -Fq 'remains opaque under V2.' "$document"
-	grep -Fq 'Models 701, 702, 703,' "$document"
-	grep -Fq '707, 708, 709, 713, 714, 715, 802, 803, 804, 805, 806, 807, 808, and 809, and the terminal block.' "$document"
-	grep -Fq '708, 709, 713, 714, 715, 802, 803, 804, 805, 806, 807, 808, and 809.' "$document"
-  grep -Fq '| 1 | 66 | Common device information |' "$document"
-  grep -Fq '| 701 | 153 | DER AC measurement |' "$document"
-  grep -Fq '| 702 | 50 | DER capacity |' "$document"
-	grep -Fq '| 703 | 17 | DER enter-service observed state |' "$document"
-	grep -Fq '| 707 | `7 + NCrvSet*(4 + 9*NPt)` | DER Trip LV nested geometry, raw-only quarantine |' "$document"
-	grep -Fq '| 708 | `7 + NCrvSet*(4 + 9*NPt)` | DER Trip HV nested geometry, raw-only quarantine |' "$document"
-	grep -Fq '| 709 | `7 + NCrvSet*(4 + 12*NPt)` | DER Trip LF nested geometry, raw-only quarantine |' "$document"
-  grep -Fq '| 713 | 7 | DER storage capacity |' "$document"
-  grep -Fq '| 714 | `18 + 25*NPrt` | DER DC measurement with repeated ports |' "$document"
-	grep -Fq '| 715 | 7 | DER controller observed state |' "$document"
-	grep -Fq '| 802 | 62 | BESS base observed state |' "$document"
-	grep -Fq '| 803 | `26 + 32*NStr` | BESS bank observed state with repeated strings |' "$document"
-	grep -Fq '| 804 | `46 + 16*NMod` | BESS string observed state with repeated modules |' "$document"
-	grep -Fq '| 805 | 42 | BESS module observed state |' "$document"
-	grep -Fq '| 806 | 1 | Flow battery structural observed state |' "$document"
-	grep -Fq '| 807 | 34 | Flow battery string observed state |' "$document"
-	grep -Fq '| 808 | 1 | Flow battery module structural observed state |' "$document"
-	grep -Fq '| 809 | 1 | Flow battery stack structural observed state |' "$document"
-  grep -Fq 'Models 703 and 715 are control-observability only.' "$document"
-  grep -Fq 'No point in either model creates a write method, send authority, operation admission,' "$document"
-	grep -Fq 'Models 704 through 706 and 710 through 712 remain outside this V2 wave and remain opaque.' "$document"
-	grep -Fqx '## DER Trip nested geometry' "$document"
-	grep -Fq '`NPt` is at payload-register offset' "$document"
-	grep -Fq '3 and absolute model word 5.' "$document"
-	grep -Fq '`NCrvSet` is at payload-register offset 4 and' "$document"
-	grep -Fq 'absolute model word 6.' "$document"
-	grep -Fq 'are each 0 through 65534; zero is valid.' "$document"
-	grep -Fq '`Crv[i].MustTrip.Pt[j]`, `Crv[i].MayTrip.Pt[j]`, and' "$document"
-	grep -Fq '`Crv[i].MomCess.Pt[j]` are distinct nested paths.' "$document"
-	grep -Fq 'must not infer `P` or `C` from' "$document"
-	grep -Fq '`L`, `ActPt`, or trailing words.' "$document"
-	grep -Fq 'For a model-specific point span `S`, the zero-based payload offset of' "$document"
-	grep -Fq '`Crv[i]` is `7 + (i-1)*(4 + 3*S*P)`.' "$document"
-	grep -Fq '`MustTrip.ActPt`, `MayTrip.ActPt`, and `MomCess.ActPt` are respectively at' "$document"
-	grep -Fq 'offsets `+1`, `+2 + S*P`, and `+3 + 2*S*P`.' "$document"
-	grep -Fq '`Pt[j]` begins one data register after `ActPt` plus `(j-1)*S`.' "$document"
-	grep -Fq 'Models 707, 708, and 709 are inventory-known raw-only quarantine blocks.' "$document"
-	grep -Fq 'separate occurrence-aware nested-layout contract is required before any typed' "$document"
-	grep -Fq 'Every field in Models 707, 708, and 709, including `Ena`, `AdptCrvReq`,' "$document"
-	grep -Fq 'No field creates a write method, send authority, operation admission,' "$document"
-	grep -Fqx '## DER Trip model-specific observed fields' "$document"
-	grep -Fq 'Model 707 has `V_SF` and `Tms_SF`. Every nested `Pt[j]` is `V:uint16` scaled by' "$document"
-	grep -Fq '`V_SF` followed by `Tms:uint32` scaled by `Tms_SF`, consuming three data' "$document"
-	grep -Fq '`L = 7 + C*(4 + 9*P)`.' "$document"
-	grep -Fq 'Model 708 has the same source-derived point spans as Model 707:' "$document"
-	grep -Fq 'consuming three data registers per `Pt[j]`. Its exact declared data-register' "$document"
-	grep -Fq 'Model 709 has `Hz_SF` and `Tms_SF`. Every nested `Pt[j]` is `Hz:uint32` scaled' "$document"
-	grep -Fq 'by `Hz_SF` followed by `Tms:uint32` scaled by `Tms_SF`, consuming four data' "$document"
-	grep -Fq '`L = 7 + C*(4 + 12*P)`.' "$document"
-	grep -Fq 'For Models 707 and 708, `S` is 3; for Model 709, `S` is 4.' "$document"
-	grep -Fq 'Model 802 is a fixed-geometry battery base block with declared length 62.' "$document"
-	grep -Fq 'It occupies 64 total words including its header and has no repeated group.' "$document"
-	grep -Fq 'Every Model 802 field is observed state only and is `NO_SEND`.' "$document"
-	grep -Fq 'No Model 802 field creates a write method, operation dispatch, control behavior,' "$document"
-	grep -Fq 'Model 801 remains excluded as deprecated.' "$document"
-	grep -Fq 'Models 806 through 809 remain separately bounded flow battery structural leaves.' "$document"
-  grep -Fq 'Model 714 has data-register length `18 + 25*NPrt`' "$document"
-  grep -Fq 'bounded from 0 through 2620' "$document"
-  grep -Fq 'unavailable, an unavailable sentinel, overflows, or does not match' "$document"
-  grep -Fq 'the declared length, Model 714 is a raw-only opaque block.' "$document"
-	grep -Fqx '## BESS bank and string geometry' "$document"
-	grep -Fq 'Model 803 has data-register length `26 + 32*NStr`.' "$document"
-	grep -Fq '`NStr` is at payload-register' "$document"
-	grep -Fq 'offset 0. It is bounded from 0 through 2047' "$document"
-	grep -Fq 'bounded from 0 through 2047' "$document"
-	grep -Fq 'Each repeated string consumes' "$document"
-	grep -Fq 'exactly 32 data registers.' "$document"
-	grep -Fq 'Model 804 has data-register length `46 + 16*NMod`.' "$document"
-	grep -Fq '`NMod` is at payload-register' "$document"
-	grep -Fq 'offset 1. It is bounded from 0 through 4093' "$document"
-	grep -Fq 'bounded from 0 through 4093' "$document"
-	grep -Fq 'Each repeated module consumes' "$document"
-	grep -Fq 'exactly 16 data registers.' "$document"
-	grep -Fq 'At NMod=4093, Model 804 has declared data-register length 65534 and occupies' "$document"
-	grep -Fq '65536 words including header.' "$document"
-	grep -Fq 'The maximum is valid only for an isolated synthetic offline occurrence.' "$document"
-	grep -Fq 'It must not be used as a terminal-qualified live chain or acquisition map.' "$document"
-	grep -Fq 'Maximum provenance retains fragmented bounded source spans whose cumulative extent is exactly' "$document"
-	grep -Fq '65536 words.' "$document"
-	grep -Fq 'source-span extent overrun makes the' "$document"
-	grep -Fq 'block raw-only opaque with zero decoded facts.' "$document"
-	grep -Fq 'No count is inferred from trailing' "$document"
-	grep -Fq 'model-local stable index and its exact raw' "$document"
-	grep -Fq 'Model 803 does not infer Model 804 child occurrences' "$document"
-	grep -Fq 'Model 804 does not infer a Model 803 parent' "$document"
-	grep -Fq 'including `SetEna`, `SetCon`, and any upstream read/write field, is observed' "$document"
-	grep -Fq 'No Model 803 or Model 804 field creates a write method, send authority,' "$document"
-	grep -Fq 'Model 805 has fixed data-register length 42 and has no repeated group.' "$document"
-	grep -Fq '`StrIdx` and `ModIdx` are observed fields only.' "$document"
-	grep -Fq 'Neither establishes any inferred relationship to Model 803 or Model 804.' "$document"
-	grep -Fq 'Every Model 805 field is observed state only and is `NO_SEND`.' "$document"
-	grep -Fq 'No Model 805 field creates a write method, send authority, operation admission,' "$document"
-	grep -Fq 'Model 806 has fixed data-register length 1 and no effective repeated group.' "$document"
-	grep -Fq '`BatTBD` remains uninterpreted structural observed state.' "$document"
-	grep -Fq 'Model 806 does not infer a relationship to Models 803, 804, 805, or 807 through 809.' "$document"
-	grep -Fq 'Every Model 806 field is observed state only and is `NO_SEND`.' "$document"
-	grep -Fq 'No Model 806 field creates a write method, send authority, operation admission,' "$document"
-	grep -Fq 'Model 807 has fixed data-register length 34 and no effective repeated group.' "$document"
-	grep -Fq '`Idx` and `NMod` remain observed structural fields only.' "$document"
-	grep -Fq 'Model 807 does not infer a relationship to Models 806, 808, or 809.' "$document"
-	grep -Fq 'Every Model 807 field, including control-adjacent zero-count group names, is observed state only and is `NO_SEND`.' "$document"
-	grep -Fq 'No Model 807 field creates a write method, send authority, operation admission,' "$document"
-	grep -Fq 'Model 808 has fixed data-register length 1 and no effective repeated group.' "$document"
-	grep -Fq '`ModuleTBD` remains uninterpreted structural observed state.' "$document"
-	grep -Fq 'The declared stack group has count zero and is not materialized.' "$document"
-	grep -Fq 'Model 808 does not infer a relationship to Models 803 through 807 or 809.' "$document"
-	grep -Fq 'Every Model 808 field, including the zero-count `StackTBD` group name, is observed state only and is `NO_SEND`.' "$document"
-	grep -Fq 'No Model 808 field creates a write method, send authority, operation admission,' "$document"
-	grep -Fq 'Model 809 has fixed data-register length 1 and no effective repeated group.' "$document"
-	grep -Fq '`StackTBD` remains uninterpreted structural observed state.' "$document"
-	grep -Fq 'The declared cell group has count zero and is not materialized.' "$document"
-	grep -Fq 'Model 809 does not infer a relationship to Models 803 through 808.' "$document"
-	grep -Fq 'Every Model 809 field, including the zero-count `CellTBD` group name, is observed state only and is `NO_SEND`.' "$document"
-	grep -Fq 'No Model 809 field creates a write method, send authority, operation admission,' "$document"
-  grep -Fq 'raw-only opaque block' "$document"
-  grep -Fq 'four big-endian words' "$document"
-  grep -Fq 'uses four big-endian words; zero is a valid value and all one-bits means not' "$document"
-  grep -Fq 'implemented. Exact unsigned scaling must not pass through an `int64` or' "$document"
-  grep -Fq 'Exact unsigned scaling must not pass through an `int64` or' "$document"
-  grep -Fq 'floating-point representation, truncate, or round.' "$document"
-  grep -Fq 'with word `0x0080` followed only by zero padding is a valid empty string.' "$document"
-  grep -Fq 'all-zero string extent is unavailable. Otherwise, the first NUL requires a' "$document"
-  grep -Fq 'zero-only tail.' "$document"
-  grep -Fq 'Spaces before the terminator are data and are not trimmed' "$document"
-  grep -Fq 'This key is separate from `sunspec.models@7abdf898-v1`. V1 and V2 decoder' "$document"
-  grep -Fq 'definitions and caches are revision-isolated.' "$document"
-  grep -Fq 'V1 outputs remain unchanged.' "$document"
-  grep -Fq 'synthetic, non-vendor fixtures' "$document"
-  grep -Fq 'This contract permits a separate offline registry implementation to use the V2' "$document"
-  grep -Fq 'No standard profile admission, runtime' "$document"
-  grep -Fq 'catalog registration, vendor admission, automatic acquisition, telemetry' "$document"
-  grep -Fq 'publication, capability admission, or consumer exposure may be derived from' "$document"
-  if grep -Ein "$contradiction" "$document"; then
-    echo 'SunSpec V2 contract contradicts its offline-only boundary' >&2
-    return 1
-  fi
+# The SunSpec contract rules live in scripts/sunspec_contract_rules.json, with
+# the former top-level lines of the applicability and V1 core pages. The first
+# argument selects comma-separated contracts; each further argument maps a
+# repository page to the document checked in its place.
+check_sunspec_contract() {
+  local contracts="$1"
+  shift
+  local root
+  root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+  python3 "$root/scripts/check_sunspec_contract.py" "$root/scripts/sunspec_contract_rules.json" "$contracts" "$@"
+}
+
+check_sunspec_v2_contract() {
+  check_public_protocol "$1" || return 1
+  check_sunspec_contract v2_contract "$sunspec_v2_page=$1"
 }
 
 check_sunspec_v2_licensing() {
-  local document="$1"
-
-	grep -Fq '| `sunspec.der.readonly.v2` | Common 1/66 plus Models 701/153, 702/50, 703/17, 713/7, 714 variable geometry, 715/7, 802/62, 803 variable geometry, and 804 variable geometry at the exact pinned V2 schema revision | public Apache-2.0 model catalogue and independently stated interoperability facts | offline decoder contract; runtime, vendor, and catalog admission default denied |' "$document"
-  grep -Fq '`90b4a331dcca1d6eac69c1bead952fddcc5852e0`' "$document"
-  grep -Fq 'That upstream license applies to' "$document"
-  grep -Fq 'the catalogue input.' "$document"
+  check_sunspec_contract v2_licensing "$sunspec_licensing_page=$1"
 }
 
 check_sunspec_v1_model_families_contract() {
-  local document="$1"
-
-  check_public_protocol "$document"
-  grep -Fqx '## Scope' "$document"
-  grep -Fqx '## Decoder Catalog Boundary' "$document"
-  grep -Fqx '## Inverter Families' "$document"
-  grep -Fqx '## Inverter Extensions' "$document"
-  grep -Fqx '## Meter Families' "$document"
-  grep -Fqx '## Environmental Families' "$document"
-  grep -Fqx '## Safety and Non-Claims' "$document"
-  grep -Fq 'identifiers and 29 exact decoder tuples' "$document"
-  grep -Fq 'length 65 is a compatibility tuple' "$document"
-  grep -Fq 'Models 101, 102, and 103 use integer values with declared scale factors.' "$document"
-  grep -Fq 'Models 111, 112, and 113 use IEEE FLOAT values.' "$document"
-  grep -Fq 'Models 123 and 124 are observed state only.' "$document"
-  grep -Fq 'identifiers or lengths remain opaque blocks.' "$document"
-  grep -Fq 'does not create a product, profile, or support' "$document"
-  if grep -Ein 'sunspec\.models\.candidate\.v2|V2 registry|PROFILE_ADMITTED|write authority' "$document"; then
-    echo 'SunSpec V1 model-families reference exceeds the V1 docs-only boundary' >&2
-    return 1
-  fi
+  check_public_protocol "$1" || return 1
+  check_sunspec_contract v1_model_families "$sunspec_v1_families_page=$1"
 }
 
 check_fronius_qualification_readiness() {
@@ -390,157 +237,23 @@ check_fronius_qualification_readiness() {
 }
 
 check_sunspec_nested_layout_contract() {
-  local document="$1"
-
-  check_public_protocol "$document"
-  for heading in \
-    'Scope' \
-    'Template selection' \
-    'Per-occurrence validation' \
-    'Hierarchical paths and offsets' \
-    'Bounds and allocation' \
-    'Failure and isolation' \
-    'No-send boundary' \
-    'Bounded examples' \
-    'Compatibility'; do
-    grep -Fqx "## $heading" "$document"
-  done
-  grep -Fq 'An immutable schema template is selected only by the exact schema revision and model identifier.' "$document"
-  grep -Fq 'A declared length never selects a template and is never an expanded-layout cache key.' "$document"
-  grep -Fq 'A layout is instantiated for one occurrence only after every documented count and its declared length validate together.' "$document"
-  grep -Fq 'It must not infer counts from a declared length, an activation point, or trailing words.' "$document"
-  grep -Fq '`Crv[2].MustTrip.Pt[5].Hz` is a hierarchical path, not a flattened repeat index.' "$document"
-  grep -Fq 'Offsets are relative to the occurrence and map each decoded point to exact source spans.' "$document"
-  grep -Fq 'Checked arithmetic applies before every extent, aggregate, fact-count, or allocation decision.' "$document"
-  grep -Fq 'Invalid geometry remains raw-only with zero typed facts.' "$document"
-  grep -Fq 'V1 templates, caches, and outputs remain isolated and unchanged.' "$document"
-  grep -Fq 'This contract creates no runtime, vendor, transport, gateway, live-I/O, write, send, or operation behavior.' "$document"
-  grep -Fq 'Models 707, 708, and 709 are bounded examples only and do not define Model 710 or any other model.' "$document"
+  check_public_protocol "$1" || return 1
+  check_sunspec_contract nested_layout "$sunspec_nested_layout_page=$1"
 }
 
 check_sunspec_der_trip_lv_template_v2() {
-  local document="$1"
-  local contradiction='decoder|catalog|admission|support|runtime|(^|[^0-9])708([^0-9]|$)|(^|[^0-9])709([^0-9]|$)'
-
-  check_public_protocol "$document"
-  for heading in \
-    'Scope and isolation' \
-    'Template identity and top-level map' \
-    'Nested curve layout' \
-    'Per-occurrence validation and bounds' \
-    'Failure boundary' \
-    'Observed-state boundary'; do
-    grep -Fqx "## $heading" "$document"
-  done
-  grep -Fq 'The template identity is exactly schema revision `sunspec.models@90b4a331-v2` and Model 707.' "$document"
-  grep -Fq '`NPt` and `NCrvSet` are at occurrence-word offsets 5 and 6.' "$document"
-  grep -Fq '`P` and `C` each accept 0 through 65534; `0xffff` is unavailable and zero is valid.' "$document"
-  grep -Fq '`L = 7 + C*(4 + 9*P)`.' "$document"
-  grep -Fq 'The current isolated offline boundary requires `L <= 65534`.' "$document"
-  grep -Fq '`Crv[i].MustTrip.Pt[j].V` and `Crv[i].MustTrip.Pt[j].Tms` are separate paths.' "$document"
-  grep -Fq '`V` is one `uint16` word scaled by `V_SF`; `Tms` is two big-endian `uint32` words scaled by `Tms_SF`.' "$document"
-  grep -Fq 'Invalid geometry remains raw-only with zero typed facts and exact raw spans.' "$document"
-  grep -Fq 'Every field is observed state only and is `NO_SEND`.' "$document"
-  if grep -Ein "$contradiction" "$document"; then
-    echo 'SunSpec Model 707 template contract exceeds its docs-only boundary' >&2
-    return 1
-  fi
+  check_public_protocol "$1" || return 1
+  check_sunspec_contract der_trip_lv_template "$sunspec_der_trip_lv_template_page=$1"
 }
 
 check_sunspec_der_trip_lv_typed_fact_projection_v2() {
-  local document="$1"
-  local contradiction='projection is admitted|projection has a decoder key|projection is a `SunSpecDecodedChain`|projection authorizes a profile|projection permits sends|projection writes to a device|projection creates an operation|projection creates live-system behavior'
-
-  check_public_protocol "$document"
-  for heading in \
-    'Scope and non-emission' \
-    'Public offline projection API' \
-    'Stable identity and nested paths' \
-    'Requiredness and observation state' \
-    'Types, units, and symbols' \
-    'Geometry, provenance, and isolation'; do
-    grep -Fqx "## $heading" "$document"
-  done
-  grep -Fq 'It does not change the current raw-only behavior,' "$document"
-  grep -Fq 'Every observation in this contract is `NO_SEND`' "$document"
-  grep -Fq '`ProjectSunSpecStructuralFacts(snapshot SunSpecChainSnapshot)` accepts exactly one immutable' "$document"
-  grep -Fq '`SunSpecChainSnapshot` and returns zero or more immutable' "$document"
-  grep -Fq '`SunSpecStructuralProjection` records.' "$document"
-  grep -Fq '`WireKey()`, `SchemaRevision()`, `Ordinal()`, `RawWords()`,' "$document"
-  grep -Fq '`SourceSpans()`, and `Facts()`.' "$document"
-  grep -Fq 'It has no `DecoderKey()`, admission, qualification, topology, or' "$document"
-  grep -Fq '`SunSpecDecodedChain` identity.' "$document"
-  grep -Fq 'Only a complete V2 Model 707 `structural_candidate` may produce a projection.' "$document"
-  grep -Fq 'It must not accept or derive a projection from `SunSpecDecodedChain` or' "$document"
-  grep -Fq '`SunSpecQualificationObservation`.' "$document"
-  grep -Fq 'It must not recompute structural state from a wire key, words, spans, or' "$document"
-  grep -Fq 'declared length; it uses only the retained private candidate sidecar.' "$document"
-  grep -Fq 'Candidate absence or malformed structural geometry produces no projection and zero facts.' "$document"
-  grep -Fq 'does not modify an occurrence, chain snapshot, or qualification-observation JSON.' "$document"
-  grep -Fq 'Repeated Model 707 occurrences produce independent projections.' "$document"
-  grep -Fq 'V1, Model 708, and Model 709 produce no projection.' "$document"
-  grep -Fq 'does not change acquisition, queueing, retry, deadline, limit, or terminal behavior.' "$document"
-  grep -Fq 'A FieldID names a field template and never embeds an occurrence, curve, or' "$document"
-  grep -Fq '`sunspec.der.v2.707.Crv.MustTrip.Pt.V` and' "$document"
-  grep -Fq '`Crv[i].MustTrip.Pt[j].V` and `Crv[i].MustTrip.Pt[j].Tms`.' "$document"
-  grep -Fq '`sunspec.der.v2.707.Crv.MayTrip.Pt.V` and' "$document"
-  grep -Fq '`Crv[i].MayTrip.Pt[j].V` and `Crv[i].MayTrip.Pt[j].Tms`.' "$document"
-  grep -Fq '`sunspec.der.v2.707.Crv.MomCess.Pt.V` and' "$document"
-  grep -Fq '`Crv[i].MomCess.Pt[j].V` and `Crv[i].MomCess.Pt[j].Tms`.' "$document"
-  grep -Fq 'For a valid occurrence, every listed template field is an observed fact with' "$document"
-  grep -Fq '`Required=false`.' "$document"
-  grep -Fq '`NPt` and `NCrvSet` accept zero and reject `0xffff` as unavailable.' "$document"
-  grep -Fq 'makes the entire occurrence raw-only with zero typed facts.' "$document"
-  grep -Fq 'A nested `V` has unit' "$document"
-  grep -Fq '`VNomPct`; a nested `Tms` has unit `Secs`.' "$document"
-  grep -Fq '`Ena`: `0=DISABLED`, `1=ENABLED`; `AdptCrvRslt`: `0=IN_PROGRESS`,' "$document"
-  grep -Fq 'An otherwise valid' "$document"
-  grep -Fq 'enum number remains its numeric observation with no substituted symbol.' "$document"
-  grep -Fq 'A missing scale binding, unavailable scale, or invalid' "$document"
-  grep -Fq 'but produces no scaled value.' "$document"
-  grep -Fq 'possibly fragmented raw source spans for that range.' "$document"
-  grep -Fq 'Malformed geometry produces zero typed facts and preserves the complete' "$document"
-  if grep -Ein "$contradiction" "$document"; then
-    echo 'SunSpec Model 707 typed-fact projection contract exceeds its docs-only boundary' >&2
-    return 1
-  fi
+  check_public_protocol "$1" || return 1
+  check_sunspec_contract der_trip_lv_projection "$sunspec_der_trip_lv_projection_page=$1"
 }
 
 check_sunspec_dynamic_structural_selection_v2() {
-  local document="$1"
-  local contradiction='candidate creates a decoder key|candidate is admitted|candidate emits a typed fact|candidate causes a new request|candidate terminates a chain|Model 708[^.]*candidate|Model 709[^.]*candidate'
-
-  check_public_protocol "$document"
-  for heading in \
-    'Scope and classification' \
-    'Post-payload candidate rule' \
-    'Failure and raw retention' \
-    'Acquisition and terminal boundary' \
-    'Isolation and no activation'; do
-    grep -Fqx "## $heading" "$document"
-  done
-  grep -Fq 'A `structural_candidate` is a' "$document"
-  grep -Fq 'post-payload observation state.' "$document"
-  grep -Fq 'It is not `admitted`, has no decoder key,' "$document"
-  grep -Fq 'A `structural_candidate` is considered only after the complete occurrence' "$document"
-  grep -Fq 'It must never be selected' "$document"
-  grep -Fq '`P` from occurrence-word offset 5 and `C` from occurrence-word offset 6;' "$document"
-  grep -Fq '`P` and `C` each in the inclusive range 0 through 65534, excluding' "$document"
-  grep -Fq 'checked `L = 7 + C*(4 + 9*P)`' "$document"
-  grep -Fq 'The candidate rule does not enumerate Model' "$document"
-  grep -Fq 'and does not create decoder keys for those lengths.' "$document"
-  grep -Fq 'The complete occurrence remains raw-only with its' "$document"
-  grep -Fq 'A `structural_candidate` does not cause a' "$document"
-  grep -Fq 'A candidate does not terminate a chain.' "$document"
-  grep -Fq 'V1 selection, keys, raw outputs, and behavior remain unchanged.' "$document"
-  grep -Fq 'Models 708 and' "$document"
-  grep -Fq '709 remain outside this contract' "$document"
-  grep -Fq 'do not become candidates through Model' "$document"
-  grep -Fq 'This contract creates no operation, write, send authority,' "$document"
-  if grep -Ein "$contradiction" "$document"; then
-    echo 'SunSpec dynamic structural selection contract exceeds its docs-only boundary' >&2
-    return 1
-  fi
+  check_public_protocol "$1" || return 1
+  check_sunspec_contract dynamic_structural_selection "$sunspec_dynamic_selection_page=$1"
 }
 
 check_x2_publication() {
@@ -890,19 +603,20 @@ check_tesla_read_acquisition "$tesla_read_acquisition_spec"
 
 check_private_function_contract "$private_spec"
 
-grep -Fqx '## Publication boundary' 'protocols/applicability-and-licensing.md'
-grep -Fqx '## Admission rules' 'protocols/applicability-and-licensing.md'
-grep -Fqx '## Initial model catalog' 'protocols/sunspec/read-only-core-v1.md'
-check_sunspec_v1_model_families_contract 'protocols/sunspec/read-only-core-v1-model-families.md'
-check_sunspec_v2_contract 'protocols/sunspec/read-only-core-v2.md'
-check_sunspec_nested_layout_contract "$nested_layout_spec"
-check_sunspec_der_trip_lv_template_v2 "$der_trip_lv_template_spec"
-check_sunspec_v2_licensing 'protocols/applicability-and-licensing.md'
+check_public_protocol "$der_trip_lv_template_spec"
+check_public_protocol "$der_trip_lv_projection_spec"
+check_public_protocol "$dynamic_structural_selection_spec"
+check_sunspec_contract "$sunspec_contracts" \
+  "$sunspec_v2_page=$sunspec_v2_page" "$sunspec_licensing_page=$sunspec_licensing_page" \
+  "$sunspec_v1_core_page=$sunspec_v1_core_page" "$sunspec_v1_families_page=$sunspec_v1_families_page" \
+  "$sunspec_nested_layout_page=$nested_layout_spec" \
+  "$sunspec_der_trip_lv_template_page=$der_trip_lv_template_spec" \
+  "$sunspec_der_trip_lv_projection_page=$der_trip_lv_projection_spec" \
+  "$sunspec_dynamic_selection_page=$dynamic_structural_selection_spec"
 grep -Fqx '## Exact chain geometry' 'protocols/fronius/sunspec-float-v1.md'
 check_fronius_qualification_readiness "$fronius_qualification_spec"
 check_huawei_qualification_readiness "$huawei_qualification_spec"
 check_huawei_inverter_battery_disposition 'protocols/huawei/inverter-battery-readonly-v1.md'
-grep -Fq '| `huawei.sun2000.readonly.v1` / `huawei.luna2000.readonly.v1` | no covered model family or firmware range; SUN2000 inverter and optional LUNA2000 battery | vendor-copyright-inspection-only | `NO_ADMISSIBLE_PROFILE`; default denied, no register map, no decoder |' 'protocols/applicability-and-licensing.md'
 grep -Fqx '## SmartLogger candidate' 'protocols/huawei/gateway-readonly-v1.md'
 grep -Fqx '## S-Dongle candidate' 'protocols/huawei/gateway-readonly-v1.md'
 grep -Fqx '## EMMA candidate' 'protocols/huawei/gateway-readonly-v1.md'
