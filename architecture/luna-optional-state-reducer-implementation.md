@@ -26,6 +26,8 @@ denied profile disposition.
 
 ## Reviewed API and implementation boundary
 
+The Go identifiers named on this page are declared in package `huawei` of `helianthus-modbusreg` (import path `github.com/Project-Helianthus/helianthus-modbusreg/huawei`).
+
 `ReduceLunaOptionalState(prior LunaOptionalState, in LunaOptionalInput) LunaOptionalState`
 is an explicitly called pure reducer of caller-supplied documentary observations.
 Its zero state is `unknown`.

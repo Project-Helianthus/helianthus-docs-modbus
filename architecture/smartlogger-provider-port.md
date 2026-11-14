@@ -24,6 +24,8 @@ Nothing in this API is stable before Helianthus 1.0.
 
 ## API and ownership
 
+The Go identifiers named on this page are declared in package `huawei` of `helianthus-modbusreg` (import path `github.com/Project-Helianthus/helianthus-modbusreg/huawei`).
+
 `I17NewSmartloggerProvider(identity SmartloggerInventoryContext,
 limits SmartloggerOfflineInventoryLimits, clock func() time.Time,
 reader SmartloggerOfflineInventoryReader)

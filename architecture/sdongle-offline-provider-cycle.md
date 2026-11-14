@@ -31,6 +31,8 @@ offline evaluation cannot admit a profile.
 
 ## Family-local seam and supplied records
 
+The Go identifiers named on this page are declared in package `huawei` of `helianthus-modbusreg` (import path `github.com/Project-Helianthus/helianthus-modbusreg/huawei`).
+
 One explicit invocation requests one `SDongleRouteKey` and supplies a nonnil
 offline lookup callback. The callback accepts that requested key and the
 invocation's cancellation/deadline context and returns one `SDongleRoutePlan`
@@ -45,7 +47,7 @@ registration or admission. It cannot resume a stopped qualification. eeBUS
 output remains driver-owned.
 
 Existing native inputs are `SDongleRouteKey`, `SDongleRouteSelection`,
-`SDongleChildRoute`, `SDongleRoutePlan`, `HuaweiSDongleOfflineObservation`,
+`SDongleChildRoute`, `SDongleRoutePlan`, `huawei.SDongleOfflineObservation`,
 `SDongleRouteEvidence`, `SDongleRouteReference` and `SDongleRouteBounds`.
 A plan retains `Key`, `Observation`, `Evidence`, `Bounds`, `TimedOut` and
 `QualificationStopped`. The component result is `SDongleRouteDecision`, with

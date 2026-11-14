@@ -19,12 +19,14 @@ records insufficient evidence and a hard stop, not successful identification.
 Its completed qualification cannot be resumed by this proposal. A future
 qualification needs fresh bounded read-only evidence under that disposition.
 
-The [offline observation evaluator](https://github.com/Project-Helianthus/helianthus-modbusreg/blob/main/huawei_sdongle_observation.go)
+The [offline observation evaluator](https://github.com/Project-Helianthus/helianthus-modbusreg/blob/main/huawei/huawei_sdongle_observation.go)
 checks already-decoded observations without transport and always returns a
 default-denied result. Its input checks include unit, exact model/firmware,
 protocol baseline, completed search, equal before/after sequence and capacity.
 An offline match proves only acceptance by that evaluator, never qualification
 or runtime admission.
+
+The offline observation evaluator, `EvaluateHuaweiSDongleOfflineObservation`, is declared in package `huawei` of `helianthus-modbusreg` (import path `github.com/Project-Helianthus/helianthus-modbusreg/huawei`).
 
 There is a current source discrepancy: the evaluator also accepts the exact
 tuple which the native contract and qualification disposition keep documentary

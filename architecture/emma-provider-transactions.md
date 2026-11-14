@@ -36,6 +36,8 @@ a local identity match cannot bypass a conflicting or failed class result.
 
 ## Proposed inputs, outputs and integration seam
 
+The Go identifiers named on this page are declared in package `huawei` of `helianthus-modbusreg` (import path `github.com/Project-Helianthus/helianthus-modbusreg/huawei`).
+
 The later `helianthus-modbusreg` integration seam composes the existing
 transport-free evaluator and parser, rather than replacing their native rules:
 
@@ -180,8 +182,8 @@ missing and zero. Replacement of P cannot mutate evidence owned by Q.
 
 Manual review of every proposed input/output, table row and synthetic case
 uses the two canonical pages above and these current implementation seams:
-[offline identity evaluator](https://github.com/Project-Helianthus/helianthus-modbusreg/blob/main/huawei_emma.go)
-and [offline inventory input/parser](https://github.com/Project-Helianthus/helianthus-modbusreg/blob/main/huawei_emma_inventory.go).
+[offline identity evaluator](https://github.com/Project-Helianthus/helianthus-modbusreg/blob/main/huawei/huawei_emma.go)
+and [offline inventory input/parser](https://github.com/Project-Helianthus/helianthus-modbusreg/blob/main/huawei/huawei_emma_inventory.go).
 The code establishes offline signatures and default denial; it does not prove
 transaction orchestration, immutable transport storage, lifecycle fencing,
 retry enforcement or consumer parity. Guard acquisition remains unknown.

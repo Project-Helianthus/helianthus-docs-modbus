@@ -40,9 +40,11 @@ requires behavior and signature agreement with the reviewed contract.
 
 ## Proposed seam and finite work
 
+The Go identifiers named on this page are declared in package `huawei` of `helianthus-modbusreg` (import path `github.com/Project-Helianthus/helianthus-modbusreg/huawei`).
+
 The seam is family-local and offline. It accepts a nonnil inventory callback
 whose logical input is a frozen `SmartloggerInventoryPlan` value and whose
-logical return is `HuaweiSmartLoggerOfflineInventoryInput` or an error.
+logical return is `huawei.SmartLoggerOfflineInventoryInput` or an error.
 Cancellation signaling and the exact Go signature require implementation review;
 this is not a declaration that a new exported API exists. The callback consumes
 caller-supplied records only, with no transport, discovery, acquisition owner or

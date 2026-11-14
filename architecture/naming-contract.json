@@ -1,5 +1,5 @@
 {
-  "scope": "HuaweiSUN2000MonitoringProfile decoded fields; inventory is partial",
+  "scope": "huawei.SUN2000MonitoringProfile decoded fields; inventory is partial",
   "rows": [
     {
       "current": "pv_string_voltage",
