@@ -29,6 +29,8 @@ supported family members or qualification.
 
 ## API and bounds
 
+The Go identifiers named on this page are declared in package `huawei` of `helianthus-modbusreg` (import path `github.com/Project-Helianthus/helianthus-modbusreg/huawei`).
+
 ```go
 type I21SDongleProvider interface {
     I21Refresh(context.Context, SDongleRouteKey, time.Time) (SDongleOfflineResult, error)

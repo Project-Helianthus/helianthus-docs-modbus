@@ -27,6 +27,8 @@ runtime acceptance or physical acceptance.
 
 ## Explicit cycle and frozen generation
 
+The Go identifiers named on this page are declared in package `huawei` of `helianthus-modbusreg` (import path `github.com/Project-Helianthus/helianthus-modbusreg/huawei`).
+
 `I15NewLunaProvider(generation, plan, supplier)` constructs an
 `I15LunaProvider`, implementing `I15LunaProviderPort`. The generation token must
 be nonempty. The complete native binding and every native policy field are

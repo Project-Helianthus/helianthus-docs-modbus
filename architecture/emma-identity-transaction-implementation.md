@@ -29,6 +29,8 @@ application API and lifecycle behavior; it adds no native protocol facts.
 
 ## Reviewed API and implementation boundary
 
+The Go identifiers named on this page are declared in package `huawei` of `helianthus-modbusreg` (import path `github.com/Project-Helianthus/helianthus-modbusreg/huawei`).
+
 `NewEmmaIdentityAttempt(context, input, mei, inventoryRequested)` constructs a
 detached, immutable `EmmaIdentityAttempt`. Its `EmmaIdentityContext` freezes
 `ParentSource`, `SourceRevision`, `ConnectionGeneration`, `Attempt`, `Deadline`

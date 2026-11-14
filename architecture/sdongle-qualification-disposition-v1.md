@@ -39,6 +39,8 @@ another register read, or use a private function code.
 FC0x41 and FC0x17 remain no-send. The boundary permits neither a write nor an
 allocation operation.
 
+The registry retains this record as `SDongleQualificationCard`, declared in package `huawei` of `helianthus-modbusreg` (import path `github.com/Project-Helianthus/helianthus-modbusreg/huawei`).
+
 ## Supersession for the observed identity
 
 A subsequent bounded read-only observation, taken with the operator's approval

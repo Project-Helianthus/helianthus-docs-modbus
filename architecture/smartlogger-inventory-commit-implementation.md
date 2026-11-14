@@ -20,13 +20,15 @@ The [SmartLogger provider transaction lifecycle native contract](https://github.
 
 ## Reviewed API and implementation boundary
 
+The Go identifiers named on this page are declared in package `huawei` of `helianthus-modbusreg` (import path `github.com/Project-Helianthus/helianthus-modbusreg/huawei`).
+
 `NewSmartloggerInventoryCommitOwner(context, clock)` creates an explicitly invoked offline, in-memory owner. Construction validates nonempty opaque owner, routing, parent-profile and source context, a nonzero connection generation, logical unit zero, the exact SmartLogger family and a native exact firmware tuple. These caller-supplied values correlate evidence and do not independently prove a connected parent. A nil clock uses `time.Now`; an injected clock must be monotonic and nonblocking and is called under the publication lock. Owners and attempt handles must not be copied; the zero owner refuses attempts.
 
 | API or evidence surface | Reviewed boundary |
 | --- | --- |
 | `Begin(deadline)` | Freezes context, a unique owner-local attempt token and an absolute caller-supplied deadline strictly after the begin observation and no later than fifteen seconds after it. A second begin returns `ErrSmartloggerInventoryBusy` without replacement or queuing. |
 | `SmartloggerInventoryAttempt.Plan()` | Returns a value copy of the frozen plan. |
-| `SmartloggerInventoryAttempt.Commit(plan, input)` | Accepts already-collected counter-before, pages and counter-after as `HuaweiSmartLoggerOfflineInventoryInput` for that exact plan. The caller must begin before collection and must not mutate the input during commit. Acquisition timing and transport provenance cannot be attested by this component. |
+| `SmartloggerInventoryAttempt.Commit(plan, input)` | Accepts already-collected counter-before, pages and counter-after as `huawei.SmartLoggerOfflineInventoryInput` for that exact plan. The caller must begin before collection and must not mutate the input during commit. Acquisition timing and transport provenance cannot be attested by this component. |
 | Commit identity and fences | Compares owner token, attempt token, connection generation, routing context, logical unit, parent profile, source revision, self family, firmware and deadline. An altered completion fails the attempt. |
 | Native validation and publication | Reuses `ParseHuaweiSmartLoggerOfflineInventory` with its native limits and rejection rules and independently validates the self entry's exact family and firmware against the frozen identity. The deadline is rechecked after validation and detachment; reaching it fails. Only then can the complete snapshot replace history atomically. |
 | `SmartloggerInventoryResult` | Returns the original plan, terminal outcome and completion marker by value. Each accepted attempt has one immutable terminal result: `complete`, `failed`, `cancelled`, `closed` or `retired`. |

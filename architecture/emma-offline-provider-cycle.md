@@ -31,6 +31,8 @@ cycle implementation is a prerequisite or current evidence for this page.
 
 ## Existing values and proposed cycle inputs
 
+The Go identifiers named on this page are declared in package `huawei` of `helianthus-modbusreg` (import path `github.com/Project-Helianthus/helianthus-modbusreg/huawei`).
+
 Reuse these component names and meanings without adding native predicates:
 
 | Existing value | Meaning at the cycle boundary |

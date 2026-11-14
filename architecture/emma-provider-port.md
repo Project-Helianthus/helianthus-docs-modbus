@@ -17,7 +17,7 @@ registry owns implementation, not a second provider-port contract.
 
 | Evidence status | Basis and boundary |
 | --- | --- |
-| Proven, source inspection | The public [provider source](https://github.com/Project-Helianthus/helianthus-modbusreg/blob/main/emma_provider_port.go), [offline cycle](https://github.com/Project-Helianthus/helianthus-modbusreg/blob/main/emma_offline_provider.go) and [identity transition](https://github.com/Project-Helianthus/helianthus-modbusreg/blob/main/emma_identity_transaction.go) establish the signatures and lifecycle described here. Source inspection is not executed integration evidence. |
+| Proven, source inspection | The public [provider source](https://github.com/Project-Helianthus/helianthus-modbusreg/blob/main/huawei/emma_provider_port.go), [offline cycle](https://github.com/Project-Helianthus/helianthus-modbusreg/blob/main/huawei/emma_offline_provider.go) and [identity transition](https://github.com/Project-Helianthus/helianthus-modbusreg/blob/main/huawei/emma_identity_transaction.go) establish the signatures and lifecycle described here. Source inspection is not executed integration evidence. |
 | Hypothesis | A future acquisition owner can supply validated native records, cooperative work accounting and a consistent logical clock through this family-local port. |
 | Unknown | Live correlation, qualified optional inventory guards, acquisition boundedness, physical behavior and production integration remain unknown. |
 
@@ -35,6 +35,8 @@ leaves qualification evidence blocked and admission default denied. Production
 readiness remains NO_GO independently of retained identity evidence.
 
 ## Implemented typed surface and configuration
+
+The Go identifiers named on this page are declared in package `huawei` of `helianthus-modbusreg` (import path `github.com/Project-Helianthus/helianthus-modbusreg/huawei`).
 
 ```go
 type I19EmmaProviderPort interface {

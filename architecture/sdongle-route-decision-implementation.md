@@ -30,6 +30,8 @@ devices.
 
 ## Reviewed API and implementation boundary
 
+The Go identifiers named on this page are declared in package `huawei` of `helianthus-modbusreg` (import path `github.com/Project-Helianthus/helianthus-modbusreg/huawei`).
+
 `DecideSDongleRoute(SDongleRoutePlan) SDongleRouteDecision` consumes a selected
 key, an already-decoded gateway observation, caller-supplied evidence and
 bounds, plus timeout and stopped-qualification indicators.
