@@ -13,12 +13,14 @@ The native documentation is authoritative before any application proposal:
   finite selector, conflicting layouts, operation matrix and replay provenance.
 - [Native read-only boundary](https://github.com/Project-Helianthus/helianthus-docs-modbus/blob/main/protocols/outback/axs-port-sunspec-readonly-v1.md):
   immutable caller-supplied evidence, opaque words and no partial typed output.
-- [Current decoder](https://github.com/Project-Helianthus/helianthus-modbusreg/blob/main/outback_axs_sunspec.go):
+- [Current decoder](https://github.com/Project-Helianthus/helianthus-modbusreg/blob/main/outback/outback_axs_sunspec.go):
   `Decode` returns an empty result and `ErrOutBackAXSSourceNotQualified`;
   raw evidence stays with the caller, unchanged.
-- [Current selector](https://github.com/Project-Helianthus/helianthus-modbusreg/blob/main/sunspec_outback_axs_flavor.go):
+- [Current selector](https://github.com/Project-Helianthus/helianthus-modbusreg/blob/main/outback/sunspec_outback_axs_flavor.go):
   `EvaluateSnapshot` returns `NO_GO`, `Matched()` is false, and chain/model
   accessors expose no selection. It creates no acquisition request.
+
+The Go identifiers named on this page are declared in package `outback` of `helianthus-modbusreg` (import path `github.com/Project-Helianthus/helianthus-modbusreg/outback`).
 
 **Proven within these sources:** the documented lengths conflict:
 64110/282 versus 64110/420 and 64111/23 versus 64111/26. Complete geometry

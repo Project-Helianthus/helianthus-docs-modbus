@@ -31,9 +31,11 @@ This implementation companion does not change those native contracts.
 
 ## Reviewed API and implementation boundary
 
-`NewOutBackDetachedRecord(input, maxBytes)` takes an
-`OutBackDetachedRecordInput` and a positive finite `uint64` byte bound for one
-record, returning an `*OutBackDetachedRecord` and an error.
+The Go identifiers named on this page are declared in package `outback` of `helianthus-modbusreg` (import path `github.com/Project-Helianthus/helianthus-modbusreg/outback`).
+
+`outback.NewDetachedRecord(input, maxBytes)` takes an
+`outback.DetachedRecordInput` and a positive finite `uint64` byte bound for one
+record, returning an `*outback.DetachedRecord` and an error.
 The input contains `Words`, `DeclaredWords`, `Present`, `Missing`,
 `Occurrences` and `Source` supplied by the caller.
 The whole input is checked before copying; zero or insufficient bounds return
@@ -54,7 +56,7 @@ Occurrence `Offset` is a logical payload offset within the record, not a
 transport address; span coordinates are relative to the enclosing raw record or
 occurrence payload.
 
-`OutBackSourceAssociation` retains source key, revision, public locator, content
+`outback.SourceAssociation` retains source key, revision, public locator, content
 identity, declared layout, source-set revision, selector inputs and availability.
 Its strings are opaque exact values supplied by the caller, without source
 verification or admission.

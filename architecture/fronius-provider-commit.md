@@ -20,14 +20,16 @@ The public native contracts are the authority for protocol facts:
   defines the exact observed geometry and applicability. Its exact applicability
   tuple remains authoritative; this page does not reproduce device identifiers.
 
+The existing Go identifiers named in the list below are declared in package `fronius` of `helianthus-modbusreg` (import path `github.com/Project-Helianthus/helianthus-modbusreg/fronius`), except `sunspec.NewChainPlan`, which is declared in package `sunspec` (import path `github.com/Project-Helianthus/helianthus-modbusreg/sunspec`).
+
 Current implementation evidence is narrower than this proposed lifecycle:
 
-- [Chain plan](https://github.com/Project-Helianthus/helianthus-modbusreg/blob/main/sunspec_chain_plan.go):
-  `NewSunSpecChainPlan` validates explicit finite bounds, base candidates and
+- [Chain plan](https://github.com/Project-Helianthus/helianthus-modbusreg/blob/main/sunspec/sunspec_chain_plan.go):
+  `sunspec.NewChainPlan` validates explicit finite bounds, base candidates and
   exact decoder keys; requests carry plan, chain-instance and sequence identity.
   The request function is FC03. This file alone does not establish cancellation
   handling or provider storage behavior.
-- [Qualification card](https://github.com/Project-Helianthus/helianthus-modbusreg/blob/main/sunspec_fronius_qualification_card.go):
+- [Qualification card](https://github.com/Project-Helianthus/helianthus-modbusreg/blob/main/fronius/sunspec_fronius_qualification_card.go):
   `NewReplayChain`, `Qualify` and `replayExactAcquisition` require source-backed
   replay of the exact card plan, a complete terminal snapshot, and equality of
   replayed words, occurrences and source views. Extra views after the terminator

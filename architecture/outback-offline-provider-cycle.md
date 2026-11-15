@@ -21,7 +21,7 @@ This page adds cycle composition around that component; it does not replace it.
 
 | Evidence status | Claim and limit |
 | --- | --- |
-| Proven within the supplied component evidence | `NewOutBackDetachedRecord` creates a bounded detached diagnostic record; its association comparison does not fence publication. `Evaluate()` remains `NO_GO`; `TypedFacts()` and `Requests()` are empty. These are component claims, not newly executed tests or physical qualification. |
+| Proven within the supplied component evidence | `outback.NewDetachedRecord` creates a bounded detached diagnostic record; its association comparison does not fence publication. `Evaluate()` remains `NO_GO`; `TypedFacts()` and `Requests()` are empty. These are component claims, not newly executed tests or physical qualification. |
 | Hypothesis, fixed as implementation acceptance below | A family-local offline holder can import supplied native records through a bounded diagnostic callback, retain one record and the latest cycle status, and fence replacement/cancellation. No implemented holder, reviewed new signature or runtime result is claimed. |
 | Unknown | Unique public applicability evidence, a qualified read operation, concrete persistence, production registration and live qualification remain unestablished. |
 
@@ -33,27 +33,29 @@ merge. No unmerged implementation is an evidence dependency.
 
 ## Existing types and proposed seam
 
-Reuse `NewOutBackDetachedRecord(input, maxBytes)`, which returns
-`(*OutBackDetachedRecord, error)`, with `OutBackDetachedRecordInput`:
+The Go identifiers named on this page are declared in package `outback` of `helianthus-modbusreg` (import path `github.com/Project-Helianthus/helianthus-modbusreg/outback`).
+
+Reuse `outback.NewDetachedRecord(input, maxBytes)`, which returns
+`(*outback.DetachedRecord, error)`, with `outback.DetachedRecordInput`:
 
 - `Words`, `DeclaredWords`, `Present`, `Missing`, `Occurrences`, and `Source`.
-- `OutBackWordSpan` carries `Offset` and `WordCount`.
-- `OutBackDetachedOccurrence` carries `Ordinal`, `WireKey`, logical `Offset`,
+- `outback.WordSpan` carries `Offset` and `WordCount`.
+- `outback.DetachedOccurrence` carries `Ordinal`, `WireKey`, logical `Offset`,
   `Words`, `Present` and `Missing`; preserve slice order and duplicate occurrences.
-- `OutBackSourceAssociation` carries `Key`, `Revision`, `PublicLocator`,
+- `outback.SourceAssociation` carries `Key`, `Revision`, `PublicLocator`,
   `ContentIdentity`, `DeclaredLayout`, `SourceSetRevision`, `SelectorInputs`
   and `Available`.
 
 Use the component's `AccountedBytes()`, `Complete()`, `RawWords()`,
 `DeclaredWords()`, `PresentSpans()`, `MissingSpans()`, `Occurrences()`,
 `SourceAssociation()` and `Association(current)` without redefining their
-meaning. `OutBackAssociationCurrent` and `OutBackAssociationHistorical` are
+meaning. `outback.AssociationCurrent` and `outback.AssociationHistorical` are
 existing comparison results. There is no native `unassociated` constant:
 that proposed holder status means no retained association can be presented.
 `ErrOutBackDetachedRecordBound` remains the constructor's bound failure.
 
 The proposed seam is an OutBack-family offline holder with an injected,
-non-nil diagnostic supplier returning `(OutBackDetachedRecordInput, error)`.
+non-nil diagnostic supplier returning `(outback.DetachedRecordInput, error)`.
 Cancellation and finite work limits must reach the supplier. The spelling of
 new holder, callback, cycle and snapshot APIs remains subject to implementation
 review; this is a behavioral contract, not a Proven exported signature.
@@ -79,7 +81,7 @@ The following are required acceptance conditions for the proposed holder:
    The holder must not launch unbounded replacement goroutines.
 3. Caller input limits cover words, spans, occurrences, nested words/spans and
    all source strings before retention. Apply the same positive `maxBytes`
-   through `NewOutBackDetachedRecord` to the entire returned input before
+   through `outback.NewDetachedRecord` to the entire returned input before
    copying/publishing. Missing extents never allocate missing words.
    `AccountedBytes()` is deterministic evidence accounting, not a heap quota or
    serialized envelope. Keep finite separate status/work limits; arithmetic
@@ -142,7 +144,7 @@ component does not implement these transactions.
    permission to stamp the expected source onto the returned words. Preserve
    the old record, or show unassociated if none exists.
 7. Check finite input/work limits and construct with
-   `NewOutBackDetachedRecord(input, maxBytes)`. A bound failure yields no
+   `outback.NewDetachedRecord(input, maxBytes)`. A bound failure yields no
    candidate and preserves the old record. Structurally malformed but bounded
    input can yield an incomplete diagnostic record; do not repair it.
 8. Recheck cancellation, current association and generation/attempt immediately

@@ -22,12 +22,14 @@ The reviewed component implements the bounded in-memory portion of that contract
 
 ## Reviewed API and implementation boundary
 
-`FroniusRetainedCommit` owns one eligible complete envelope and one latest-attempt diagnostic enum, with no persistent history.
+The Go identifiers named on this page are declared in package `fronius` of `helianthus-modbusreg` (import path `github.com/Project-Helianthus/helianthus-modbusreg/fronius`).
+
+`fronius.RetainedCommit` owns one eligible complete envelope and one latest-attempt diagnostic enum, with no persistent history.
 Its zero value is usable, and the store must not be copied after use; callers must keep supplied inputs immutable during a method call.
 
 `Begin(ctx, key, pollGeneration, deadlineIdentity)` supersedes the previous attempt and returns an opaque store-local token.
 The caller supplies a context with a future finite deadline and nonzero poll and deadline identities.
-`FroniusRetainedKey` binds requested function, received function, table, unit, opaque source identity, connection identity, transport family, transport generation, card identity and schema revision.
+`fronius.RetainedKey` binds requested function, received function, table, unit, opaque source identity, connection identity, transport family, transport generation, card identity and schema revision.
 Unknown source, connection, generation or card/schema identity fails closed.
 
 `Commit(token, registry, observation)` takes an existing `SunSpecQualificationObservation`, obtains its replay and calls the existing exact card's `Qualify`; it accepts no caller success flag.
@@ -40,7 +42,7 @@ Foreign, superseded or already closed tokens return errors without changing a ne
 Context cancellation or expiry is observed at the next operation, with no background task; a cancelled or expired active attempt cannot commit.
 If explicit Cancel wins against Commit, publication is rejected; if Commit wins, its completed envelope remains history.
 
-`View()` atomically returns a detached `FroniusRetainedView` containing the envelope, latest attempt, outcome and stale flag.
+`View()` atomically returns a detached `fronius.RetainedView` containing the envelope, latest attempt, outcome and stale flag.
 The latest attempt can differ from `Envelope.Attempt`, which retains the observation's original attempt provenance.
 
 ## Retained state and loss states

@@ -19,7 +19,7 @@ retained state, token fencing and detached views.
 
 | Evidence class | Scope here | Separate qualification and admission state |
 | --- | --- | --- |
-| Proven | The merged component exposes `FroniusRetainedCommit` and the native input/result names described below; source inspection supports these component claims | No new replay execution or live qualification is claimed |
+| Proven | The merged component exposes `fronius.RetainedCommit` and the native input/result names described below; source inspection supports these component claims | No new replay execution or live qualification is claimed |
 | Hypothesis | All cycle composition, callback ordering and work-budget requirements below are proposed acceptance behavior; no exact new exported API signature is established | Offline success grants no automatic runtime admission or write authority |
 | Unknown | Production cycle implementation, integration, operational age policy, persistence, restart recovery and consumer parity | No device support or physical acceptance follows |
 
@@ -29,10 +29,12 @@ eventual signature; this page is not evidence that a cycle implementation exists
 
 ## Existing inputs, results and owner
 
+The Go identifiers named on this page are declared in package `fronius` of `helianthus-modbusreg` (import path `github.com/Project-Helianthus/helianthus-modbusreg/fronius`), except `sunspec.DecoderRegistry`, which is declared in package `sunspec` (import path `github.com/Project-Helianthus/helianthus-modbusreg/sunspec`).
+
 The cycle is a family-local offline application seam over supplied native
-records. It composes one existing `FroniusRetainedCommit`, an injected reader
+records. It composes one existing `fronius.RetainedCommit`, an injected reader
 returning `SunSpecQualificationObservation` plus an error, and the existing
-`SunSpecDecoderRegistry`. The reader consumes bounded supplied evidence through
+`sunspec.DecoderRegistry`. The reader consumes bounded supplied evidence through
 the existing native decoder/card path. It opens no transport and owns no
 acquisition, polling or retry loop. There is no second parser or retained store.
 
@@ -43,12 +45,12 @@ calls, not a proposed exported cycle signature. The native types are:
 
 | Type | Role |
 | --- | --- |
-| `FroniusRetainedKey` | Compatibility key for eligible retained evidence |
-| `FroniusRetainedToken` | Opaque, store-local, single-use attempt token |
-| `FroniusRetainedAttempt` | Key, token, poll/deadline identities and original finite deadline |
+| `fronius.RetainedKey` | Compatibility key for eligible retained evidence |
+| `fronius.RetainedToken` | Opaque, store-local, single-use attempt token |
+| `fronius.RetainedAttempt` | Key, token, poll/deadline identities and original finite deadline |
 | `SunSpecQualificationObservation` | Complete exact-card native result, never a partial success flag |
-| `FroniusRetainedEnvelope` | Observation, original attempt and `CommittedAt` |
-| `FroniusRetainedView` | Detached envelope or absence, latest attempt, outcome and `Stale` |
+| `fronius.RetainedEnvelope` | Observation, original attempt and `CommittedAt` |
+| `fronius.RetainedView` | Detached envelope or absence, latest attempt, outcome and `Stale` |
 
 The caller retains the same owner across cycles and does not copy it after use.
 Inputs remain immutable during calls; callback results must be immutable during
@@ -74,7 +76,7 @@ before copying or iterating input. Native validation remains authoritative even
 when input is within a size ceiling.
 
 Invoke the callback at most once, only after successful `Begin`, with that
-attempt's exact `FroniusRetainedKey`, opaque token, poll/deadline identities,
+attempt's exact `fronius.RetainedKey`, opaque token, poll/deadline identities,
 original caller context and accepted bounds. The callback cannot choose a new
 key, renew the deadline, mint a token or commit on its own. It must honor context
 cancellation and finite work limits; a deadline cannot forcibly terminate an
