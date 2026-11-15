@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+- The Fronius and OutBack implementation pages name the declaring modbusreg
+  packages `fronius` and `outback` and their import paths, and name package
+  `sunspec` for the SunSpec identifiers they use. The moved identifiers use
+  their current spellings, such as `fronius.RetainedCommit`,
+  `fronius.OfflineRequest`, `outback.NewDetachedRecord`,
+  `outback.DiagnosticSupplier`, `sunspec.DecoderRegistry` and
+  `sunspec.NewChainPlan`, and the links to the moved source files point to
+  `fronius/`, `outback/` and `sunspec/`. Protocol content is unchanged; there
+  is no alias, compatibility shim or migration step.
 - The Huawei-family implementation pages (EMMA, LUNA2000, S-Dongle and
   SmartLogger) name the declaring modbusreg package `huawei` and its import
   path `github.com/Project-Helianthus/helianthus-modbusreg/huawei`, use the

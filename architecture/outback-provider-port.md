@@ -46,16 +46,18 @@ status, receipt time, freshness, qualification and admission remain independent.
 
 ## Typed configuration and lifecycle
 
-Implementation: [port and adapter](https://github.com/Project-Helianthus/helianthus-modbusreg/blob/main/outback_provider_port.go),
-[synthetic tests](https://github.com/Project-Helianthus/helianthus-modbusreg/blob/main/outback_provider_port_test.go).
+Implementation: [port and adapter](https://github.com/Project-Helianthus/helianthus-modbusreg/blob/main/outback/outback_provider_port.go),
+[synthetic tests](https://github.com/Project-Helianthus/helianthus-modbusreg/blob/main/outback/outback_provider_port_test.go).
+
+The Go identifiers named on this page are declared in package `outback` of `helianthus-modbusreg` (import path `github.com/Project-Helianthus/helianthus-modbusreg/outback`).
 
 `I27OutBackProvider` exposes `I27Replace`, `I27Retire`, `I27Cycle` and
 `I27Snapshot` using existing native source, context, receipt and snapshot types.
 `I27NewOutBackAdapter(I27OutBackConfig)` returns the concrete
 `*I27OutBackAdapter`, implementing that interface. Configuration requires
 `I27Source`, positive `I27MaxBytes`, positive `I27MaxWork` and nonnil
-`I27Supplier` of native type `OutBackDiagnosticSupplier`. Construction delegates
-to `NewOutBackOfflineProvider`; native validation and errors are preserved.
+`I27Supplier` of native type `outback.DiagnosticSupplier`. Construction delegates
+to `outback.NewOfflineProvider`; native validation and errors are preserved.
 Nil and zero adapters refuse cycles/replacements and expose empty historical
 snapshots. Do not copy an adapter after use.
 

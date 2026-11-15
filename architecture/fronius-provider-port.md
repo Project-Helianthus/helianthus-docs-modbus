@@ -26,17 +26,19 @@ stable before Helianthus 1.0.
 
 ## Configured local API
 
+The Go identifiers named on this page are declared in package `fronius` of `helianthus-modbusreg` (import path `github.com/Project-Helianthus/helianthus-modbusreg/fronius`), except `sunspec.DecoderRegistry`, which is declared in package `sunspec` (import path `github.com/Project-Helianthus/helianthus-modbusreg/sunspec`).
+
 `I25FroniusProvider` is an interface implemented by `I25FroniusAdapter`:
 
 ```go
-I25Run(context.Context, I25FroniusLifetime, FroniusOfflineRequest) error
-I25Cancel(I25FroniusLifetime, FroniusRetainedToken) error
+I25Run(context.Context, I25FroniusLifetime, fronius.OfflineRequest) error
+I25Cancel(I25FroniusLifetime, fronius.RetainedToken) error
 I25Retire(I25FroniusLifetime) error
 I25View() I25FroniusView
 ```
 
 Construct with `I25NewFroniusAdapter(registry, maxWords, maxOccurrences,
-maxSourceViews, reader)`. The existing `SunSpecDecoderRegistry` is supplied by
+maxSourceViews, reader)`. The existing `sunspec.DecoderRegistry` is supplied by
 the caller and copied, including decoder definitions. The three positive
 `uint32` ceilings cannot exceed existing card limits. A nil reader, empty or
 incompatible registry, zero or excessive ceiling returns an error and no
@@ -45,7 +47,7 @@ or registration. Inputs must remain immutable during construction/calls;
 callback observations must remain immutable until the call returns.
 
 Use `I25View().I25Lifetime` for calls. This opaque identity belongs to one
-adapter and is independent of `FroniusRetainedAttempt.Token`, which changes
+adapter and is independent of `fronius.RetainedAttempt.Token`, which changes
 with native attempts. Nil and zero-value adapters refuse work. Foreign, zero
 and retired lifetimes refuse work without invoking the supplier or changing
 the native owner. Do not copy the adapter after construction.
@@ -67,7 +69,7 @@ supersession; publication resumes under that lock and the native token fence.
 ## Lifecycle and native loss boundaries
 
 `I25FroniusView` contains `I25Lifetime`, `I25Retired` and the existing detached
-`I25Native FroniusRetainedView`. Native current attempt/outcome and retained
+`I25Native fronius.RetainedView`. Native current attempt/outcome and retained
 receipt keep their separate meanings. A returned view can describe a newer
 attempt than the call that just finished. Absence is a nil envelope, never
 synthetic zero facts. Source words, spans, occurrence order, decoder revisions,
