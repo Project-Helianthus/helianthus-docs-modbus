@@ -957,6 +957,14 @@
       "contract": "current_limit_operation",
       "page": "protocols/tesla/gen3-current-limit-operation-v1.md",
       "section": null,
+      "kind": "heading",
+      "value": "## On-site observations required before a live setter",
+      "reason": "Observations required before any live current-limit setter."
+    },
+    {
+      "contract": "current_limit_operation",
+      "page": "protocols/tesla/gen3-current-limit-operation-v1.md",
+      "section": null,
       "kind": "forbidden",
       "value": "([0-9]{1,3}\\.){3}[0-9]{1,3}|(?:[^\\W_]|[.-])+:[0-9]{1,5}|(^|[^0-9A-Fa-f])[0-9A-Fa-f]{40}([^0-9A-Fa-f]|$)|(^|[^0-9A-Fa-f])[0-9A-Fa-f]{64}([^0-9A-Fa-f]|$)",
       "reason": "The operation contract publishes no network coordinates and no 40- or 64-digit fingerprints."
@@ -1160,6 +1168,30 @@
       "kind": "statement",
       "value": "The injected `modbus.v1.tesla.gen3.evse.current_limit.get` projection remains read-only with `outbound_allowed=false`; it neither acquires records nor constructs/sends requests.",
       "reason": "The injected projection never reaches the bus."
+    },
+    {
+      "contract": "current_limit_operation",
+      "page": "protocols/tesla/gen3-current-limit-operation-v1.md",
+      "section": "## On-site observations required before a live setter",
+      "kind": "statement",
+      "value": "Every row is Unknown.",
+      "reason": "Each required observation stays Unknown."
+    },
+    {
+      "contract": "current_limit_operation",
+      "page": "protocols/tesla/gen3-current-limit-operation-v1.md",
+      "section": "## On-site observations required before a live setter",
+      "kind": "statement",
+      "value": "The page authorizes no transmission.",
+      "reason": "The observations authorize no transmission."
+    },
+    {
+      "contract": "current_limit_operation",
+      "page": "protocols/tesla/gen3-current-limit-operation-v1.md",
+      "section": "## On-site observations required before a live setter",
+      "kind": "statement",
+      "value": "Neither a t7 observation nor a t25 observation qualifies that operation.",
+      "reason": "An observation of t7 or t25 does not qualify a live setter."
     },
     {
       "contract": "read_acquisition",

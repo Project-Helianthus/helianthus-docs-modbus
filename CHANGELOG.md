@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- The Wall Connector Gen3 current-limit operation contract names six on-site
+  observations required before a live current limit or a live pause. Every
+  row stays Unknown. The page authorizes no transmission, and neither a t7
+  observation nor a t25 observation qualifies that operation. An on-site run
+  of those observations, when one is later made, needs operator confirmation
+  at action time. This change does not authorize that run, transmits nothing,
+  and publishes no new number.
 - The Gen3 HSC read-path lifecycle drives activation as an exchange on an
   injected driver: the device greeting, the host echo of that greeting, then
   the confirmation or a refusal and a new greeting. Readiness requires the
