@@ -2,6 +2,19 @@
 
 ## Unreleased
 
+- The Wall Connector Gen3 HSC activation exchange is observed once after the
+  charger gets power: the device greeting `TESLA` followed by NUL, the host
+  echo of those same six bytes, then the confirmation `PASS` followed by NUL
+  or `FAIL` followed by NUL and a new greeting. A listener that sends nothing
+  never sees the confirmation, and a greeting the host sends at any other time
+  is ignored. The echo window and the retry count are not established and must
+  be measured. A later recovery does not repeat the activation: it keeps that
+  epoch and pins the successor generation. The acquisition witness admits
+  readiness only for the greeting, the echo of those six bytes, and `PASS`
+  followed by NUL. Restart after that activation does not wait for a second
+  exchange. The observation
+  hook stays a non-transmitting listener and does not treat the confirmation
+  as a silent success witness.
 - The Fronius and OutBack implementation pages name the declaring modbusreg
   packages `fronius` and `outback` and their import paths, and name package
   `sunspec` for the SunSpec identifiers they use. The moved identifiers use

@@ -438,8 +438,8 @@
       "page": "protocols/tesla/gen3-hsc-rtu.md",
       "section": "## Serial and activation",
       "kind": "statement",
-      "value": "`TESLA` followed by NUL and then `PASS` followed by NUL",
-      "reason": "Exact device-originated activation sequence."
+      "value": "The device sends the greeting `TESLA` followed by NUL, six bytes. The host answers with those same six bytes.",
+      "reason": "Observed device greeting and the host echo of those six bytes."
     },
     {
       "contract": "generation",
@@ -1342,16 +1342,16 @@
       "page": "protocols/tesla/gen3-read-acquisition-v1.md",
       "section": "## Lifecycle states and transitions",
       "kind": "statement",
-      "value": "Every successful activation opens a new lifecycle epoch",
-      "reason": "Each activation opens a successor epoch."
+      "value": "Every successful activation opens a new lifecycle epoch, numbered in increasing order. An epoch pins one unfenced transport generation at a time. The first admitted exchange of an epoch pins that generation, and it must be strictly greater than the generation pinned by any earlier epoch of the same endpoint instance. A later recovery keeps that epoch and does not repeat the activation. It replaces a fenced generation with a successor generation in the same epoch, strictly greater than the fenced generation. Admission then requires that successor, so a retry is not left on the fenced generation. A record acquired on the fenced generation is historical and is not current. A Restart after the observed activation opens a successor endpoint instance in that same epoch, with empty admission, pins a strictly greater successor generation, and enters `ready` on the activation already observed. That Restart witness does not wait for a second exchange. A Restart before any successful activation enters `activating`, and its witness waits for the documented sequence. An old generation never serves a new epoch.",
+      "reason": "One successful activation opens the epoch; recovery keeps it and pins a successor generation."
     },
     {
       "contract": "read_acquisition",
       "page": "protocols/tesla/gen3-read-acquisition-v1.md",
       "section": "## Admission rules",
       "kind": "statement",
-      "value": "A retired or replaced endpoint instance refuses every candidate.",
-      "reason": "Retired endpoints admit nothing."
+      "value": "A retired or replaced endpoint instance refuses every candidate. - The candidate carries the configured endpoint label and the configured node and function FC100. - The candidate carries the transport generation the current epoch pins now, or, for the first exchange of an epoch, a generation newer than every earlier epoch. After recovery replaces a fenced generation, or Restart after the observed activation opens a successor instance, the epoch pins the successor generation, and a candidate that still carries the replaced generation is refused.",
+      "reason": "Retired endpoints admit nothing, and a replaced generation is refused after recovery."
     },
     {
       "contract": "read_acquisition",
@@ -1462,8 +1462,8 @@
       "page": "protocols/tesla/gen3-read-acquisition-v1.md",
       "section": "## Retry, deadline, and recovery budgets",
       "kind": "statement",
-      "value": "Recovery and re-activation run inside the acquisition deadline.",
-      "reason": "Recovery is bounded."
+      "value": "A later recovery does not repeat the activation. Recovery success returns to `ready` with the successor generation pinned in the same epoch. This contract defines no separate cleanup budget: a cancelled or expired acquisition does not start recovery, leaves the endpoint fenced, and leaves the lifecycle `unavailable`. Restart, with its own caller-supplied deadline, is the bounded way back. When the one post-power activation has already been observed, the Restart witness is that observed activation: Restart does not wait for a second exchange, does not send a greeting, and enters `ready` on the successor endpoint instance. When no activation has been observed, Restart enters `activating` and the witness reports the documented sequence within the activation timeout, or that timeout leaves the lifecycle `unavailable`.",
+      "reason": "Recovery does not repeat activation, pins the successor generation, and names the Restart witness."
     },
     {
       "contract": "read_acquisition",
@@ -1478,8 +1478,8 @@
       "page": "protocols/tesla/gen3-read-acquisition-v1.md",
       "section": "## Freshness and retention",
       "kind": "statement",
-      "value": "A failed attempt, whatever its evidence state, never replaces the last acknowledged record.",
-      "reason": "Partial last-known-good state survives failed attempts."
+      "value": "A failed attempt, whatever its evidence state, never replaces the last acknowledged record. The last acknowledged (last-known-good) record and the last attempt are retained separately. - A last-known-good record is fresh while its age is non-negative and no longer than the freshness duration. It is discarded once its age exceeds the retention duration; the last attempt is discarded on the same rule. - A record is current only while the lifecycle is `ready` and the record was acquired in the active epoch on the generation that epoch currently pins. A record from a fenced generation, a replaced endpoint instance, or a closed lifecycle remains historical evidence, may still be fresh by age, and is never current.",
+      "reason": "Partial last-known-good state survives failed attempts, and currency follows the pinned generation."
     },
     {
       "contract": "read_acquisition",
@@ -1550,8 +1550,8 @@
       "page": "protocols/tesla/gen3-read-acquisition-v1.md",
       "section": "## Activation prerequisite and the current NO_SEND gate",
       "kind": "statement",
-      "value": "The activation deadline is taken from the lifecycle clock before the witness is called.",
-      "reason": "Activation deadline source."
+      "value": "The documented sequence is the greeting `TESLA` followed by NUL, six bytes, then those same six bytes, then `PASS` followed by NUL, compared byte for byte. A bare greeting, a greeting followed by `PASS` without those echoed six bytes, or `FAIL` followed by NUL, do not admit readiness. Comparison stays inside the activation timeout. A witness error, a timeout, a reset error, any other byte sequence, or an activation context that is already cancelled or expired when the report arrives leaves the lifecycle `unavailable`. The activation deadline is taken from the lifecycle clock before the witness is called.",
+      "reason": "The witness compares the greeting, the echoed six bytes, and PASS, and the deadline is sampled first."
     },
     {
       "contract": "read_acquisition",

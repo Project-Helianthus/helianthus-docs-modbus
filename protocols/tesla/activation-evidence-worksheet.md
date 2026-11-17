@@ -5,8 +5,9 @@
 This unfilled worksheet prepares publishable evidence for the Gen3 HSC family
 activation question in docs-modbus #158. It is the partial documentation slice
 tracked by docs-modbus #164, with transport observation work in modbus #38.
-No second-site result is supplied. Activation evidence and live qualification
-remain **Unknown**; completing a worksheet alone grants no authority.
+The echo window and the retry count are not established and must be measured.
+Live qualification remains **Unknown**; completing a worksheet alone grants no
+authority.
 
 This is an evidence intake form, not an exchange implementation, sender recipe,
 or instruction to alter a device. Later installation, credential use, reset,
@@ -30,15 +31,16 @@ Read the native contracts before interpreting observations:
 | Claim | Evidence grade and limit |
 | --- | --- |
 | Configured Gen3 serial format, bounded Modbus RTU envelopes, and profile-scoped private functions | Established native specification facts in the contracts above; not a new observation or qualification result. |
-| Reported `TESLA` / `PASS` activation | **Hypothesis** about the actual exchange. The HSC page describes device-originated tokens and NUL termination; the read-acquisition page specifies an injected witness byte comparison but explicitly leaves side of origin, timing, and reset repetition unresolved. Those assertions are not second-site evidence. |
-| Actual token bytes, terminators, side of origin, order, framing, causality, and reset behavior at a second site | **Unknown**. Do not prefill observations from the reported hypothesis or from a passing offline comparator. |
+| Observed greeting, host echo, and confirmation or failure | The HSC page records the device greeting `TESLA` followed by NUL, six bytes, the host echo of those same six bytes, then the confirmation `PASS` followed by NUL or `FAIL` followed by NUL and a new greeting. The exchange happens once after the charger gets power. A listener that sends nothing never sees the confirmation. A greeting the host sends at any other time is ignored. This record is not a qualification result. |
+| Echo window, retry count, timing bounds, RTU framing relation, and repetition after reset | **Unknown**. The echo window and the retry count are not established and must be measured. Do not prefill those fields from the observed exchange or from a passing offline comparator. |
 | A future bounded native observation | **Proven** only for the fact directly supported by publishable evidence, with its stated family/version and limits; qualification remains a separate decision. |
 
-This worksheet does not resolve the tension in the existing activation wording
-or amend either contract. A counterexample must be retained and referred to
-#158 rather than coerced into the expected token sequence. No activation byte
-values or extra handshake steps are invented here. RTU framing facts do not
-establish that activation bytes themselves are RTU frames.
+This worksheet states the observed greeting, echo, and confirmation or failure.
+It does not establish the echo window or the retry count, and it does not turn
+the observation hook into a transmitter. A counterexample must be retained and
+referred to #158 rather than coerced into a silent greeting-then-confirmation
+sequence. RTU framing facts do not establish that activation bytes themselves
+are RTU frames.
 
 ## Preconditions and observation bounds
 
