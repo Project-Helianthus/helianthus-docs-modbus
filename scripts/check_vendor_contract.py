@@ -34,8 +34,8 @@ CONTRACT_PAGES = {
     'sdongle_page': 'architecture/sdongle-qualification-disposition-v1.md',
 }
 EXPECTED = {
-    ('private_function', 'heading'): 11,
-    ('private_function', 'statement'): 45,
+    ('private_function', 'heading'): 12,
+    ('private_function', 'statement'): 55,
     ('fronius_qualification', 'heading'): 6,
     ('fronius_qualification', 'row'): 6,
     ('fronius_qualification', 'statement'): 24,

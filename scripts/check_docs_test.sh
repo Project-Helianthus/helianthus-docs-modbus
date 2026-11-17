@@ -116,15 +116,19 @@ for mutation in \
   's/it is a classifier fault that fences the transport generation/it is accepted as a terminal in the same generation/' \
   's/A later recovery does not repeat the activation\./A later recovery repeats the activation./' \
   's/It replaces a fenced generation with a successor generation in the/It keeps the fenced generation in the/' \
-  's/Restart witness does not wait for a second exchange/Restart witness waits for a second exchange/' \
-  's/`TESLA` followed by NUL, six bytes, then those same six bytes, then `PASS`/the greeting alone/' \
+  's/sends no echo and does not wait for a second exchange/sends an echo and waits for a second exchange/' \
+  's/never admits readiness/admits readiness/' \
   's/A failed attempt, whatever its evidence state, never replaces the last/A failed attempt replaces the last/' \
   's/is never promoted to `ack`/is promoted to `ack`/' \
   's/never carry a value, even when response frames were received\./carry a value when response frames were received./' \
   's/never establishes readiness/establishes readiness/' \
-  's/A configuration without a witness is `NO_SEND`\./A configuration without a witness is accepted./' \
+  's/A configuration without a driver is `NO_SEND`\./A configuration without a driver is accepted./' \
   's/helianthus-docs-modbus issue 158/an unrelated issue/' \
-  's/helianthus-modbus issue 38/an unrelated hook/' \
+  's/It is a transmission and it is off unless configured\./It is not a transmission and it is on by default./' \
+  's/These are host-side values, not wire timing\./These are wire timing./' \
+  's/selects the responder explicitly\./selects no responder./' \
+  's/A record from another endpoint instance counted as current\./A record from another endpoint instance is historical./' \
+  's/A readiness probe used after any event was reported, or without explicit configuration\./A readiness probe used after any event was reported is accepted./' \
   's/No mutation path\./A mutation path./' \
   's/The contract covers only the exact `wc3_24_44_3` operation version\./The contract covers every Gen3 operation version./' \
   's/| `indeterminate` |/| `unknown` |/' \
@@ -143,7 +147,7 @@ for mutation in \
   's/Buffered ticks do not guarantee/Buffered ticks guarantee/' \
   's/`51db865a`/`50090dc4`/' \
   's/returned at or after that deadline is rejected regardless of whether the/returned at or after that deadline is accepted when the/' \
-  's/from the lifecycle clock before the witness is called\. A witness report/from the context timer after the witness is called. A witness report/' \
+  's/from the lifecycle clock before the driver is called\. A driver report/from the context timer after the driver is called. A driver report/' \
   's/^Cancellation is re-checked inside/Cancellation is not re-checked inside/' \
   's/^## Falsifiers$/## Notes/'; do
   sed "$mutation" "$tesla_read_acquisition_document" > "$tesla_read_acquisition_fixture"
@@ -305,6 +309,14 @@ for mutation in \
   sed "$mutation" "$tesla_legacy_document" > "$tesla_legacy_fixture"
   if "$repo_root/scripts/check_docs.sh" --check-tesla-generation-contracts "$tesla_legacy_fixture" "$tesla_gen3_document"; then
     echo "Tesla legacy generation-contract mutation was accepted: $mutation" >&2
+    exit 1
+  fi
+done
+for mutation in \
+  's/A frame addressed to another node does not disable the exchange state./A frame addressed to another node disables the exchange state./'; do
+  sed "$mutation" "$tesla_gen3_document" > "$tesla_gen3_fixture"
+  if "$repo_root/scripts/check_docs.sh" --check-tesla-generation-contracts "$tesla_legacy_document" "$tesla_gen3_fixture"; then
+    echo "Tesla Gen3 activation-state mutation was accepted: $mutation" >&2
     exit 1
   fi
 done
@@ -732,7 +744,7 @@ for mutation in \
   's/Unit identifiers above 247 are also rejected before transmission./Unit identifiers above 247 are admitted./' \
   's/the policy allows exactly one attempt/the policy permits retries/' \
   's/65–72 or 100–110/1–127/' \
-  's/exchange, shared by FC03\/FC04 reads and private-function exchanges./exchange per path, permitting concurrent reads and private exchanges./' \
+  's/exchange, shared by FC03\/FC04 reads, private-function exchanges, and the activation echo exchange./exchange per path, permitting concurrent reads and private exchanges./' \
   's/Without a classifier, the first good normal frame is terminal./Without a classifier, collect every frame./' \
   's/transport does not bound classifier/transport bounds classifier/' \
   's/without fencing. Every other failure of a started private exchange fences the/with fencing. Every other failure of a started private exchange fences the/' \
@@ -741,6 +753,26 @@ for mutation in \
   sed "$mutation" "$private_function_document" > "$private_function_fixture"
   if "$repo_root/scripts/check_docs.sh" --check-private-function-contract "$private_function_fixture"; then
     echo "private production RTU contract mutation was accepted: $mutation" >&2
+    exit 1
+  fi
+done
+
+for mutation in \
+  's/It is not an FC03 read, an FC04 read, or a private-function exchange./It is an FC03 read./' \
+  's/The transport holds no vendor token./The transport holds the vendor token./' \
+  's/only after an upstream admission approves that echo./without upstream admission./' \
+  's/from 1 through 16 with no default/from 0 through 64 by default/' \
+  's/A late echo is not sent and is recorded./A late echo is sent and is not recorded./' \
+  's/does not wait for a frame-end gap./waits for a frame-end gap./' \
+  's/are not a new greeting./are a new greeting./' \
+  's/are skipped and kept as bounded evidence./are discarded./' \
+  's/A frame addressed to another node is not a token of this exchange./A frame addressed to another node fences the generation./' \
+  's/Cancellation while only listening does not fence./Cancellation while only listening fences the generation./' \
+  's/The zero configuration is unusable and transmits nothing./The zero configuration transmits the greeting./' \
+  's/not wire timing./wire timing./'; do
+  sed "$mutation" "$private_function_document" > "$private_function_fixture"
+  if "$repo_root/scripts/check_docs.sh" --check-private-function-contract "$private_function_fixture"; then
+    echo "activation echo exchange mutation was accepted: $mutation" >&2
     exit 1
   fi
 done

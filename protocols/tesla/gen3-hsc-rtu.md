@@ -8,7 +8,7 @@ This page defines the transport and version boundary. Named TEDAPI operation rec
 
 ## Serial and activation
 
-The Gen3 HSC serial format is 115200 baud, eight data bits, no parity, and one stop bit. The activation exchange is observed once after the charger gets power. The device sends the greeting `TESLA` followed by NUL, six bytes. The host answers with those same six bytes. The device then sends the confirmation `PASS` followed by NUL. A missing or late answer is answered with `FAIL` followed by NUL and a new greeting. A listener that sends nothing never sees the confirmation. A greeting the host sends at any other time is ignored. The echo window and the retry count are not established and must be measured. An activation failure, timeout, reset, unexpected frame, or loss of the selected profile disables the HSC exchange state.
+The Gen3 HSC serial format is 115200 baud, eight data bits, no parity, and one stop bit. The activation exchange is observed once after the charger gets power. The device sends the greeting `TESLA` followed by NUL, six bytes. The host answers with those same six bytes. The device then sends the confirmation `PASS` followed by NUL. A missing or late answer is answered with `FAIL` followed by NUL and a new greeting. A listener that sends nothing never sees the confirmation. A greeting the host sends at any other time is ignored. The echo window and the retry count are not established and must be measured. An activation failure, a timeout, a reset, a malformed or mismatched frame for this node, or loss of the selected profile disables the HSC exchange state. A frame addressed to another node does not disable the exchange state.
 
 ## RTU framing
 
