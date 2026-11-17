@@ -21,7 +21,7 @@ Read the public native contracts first:
 
 | Claim | Evidence grade | Separate disposition |
 | --- | --- | --- |
-| Existing pages specify native transport bounds and a lifecycle witness comparison | Proven as published contract requirements, not as device observations | No new implementation or qualification evidence here |
+| Existing pages specify native transport bounds and a driven activation exchange | Proven as published contract requirements, not as device observations | No new implementation or qualification evidence here |
 | Observed greeting, host echo, and confirmation or failure | Recorded on the HSC page. This hook does not transmit the echo | A silent listener never sees the confirmation, so the confirmation is not this hook's success witness |
 | Echo window, retry count, relationship to RTU framing, and repetition after reset | Unknown; docs-modbus #158 remains unresolved | No duration, tick count, or retry count |
 | Proposed hook below | Proposed interface requirements, not an observed fact | Acquisition/admission and live qualification remain independently gated |
@@ -36,14 +36,20 @@ Matching bytes alone cannot establish live qualification.
 
 ## Ownership and current versus proposed behavior
 
-The published read lifecycle currently obtains bytes from an injected witness
-and documents the absence of production pre-exchange observation. This page
-does not change that availability claim. The proposal is for transport to
-observe and return native evidence; the registry interprets that evidence
-against the selected public profile and the existing lifecycle rules.
+The published read lifecycle drives the activation exchange through an
+injected activation driver on the endpoint it owns. This hook is not that
+driver. It stays a listener with no transmit path, echo responder, or retry
+loop. The host answer belongs to the transport section of the private-function
+page and to a registry-supplied driver, not to this hook. The proposal is for
+this hook to observe and return native evidence; the registry interprets that
+evidence against the selected public profile and the existing lifecycle rules.
 
-Transport must not contain a Tesla token comparator, select a profile from
-bytes, label a match as activation, construct a handshake, or admit an exchange.
+This hook must not contain a Tesla token comparator, select a profile from
+bytes, label a match as activation, construct a handshake, transmit a host
+answer, or admit an exchange. The host answer belongs to the transport section
+of the private-function page and to a registry-supplied driver, not to this
+hook. That exchange is the opt-in activation echo of the production endpoint,
+not a handshake constructed by this hook.
 The registry must not obtain an independent reader or raw serial handle.
 Observation has no transmit, reset, flush, discovery, retry or fallback action.
 No witness implementation, dependency pin or gateway composition is required

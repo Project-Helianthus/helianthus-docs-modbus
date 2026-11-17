@@ -57,8 +57,10 @@ The lifecycle is in exactly one externally visible state: `stopped`,
 | From | Trigger | To |
 |---|---|---|
 | `stopped` | Start | `activating` |
-| `activating` | activation witness reports the documented sequence in time | `ready` |
-| `activating` | activation failure, timeout, reset error, unexpected bytes, or an expired activation context | `unavailable` |
+| `activating` | driver reports the confirmation after a host echo of the immediately preceding greeting, in time | `ready` |
+| `activating` | configured readiness probe: silence for the whole activation timeout, then an acknowledged first configured read | `ready` |
+| `activating` | activation failure, refusal, reset error, unexpected bytes, an echo that differs from its greeting, any other order, or an expired activation context | `unavailable` |
+| `activating` | silence for the whole activation timeout without a configured readiness probe, or a readiness probe that is not acknowledged | `unavailable` |
 | `ready` | Acquire or PollOnce ending `ack`, `rejected`, or `no_send` | `ready` |
 | `ready` | transport timeout or other transport failure after possible transmission | `recovering` |
 | `ready` | success receipt that the operation decoder rejects | `unavailable` (endpoint retired) |
@@ -78,20 +80,21 @@ Acquire, PollOnce) returns a closed error, while a repeated Close returns
 success and the lifecycle state and retained historical records stay readable.
 
 Every successful activation opens a new lifecycle epoch, numbered in
-increasing order. An epoch pins one unfenced transport generation at a time.
-The first admitted exchange of an epoch pins that generation, and it must be
-strictly greater than the generation pinned by any earlier epoch of the same
-endpoint instance. A later recovery keeps that epoch and does not repeat the
-activation. It replaces a fenced generation with a successor generation in the
-same epoch, strictly greater than the fenced generation. Admission then
-requires that successor, so a retry is not left on the fenced generation. A
-record acquired on the fenced generation is historical and is not current. A
-Restart after the observed activation opens a successor endpoint instance in
-that same epoch, with empty admission, pins a strictly greater successor
-generation, and enters `ready` on the activation already observed. That
-Restart witness does not wait for a second exchange. A Restart before any
-successful activation enters `activating`, and its witness waits for the
-documented sequence. An old generation never serves a new epoch.
+increasing order. An epoch pins one generation of the current endpoint
+instance at a time. The first admitted exchange of an epoch pins that
+generation, and it must be strictly greater than the generation pinned by any
+earlier epoch of the same endpoint instance. A later recovery keeps that
+epoch and does not repeat the activation.
+It replaces a fenced generation with a successor generation in the same epoch, strictly greater than the fenced generation, and that successor belongs to the same endpoint instance.
+Admission then requires that successor, so a retry is not left on the fenced
+generation. A record acquired on the fenced generation is historical and is
+not current. A record is current only when its epoch, its endpoint instance,
+and its generation are the live ones. A Restart after an observed activation
+opens a successor endpoint instance in the same epoch, with empty admission,
+and enters `ready` on the activation already observed. That Restart sends no
+echo and does not wait for a second exchange. A Restart before any successful
+activation enters `activating`, and its driver waits for the documented
+exchange. An old generation never serves a new epoch.
 
 ## Admission rules
 
@@ -106,18 +109,20 @@ lock, for each exchange. A candidate is admitted only when all hold:
   A retired or replaced endpoint instance refuses every candidate.
 - The candidate carries the configured endpoint label and the configured node
   and function FC100.
-- The candidate carries the transport generation the current epoch pins now,
-  or, for the first exchange of an epoch, a generation newer than every earlier
-  epoch. After recovery replaces a fenced generation, or Restart after the
-  observed activation opens a successor instance, the epoch pins the successor
-  generation, and a candidate that still carries the replaced generation is
-  refused.
+- The candidate carries the transport generation the current epoch pins for
+  the current endpoint instance. For the first exchange of an epoch on that
+  instance, the generation is newer than every earlier epoch of the same
+  endpoint instance. After recovery replaces a fenced generation of that
+  instance, the epoch pins the successor generation of that instance, and a
+  candidate that still carries the replaced generation is refused. A Restart
+  after an observed activation opens a successor endpoint instance in the same
+  epoch, and a candidate that names the replaced instance is refused.
 
 The standard register-read admission of the owned endpoint (FC03 and FC04)
 admits nothing; this lifecycle never reads registers. The configuration itself
 is refused as `NO_SEND` unless it names an explicit endpoint label and local
 path, a qualified Gen3 profile, exactly the version `wc3_24_44_3`, an
-activation witness, valid time bounds, an attempt bound of 1 through 3, and a
+activation driver, valid time bounds, an attempt bound of 1 through 3, and a
 valid freshness and retention window for every configured operation. A Gen3
 version label that is known, or a `compatible_candidate`, but is not
 `wc3_24_44_3`, is refused: the operation contract is bound to that exact version
@@ -181,10 +186,10 @@ defines no separate cleanup budget: a cancelled or expired acquisition does not
 start recovery, leaves the endpoint fenced, and leaves the lifecycle
 `unavailable`. Restart, with its own caller-supplied deadline, is the bounded
 way back. When the one post-power activation has already been observed, the
-Restart witness is that observed activation: Restart does not wait for a second
-exchange, does not send a greeting, and enters `ready` on the successor
+retained activation report is that observed activation: Restart sends no echo
+and does not wait for a second exchange, and enters `ready` on the successor
 endpoint instance. When no activation has been observed, Restart enters
-`activating` and the witness reports the documented sequence within the
+`activating` and the driver reports the documented exchange within the
 activation timeout, or that timeout leaves the lifecycle `unavailable`.
 An implementation that adds a cleanup budget
 must document it as a finite, separately published bound before relying on it.
@@ -207,11 +212,11 @@ from the operation.
 - A last-known-good record is fresh while its age is non-negative and no longer
   than the freshness duration. It is discarded once its age exceeds the
   retention duration; the last attempt is discarded on the same rule.
-- A record is current only while the lifecycle is `ready` and the record was
-  acquired in the active epoch on the generation that epoch currently pins.
-  A record from a fenced generation, a replaced endpoint instance, or a closed
-  lifecycle remains historical evidence, may still be fresh by age, and is never
-  current.
+- A record is current only while the lifecycle is `ready` and its epoch, its
+  endpoint instance, and its generation are the live ones. A record from a
+  fenced generation, another endpoint instance, a replaced endpoint instance,
+  or a closed lifecycle remains historical evidence, may still be fresh by age,
+  and is never current.
 - A consumer that needs live state uses only records that are acknowledged,
   fresh, and current. A historical record is evidence, not a reading of the
   present state.
@@ -238,6 +243,8 @@ A record carries:
 - Cause text where applicable, the numeric Modbus exception status when one was
   received, and the numeric application status when a TEDAPI application error
   was decoded.
+- Activation report of the epoch, when an activation opened it, as specified
+  in the activation section.
 - The evidence state, from the table below.
 
 | State | Meaning | Value-bearing |
@@ -259,46 +266,57 @@ invented or zero-filled for a missing value.
 ## Activation prerequisite and the current NO_SEND gate
 
 An exchange is admitted only after the activation exchange of the
-[Gen3 HSC contract](gen3-hsc-rtu.md#serial-and-activation) has been
-observed. The device sends the greeting `TESLA` followed by NUL, six bytes.
-The host answers with those same six bytes. The device then sends the
-confirmation `PASS` followed by NUL, or `FAIL` followed by NUL and a new
-greeting. A listener that sends nothing never sees the confirmation. The
-exchange happens once after the charger gets power. A greeting the host sends
-at any other time is ignored. The echo window and the retry count are not
-established and must be measured. The lifecycle obtains reported bytes only
-from an injected activation witness and does not send the echo. A silent
-report is not the confirmation. The documented sequence is the greeting
-`TESLA` followed by NUL, six bytes, then those same six bytes, then `PASS`
-followed by NUL, compared byte for byte. A bare greeting, a greeting followed
-by `PASS` without those echoed six bytes, or `FAIL` followed by NUL, do
-not admit readiness. Comparison stays inside the
-activation timeout. A witness error, a timeout, a reset error, any
-other byte sequence, or an activation context that is already cancelled or
-expired when the report
-arrives leaves the lifecycle `unavailable`. The activation deadline is taken
-from the lifecycle clock before the witness is called. A witness report
-returned at or after that deadline is rejected regardless of whether the
-context timer has fired. A report delivered after the
-activation deadline never establishes readiness, even when its bytes match.
+[Gen3 HSC contract](gen3-hsc-rtu.md#serial-and-activation) has completed
+for the endpoint the lifecycle owns. The device sends the greeting `TESLA`
+followed by NUL. The host echo is those same bytes. The device then sends the
+confirmation `PASS` followed by NUL, or the refusal `FAIL` followed by NUL
+and a new greeting. The exchange happens once after the charger gets power.
+A greeting the host sends at any other time is ignored. The echo window, the
+retry count, and the host-side turnaround are not established and must be
+measured.
+
+The lifecycle drives the exchange through an injected activation driver on
+the endpoint it owns. The driver reports ordered events: the device greeting;
+the host echo, which is the same bytes as the greeting just received; then
+either the device confirmation, or a device refusal followed by a new
+greeting. Readiness requires a report that ends with the confirmation after a
+host echo of the immediately preceding greeting. A confirmation with no host
+echo, a refusal, a greeting without a confirmation, an echo that differs from
+its greeting, any other bytes, or any other order never admits readiness. The
+tokens are `TESLA`, `PASS` and `FAIL`, each followed by NUL, compared exactly.
+The activation deadline is taken from the lifecycle clock before the driver is called. A driver report returned at or after that deadline is rejected regardless of whether the context timer has fired.
+A report delivered after the activation deadline never establishes readiness, even when its bytes match.
 Cancellation is re-checked inside the readiness commit, under the lifecycle
 mutex that Close also takes, so a Close or cancellation cannot be overtaken by
-a late report.
+a late report. A driver error, a timeout, a reset error, or an activation
+context that is already cancelled or expired when the report arrives leaves
+the lifecycle `unavailable`.
 
-The witness never admits an exchange by itself; it only gates readiness.
-A configuration without a witness is `NO_SEND`. At the cited revision the
-production endpoint of the transport library exposes no pre-exchange raw bytes,
-so no production witness exists and a lifecycle cannot be constructed for live
-use. Two open items remove that gate and are tracked separately:
+The lifecycle retains the report of the activation that opened the current
+epoch: the events with their host-side monotonic offsets and, for each echo,
+the host-side interval from receipt of the last greeting byte to the start of
+the write, and the write duration.
+These are host-side values, not wire timing.
+This page publishes no measured duration or count for that report.
 
-- helianthus-docs-modbus issue 158 remains open. The echo window and the retry
-  count are not established and must be measured, and the relation of the
-  exchange to RTU framing is not established on this page.
-- helianthus-modbus issue 38 tracks the transport witness hook that would let a
-  production witness observe the activation bytes.
+An optional readiness probe is an explicitly configured use of the first
+configured read operation. It applies only when the driver reports silence for
+the whole activation timeout, meaning no event at all. An acknowledged result
+opens the epoch. Any other result leaves the lifecycle `unavailable`. It is
+never used after any event was reported.
+It is a transmission and it is off unless configured.
 
-Until both are closed the activation stage is a documented gate, not a
-qualified live step. This contract describes the byte comparison only.
+The only bytes the lifecycle causes to be transmitted are the planned read
+requests and the host echo of a greeting. The echo is sent only by a driver
+whose configuration selects the responder explicitly. A Restart after an
+observed activation sends no echo and does not wait for a second exchange.
+No mutation path exists. The driver never admits an exchange by itself; it
+only gates readiness.
+A configuration without a driver is `NO_SEND`. helianthus-docs-modbus issue 158 remains open.
+The echo window, the retry count, and the host-side turnaround are not
+established and must be measured, and the relation of the exchange to RTU
+framing is not established on this page. Until that measurement is published,
+those durations and that count stay unknown.
 
 ## What this contract does not claim
 
@@ -316,8 +334,8 @@ qualified live step. This contract describes the byte comparison only.
 - No Gen2 or legacy Wall Connector coverage, and no dispatch by function-code
   byte alone.
 - No promotion to a protocol-neutral model and no consumer binding.
-- No measured echo window or retry count. Both are not established and must
-  be measured.
+- No measured echo window, retry count, or host-side turnaround. Each is not
+  established and must be measured.
 
 ## Compatibility and versioning
 
@@ -352,11 +370,13 @@ is observed:
   application error.
 - Recovery continues past the acquisition deadline with no separately
   documented cleanup budget.
-- Readiness is established without the documented sequence, from a bare
-  greeting or from a greeting followed by `PASS` without the echoed six bytes,
-  after a witness error, or from a report delivered after its context expired.
+- Readiness from a confirmation with no host echo, a refusal, a greeting without a confirmation, an echo that differs from its greeting, any other bytes, or any other order.
+- A readiness probe used after any event was reported, or without explicit configuration.
+- A record from another endpoint instance counted as current.
 - Restart after the observed activation waits for a second exchange, or sends
-  a greeting.
+  an echo.
+- Readiness from a driver error, or from a report delivered after its context
+  expired.
 - Two lifecycle calls hold the in-flight slot, or a concurrent caller waits
   instead of failing fast.
 - Any mutation request is constructed or sent.

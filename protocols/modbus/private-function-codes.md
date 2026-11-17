@@ -155,7 +155,7 @@ short write, malformed length or CRC, and unexpected or late frame fence the
 affected generation. A fenced or quarantined endpoint
 admits no successor until its bounded recovery completes; a replacement starts
 only in its successor generation. One endpoint has exactly one in-flight
-exchange, shared by FC03/FC04 reads and private-function exchanges. Both paths
+exchange, shared by FC03/FC04 reads, private-function exchanges, and the activation echo exchange. Those exchanges
 share lifecycle generation, request identifier allocation, and the same fence
 and `Recover` boundary. There is no batching, scan, broadcast, or implicit
 retry admission. The standard read path admits no standard write/control
@@ -236,6 +236,32 @@ The transport owns endpoint lifecycle, raw evidence, framing, and correlation.
 The registry still owns profile qualification and read/private-operation admission;
 vendor codecs own decoding; semantic projection, gateway composition, and
 persistence policy remain outside this contract.
+
+## Opt-in activation echo exchange
+
+The production endpoint has a separate opt-in activation echo exchange.
+It is not an FC03 read, an FC04 read, or a private-function exchange.
+It shares their single-flight slot, lifecycle generation, and fence boundary.
+
+The caller supplies opaque byte sequences for the greeting, the confirmation,
+and the refusal. The transport holds no vendor token.
+
+The exchange transmits only exact copies of the configured greeting, each in
+one write, each only after the whole greeting has been received, and each
+only after an upstream admission approves that echo.
+The number of echoes is a configured resource bound from 1 through 16 with no default, and it is not the device's retry count.
+Each echo is sent only when the host-side interval from the last greeting byte
+to the start of the write is within a configured budget. The budget has no
+default. A late echo is not sent and is recorded.
+The echo starts when the last greeting byte has been received and does not wait for a frame-end gap.
+Bytes of the endpoint's own transmission that the interface loops back are not a new greeting.
+Received bytes that are not a configured token are skipped and kept as bounded evidence.
+A frame addressed to another node is not a token of this exchange.
+
+A write fault or a short write fences the generation.
+Cancellation while only listening does not fence.
+The zero configuration is unusable and transmits nothing.
+No timing is established. The recorded intervals and durations are host-side values, not wire timing.
 
 ## Validation and compatibility
 

@@ -33,6 +33,9 @@ Read the native contracts before interpreting observations:
 | Configured Gen3 serial format, bounded Modbus RTU envelopes, and profile-scoped private functions | Established native specification facts in the contracts above; not a new observation or qualification result. |
 | Observed greeting, host echo, and confirmation or failure | The HSC page records the device greeting `TESLA` followed by NUL, six bytes, the host echo of those same six bytes, then the confirmation `PASS` followed by NUL or `FAIL` followed by NUL and a new greeting. The exchange happens once after the charger gets power. A listener that sends nothing never sees the confirmation. A greeting the host sends at any other time is ignored. This record is not a qualification result. |
 | Echo window, retry count, timing bounds, RTU framing relation, and repetition after reset | **Unknown**. The echo window and the retry count are not established and must be measured. Do not prefill those fields from the observed exchange or from a passing offline comparator. |
+| Host-side echo turnaround | **Unknown** until measured. The recorded value is a host-side interval, not wire timing. |
+| Number of echoes | **Unknown** until measured. The recorded count is a host-side value, not wire timing. |
+| Confirmation | **Unknown** until measured. The recorded confirmation is a host-side value, not wire timing. |
 | A future bounded native observation | **Proven** only for the fact directly supported by publishable evidence, with its stated family/version and limits; qualification remains a separate decision. |
 
 This worksheet states the observed greeting, echo, and confirmation or failure.

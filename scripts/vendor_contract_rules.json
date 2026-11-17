@@ -86,6 +86,14 @@
       "page": "protocols/modbus/private-function-codes.md",
       "section": null,
       "kind": "heading",
+      "value": "## Opt-in activation echo exchange",
+      "reason": "Required section of the private-function transport contract: Opt-in activation echo exchange."
+    },
+    {
+      "contract": "private_function",
+      "page": "protocols/modbus/private-function-codes.md",
+      "section": null,
+      "kind": "heading",
       "value": "## Validation and compatibility",
       "reason": "Required section of the private-function transport contract: Validation and compatibility."
     },
@@ -342,8 +350,8 @@
       "page": "protocols/modbus/private-function-codes.md",
       "section": "## Configured production read and private-function endpoint",
       "kind": "statement",
-      "value": "One endpoint has exactly one in-flight exchange, shared by FC03/FC04 reads and private-function exchanges.",
-      "reason": "Reads and private exchanges share one in-flight exchange."
+      "value": "One endpoint has exactly one in-flight exchange, shared by FC03/FC04 reads, private-function exchanges, and the activation echo exchange.",
+      "reason": "Reads, private exchanges, and the activation echo share one in-flight exchange."
     },
     {
       "contract": "private_function",
@@ -448,6 +456,86 @@
       "kind": "statement",
       "value": "The request payload format, operation-specific frame count, order, terminal rule, and read-only classification remain registry-owned.",
       "reason": "Operation semantics stay with the registry."
+    },
+    {
+      "contract": "private_function",
+      "page": "protocols/modbus/private-function-codes.md",
+      "section": "## Opt-in activation echo exchange",
+      "kind": "statement",
+      "value": "The production endpoint has a separate opt-in activation echo exchange. It is not an FC03 read, an FC04 read, or a private-function exchange. It shares their single-flight slot, lifecycle generation, and fence boundary.",
+      "reason": "The activation echo is a separate exchange on the same single-flight, generation, and fence boundary."
+    },
+    {
+      "contract": "private_function",
+      "page": "protocols/modbus/private-function-codes.md",
+      "section": "## Opt-in activation echo exchange",
+      "kind": "statement",
+      "value": "The caller supplies opaque byte sequences for the greeting, the confirmation, and the refusal. The transport holds no vendor token.",
+      "reason": "Greeting, confirmation, and refusal bytes are caller-supplied; transport stores no vendor token."
+    },
+    {
+      "contract": "private_function",
+      "page": "protocols/modbus/private-function-codes.md",
+      "section": "## Opt-in activation echo exchange",
+      "kind": "statement",
+      "value": "The exchange transmits only exact copies of the configured greeting, each in one write, each only after the whole greeting has been received, and each only after an upstream admission approves that echo.",
+      "reason": "Each echo is one exact copy, written only after the whole greeting and an upstream admission."
+    },
+    {
+      "contract": "private_function",
+      "page": "protocols/modbus/private-function-codes.md",
+      "section": "## Opt-in activation echo exchange",
+      "kind": "statement",
+      "value": "The number of echoes is a configured resource bound from 1 through 16 with no default, and it is not the device's retry count.",
+      "reason": "The echo count is a host resource bound, not the device retry count."
+    },
+    {
+      "contract": "private_function",
+      "page": "protocols/modbus/private-function-codes.md",
+      "section": "## Opt-in activation echo exchange",
+      "kind": "statement",
+      "value": "Each echo is sent only when the host-side interval from the last greeting byte to the start of the write is within a configured budget. The budget has no default. A late echo is not sent and is recorded.",
+      "reason": "A late echo is recorded and not sent; the budget has no default."
+    },
+    {
+      "contract": "private_function",
+      "page": "protocols/modbus/private-function-codes.md",
+      "section": "## Opt-in activation echo exchange",
+      "kind": "statement",
+      "value": "The echo starts when the last greeting byte has been received and does not wait for a frame-end gap.",
+      "reason": "The echo does not wait for a frame-end gap."
+    },
+    {
+      "contract": "private_function",
+      "page": "protocols/modbus/private-function-codes.md",
+      "section": "## Opt-in activation echo exchange",
+      "kind": "statement",
+      "value": "Bytes of the endpoint's own transmission that the interface loops back are not a new greeting.",
+      "reason": "Looped-back bytes of this endpoint are not a new greeting."
+    },
+    {
+      "contract": "private_function",
+      "page": "protocols/modbus/private-function-codes.md",
+      "section": "## Opt-in activation echo exchange",
+      "kind": "statement",
+      "value": "Received bytes that are not a configured token are skipped and kept as bounded evidence. A frame addressed to another node is not a token of this exchange.",
+      "reason": "Non-token bytes, including a frame for another node, are skipped evidence."
+    },
+    {
+      "contract": "private_function",
+      "page": "protocols/modbus/private-function-codes.md",
+      "section": "## Opt-in activation echo exchange",
+      "kind": "statement",
+      "value": "A write fault or a short write fences the generation. Cancellation while only listening does not fence. The zero configuration is unusable and transmits nothing.",
+      "reason": "A write fault fences; listen-only cancellation does not; the zero configuration transmits nothing."
+    },
+    {
+      "contract": "private_function",
+      "page": "protocols/modbus/private-function-codes.md",
+      "section": "## Opt-in activation echo exchange",
+      "kind": "statement",
+      "value": "No timing is established. The recorded intervals and durations are host-side values, not wire timing.",
+      "reason": "Recorded echo timing is host-side and not established as wire timing."
     },
     {
       "contract": "fronius_qualification",
