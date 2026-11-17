@@ -115,6 +115,9 @@ for mutation in \
   's/A retired or replaced endpoint instance refuses every candidate\./A retired or replaced endpoint instance admits candidates./' \
   's/it is a classifier fault that fences the transport generation/it is accepted as a terminal in the same generation/' \
   's/A later recovery does not repeat the activation\./A later recovery repeats the activation./' \
+  's/It replaces a fenced generation with a successor generation in the/It keeps the fenced generation in the/' \
+  's/Restart witness does not wait for a second exchange/Restart witness waits for a second exchange/' \
+  's/`TESLA` followed by NUL, six bytes, then those same six bytes, then `PASS`/the greeting alone/' \
   's/A failed attempt, whatever its evidence state, never replaces the last/A failed attempt replaces the last/' \
   's/is never promoted to `ack`/is promoted to `ack`/' \
   's/never carry a value, even when response frames were received\./carry a value when response frames were received./' \

@@ -119,9 +119,11 @@ against the transport owner. That validation and the readiness commit must be
 serialized with Close, fencing and recovery so they cannot be overtaken by a
 late result. An adapter must document how it provides this atomic boundary;
 a detached snapshot or an unlocked check followed by a commit is insufficient.
-This requirement does not prescribe a witness implementation or change epoch
-pinning: the existing lifecycle still pins generation at its first admitted
-exchange and rejects old generations at dispatch.
+This requirement does not prescribe a witness implementation or a second
+activation. The lifecycle pins one unfenced generation for the epoch: the
+first admitted exchange pins it, a later recovery replaces a fenced generation
+with a successor in the same epoch, and dispatch rejects a fenced or older
+generation.
 
 No result is usable twice for separate activation attempts. The registry binds
 the observation identity to its current activation attempt. An invalidated
