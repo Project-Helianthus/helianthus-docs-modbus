@@ -114,7 +114,7 @@ for mutation in \
   's/admits nothing; this lifecycle never reads registers\./admits register reads; this lifecycle reads registers./' \
   's/A retired or replaced endpoint instance refuses every candidate\./A retired or replaced endpoint instance admits candidates./' \
   's/it is a classifier fault that fences the transport generation/it is accepted as a terminal in the same generation/' \
-  's/Recovery and re-activation run inside the acquisition deadline\./Recovery and re-activation run outside the acquisition deadline./' \
+  's/A later recovery does not repeat the activation\./A later recovery repeats the activation./' \
   's/A failed attempt, whatever its evidence state, never replaces the last/A failed attempt replaces the last/' \
   's/is never promoted to `ack`/is promoted to `ack`/' \
   's/never carry a value, even when response frames were received\./carry a value when response frames were received./' \

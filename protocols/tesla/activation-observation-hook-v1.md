@@ -22,14 +22,17 @@ Read the public native contracts first:
 | Claim | Evidence grade | Separate disposition |
 | --- | --- | --- |
 | Existing pages specify native transport bounds and a lifecycle witness comparison | Proven as published contract requirements, not as device observations | No new implementation or qualification evidence here |
-| Reported activation token exchange | Hypothesis about the physical exchange | The lifecycle comparison remains a prerequisite, not proof of activation |
-| Token origin, relationship to RTU framing, and repetition after reset | Unknown; docs-modbus #158 remains unresolved | No invented direction, reset sequence or framing rule |
+| Observed greeting, host echo, and confirmation or failure | Recorded on the HSC page. This hook does not transmit the echo | A silent listener never sees the confirmation, so the confirmation is not this hook's success witness |
+| Echo window, retry count, relationship to RTU framing, and repetition after reset | Unknown; docs-modbus #158 remains unresolved | No duration, tick count, or retry count |
 | Proposed hook below | Proposed interface requirements, not an observed fact | Acquisition/admission and live qualification remain independently gated |
 
-The HSC wording describes device-originated tokens, while the lifecycle and
-worksheet explicitly leave origin and timing open. This page preserves that
-uncertainty. It does not resolve it by treating a receive-side byte match as
-attribution. Matching bytes alone cannot establish live qualification.
+The HSC page records the observed exchange: the device greeting, the host echo
+of the same six bytes, then the device confirmation or a failure and a new
+greeting. The exchange happens once after the charger gets power. This hook
+stays a listener. It has no transmit path, echo responder, or retry loop, and
+a silent listener's bytes are not a success witness for the confirmation. The
+echo window and the retry count are not established and must be measured.
+Matching bytes alone cannot establish live qualification.
 
 ## Ownership and current versus proposed behavior
 
@@ -100,7 +103,7 @@ background reader alive after return.
 | Partial/empty bytes, read error or segment exhaustion | Return partial/empty evidence with cause; invalidate that observation | Readiness remains unavailable; no implicit retry |
 | Cancellation or return at/after deadline, even with matching bytes | Invalidate observation and retain bytes as history; timer callback scheduling cannot extend the deadline | Reject readiness; no recovery after a spent acquisition budget |
 | Close, endpoint loss/replacement, fencing or recovery begins | Invalidate active and previously returned observations for that instance/generation; interrupt active reader before any successor consumes bytes | No successor use of old evidence; closed remains terminal |
-| Recovery succeeds or Restart replaces endpoint | Existing lifecycle obtains a successor generation/instance and requires fresh activation | Fresh observation required; never rebind history |
+| Recovery succeeds or Restart replaces endpoint | Existing lifecycle obtains a successor generation/instance. A later recovery does not repeat the activation, and this hook does not transmit | Never rebind history and never echo |
 | Concurrent caller or invalid input | Refuse without consuming stream bytes | No send, no queued observation |
 
 The start boundary must distinguish newly received bytes from stale buffered
@@ -131,19 +134,22 @@ endpoint and generation; the observation grants no bypass or lasting send right.
 These are constructed offline examples, not captures or firmware evidence.
 All offsets are relative synthetic milliseconds in clock domain C. Baseline:
 label E, instance I, generation 7, observation A, deadline 50, requested count
-11 and segment cap 8. The byte comparator below is only the existing lifecycle
-comparator: `TESLA` + NUL + `PASS` + NUL. No example instructs transmission.
+6 and segment cap 8. These offsets are not an echo window or a retry count.
+The listener records received bytes only. Capturing the greeting `TESLA`
+followed by NUL is not the confirmation. A silent listener never treats `PASS`
+followed by NUL as a success witness. No example instructs transmission, an
+echo responder, or a retry loop.
 
 | Case; minimal evidence | Expected transport result | Registry/lifecycle expectation |
 | --- | --- | --- |
-| Fragmented: `TE` at 1, `SLA\0` at 2, `PA` at 3, `SS\0` at 4; return 5, no invalidation | `captured`, four segments, 11 bytes, original offsets retained | Exact ordered comparison may satisfy the offline comparator if all independent prerequisites hold; physical activation/qualification remains Unknown |
-| Late: same bytes at 1 through 4, return exactly 50 | Historical bytes; deadline invalidation regardless of timer delivery | No readiness, even though bytes match |
+| Fragmented greeting: `TE` at 1, `SLA\0` at 2; return 3, no invalidation | `captured`, two segments, 6 bytes, original offsets retained | Greeting evidence only. Not a confirmation and not a silent success witness; physical activation/qualification remains Unknown |
+| Late: same bytes at 1 through 2, return exactly 50 | Historical bytes; deadline invalidation regardless of timer delivery | No readiness, even though the greeting bytes match |
 | Wrong generation: result is generation 7; owner has advanced to 8 before commit | Detached result keeps generation 7 | Reject; no relabeling or successor admission |
-| Canceled: complete bytes at 4; cancellation before readiness commit | Retain bytes; observation invalidated even if capture had returned | No readiness; matching data cannot overtake cancellation |
-| Partial: only `TESLA\0` before deadline | `deadline`, six bytes; no fabricated suffix | No readiness; keep partial evidence |
-| Leading unrelated byte: requested window starts `X` followed by first ten comparator bytes | `captured` window with unexpected bytes, not a token search | Exact comparison fails; do not trim or extend window to find a match |
-| Close/recovery race: complete result returns at 5; Close or recovery wins before commit | Original result remains detached historical evidence | No readiness; a fresh successor observation is required if lifecycle permits restart |
-| Segment exhaustion: eight one-byte segments, still short of 11 | `segment_bound`, eight exact bytes | No readiness; no automatic retry |
+| Canceled: complete greeting bytes at 2; cancellation before readiness commit | Retain bytes; observation invalidated even if capture had returned | No readiness; matching data cannot overtake cancellation |
+| Partial: only `TES` before deadline | `deadline`, three bytes; no fabricated suffix | No readiness; keep partial evidence |
+| Leading unrelated byte: requested window starts `X` followed by the first five greeting bytes | `captured` window with unexpected bytes, not a token search | Exact comparison fails; do not trim or extend window to find a match |
+| Close/recovery race: complete result returns at 3; Close or recovery wins before commit | Original result remains detached historical evidence | No readiness; history is not rebound, and recovery does not transmit an echo |
+| Segment exhaustion: cap 4, four one-byte segments, still short of 6 | `segment_bound`, four exact bytes | No readiness; no automatic retry |
 
 The following are reasoned falsifiers for future implementation review, not
 executed mutation tests. Each changes one field of the otherwise unchanged

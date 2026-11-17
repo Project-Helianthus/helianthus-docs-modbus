@@ -438,8 +438,8 @@
       "page": "protocols/tesla/gen3-hsc-rtu.md",
       "section": "## Serial and activation",
       "kind": "statement",
-      "value": "`TESLA` followed by NUL and then `PASS` followed by NUL",
-      "reason": "Exact device-originated activation sequence."
+      "value": "The device sends the greeting `TESLA` followed by NUL, six bytes. The host answers with those same six bytes.",
+      "reason": "Observed device greeting and the host echo of those six bytes."
     },
     {
       "contract": "generation",
@@ -1462,8 +1462,8 @@
       "page": "protocols/tesla/gen3-read-acquisition-v1.md",
       "section": "## Retry, deadline, and recovery budgets",
       "kind": "statement",
-      "value": "Recovery and re-activation run inside the acquisition deadline.",
-      "reason": "Recovery is bounded."
+      "value": "A later recovery does not repeat the activation.",
+      "reason": "A later recovery does not repeat the activation."
     },
     {
       "contract": "read_acquisition",

@@ -62,7 +62,7 @@ The lifecycle is in exactly one externally visible state: `stopped`,
 | `ready` | Acquire or PollOnce ending `ack`, `rejected`, or `no_send` | `ready` |
 | `ready` | transport timeout or other transport failure after possible transmission | `recovering` |
 | `ready` | success receipt that the operation decoder rejects | `unavailable` (endpoint retired) |
-| `recovering` | transport recovery succeeds | `activating` |
+| `recovering` | transport recovery succeeds | `ready` |
 | `recovering` | recovery fails, or the acquisition budget is already spent | `unavailable` |
 | `unavailable` | Restart | `activating` |
 | any state | Close | `closed` |
@@ -80,8 +80,8 @@ Every successful activation opens a new lifecycle epoch, numbered in
 increasing order. An epoch binds exactly one transport generation: the first
 admitted exchange of an epoch pins the transport generation for that epoch,
 and the pinned generation must be strictly greater than the generation pinned
-by any earlier epoch of the same endpoint instance. Recovery therefore always
-yields a successor epoch and generation, and a Restart opens a successor
+by any earlier epoch of the same endpoint instance. A later recovery keeps
+that epoch and does not repeat the activation. A Restart opens a successor
 endpoint instance whose admission starts empty; an old generation never serves a
 new epoch.
 
@@ -142,7 +142,7 @@ enforced by the implementation, not defaults and not minimums.
 | Budget | Rule |
 |---|---|
 | Attempts | `MaxAttempts` is 1 through 3 exchanges per acquisition. |
-| Acquisition deadline | One deadline covers all attempts, recovery, and re-activation of the acquisition. It is at least one response timeout and at most five minutes. |
+| Acquisition deadline | One deadline covers all attempts and recovery of the acquisition. It is at least one response timeout and at most five minutes. |
 | Response timeout | The response timeout is positive and at most thirty seconds. It applies per received response frame, not to the whole exchange: the transport restarts it for each frame. |
 | Response count | An exchange accepts at most eight response frames. |
 | Activation timeout | Each activation is bounded by a positive activation timeout of at most sixty seconds, within the acquisition deadline when it runs inside an acquisition. |
@@ -154,8 +154,8 @@ an exchange, and of the acquisition that contains it, is the acquisition
 deadline.
 
 A retry happens only when all hold: the previous attempt ended `timeout` or
-`indeterminate` after possible transmission, transport recovery succeeded, a
-fresh activation succeeded in a successor epoch, attempts remain, and the
+`indeterminate` after possible transmission, transport recovery succeeded,
+the activation is not repeated, attempts remain, and the
 acquisition deadline has not expired. An exchange ending `ack`, `rejected`
 (Modbus exception or TEDAPI application error), or `no_send` is terminal and
 is not retried. A wrong-tag, unrelated, or otherwise uncorrelated response is
@@ -163,7 +163,7 @@ not a terminal: it is a classifier fault that fences the transport generation
 and follows the recovery path, so it can never satisfy this or a later request
 and is never retried inside the same generation.
 
-Recovery and re-activation run inside the acquisition deadline. This contract
+A later recovery does not repeat the activation. This contract
 defines no separate cleanup budget: a cancelled or expired acquisition does not
 start recovery, leaves the endpoint fenced, and leaves the lifecycle
 `unavailable`; Restart, with its own caller-supplied deadline and the activation
@@ -238,13 +238,20 @@ invented or zero-filled for a missing value.
 
 ## Activation prerequisite and the current NO_SEND gate
 
-An exchange is admitted only after the device-originated activation sequence of
-the [Gen3 HSC contract](gen3-hsc-rtu.md#serial-and-activation) has been
-observed: the bytes `TESLA` followed by NUL and then `PASS` followed by NUL. The
-lifecycle obtains the observed bytes only from an injected activation witness
-and compares them byte for byte with that sequence within the activation
-timeout. A witness error, a timeout, a reset error, any other byte sequence, or
-an activation context that is already cancelled or expired when the report
+An exchange is admitted only after the activation exchange of the
+[Gen3 HSC contract](gen3-hsc-rtu.md#serial-and-activation) has been
+observed. The device sends the greeting `TESLA` followed by NUL, six bytes.
+The host answers with those same six bytes. The device then sends the
+confirmation `PASS` followed by NUL, or `FAIL` followed by NUL and a new
+greeting. A listener that sends nothing never sees the confirmation. The
+exchange happens once after the charger gets power. A greeting the host sends
+at any other time is ignored. The echo window and the retry count are not
+established and must be measured. The lifecycle obtains reported bytes only
+from an injected activation witness and does not send the echo. A silent
+report is not the confirmation. Comparison with the observed exchange stays
+inside the activation timeout. A witness error, a timeout, a reset error, any
+other byte sequence, or an activation context that is already cancelled or
+expired when the report
 arrives leaves the lifecycle `unavailable`. The activation deadline is taken
 from the lifecycle clock before the witness is called. A witness report
 returned at or after that deadline is rejected regardless of whether the
@@ -253,7 +260,6 @@ activation deadline never establishes readiness, even when its bytes match.
 Cancellation is re-checked inside the readiness commit, under the lifecycle
 mutex that Close also takes, so a Close or cancellation cannot be overtaken by
 a late report.
-Activation is required again after every recovery and every restart.
 
 The witness never admits an exchange by itself; it only gates readiness.
 A configuration without a witness is `NO_SEND`. At the cited revision the
@@ -261,10 +267,9 @@ production endpoint of the transport library exposes no pre-exchange raw bytes,
 so no production witness exists and a lifecycle cannot be constructed for live
 use. Two open items remove that gate and are tracked separately:
 
-- helianthus-docs-modbus issue 158 asks for a publishable clarification of the
-  activation exchange (which side originates each token, how the sequence is
-  timed against RTU framing, and whether it repeats after a device reset). This
-  page fixes none of those points.
+- helianthus-docs-modbus issue 158 remains open. The echo window and the retry
+  count are not established and must be measured, and the relation of the
+  exchange to RTU framing is not established on this page.
 - helianthus-modbus issue 38 tracks the transport witness hook that would let a
   production witness observe the activation bytes.
 
@@ -287,7 +292,8 @@ qualified live step. This contract describes the byte comparison only.
 - No Gen2 or legacy Wall Connector coverage, and no dispatch by function-code
   byte alone.
 - No promotion to a protocol-neutral model and no consumer binding.
-- No resolution of the activation exchange questions above.
+- No measured echo window or retry count. Both are not established and must
+  be measured.
 
 ## Compatibility and versioning
 
@@ -317,11 +323,11 @@ is observed:
 - A configuration bound to a Gen3 version other than `wc3_24_44_3` constructs,
   or an operation outside the five listed pairs is acquired.
 - More than three attempts, an attempt after the acquisition deadline expired,
-  a retry without recovery and a fresh activation, or a retry after an
-  exception or application error.
-- Recovery or re-activation continues past the acquisition deadline with no
-  separately documented cleanup budget.
-- Readiness is established without the exact activation sequence, after a
+  a retry without recovery, a retry that repeats the activation, or a retry
+  after an exception or application error.
+- Recovery continues past the acquisition deadline with no separately
+  documented cleanup budget.
+- Readiness is established without the observed activation exchange, after a
   witness error, or from a report delivered after its context expired.
 - Two lifecycle calls hold the in-flight slot, or a concurrent caller waits
   instead of failing fast.
