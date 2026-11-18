@@ -958,8 +958,8 @@
       "page": "protocols/tesla/gen3-current-limit-operation-v1.md",
       "section": null,
       "kind": "heading",
-      "value": "## On-site observations required before a live setter",
-      "reason": "Observations required before any live current-limit setter."
+      "value": "## Bench verification",
+      "reason": "Bench verification rows for the current-limit operation."
     },
     {
       "contract": "current_limit_operation",
@@ -1172,26 +1172,42 @@
     {
       "contract": "current_limit_operation",
       "page": "protocols/tesla/gen3-current-limit-operation-v1.md",
-      "section": "## On-site observations required before a live setter",
+      "section": "## Bench verification",
       "kind": "statement",
-      "value": "Every row is Unknown.",
-      "reason": "Each required observation stays Unknown."
+      "value": "Each row is a verification run on a bench and recorded with a level: not verified on hardware, or verified on hardware.",
+      "reason": "Each bench row carries a verification level."
     },
     {
       "contract": "current_limit_operation",
       "page": "protocols/tesla/gen3-current-limit-operation-v1.md",
-      "section": "## On-site observations required before a live setter",
+      "section": "## Bench verification",
       "kind": "statement",
-      "value": "The page authorizes no transmission.",
-      "reason": "The observations authorize no transmission."
+      "value": "No implementation, publication, promotion or operation waits for a row.",
+      "reason": "Nothing waits for a bench row."
     },
     {
       "contract": "current_limit_operation",
       "page": "protocols/tesla/gen3-current-limit-operation-v1.md",
-      "section": "## On-site observations required before a live setter",
+      "section": "## Bench verification",
       "kind": "statement",
-      "value": "Neither a t7 observation nor a t25 observation qualifies that operation.",
-      "reason": "An observation of t7 or t25 does not qualify a live setter."
+      "value": "A recorded result that contradicts this page is a defect report against this page.",
+      "reason": "A contradicting bench result is a defect report against this page."
+    },
+    {
+      "contract": "current_limit_operation",
+      "page": "protocols/tesla/gen3-current-limit-operation-v1.md",
+      "section": "## Bench verification",
+      "kind": "statement",
+      "value": "Enable and disable are outside this contract.",
+      "reason": "Enable and disable stay outside this contract."
+    },
+    {
+      "contract": "current_limit_operation",
+      "page": "protocols/tesla/gen3-current-limit-operation-v1.md",
+      "section": "## Bench verification",
+      "kind": "statement",
+      "value": "This page still refuses a universal maximum.",
+      "reason": "The page refuses a universal maximum."
     },
     {
       "contract": "read_acquisition",

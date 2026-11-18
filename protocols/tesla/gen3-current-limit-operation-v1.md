@@ -233,44 +233,46 @@ timeouts, cancellation/short write, exceptions, duplicate identities, and
 late-frame recovery without automatic mutation retry. These are required
 downstream checks, not results reported by this documentation change.
 
-## On-site observations required before a live setter
+## Bench verification
 
-Every row is Unknown. The page authorizes no transmission.
-Neither a t7 observation nor a t25 observation qualifies that operation.
-An on-site run, when one is later made, is a state-changing action and needs
-operator confirmation at action time. This page does not authorize that run
-and transmits nothing.
+Each row is a verification run on a bench and recorded with a level: not
+verified on hardware, or verified on hardware. No implementation,
+publication, promotion or operation waits for a row.
+A recorded result that contradicts this page is a defect report against this page.
+A bench run is a state-changing action performed by a person who confirms it
+at action time.
 
-1. A t7 body that changes only `maxOutputCurrentAmps`, the t8 settings that
-   come back, and proof that every other settings member matches the settings
-   read immediately before. If t8 carries a member the request did not carry,
-   record the before and the after. A body that changes any other member is
-   not a current-only setter. Record requested amperes against returned
-   amperes as match, mismatch, or absent.
-2. A t25 triple with explicit `inhibitCharging`, a finite `limitTimeoutS`
-   inside the range this page already states (1 through 86399 seconds), and
-   explicit `limitCurrentMaxAmps`; the empty-body t26 ACK; the t27 and t28
-   readback of the provisional triple and of the separate configured-current
-   value. Record that t28 is not effective or pilot current. Any extra
-   member is evidence, not a new fact.
-3. Device behavior after `inhibitCharging` true and after false: whether
-   charging current falls and stays at zero, whether it resumes when the
-   flag is false or when the timeout elapses, and what expiry does. Whether
-   any control other than `inhibitCharging` pauses charging. If one is seen,
-   its request and its response are recorded. Until that observation exists,
-   enable and disable stay outside this contract.
-4. The unit's own reported maximum, taken from a field the public pages
-   already name (a t8 settings member, or a member of an observation the
-   read lifecycle already admits), set beside the installation limit the
-   operator supplies. A missing reported maximum stays unknown and
-   continues to deny dispatch. This page still refuses a universal
-   maximum.
-5. Which already-named read fields, if any, report fault, interlock, and
-   charging state, and which of their values would permit a limit or a
-   pause. Record absence when none of the five observation operations, t8,
-   or t28 carries such a member. Invent no register and assign no meaning
-   that is not in the response.
-6. The host-side interval from the start of the t7 or t25 write to the
-   correlated terminal, and the host-side interval from t26 to a stable
-   t28. These are host-side observations, not wire timing. Publish no
-   number.
+1. Level: not verified on hardware. A t7 body that changes only
+   `maxOutputCurrentAmps`, the t8 settings that come back, and proof that
+   every other settings member matches the settings read immediately before.
+   If t8 carries a member the request did not carry, record the before and
+   the after. A body that changes any other member is not a current-only
+   setter. Record requested amperes against returned amperes as match,
+   mismatch, or absent.
+2. Level: not verified on hardware. A t25 triple with explicit
+   `inhibitCharging`, a finite `limitTimeoutS` inside the range this page
+   already states (1 through 86399 seconds), and explicit
+   `limitCurrentMaxAmps`; the empty-body t26 ACK; the t27 and t28 readback
+   of the provisional triple and of the separate configured-current value.
+   Record that t28 is not effective or pilot current. Any extra member is
+   evidence, not a new fact.
+3. Level: not verified on hardware. Device behavior after `inhibitCharging`
+   true and after false: whether charging current falls and stays at zero,
+   whether it resumes when the flag is false or when the timeout elapses,
+   and what expiry does. Whether any control other than `inhibitCharging`
+   pauses charging. If one is seen, its request and its response are
+   recorded. Enable and disable are outside this contract.
+4. Level: not verified on hardware. The unit's own reported maximum, taken
+   from a field the public pages already name (a t8 settings member, or a
+   member of an observation the read lifecycle already admits), set beside
+   the installation limit the operator supplies. A missing reported maximum
+   stays unknown. This page still refuses a universal maximum.
+5. Level: not verified on hardware. Which already-named read fields, if any,
+   report fault, interlock, and charging state, and which of their values
+   would permit a limit or a pause. Record absence when none of the five
+   observation operations, t8, or t28 carries such a member. Invent no
+   register and assign no meaning that is not in the response.
+6. Level: not verified on hardware. The host-side interval from the start of
+   the t7 or t25 write to the correlated terminal, and the host-side
+   interval from t26 to a stable t28. These are host-side observations, not
+   wire timing. Publish no number.

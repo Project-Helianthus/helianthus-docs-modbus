@@ -79,8 +79,8 @@ for mutation in \
   's/Local generation numbers are not wire transaction identifiers\./Local generation numbers prove wire correlation./' \
   's/Recovery never resends the mutation/Recovery resends the mutation/' \
   's/| `ACK` |/| `SUCCESS` |/' \
-  's/Neither a t7 observation nor a t25 observation qualifies that operation\./These observations qualify a live setter./' \
-  's/The page authorizes no transmission\./The page authorizes transmission./'; do
+  's/A recorded result that contradicts this page is a defect report against this page\./A recorded result qualifies a live setter./' \
+  's/Enable and disable are outside this contract\./Enable and disable are required before a live setter./'; do
   sed "$mutation" "$tesla_current_limit_document" > "$tesla_current_limit_fixture"
   if "$repo_root/scripts/check_docs.sh" --check-tesla-current-limit-operation "$tesla_current_limit_fixture"; then
     echo "Tesla current-limit safety mutation was accepted: $mutation" >&2
