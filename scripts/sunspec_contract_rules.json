@@ -1784,6 +1784,374 @@
       "kind": "forbidden",
       "value": "candidate creates a decoder key|candidate is admitted|candidate emits a typed fact|candidate causes a new request|candidate terminates a chain|Model 708[^.]*candidate|Model 709[^.]*candidate",
       "reason": "The selection contract must not exceed its docs-only boundary: no decoder key, admission, typed fact, request or termination, and no Model 708 or 709 candidate."
+    },
+    {
+      "contract": "v1_model_families",
+      "page": "protocols/sunspec/read-only-core-v1-model-families.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Monitoring capabilities",
+      "reason": "Monitoring capability: required heading of the V1 model-families guide: ## Monitoring capabilities"
+    },
+    {
+      "contract": "v1_model_families",
+      "page": "protocols/sunspec/read-only-core-v1-model-families.md",
+      "section": null,
+      "kind": "heading",
+      "value": "### Inverter monitoring",
+      "reason": "Monitoring capability: required heading of the V1 model-families guide: ### Inverter monitoring"
+    },
+    {
+      "contract": "v1_model_families",
+      "page": "protocols/sunspec/read-only-core-v1-model-families.md",
+      "section": null,
+      "kind": "heading",
+      "value": "### DER observed state",
+      "reason": "Monitoring capability: required heading of the V1 model-families guide: ### DER observed state"
+    },
+    {
+      "contract": "v1_model_families",
+      "page": "protocols/sunspec/read-only-core-v1-model-families.md",
+      "section": null,
+      "kind": "heading",
+      "value": "### MPPT inputs",
+      "reason": "Monitoring capability: required heading of the V1 model-families guide: ### MPPT inputs"
+    },
+    {
+      "contract": "v1_model_families",
+      "page": "protocols/sunspec/read-only-core-v1-model-families.md",
+      "section": null,
+      "kind": "heading",
+      "value": "### Storage",
+      "reason": "Monitoring capability: required heading of the V1 model-families guide: ### Storage"
+    },
+    {
+      "contract": "v1_model_families",
+      "page": "protocols/sunspec/read-only-core-v1-model-families.md",
+      "section": null,
+      "kind": "heading",
+      "value": "### Meters",
+      "reason": "Monitoring capability: required heading of the V1 model-families guide: ### Meters"
+    },
+    {
+      "contract": "v1_model_families",
+      "page": "protocols/sunspec/read-only-core-v1-model-families.md",
+      "section": "## Monitoring capabilities",
+      "kind": "statement",
+      "value": "Each fact's presence and whether it is required are declared from the public SunSpec model definitions.",
+      "reason": "Monitoring capability: V1 monitoring rule: Each fact's presence and whether it is required"
+    },
+    {
+      "contract": "v1_model_families",
+      "page": "protocols/sunspec/read-only-core-v1-model-families.md",
+      "section": "## Monitoring capabilities",
+      "kind": "statement",
+      "value": "An absent or unimplemented point is omitted and never reported as zero.",
+      "reason": "Monitoring capability: V1 monitoring rule: An absent or unimplemented point is omitted and"
+    },
+    {
+      "contract": "v1_model_families",
+      "page": "protocols/sunspec/read-only-core-v1-model-families.md",
+      "section": "## Monitoring capabilities",
+      "kind": "statement",
+      "value": "A scale factor that is unimplemented makes its value absent.",
+      "reason": "Monitoring capability: V1 monitoring rule: A scale factor that is unimplemented makes its v"
+    },
+    {
+      "contract": "v1_model_families",
+      "page": "protocols/sunspec/read-only-core-v1-model-families.md",
+      "section": "## Monitoring capabilities",
+      "kind": "statement",
+      "value": "Monitoring facts use registry-native identifiers.",
+      "reason": "Monitoring capability: V1 monitoring rule: Monitoring facts use registry-native identifiers"
+    },
+    {
+      "contract": "v1_model_families",
+      "page": "protocols/sunspec/read-only-core-v1-model-families.md",
+      "section": "## Monitoring capabilities",
+      "kind": "statement",
+      "value": "Each monitoring capability is read-only and adds no request beyond the chain read that already exists.",
+      "reason": "Monitoring capability: V1 monitoring rule: Each monitoring capability is read-only and adds"
+    },
+    {
+      "contract": "v1_model_families",
+      "page": "protocols/sunspec/read-only-core-v1-model-families.md",
+      "section": "## Monitoring capabilities",
+      "kind": "statement",
+      "value": "Single-phase models 101 and 111 carry no phase B or phase C facts, and split-phase models 102 and 112 carry no phase C facts.",
+      "reason": "Monitoring capability: V1 monitoring rule: Single-phase models 101 and 111 carry no phase B"
+    },
+    {
+      "contract": "v1_model_families",
+      "page": "protocols/sunspec/read-only-core-v1-model-families.md",
+      "section": "## Monitoring capabilities",
+      "kind": "statement",
+      "value": "A Model 160 module role is unknown unless a public SunSpec model definition states the module label meaning.",
+      "reason": "Monitoring capability: V1 monitoring rule: A Model 160 module role is unknown unless a publ"
+    },
+    {
+      "contract": "v1_model_families",
+      "page": "protocols/sunspec/read-only-core-v1-model-families.md",
+      "section": "## Monitoring capabilities",
+      "kind": "statement",
+      "value": "Positive meter current and positive meter active power are toward the load, and negative values are toward the grid.",
+      "reason": "Monitoring capability: V1 monitoring rule: Positive meter current and positive meter active"
+    },
+    {
+      "contract": "v1_model_families",
+      "page": "protocols/sunspec/read-only-core-v1-model-families.md",
+      "section": "## Monitoring capabilities",
+      "kind": "statement",
+      "value": "The power-factor sign follows reactive power: positive is lagging and negative is leading.",
+      "reason": "Monitoring capability: V1 monitoring rule: The power-factor sign follows reactive power: po"
+    },
+    {
+      "contract": "v1_model_families",
+      "page": "protocols/sunspec/read-only-core-v1-model-families.md",
+      "section": "## Monitoring capabilities",
+      "kind": "statement",
+      "value": "Active energy, apparent energy, and reactive energy are separate counters, and a counter is not a signed instantaneous value.",
+      "reason": "Monitoring capability: V1 monitoring rule: Active energy, apparent energy, and reactive ene"
+    },
+    {
+      "contract": "v1_model_families",
+      "page": "protocols/sunspec/read-only-core-v1-model-families.md",
+      "section": "## Monitoring capabilities",
+      "kind": "statement",
+      "value": "Environmental models 302 through 308 stay outside these monitoring capabilities.",
+      "reason": "Monitoring capability: V1 monitoring rule: Environmental models 302 through 308 stay outsid"
+    },
+    {
+      "contract": "v1_model_families",
+      "page": "protocols/sunspec/read-only-core-v1-model-families.md",
+      "section": "## Monitoring capabilities",
+      "kind": "row",
+      "value": "| `inverter.ac.current.phase_a` | 101, 102, 103, 111, 112, 113 | AphA | A | A_SF on 101, 102, and 103; none on 111, 112, and 113 | required | number |",
+      "reason": "Monitoring capability: V1 monitoring row: | `inverter.ac.current.phase_a` | 101, 102, 103,"
+    },
+    {
+      "contract": "v1_model_families",
+      "page": "protocols/sunspec/read-only-core-v1-model-families.md",
+      "section": "## Monitoring capabilities",
+      "kind": "row",
+      "value": "| `der.control.active_power_limit.percent` | 123 | WMaxLimPct | % WMax | WMaxLimPct_SF | required | number |",
+      "reason": "Monitoring capability: V1 monitoring row: | `der.control.active_power_limit.percent` | 123"
+    },
+    {
+      "contract": "v1_model_families",
+      "page": "protocols/sunspec/read-only-core-v1-model-families.md",
+      "section": "## Monitoring capabilities",
+      "kind": "row",
+      "value": "| `mppt.module.dc_power` | 160 | DCW | W | DCW_SF | optional | number | unknown |",
+      "reason": "Monitoring capability: V1 monitoring row: | `mppt.module.dc_power` | 160 | DCW | W | DCW_S"
+    },
+    {
+      "contract": "v1_model_families",
+      "page": "protocols/sunspec/read-only-core-v1-model-families.md",
+      "section": "## Monitoring capabilities",
+      "kind": "row",
+      "value": "| `storage.rating.energy` | 120 | WHRtg | Wh | WHRtg_SF | optional | number |",
+      "reason": "Monitoring capability: V1 monitoring row: | `storage.rating.energy` | 120 | WHRtg | Wh | W"
+    },
+    {
+      "contract": "v1_model_families",
+      "page": "protocols/sunspec/read-only-core-v1-model-families.md",
+      "section": "## Monitoring capabilities",
+      "kind": "row",
+      "value": "| `meter.ac.power.active.total` | 201, 202, 203, 204, 211, 212, 213, 214 | W | W | W_SF on 201, 202, 203, and 204; none on 211, 212, 213, and 214 | required | number |",
+      "reason": "Monitoring capability: V1 monitoring row: | `meter.ac.power.active.total` | 201, 202, 203,"
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Monitoring capabilities",
+      "reason": "Monitoring capability: required heading of the V2 contract: ## Monitoring capabilities"
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": null,
+      "kind": "heading",
+      "value": "### AC measurement",
+      "reason": "Monitoring capability: required heading of the V2 contract: ### AC measurement"
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": null,
+      "kind": "heading",
+      "value": "### Storage capacity",
+      "reason": "Monitoring capability: required heading of the V2 contract: ### Storage capacity"
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": null,
+      "kind": "heading",
+      "value": "### DC ports",
+      "reason": "Monitoring capability: required heading of the V2 contract: ### DC ports"
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": null,
+      "kind": "heading",
+      "value": "### Battery base",
+      "reason": "Monitoring capability: required heading of the V2 contract: ### Battery base"
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": null,
+      "kind": "heading",
+      "value": "### Battery bank",
+      "reason": "Monitoring capability: required heading of the V2 contract: ### Battery bank"
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": null,
+      "kind": "heading",
+      "value": "### Battery string",
+      "reason": "Monitoring capability: required heading of the V2 contract: ### Battery string"
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": null,
+      "kind": "heading",
+      "value": "### Battery module",
+      "reason": "Monitoring capability: required heading of the V2 contract: ### Battery module"
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## Monitoring capabilities",
+      "kind": "statement",
+      "value": "Each fact's presence and whether it is required are declared from the public SunSpec model definitions.",
+      "reason": "Monitoring capability: V2 monitoring rule: Each fact's presence and whether it is required"
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## Monitoring capabilities",
+      "kind": "statement",
+      "value": "An absent or unimplemented point is omitted and never reported as zero.",
+      "reason": "Monitoring capability: V2 monitoring rule: An absent or unimplemented point is omitted and"
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## Monitoring capabilities",
+      "kind": "statement",
+      "value": "A scale factor that is unimplemented makes its value absent.",
+      "reason": "Monitoring capability: V2 monitoring rule: A scale factor that is unimplemented makes its v"
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## Monitoring capabilities",
+      "kind": "statement",
+      "value": "Monitoring facts use registry-native identifiers.",
+      "reason": "Monitoring capability: V2 monitoring rule: Monitoring facts use registry-native identifiers"
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## Monitoring capabilities",
+      "kind": "statement",
+      "value": "Each monitoring capability is read-only and adds no request beyond the chain read that already exists.",
+      "reason": "Monitoring capability: V2 monitoring rule: Each monitoring capability is read-only and adds"
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## Monitoring capabilities",
+      "kind": "statement",
+      "value": "A V2 point reuses a V1 fact identifier only when the quantity and the sign are the same.",
+      "reason": "Monitoring capability: V2 monitoring rule: A V2 point reuses a V1 fact identifier only when"
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## Monitoring capabilities",
+      "kind": "statement",
+      "value": "The V2 monitoring models are Model 701 length 153, Model 713 length 7, Model 714 length 18 plus 25 times NPrt, Model 802 length 62, Model 803 length 26 plus 32 times NStr, Model 804 length 46 plus 16 times NMod, and Model 805 length 42.",
+      "reason": "Monitoring capability: V2 monitoring rule: The V2 monitoring models are Model 701 length 15"
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## Monitoring capabilities",
+      "kind": "statement",
+      "value": "Models 702, 703, 707, 708, 709, 715, 806, 807, 808, and 809 stay outside this monitoring section.",
+      "reason": "Monitoring capability: V2 monitoring rule: Models 702, 703, 707, 708, 709, 715, 806, 807, 8"
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## Monitoring capabilities",
+      "kind": "statement",
+      "value": "Model 701 positive active power and positive reactive power are injected by the DER.",
+      "reason": "Monitoring capability: V2 monitoring rule: Model 701 positive active power and positive rea"
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## Monitoring capabilities",
+      "kind": "row",
+      "value": "| `inverter.ac.power.active` | 701 | W | W | W_SF | optional | number |",
+      "reason": "Monitoring capability: V2 monitoring row: | `inverter.ac.power.active` | 701 | W | W | W_S"
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## Monitoring capabilities",
+      "kind": "row",
+      "value": "| `storage.rating.energy` | 713 | WHRtg | Wh | WH_SF | optional | number |",
+      "reason": "Monitoring capability: V2 monitoring row: | `storage.rating.energy` | 713 | WHRtg | Wh | W"
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## Monitoring capabilities",
+      "kind": "row",
+      "value": "| `der.dc.port.type` | 714 | PrtTyp | none | none | optional | enum |",
+      "reason": "Monitoring capability: V2 monitoring row: | `der.dc.port.type` | 714 | PrtTyp | none | non"
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## Monitoring capabilities",
+      "kind": "row",
+      "value": "| `storage.status.state_of_charge` | 802 | SoC | %WHRtg | SoC_SF | optional | number |",
+      "reason": "Monitoring capability: V2 monitoring row: | `storage.status.state_of_charge` | 802 | SoC |"
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## Monitoring capabilities",
+      "kind": "row",
+      "value": "| `battery.string.current` | 803 | StrA | A | A_SF | optional | number |",
+      "reason": "Monitoring capability: V2 monitoring row: | `battery.string.current` | 803 | StrA | A | A_"
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## Monitoring capabilities",
+      "kind": "row",
+      "value": "| `battery.string.state_of_charge` | 804 | SoC | % | SoC_SF | optional | number |",
+      "reason": "Monitoring capability: V2 monitoring row: | `battery.string.state_of_charge` | 804 | SoC |"
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## Monitoring capabilities",
+      "kind": "row",
+      "value": "| `battery.module.state_of_charge` | 805 | SoC | % | SoC_SF | optional | number |",
+      "reason": "Monitoring capability: V2 monitoring row: | `battery.module.state_of_charge` | 805 | SoC |"
     }
   ]
 }

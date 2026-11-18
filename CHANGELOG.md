@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- The SunSpec read-only model-family page and the V2 read-only page name the
+  monitoring facts for the decoded inverter, DER observed-state, MPPT, storage,
+  and meter models, and for the V2 AC measurement, storage capacity, DC port,
+  and battery models. An absent point is omitted, an unimplemented scale factor
+  leaves its value absent, and a module role stays unknown unless a public
+  model definition states the label meaning. The facts are read-only and add
+  no request beyond the chain read that already exists.
 - The Wall Connector Gen3 current-limit page records its six closing rows as
   bench verification. Each row has a level, not verified on hardware or
   verified on hardware, and starts not verified on hardware. No
