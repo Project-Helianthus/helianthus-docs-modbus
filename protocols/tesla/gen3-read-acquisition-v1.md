@@ -28,10 +28,11 @@ two profiles are never substituted for each other.
 
 ## Operations in scope
 
-The lifecycle acquires exactly the five observation operations below. Each is
+The lifecycle acquires the five observation operations below, and it admits
+one further planned read and one mutation. Each observation is
 one FC100 family number with one request tag paired with one terminal tag, as
 listed by the [TEDAPI operation numbers](tedapi.md#fc100-evse-operation-numbers).
-Every request body is exact empty.
+Every observation request body is exact empty.
 
 | Operation | Family | Request tag → terminal tag |
 |---|---|---|
@@ -42,12 +43,13 @@ Every request body is exact empty.
 | WC load-sharing state | 6 | 11 → 12 |
 
 A deployment configures an ordered, non-empty, duplicate-free subset of these
-five operations as its polling set. Any other family/tag pair has no
-acquisition mapping and is `NO_SEND`. In particular the current-limit pairs
-(family 6, tags 7 → 8, 25 → 26, and 27 → 28) are not acquisition operations:
-the persistent and provisional mutations and the provisional readback belong to
-the [current-limit operation contract V1](gen3-current-limit-operation-v1.md),
-and a lifecycle conforming to this page has no mutation path.
+five operations as its polling set. The lifecycle admits family 6, tags 27 → 28,
+as a planned read and family 6, tags 25 → 26, as its only mutation, issued
+through the same single-flight owner and generation, and that mutation is never
+retried. Values for that mutation and for that readback follow the
+[current-limit operation contract V1](gen3-current-limit-operation-v1.md).
+The persistent settings write (family 6, tags 7 → 8) has no acquisition
+mapping. Any other family/tag pair has no acquisition mapping and is `NO_SEND`.
 
 ## Lifecycle states and transitions
 
@@ -103,8 +105,10 @@ lock, for each exchange. A candidate is admitted only when all hold:
 
 - The lifecycle is `ready` and not closed.
 - The request is exactly the planned request payload for the selected
-  operation: the planned exact FC100 payload for one of the five operations,
-  byte for byte. No caller-supplied bytes reach the endpoint.
+  operation: the planned exact FC100 payload for one of the five observation
+  operations, for the provisional readback, or for the one provisional
+  current-limit mutation, byte for byte. No caller-supplied bytes reach the
+  endpoint.
 - The candidate names the endpoint instance the lifecycle currently owns.
   A retired or replaced endpoint instance refuses every candidate.
 - The candidate carries the configured endpoint label and the configured node
@@ -150,7 +154,8 @@ full interval between two Restart attempts.
 
 ## Retry, deadline, and recovery budgets
 
-Each transport exchange has exactly one send attempt. An acquisition is bounded
+Each transport exchange has exactly one send attempt. The provisional
+current-limit mutation is never retried. An acquisition is bounded
 by the following. Each value is configured explicitly, and a missing or
 out-of-range value is `NO_SEND`. The numeric limits are configuration maxima
 enforced by the implementation, not defaults and not minimums.
@@ -175,7 +180,8 @@ and pinned a successor generation in the same epoch, the activation is not
 repeated, the retry carries that successor generation, attempts remain, and the
 acquisition deadline has not expired. An exchange ending `ack`, `rejected`
 (Modbus exception or TEDAPI application error), or `no_send` is terminal and
-is not retried. A wrong-tag, unrelated, or otherwise uncorrelated response is
+is not retried. That retry rule does not apply to the provisional
+current-limit mutation. A wrong-tag, unrelated, or otherwise uncorrelated response is
 not a terminal: it is a classifier fault that fences the transport generation
 and follows the recovery path, so it can never satisfy this or a later request
 and is never retried inside the same generation.
@@ -257,7 +263,10 @@ A record carries:
 
 `timeout` and `indeterminate` are indeterminate evidence about the device: the
 request may have been transmitted and its effect, for a read, is unknown. They
-never carry a value, even when response frames were received. Frames received
+never carry a value, even when response frames were received. The provisional
+mutation uses the outcome classes of the
+[current-limit operation contract V1](gen3-current-limit-operation-v1.md).
+Frames received
 alongside a non-`ack` state remain evidence only. A receipt retired by Close
 is never promoted to `ack`, whatever its frames decode to. No evidence state
 creates a support claim, a hardware claim, or control authority, and nothing is
@@ -307,11 +316,9 @@ never used after any event was reported.
 It is a transmission and it is off unless configured.
 
 The only bytes the lifecycle causes to be transmitted are the planned read
-requests and the host echo of a greeting. The echo is sent only by a driver
-whose configuration selects the responder explicitly. A Restart after an
-observed activation sends no echo and does not wait for a second exchange.
-No mutation path exists. The driver never admits an exchange by itself; it
-only gates readiness.
+requests, the one provisional current-limit mutation, and the host echo of a
+greeting. The echo is sent only by a driver whose configuration selects the responder explicitly. A Restart after an observed activation sends no echo and does not wait for a second exchange.
+The driver never admits an exchange by itself; it only gates readiness.
 A configuration without a driver is `NO_SEND`. helianthus-docs-modbus issue 158 remains open.
 The echo window, the retry count, and the host-side turnaround are not
 established and must be measured, and the relation of the exchange to RTU
@@ -320,10 +327,10 @@ those durations and that count stay unknown.
 
 ## What this contract does not claim
 
-- No mutation path. Current-limit set, readback, enable, and disable are outside
-  this lifecycle; the current-limit operations belong to the
-  [current-limit operation contract V1](gen3-current-limit-operation-v1.md)
-  and are separate work.
+- The only mutation is the provisional current limit, and it is never retried.
+  The provisional readback is a planned read of this lifecycle. Both follow the
+  [current-limit operation contract V1](gen3-current-limit-operation-v1.md).
+  The persistent settings write, enable, and disable stay outside.
 - No support, hardware, or live-qualification claim. The implementation has no
   live device or real serial stream in its evidence; its tests run against a
   fake endpoint that mirrors this contract.
@@ -363,7 +370,8 @@ is observed:
 - A request other than the planned exact payload, or for a retired endpoint
   instance or another generation, is admitted; or FC03 or FC04 is admitted.
 - A configuration bound to a Gen3 version other than `wc3_24_44_3` constructs,
-  or an operation outside the five listed pairs is acquired.
+  or an operation outside the five observation pairs, the provisional readback,
+  and the one provisional mutation is acquired.
 - More than three attempts, an attempt after the acquisition deadline expired,
   a retry without recovery, a retry that repeats the activation, a retry
   admitted on a fenced generation, or a retry after an exception or
@@ -379,7 +387,8 @@ is observed:
   expired.
 - Two lifecycle calls hold the in-flight slot, or a concurrent caller waits
   instead of failing fast.
-- Any mutation request is constructed or sent.
+- A mutation other than the one provisional current-limit request is
+  constructed or sent, or that mutation is retried.
 
 ## Implementation evidence
 

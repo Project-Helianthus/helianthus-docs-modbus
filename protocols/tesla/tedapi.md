@@ -70,11 +70,10 @@ Basis for the current-limit pairs is the bounded static evidence for `wc3_24_44_
 
 Terminal field labels used by Helianthus, for example `device_id`, `din`, `firmware_version`, `device_type`, `uptime_s`, and `contactor_cycles`, are Helianthus recovered labels. They are not vendor-published names, and no unit, scale, range, or other semantic qualification is implied by a label. Unknown terminal members stay in the complete bounded native body.
 
-EVSE charging-current limit control, enable, and disable require an independently qualified request shape, unit and range where applicable, acknowledgement, and post-command confirmation. This version has no qualified Gen3 control setter.
+EVSE charging-current limit control, enable, and disable require an independently qualified request shape, unit and range where applicable, acknowledgement, and post-command confirmation. The provisional current limit is the qualified setter of this version under the current-limit operation contract V1, and enable, disable, and the persistent settings write are not.
 
-The separate [current-limit operation contract V1](gen3-current-limit-operation-v1.md)
-defines the offline admission and outcome requirements for that path. Its
-publication does not change this live-control qualification boundary.
+The [current-limit operation contract V1](gen3-current-limit-operation-v1.md)
+states the admission, values, and outcome requirements of that setter.
 
 ## Functions 101 and 102
 
@@ -122,7 +121,7 @@ Version alone does not admit an operation.
 
 ## Interoperability levels
 
-Framing; native EVSE observation; qualified EVSE state/measurement; future qualified current-limit control.
+Framing; native EVSE observation; qualified EVSE state/measurement; qualified provisional current-limit control.
 
 ## Compatibility and versioning
 

@@ -46,7 +46,7 @@ EXPECTED = {
     ('gen3_mcp_projection', 'heading'): 1,
     ('gen3_mcp_projection', 'statement'): 11,
     ('current_limit_operation', 'heading'): 10,
-    ('current_limit_operation', 'statement'): 30,
+    ('current_limit_operation', 'statement'): 44,
     ('current_limit_operation', 'forbidden'): 1,
     ('read_acquisition', 'heading'): 13,
     ('read_acquisition', 'row'): 5,
@@ -56,7 +56,7 @@ EXPECTED = {
     ('tedapi', 'statement'): 1,
     ('evse_scope', 'heading'): 2,
     ('evse_scope', 'row'): 8,
-    ('evse_scope', 'statement'): 11,
+    ('evse_scope', 'statement'): 12,
     ('evse_scope', 'forbidden'): 1,
 }
 CONTRACTS = frozenset(contract for contract, _ in EXPECTED)

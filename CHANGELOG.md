@@ -2,6 +2,26 @@
 
 ## Unreleased
 
+- For `wc3_24_44_3`, the provisional current-limit path (t25 to t26, with
+  readback t27 to t28) is the qualified setter of
+  `evse.limit.allocated_current`, declared from the public field layout. The
+  semantic operation route's runtime intent owner supplies the authority
+  evidence that binds target, operation, values, and validity interval. Live
+  state-changing operations require explicit operator confirmation at action
+  time. Allocated current of at least 6 A sends t25 with that current, a
+  timeout of 900 seconds, and inhibit false. Allocated current 0 A pauses
+  with current 6 A, the same timeout, and inhibit true. Current from 1 A
+  through 5 A is refused before send. The upper bound is the configured
+  current of the latest t28 in the same lifecycle generation, and a request
+  above it is refused before send. While a limit other than the release is
+  in force, the same triple is re-sent every 300 seconds. A renewal is the
+  same native request, never a new semantic operation, and it is not a
+  mutation retry. Release sends the configured current with a timeout of 900
+  seconds and inhibit false, and then renewal stops. The read-path lifecycle
+  admits the provisional readback as a planned read and the provisional set
+  as its only mutation, and that mutation is never retried. The persistent
+  settings write, enable, and disable are not setters. FC101 and FC102 stay
+  outside.
 - The Wall Connector Gen3 current-limit page records its six closing rows as
   bench verification. Each row has a level, not verified on hardware or
   verified on hardware, and starts not verified on hardware. No
