@@ -5,8 +5,11 @@
 This is the offline operation contract for the Tesla Wall Connector Gen3 FC100
 current-limit path selected by gateway issue #965 option 1. It specifies
 admission, native evidence, and outcome requirements for downstream
-implementations. It does not establish a qualified live setter or authorize
-any live write, installation, deployment, or credential use. Live
+implementations. For `wc3_24_44_3`, the provisional path (t25 to t26, readback
+t27 to t28) is the qualified setter of the semantic `evse.limit.allocated_current`,
+declared from the public field layout. The persistent settings write (t7 to t8)
+is not a setter. FC101, FC102, enable, and disable stay outside. This contract
+does not authorize installation, deployment, or credential use. Live
 state-changing operations require explicit operator confirmation at action time.
 
 The publishable wire and body basis is the existing
@@ -16,7 +19,7 @@ including its bounded static evidence for `wc3_24_44_3`. The
 [private-function transport contract](../modbus/private-function-codes.md)
 define the surrounding boundaries. The rules below are Helianthus operation
 requirements, not additional observations of firmware behavior. No new
-register map, control range, interlock map, or device qualification is asserted.
+register map or device qualification is asserted.
 
 Body interpretation is limited to `wc3_24_44_3`. A known HSC version,
 `compatible_candidate`, successful parsing, or a read-only capability does not
@@ -47,22 +50,23 @@ the reason retained. Admission is scoped to exactly one
 
 | Required input | Fail-closed rule |
 | --- | --- |
-| Action authority | Explicit authority binds the selected target, operation, values, and validity interval. Offline fake/replay authority cannot authorize live I/O. Live authority includes operator confirmation at action time; a cached read, configured endpoint, or document is insufficient. |
+| Action authority | For an operation admitted through the semantic operation route (docs-ebus), the route's runtime intent owner supplies the authority evidence that binds target, operation, values, and validity interval. Explicit authority binds the selected target, operation, values, and validity interval. Offline fake/replay authority cannot authorize live I/O. Live authority includes operator confirmation at action time; a cached read, configured endpoint, or document is insufficient. |
 | Profile and version | Explicit Gen3 identity, exact HSC profile compatibility, `wc3_24_44_3` operation schema, and independently qualified capability for the selected operation. Unknown, conflicting, legacy, or unenumerated operation versions deny dispatch. |
 | Endpoint and generation | Explicit unicast node and configured endpoint, current nonzero lifecycle generation, compatible HSC activation state, and no fence/quarantine. No discovery, broadcast, profile fallback, or inferred default target. |
 | Single-flight ownership | One serialized initiator and one in-flight exchange per endpoint. The mutation and its readback remain bound to one operation identity and the same lifecycle generation; no competing local mutation may interleave. This does not exclude an external actor. |
-| Values and scope | Explicit persistent or provisional intent; integer amperes; current at least 6 A and no greater than the lesser of the supplied qualified device/installation limit and the exact wire field bound. Provisional timeout is 1 through 86399 seconds and `inhibitCharging` is explicit. Unknown upper limit, zero/absent current, zero timeout, or unsupported field semantics deny dispatch. |
-| Interlocks | A supplied version-aware policy enumerates the required interlocks, their evidence, freshness limits, and permitted states. Missing, stale, contradictory, or unsafe state denies dispatch. This contract supplies no fault register, bit mask, or charging-state inference. |
+| Values and scope | Allocated current of at least 6 A sends t25 with that current, a timeout of 900 seconds, and inhibit false. Allocated current 0 A pauses: t25 carries current 6 A, a timeout of 900 seconds, and inhibit true. Allocated current from 1 A through 5 A is refused before send. The upper bound is the configured-current value of the latest t28 in the same lifecycle generation; a request above it is refused before send. With no t28 yet in the generation, the owner reads t27 to t28 first. Absent current or unsupported field semantics deny dispatch. |
+| Interlocks | The interlocks are the semantic guard recheck (epoch, generation, binding, and capability revisions) and the station's own protections. No further interlock policy applies; a caller may add a precondition on a published status fact. This contract supplies no fault register, bit mask, or charging-state inference. |
 | Timing and response policy | A finite monotonic operation deadline covers mutation and any required readback. Each exchange has an explicit positive timeout, finite response-count/byte bound, and recovery budget. Remaining time must cover the next admitted phase. Mutation retries are zero; read retries require an explicit read-only allowlist and finite budget. |
 | Evidence and duplicate guard | The retained-record owner can freeze the admitted intent and correlate every phase. A local idempotency identity and bounded duplicate-retention policy are supplied before transmission. Missing retention capacity or duplicate ambiguity denies dispatch. |
 
 The provisional timeout field is a device request value, not the host exchange
 deadline. Wire integer capacity is not a safe device maximum. This contract
-does not establish a universal maximum amperage, interlock acquisition plan,
-settling delay, timeout default, or safe effect of the inhibit flag. The owning
-registry must require qualified inputs for those gaps; it must not fill them
-from names or successful decoding. Discovery and qualification reads require
-explicit read-only allowlists, bounded retries, and version-aware evidence.
+does not establish a universal maximum amperage or a settling delay. The
+qualified provisional setter uses a timeout of 900 seconds and the inhibit
+values above. The owning registry must require qualified inputs for those
+gaps; it must not fill them from names or successful decoding. Discovery and
+qualification reads require explicit read-only allowlists, bounded retries,
+and version-aware evidence.
 
 ## Registry-owned request and response framing
 
@@ -86,7 +90,7 @@ the corresponding terminal. This is a framing contract, not a sender recipe.
 
 | Intent / phase | Request and terminal | Meaning and boundary |
 | --- | --- | --- |
-| Persistent mutation | Family 6, t7 ConfigureSettings → t8 returned settings | Request carries `settings.maxOutputCurrentAmps` as signed int32 integer amperes. t8 returns persistent settings state; it is not an ACK. The exact current-only mutation scope must be qualified so unrelated settings are not changed. |
+| Persistent mutation | Family 6, t7 ConfigureSettings → t8 returned settings | Request carries `settings.maxOutputCurrentAmps` as signed int32 integer amperes. t8 returns persistent settings state; it is not an ACK. The exact current-only mutation scope must be qualified so unrelated settings are not changed. It is not the setter of `evse.limit.allocated_current`. |
 | Provisional mutation | Family 6, t25 SetProvisional → t26 ACK | Request carries `limitCurrentMaxAmps` (uint32), `limitTimeoutS` (uint32), and `inhibitCharging` (bool). t26 has an empty body and acknowledges only. |
 | Provisional readback | Family 6, t27 GetProvisional → t28 returned state | t27 has an empty body. t28 returns the provisional triple and a separate configured-current value. It does not return effective/pilot current. |
 
@@ -96,7 +100,7 @@ be explicit; malformed encodings, wrong documented wire types, or duplicate
 documented singular fields reject typed interpretation. Unknown response
 members remain in the native evidence. Unknown request members may not acquire
 write authority merely because a decoder can preserve them. Missing evidence
-for a safe current-only settings body or inhibit behavior is `NO_SEND`.
+for a safe current-only persistent settings body is `NO_SEND`.
 
 Only an integrity-valid, transport-correlated normal response in the active
 generation may enter the selected operation decoder. A request echo or
@@ -212,9 +216,13 @@ No automatic mutation retry is admitted, including after timeout, ACK-only
 completion, readback mismatch, or indeterminate outcome. Repeating the same
 amperage is not evidence of idempotence; a provisional request may affect a
 timeout and persistent settings may have additional effects not qualified
-here. Device-side deduplication, exactly-once execution, timeout renewal, and
-expiry behavior are unknown. A retry of an allowlisted read cannot replay a
-mutation or acquire control authority.
+here. While a limit other than the release is in force, the owner re-sends
+the same triple every 300 seconds. A renewal is the same native request,
+never a new semantic operation, and it is not a mutation retry. Release is
+t25 with the configured current, a timeout of 900 seconds, and inhibit false,
+after which renewal stops. Device-side deduplication, exactly-once execution,
+and expiry behavior beyond this renewal are unknown. A retry of an allowlisted
+read cannot replay a mutation or acquire control authority.
 
 ## Read-only and state-changing boundary
 

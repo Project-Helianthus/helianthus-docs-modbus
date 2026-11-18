@@ -72,7 +72,9 @@ for mutation in \
   's/A readback exception or application error after ACK is overall `INDETERMINATE`/A readback error after ACK is overall `REJECTED`/' \
   's/An exchange timeout before the operation deadline is `TIMEOUT`/An exchange timeout before the operation deadline is `INDETERMINATE`/' \
   's/Mutation and confirmation readback must use the same lifecycle generation./Mutation and confirmation readback may use different generations./' \
-  's/Unknown upper limit, zero\/absent current,/An inferred upper limit, zero\/absent current,/' \
+  's/Allocated current of at least 6 A/Allocated current of at least 0 A/' \
+  's/is not a setter/is a setter/' \
+  's/it is not a mutation retry/it is a mutation retry/' \
   's/it cannot prove causal application/it proves causal application/' \
   's/never invent response bytes/invent response bytes/' \
   's/successor exchange while fenced or quarantined\./successor exchange only while closed./' \
@@ -107,7 +109,7 @@ tesla_read_acquisition_fixture="$fixture_root/tesla-read-acquisition.md"
 
 "$repo_root/scripts/check_docs.sh" --check-tesla-read-acquisition "$tesla_read_acquisition_document"
 for mutation in \
-  's/a lifecycle conforming to this page has no mutation path\./a lifecycle conforming to this page may add a mutation path./' \
+  's/that mutation is never/that mutation is/' \
   's/| WC vitals | 6 | 1 → 2 |/| WC vitals | 6 | 1 → 4 |/' \
   's/| WC load-sharing state | 6 | 11 → 12 |/| WC load-sharing state | 6 | 11 → 28 |/' \
   's/`MaxAttempts` is 1 through 3 exchanges per acquisition\./`MaxAttempts` is 1 through 30 exchanges per acquisition./' \
@@ -131,7 +133,6 @@ for mutation in \
   's/selects the responder explicitly\./selects no responder./' \
   's/A record from another endpoint instance counted as current\./A record from another endpoint instance is historical./' \
   's/A readiness probe used after any event was reported, or without explicit configuration\./A readiness probe used after any event was reported is accepted./' \
-  's/No mutation path\./A mutation path./' \
   's/The contract covers only the exact `wc3_24_44_3` operation version\./The contract covers every Gen3 operation version./' \
   's/| `indeterminate` |/| `unknown` |/' \
   's/at most five minutes\./at most one hour./' \

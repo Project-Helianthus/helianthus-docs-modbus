@@ -988,6 +988,30 @@
     {
       "contract": "current_limit_operation",
       "page": "protocols/tesla/gen3-current-limit-operation-v1.md",
+      "section": "## Scope and evidence status",
+      "kind": "statement",
+      "value": "For `wc3_24_44_3`, the provisional path (t25 to t26, readback t27 to t28) is the qualified setter of the semantic `evse.limit.allocated_current`, declared from the public field layout.",
+      "reason": "The provisional path is the qualified setter of allocated current."
+    },
+    {
+      "contract": "current_limit_operation",
+      "page": "protocols/tesla/gen3-current-limit-operation-v1.md",
+      "section": "## Scope and evidence status",
+      "kind": "statement",
+      "value": "The persistent settings write (t7 to t8) is not a setter.",
+      "reason": "The persistent settings write is not the allocated-current setter."
+    },
+    {
+      "contract": "current_limit_operation",
+      "page": "protocols/tesla/gen3-current-limit-operation-v1.md",
+      "section": "## Scope and evidence status",
+      "kind": "statement",
+      "value": "FC101, FC102, enable, and disable stay outside.",
+      "reason": "FC101, FC102, enable, and disable stay outside this setter."
+    },
+    {
+      "contract": "current_limit_operation",
+      "page": "protocols/tesla/gen3-current-limit-operation-v1.md",
       "section": "## Ownership and consumers",
       "kind": "statement",
       "value": "No Tesla body interpretation or global FC-to-vendor dispatch.",
@@ -1030,8 +1054,72 @@
       "page": "protocols/tesla/gen3-current-limit-operation-v1.md",
       "section": "## Admission preconditions",
       "kind": "statement",
-      "value": "Unknown upper limit, zero/absent current, zero timeout, or unsupported field semantics deny dispatch.",
-      "reason": "Unknown limits and values deny dispatch."
+      "value": "For an operation admitted through the semantic operation route (docs-ebus), the route's runtime intent owner supplies the authority evidence that binds target, operation, values, and validity interval.",
+      "reason": "The semantic route's intent owner supplies authority evidence."
+    },
+    {
+      "contract": "current_limit_operation",
+      "page": "protocols/tesla/gen3-current-limit-operation-v1.md",
+      "section": "## Admission preconditions",
+      "kind": "statement",
+      "value": "Live authority includes operator confirmation at action time; a cached read, configured endpoint, or document is insufficient.",
+      "reason": "Operator confirmation at action time stays a live-authority condition."
+    },
+    {
+      "contract": "current_limit_operation",
+      "page": "protocols/tesla/gen3-current-limit-operation-v1.md",
+      "section": "## Admission preconditions",
+      "kind": "statement",
+      "value": "Allocated current of at least 6 A sends t25 with that current, a timeout of 900 seconds, and inhibit false.",
+      "reason": "The 6 A floor is the provisional send."
+    },
+    {
+      "contract": "current_limit_operation",
+      "page": "protocols/tesla/gen3-current-limit-operation-v1.md",
+      "section": "## Admission preconditions",
+      "kind": "statement",
+      "value": "Allocated current 0 A pauses: t25 carries current 6 A, a timeout of 900 seconds, and inhibit true.",
+      "reason": "Zero allocated current pauses with inhibit."
+    },
+    {
+      "contract": "current_limit_operation",
+      "page": "protocols/tesla/gen3-current-limit-operation-v1.md",
+      "section": "## Admission preconditions",
+      "kind": "statement",
+      "value": "Allocated current from 1 A through 5 A is refused before send.",
+      "reason": "Current below the floor is refused before send."
+    },
+    {
+      "contract": "current_limit_operation",
+      "page": "protocols/tesla/gen3-current-limit-operation-v1.md",
+      "section": "## Admission preconditions",
+      "kind": "statement",
+      "value": "The upper bound is the configured-current value of the latest t28 in the same lifecycle generation; a request above it is refused before send.",
+      "reason": "The latest t28 configured current is the upper bound."
+    },
+    {
+      "contract": "current_limit_operation",
+      "page": "protocols/tesla/gen3-current-limit-operation-v1.md",
+      "section": "## Admission preconditions",
+      "kind": "statement",
+      "value": "With no t28 yet in the generation, the owner reads t27 to t28 first.",
+      "reason": "A missing t28 is read before a provisional send."
+    },
+    {
+      "contract": "current_limit_operation",
+      "page": "protocols/tesla/gen3-current-limit-operation-v1.md",
+      "section": "## Admission preconditions",
+      "kind": "statement",
+      "value": "The interlocks are the semantic guard recheck (epoch, generation, binding, and capability revisions) and the station's own protections.",
+      "reason": "Interlocks are the semantic guard recheck and the station's own protections."
+    },
+    {
+      "contract": "current_limit_operation",
+      "page": "protocols/tesla/gen3-current-limit-operation-v1.md",
+      "section": "## Admission preconditions",
+      "kind": "statement",
+      "value": "No further interlock policy applies; a caller may add a precondition on a published status fact.",
+      "reason": "No further interlock policy is added."
     },
     {
       "contract": "current_limit_operation",
@@ -1160,6 +1248,30 @@
       "kind": "statement",
       "value": "No automatic mutation retry is admitted, including after timeout, ACK-only completion, readback mismatch, or indeterminate outcome.",
       "reason": "No automatic mutation retry."
+    },
+    {
+      "contract": "current_limit_operation",
+      "page": "protocols/tesla/gen3-current-limit-operation-v1.md",
+      "section": "## Idempotency and retry boundary",
+      "kind": "statement",
+      "value": "While a limit other than the release is in force, the owner re-sends the same triple every 300 seconds.",
+      "reason": "An in-force limit is renewed on a fixed interval."
+    },
+    {
+      "contract": "current_limit_operation",
+      "page": "protocols/tesla/gen3-current-limit-operation-v1.md",
+      "section": "## Idempotency and retry boundary",
+      "kind": "statement",
+      "value": "A renewal is the same native request, never a new semantic operation, and it is not a mutation retry.",
+      "reason": "Renewal is the same native request and not a mutation retry."
+    },
+    {
+      "contract": "current_limit_operation",
+      "page": "protocols/tesla/gen3-current-limit-operation-v1.md",
+      "section": "## Idempotency and retry boundary",
+      "kind": "statement",
+      "value": "Release is t25 with the configured current, a timeout of 900 seconds, and inhibit false, after which renewal stops.",
+      "reason": "Release restores the configured current and stops renewal."
     },
     {
       "contract": "current_limit_operation",
@@ -1374,8 +1486,8 @@
       "page": "protocols/tesla/gen3-read-acquisition-v1.md",
       "section": "## Operations in scope",
       "kind": "statement",
-      "value": "a lifecycle conforming to this page has no mutation path.",
-      "reason": "The lifecycle never mutates."
+      "value": "The lifecycle admits family 6, tags 27 → 28, as a planned read and family 6, tags 25 → 26, as its only mutation, issued through the same single-flight owner and generation, and that mutation is never retried.",
+      "reason": "The lifecycle admits the provisional readback and one mutation, never retried."
     },
     {
       "contract": "read_acquisition",
@@ -1670,8 +1782,8 @@
       "page": "protocols/tesla/gen3-read-acquisition-v1.md",
       "section": "## Activation prerequisite and the current NO_SEND gate",
       "kind": "statement",
-      "value": "The only bytes the lifecycle causes to be transmitted are the planned read requests and the host echo of a greeting. The echo is sent only by a driver whose configuration selects the responder explicitly. A Restart after an observed activation sends no echo and does not wait for a second exchange.",
-      "reason": "The lifecycle transmits planned reads and an explicitly selected host echo, and Restart sends neither a second exchange nor an echo."
+      "value": "The only bytes the lifecycle causes to be transmitted are the planned read requests, the one provisional current-limit mutation, and the host echo of a greeting. The echo is sent only by a driver whose configuration selects the responder explicitly. A Restart after an observed activation sends no echo and does not wait for a second exchange.",
+      "reason": "The lifecycle transmits planned reads, the one provisional mutation, and an explicitly selected host echo."
     },
     {
       "contract": "read_acquisition",
@@ -1702,8 +1814,8 @@
       "page": "protocols/tesla/gen3-read-acquisition-v1.md",
       "section": "## What this contract does not claim",
       "kind": "statement",
-      "value": "No mutation path.",
-      "reason": "Explicit non-claim: no mutation."
+      "value": "The only mutation is the provisional current limit, and it is never retried.",
+      "reason": "The lifecycle has one mutation, and that mutation is never retried."
     },
     {
       "contract": "read_acquisition",
@@ -1952,6 +2064,14 @@
       "kind": "statement",
       "value": "EVSE charging-current limit control, enable, and disable require an independently qualified request shape, unit and range where applicable, acknowledgement, and post-command confirmation.",
       "reason": "Live-control qualification boundary."
+    },
+    {
+      "contract": "evse_scope",
+      "page": "protocols/tesla/tedapi.md",
+      "section": "### FC100 EVSE operation numbers",
+      "kind": "statement",
+      "value": "The provisional current limit is the qualified setter of this version under the current-limit operation contract V1, and enable, disable, and the persistent settings write are not.",
+      "reason": "The provisional current limit is the qualified setter; enable, disable, and the persistent write are not."
     },
     {
       "contract": "evse_scope",
