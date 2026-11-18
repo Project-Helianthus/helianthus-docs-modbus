@@ -464,6 +464,85 @@ class SunSpecContractRules(unittest.TestCase):
                 self.assertNotEqual(self.gate(GATE_OPTIONS[contract], self.copies[page]), 0)
                 self.restore(page)
 
+    def monitoring_rules(self):
+        found = [rule for rule in self.rules if rule['reason'].startswith('Monitoring capability:')]
+        self.assertGreater(len(found), 0)
+        self.assertTrue(all(rule['page'] == ENGINE.CONTRACT_PAGES[rule['contract']] for rule in found))
+        return found
+
+    def test_each_monitoring_capability_rule_is_removed_from_its_page(self):
+        """One mutation per monitoring rule: delete its value from the page.
+
+        value: the heading line, table row, or statement is removed, and that kind fails.
+        """
+        for rule in self.monitoring_rules():
+            with self.subTest(contract=rule['contract'], kind=rule['kind'], value=rule['value'][:48]):
+                compiled = next(item for item in ENGINE.load_rules(RULES)
+                                if item['value'] == rule['value'] and item['contract'] == rule['contract']
+                                and item['kind'] == rule['kind'])
+                original = self.page_text(rule['page'])
+                if rule['kind'] == 'statement':
+                    mutated, count = compiled['pattern'].subn('[removed]', original)
+                else:
+                    lines = original.split('\n')
+                    count = lines.count(rule['value'])
+                    mutated = '\n'.join('[removed]' if line == rule['value'] else line for line in lines)
+                self.assertGreater(count, 0)
+                self.write(rule['page'], mutated)
+                self.assert_contract_fails(rule['contract'], rule['kind'])
+                self.restore(rule['page'])
+
+    def test_each_monitoring_capability_rule_key_field_changes_the_outcome(self):
+        """Vary every key field of each monitoring rule.
+
+        contract: moving the rule onto another contract is rejected by the loader.
+        page: pointing the rule at another page is rejected by the loader.
+        section: binding the rule to ## Scope reports the value missing.
+        kind: reading the value as a forbidden pattern rejects the page.
+        value: a changed heading, row, or statement is missing from the page.
+        """
+        other_page = {
+            'v1_model_families': V2,
+            'v2_contract': 'protocols/sunspec/read-only-core-v1-model-families.md',
+        }
+        other_contract = {
+            'v1_model_families': 'v2_contract',
+            'v2_contract': 'v1_model_families',
+        }
+        for index, rule in enumerate(self.rules):
+            if not rule['reason'].startswith('Monitoring capability:'):
+                continue
+            if rule['kind'] == 'row':
+                changed_value = rule['value'][:-1] + ' synthetic|'
+            elif rule['kind'] == 'heading':
+                changed_value = rule['value'] + ' synthetic'
+            else:
+                changed_value = rule['value'] + ' Synthetic.'
+            variations = {
+                'contract': (other_contract[rule['contract']], 'loader'),
+                'page': (other_page[rule['contract']], 'loader'),
+                'section': ('## Scope', rule['kind']),
+                'kind': ('forbidden', 'forbidden'),
+                'value': (changed_value, rule['kind']),
+            }
+            self.assertEqual(set(variations), set(ENGINE.FIELDS[:5]))
+            for field, (value, caught_by) in variations.items():
+                with self.subTest(field=field, kind=rule['kind'], value=rule['value'][:40]):
+                    data = self.edited(lambda d, i=index, f=field, v=value: d['rules'][i].update({f: v}))
+                    path = self.work / 'rules.json'
+                    path.write_text(json.dumps(data), encoding='utf-8')
+                    counts = Counter((item['contract'], item['kind']) for item in data['rules'])
+                    with mock.patch.object(ENGINE, 'EXPECTED', dict(counts)):
+                        if caught_by == 'loader':
+                            with self.assertRaises(ENGINE.RuleError):
+                                ENGINE.load_rules(path)
+                            continue
+                        rules = ENGINE.load_rules(path)
+                    lines = self.page_text(rule['page']).split('\n')
+                    group = [item for item in rules if item['contract'] == rule['contract']]
+                    failures = ENGINE.check_page(group, lines)
+                    self.assertIn(caught_by, [item['kind'] for item, _ in failures])
+
 
 if __name__ == '__main__':
     unittest.main()
