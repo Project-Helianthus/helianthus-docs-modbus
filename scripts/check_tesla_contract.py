@@ -46,7 +46,7 @@ EXPECTED = {
     ('gen3_mcp_projection', 'heading'): 1,
     ('gen3_mcp_projection', 'statement'): 11,
     ('current_limit_operation', 'heading'): 10,
-    ('current_limit_operation', 'statement'): 28,
+    ('current_limit_operation', 'statement'): 30,
     ('current_limit_operation', 'forbidden'): 1,
     ('read_acquisition', 'heading'): 13,
     ('read_acquisition', 'row'): 5,

@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+- The Wall Connector Gen3 current-limit page records its six closing rows as
+  bench verification. Each row has a level, not verified on hardware or
+  verified on hardware, and starts not verified on hardware. No
+  implementation, publication, promotion or operation waits for a row. A
+  recorded result that contradicts the page is a defect report against the
+  page. A bench run is a state-changing action performed by a person who
+  confirms it at action time. Enable and disable stay outside this contract.
+  A missing reported maximum stays unknown, and the page still refuses a
+  universal maximum.
 - The Wall Connector Gen3 current-limit operation contract names six on-site
   observations required before a live current limit or a live pause. Every
   row stays Unknown. The page authorizes no transmission, and neither a t7
