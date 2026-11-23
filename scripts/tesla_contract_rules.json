@@ -2094,7 +2094,7 @@
       "page": "protocols/tesla/tedapi.md",
       "section": "### FC100 EVSE operation numbers",
       "kind": "statement",
-      "value": "They are recorded as Helianthus operation-registry facts for the `wc3_24_44_3` operation version, restored from the named operation registry published in this page at commit `<pin:FcxvD3lqqkGPxjYPJuxdSEN9fJMTuZDZCM30FUhz23E>` (section \"FC100 named operation registry for WC3 24.44.3\", first added in commit `<pin:zEtK9w+7QIrBr8x+ltAh6DdMRv6Nq7dpTQ52nL3FRj0>`), and are not additional observations of firmware behavior.",
+      "value": "They are recorded as operation-registry facts for the `wc3_24_44_3` operation version, restored from the named operation registry published in this page at commit `<pin:FcxvD3lqqkGPxjYPJuxdSEN9fJMTuZDZCM30FUhz23E>` (section \"FC100 named operation registry for WC3 24.44.3\", first added in commit `<pin:zEtK9w+7QIrBr8x+ltAh6DdMRv6Nq7dpTQ52nL3FRj0>`), and are not additional observations of firmware behavior.",
       "reason": "Provenance of the registry facts, bound to the exact cited page revisions (committed, not published here); they are not firmware observations."
     },
     {
@@ -2110,8 +2110,8 @@
       "page": "protocols/tesla/tedapi.md",
       "section": "### FC100 EVSE operation numbers",
       "kind": "statement",
-      "value": "are Helianthus recovered labels",
-      "reason": "Terminal field labels are Helianthus labels."
+      "value": "are recovered labels",
+      "reason": "Terminal field labels are recovered labels."
     },
     {
       "contract": "evse_scope",

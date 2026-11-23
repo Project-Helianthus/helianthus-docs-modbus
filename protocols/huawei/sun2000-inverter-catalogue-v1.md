@@ -4,7 +4,7 @@
 
 This page describes the Huawei SUN2000 inverter catalogue: a consulted-source
 dataset that the registry holds as generated data (helianthus-modbusreg issue
-359, pull request 360). It states what the dataset is and is not, how Helianthus
+359, pull request 360). It states what the dataset is and is not, how this page
 cites it, which decisions govern it, that it is inert until a registry change
 consumes it, and how an entry is graded once it is consumed. It restates no
 register offset, scale, unit, model row, floor, or dictionary entry and

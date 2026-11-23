@@ -4,11 +4,11 @@
 
 This page is the monitoring contract for the three Huawei gateway paths that
 have an observed identity: the SmartLogger path, the EMMA path, and the
-S-Dongle path. For each path it names the register groups that Helianthus reads
+S-Dongle path. For each path it names the register groups read
 for monitoring, the facts each group yields, and the value form of every word
-that Helianthus consumes: type, word order, gain, unit, and sign. Each read is
+that this page consumes: type, word order, gain, unit, and sign. Each read is
 an FC03 holding-register read of one group, given as its offset and quantity.
-Words in a group that Helianthus does not consume are retained as native
+Words in a group that this page does not consume are retained as native
 evidence and are not facts. The read pacing, the acquisition cycle, and the
 production-site rules are on the companion
 [read pacing and acquisition contract](read-pacing-v1.md). The historical V1
@@ -86,8 +86,8 @@ pages.
 7. **Zero.** A zero word is a value only where this page defines the word for the
    family. Elsewhere it is no evidence of a value or of its absence (see the
    battery rule below).
-8. **Energy.** Energy counters are published as read. Helianthus derives no
-   energy from power or from other counters. Rollover and reset behavior is
+8. **Energy.** Energy counters are published as read. Energy is not derived
+   from power or from other counters. Rollover and reset behavior is
    Unknown, because none was observed.
 
 ## Software applicability
@@ -262,7 +262,7 @@ SUN2000MC edition as a cross-family hypothesis.
 | ME-05 | A battery group answered at both inverter units with data: a 30-word read at offset 37000 with 10 non-zero words, a 4-word read at offset 37066 with all words non-zero, and a single read at offset 47000 with the same non-zero word at both units. The batteries are therefore visible as registers of the inverter units, not as units of their own and not as listing entries. | Proven |
 | ME-06 | What the battery group's words mean, their gains and signs, and how many packs each inverter carries. No consulted document defines these offsets for this family. The operator describes two LUNA2000 packs per inverter, each with one BMS and three modules. That description is configuration, not evidence. | Unknown |
 
-Helianthus consumes no word of the MAP0 series groups as a fact until a
+No word of the MAP0 series groups is consumed as a fact until a
 consulted edition covers the family or an independent check grades the layout.
 The groups stay native evidence.
 
@@ -424,8 +424,8 @@ One further run per path read the meter groups: at the two meter units behind th
 SmartLogger, at the EMMA's own unit, and at the S-Dongle's child. Each run issued
 FC03 reads only, on one connection with one request in flight and no write, in
 daylight at one operating point, as the monitoring runs did. Each group is named
-by purpose from the consulted editions and given as the offset and quantity that
-Helianthus reads. The words inside a group are tabulated only where Helianthus
+by purpose from the consulted editions and given as the offset and quantity of
+the read. The words inside a group are tabulated only where this page
 consumes them.
 
 Proven (answered) in this section grades one fact: the group returned data, or an
@@ -460,7 +460,7 @@ reads before and after the meter reads returned the value of the earlier passes
 | AC | FC03 offset 32260, quantity 33 | the meter's phase and line voltages, phase currents, active, reactive, and apparent power, power factor, and reserved energy words; the group ends where the meter-number group begins |
 | Meter number | FC03 offset 32293, quantity 6 | the meter's number, which is serial-bearing and never published |
 | Energy | FC03 offset 32335, quantity 30 | the three phase active powers, then the total, negative, and positive active energy counters and the matching reactive counters |
-| Configuration | FC03 offset 33000, quantity 7 | the meter link settings, the voltage and current transformer ratios, and the meter usage setting; the editions define these as read-write, and Helianthus only reads |
+| Configuration | FC03 offset 33000, quantity 7 | the meter link settings, the voltage and current transformer ratios, and the meter usage setting; the editions define these as read-write, and this page only reads |
 
 | ID | Statement | Grade |
 | --- | --- | --- |
@@ -521,7 +521,7 @@ first request of the connection.
 
 ### Consumed fields of the meter groups
 
-Helianthus consumes the following words and retains every other word of a meter
+This page consumes the following words and retains every other word of a meter
 group as native evidence. Each cell gives the offsets, the type, the unit, and the
 gain that the consulted editions state.
 

@@ -86,6 +86,21 @@ jobs:
           clean: true
           persist-credentials: false
 
+      # Push, schedule, and manual dispatch have no pull-request base. A push
+      # uses the previous tip of the branch. The other events use the immutable
+      # pre-transfer receiver revision, which has no opaque manifest and takes
+      # the first-revision branch. This checkout is never the current tree and
+      # never the docs-ebus tree.
+      - name: Checkout trusted receiver prior
+        if: github.event_name != 'pull_request'
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          repository: Project-Helianthus/helianthus-docs-modbus
+          ref: ${{ github.event_name == 'push' && github.event.before != '0000000000000000000000000000000000000000' && github.event.before || '6d2570a1bc727b05d1f1c3c6341651f43110e5ff' }}
+          path: checkouts/docs-modbus-base
+          clean: true
+          persist-credentials: false
+
       - name: Checkout helianthus-docs
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
@@ -211,7 +226,7 @@ jobs:
           HELIANTHUS_DOCS_EBUS_ROOT: ${{ github.workspace }}/checkouts/docs-ebus-owner
           DOCS_EBUS_ROOT: ${{ github.workspace }}/checkouts/docs-ebus-owner
           DOCS_EBUS_PRIOR_ROOT: ${{ github.workspace }}/checkouts/docs-ebus-prior
-          MODBUS_PRIOR_ROOT: ${{ github.event_name == 'pull_request' && format('{0}/checkouts/docs-modbus-base', github.workspace) || '' }}
+          MODBUS_PRIOR_ROOT: ${{ format('{0}/checkouts/docs-modbus-base', github.workspace) }}
           # Empty unless the classification step above ran for this pull request.
           CI_UNCHANGED_SUITES: ${{ steps.suite_inputs.outputs.unchanged }}
         working-directory: checkouts/docs-modbus

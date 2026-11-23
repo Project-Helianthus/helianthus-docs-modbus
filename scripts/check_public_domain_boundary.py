@@ -28,28 +28,15 @@ UNPUBLISHABLE = re.compile(
     r"(?-i:\b[A-Z]{2,})-(?:B[0-9A-F]{3}|corrections|semantic|protocol|timer)[\w-]*(?:\.md|-)",
     re.IGNORECASE,
 )
-# A bare project name may identify a citation, a version, a wire reader, or the
-# license boundary. These contexts never admit an application-contract frame.
-NAME_CONTEXT = re.compile(
-    r"\b(?:reads?|consumes?|derives?|consolidated|consolidation|license|CC0|copyright)\b",
-    re.IGNORECASE,
-)
-NAME_CONTEXT_MORE = re.compile(
-    r"\b(?:floor policy|admission rules|recovered labels|takes each fact)\b",
-    re.IGNORECASE,
-)
-CITATION = re.compile(r"\b(?:issue|pull request|commit)\b", re.IGNORECASE)
-APPLICATION_FRAMING = re.compile(
-    r"\b(?:operation requirements|lifecycle requirements|decoder policy|transport contract)\b",
-    re.IGNORECASE,
-)
-
-
 def project_name_violation(line: str, source: bool, exclusion: bool) -> bool:
-    """Return whether a project name on this line states application behavior."""
+    """Return whether a bare project name on this line states application behavior.
+
+    A hyphenated repository token and the stated pre-1.0 stability sentence are
+    names, not an application frame. Words such as reads, license, or issue do
+    not exempt the rest of the line.
+    """
     if source or exclusion or not PROJECT.search(line):
         return False
-    bare = False
     for match in PROJECT.finditer(line):
         after = line[match.end() :]
         if after.startswith("-") or line.strip() == "Helianthus 1.0.":
@@ -58,13 +45,8 @@ def project_name_violation(line: str, source: bool, exclusion: bool) -> bool:
             r"\b(?:stability|stable|before)\b", line, re.IGNORECASE
         ):
             continue
-        bare = True
-        break
-    if not bare:
-        return False
-    if APPLICATION_FRAMING.search(line):
         return True
-    return not (NAME_CONTEXT.search(line) or NAME_CONTEXT_MORE.search(line) or CITATION.search(line))
+    return False
 
 
 def application_text(prose: str) -> bool:
@@ -90,7 +72,11 @@ def unpublishable_attribution(root: Path) -> list[str]:
 
 
 def _link_skips_application_zone(root: Path, path: Path, target: str) -> bool:
-    """Absolute links and the repository license file are outside application docs."""
+    """Skip absolute links, and the frozen wire page's relative license link.
+
+    protocols/modbus/modbus-phase-one-wire-v1.md already points at the repository
+    license file and is not replaced. Any other relative link is classified.
+    """
     if not target or ":" in target:
         return True
     return (path.parent / target).resolve() == (root / "LICENSE").resolve()

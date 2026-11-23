@@ -35,7 +35,7 @@ not. A page does not reproduce or quote the vendor's register map, tables,
 labels, descriptions, screenshots, or prose. When the external document exists,
 the page states only the following, in its own words:
 
-- what Helianthus reads and uses, as the exact facts it relies on, such as an
+- what a page reads and uses, as the exact facts it relies on, such as an
   offset, a quantity, a value form, or a unit rule;
 - derived notes, which are findings that the document does not state in one
   place, such as a discovered version gate or an element deduced by reading
@@ -44,7 +44,7 @@ the page states only the following, in its own words:
   Unknown on the page as before.
 
 What this repository publishes under CC0-1.0 in `protocols/` is what the vendor
-has not published officially and publicly, or what Helianthus consolidated from
+has not published officially and publicly, or what this repository consolidated from
 many documents into a structure of its own. Information derived from a vendor
 document keeps a vendor attribution, including a consolidation of many
 documents.
@@ -52,8 +52,8 @@ documents.
 | Content | Basis | Published as | The page carries |
 | --- | --- | --- | --- |
 | Behavior established by observation, and any fact the vendor has not published officially and publicly | observation or deduction | CC0-1.0 | a Documents consulted section that reads `none` when no document was consulted |
-| A consolidation of several documents into a structure of Helianthus's own, such as a cross-document matrix | official vendor documents | CC0-1.0 for the structure; vendor attribution for the information derived from the documents | the copyright note and a Documents consulted section listing every consulted document version |
-| What Helianthus reads and uses from a document, and notes derived from it | one or more official vendor documents | CC0-1.0 for the page's own expression; vendor attribution for the information derived from the documents | the copyright note and a Documents consulted section listing every consulted document version |
+| A consolidation of several documents into a structure of this repository's own, such as a cross-document matrix | official vendor documents | CC0-1.0 for the structure; vendor attribution for the information derived from the documents | the copyright note and a Documents consulted section listing every consulted document version |
+| What a page reads and uses from a document, and notes derived from it | one or more official vendor documents | CC0-1.0 for the page's own expression; vendor attribution for the information derived from the documents | the copyright note and a Documents consulted section listing every consulted document version |
 | The vendor document itself: its register map, tables, labels, screenshots, firmware, and prose | not applicable | not published in this repository | no copy; identity only, in the Documents consulted section |
 
 A document is a source for what to read and how to interpret it. A fact that
@@ -190,12 +190,12 @@ digest.
   CC0-1.0 by its contributors. The vendor documents it cites keep their rights,
   and the copyright note covers the information derived from them. The page adds
   the reference note below for each reference work it lists.
-- **Cleanup on import.** Helianthus takes each fact together with the vendor
+- **Cleanup on import.** The import takes each fact together with the vendor
   document it rests on, restates it in its own words, and grades it as
   documentary: Hypothesis until an observation grades it, and never Proven on a
   document alone. It drops the engineer-review and operational-authorization
   logic of a reference work, because the work is a source and not a product:
-  Helianthus's own admission rules, write denial, and operator approval at
+  The page's own admission rules, write denial, and operator approval at
   action time stay in force. It also drops the work's links to material outside
   itself, issue-tracker links among them, its source digests, its archive paths,
   and the dates of the historical reports it records, and it reads the work's
@@ -211,7 +211,7 @@ digest.
 - **What is not imported.** A reference work's record of operator reports and
   historical observations is not a source of facts, because the observation
   pages of this repository are the record of what operator-owned installations
-  returned. Its restatement of the Helianthus floor policy is not a source for
+  returned. Its restatement of the software floor policy is not a source for
   that policy either, which this page and the monitoring contract state. A
   client policy that a work writes as its own, such as a cap on the length of a
   read, is not a vendor statement: a page that adopts one says that it does and

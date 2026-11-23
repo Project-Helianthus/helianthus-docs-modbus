@@ -85,10 +85,7 @@ def test_rejects_bare_local_analysis_citations(tmp_path: Path, citation: str) ->
         "The historical V1 name implies no stability before Helianthus 1.0.",
         "Helianthus 1.0.",
         "The registry companion is helianthus-modbusreg issue 353.",
-        "Recorded as Helianthus operation-registry facts at commit 9fa7cd8.",
-        "Words that Helianthus does not consume are retained as native evidence.",
         "Helianthus-specific architecture remains under the separate license lane.",
-        "Terminal field labels used by Helianthus are Helianthus recovered labels.",
         "[Naming](https://github.com/Project-Helianthus/helianthus-docs-modbus/blob/main/architecture/naming-contract.md)",
     ],
 )
@@ -104,6 +101,13 @@ def test_allows_project_names_citations_and_public_urls(tmp_path: Path, text: st
         "The rules below are Helianthus lifecycle requirements.",
         "Rejected by Helianthus decoder policy.",
         "This is the transport contract for the Helianthus Modbus TCP transport.",
+        "Helianthus reads the register map and decides the admission of each device.",
+        "Helianthus consumes the decoder policy for each point.",
+        "Helianthus publishes the register map under its license.",
+        "Helianthus admits each device as recorded in issue 12.",
+        "Recorded as Helianthus operation-registry facts at commit 9fa7cd8.",
+        "Words that Helianthus does not consume are retained as native evidence.",
+        "Terminal field labels used by Helianthus are Helianthus recovered labels.",
     ],
 )
 def test_rejects_project_named_application_contracts(tmp_path: Path, text: str) -> None:

@@ -456,7 +456,7 @@ for mutation in \
   's/They carry no independent body qualification/They carry independent body qualification/' \
   's/The six observation and readback requests have exact empty bodies./The observation requests carry caller bodies./' \
   's/WC provisional current limit/WC temporary current limit/' \
-  's/are Helianthus recovered labels/are vendor-published names/' \
+  's/are recovered labels/are vendor-published names/' \
   's/### FC100 EVSE operation numbers/### FC100 operation numbers/'; do
   sed "$mutation" "$tesla_document" > "$tesla_fixture"
   if cmp -s "$tesla_document" "$tesla_fixture"; then
