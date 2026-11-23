@@ -182,7 +182,7 @@ transport isolation tests, connected read-only qualification, hardware acceptanc
 and end-to-end native/consumer replay remain separate acceptance work. Existing
 Consumer envelopes and parity obligations are unchanged; no new consumer surface or
 semantic mapping is defined. G5 D1-D5/O8 remain J01-J17-owned: this page creates
-no receipts, idempotency ledger, principal boundary or recovery redesign. It
+no receipts, idempotency journal, principal boundary or recovery redesign. It
 closes no parent issue or release gate.
 
 ## Documents consulted

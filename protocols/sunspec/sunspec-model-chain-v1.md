@@ -1,8 +1,7 @@
 # SunSpec Model-Chain Wire Reference V1
 
 This reference records SunSpec wire structure only. It is an independent summary
-of the Apache-2.0 `sunspec/models` catalog pinned at
-`7abdf8982d5364f8ae916deee18aac86c11be36d`; it does not reproduce model files
+of the Apache-2.0 `sunspec/models` catalog; it does not reproduce model files
 or specification tables.
 
 ## Model occurrences

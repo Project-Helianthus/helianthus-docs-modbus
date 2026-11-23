@@ -295,9 +295,8 @@ The linked pages are the
 [SUN2000 identity contract](huawei/sun2000-observed-identity-v1.md), and the
 [power-meter contract](huawei/gateway-power-meter-v1.md).
 
-The SunSpec V2 offline contract is pinned to the public Apache-2.0 SunSpec model
-catalogue at commit
-`90b4a331dcca1d6eac69c1bead952fddcc5852e0`. That upstream license applies to
+The SunSpec V2 offline contract uses the public Apache-2.0 SunSpec model
+catalogue. That upstream license applies to
 the catalogue input. The independently stated protocol contract in this
 repository remains CC0-1.0 and does not reproduce upstream descriptions,
 tables, labels, or generated model files.

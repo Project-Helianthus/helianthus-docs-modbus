@@ -23,7 +23,7 @@ This page is Helianthus policy under the repository AGPL-3.0 documentation
 lane. It contains no copied restricted source material and introduces no
 vendor-specific protocol fact. It refines the read-only, provenance, and
 public/private boundaries in
-[`modbus-foundation-profile-contract-v1.md`](./modbus-foundation-profile-contract-v1.md);
+[`modbus-foundation-profile-contract-v1.md`](https://github.com/Project-Helianthus/helianthus-docs-ebus/blob/main/docs/platform/modbus-foundation-profile-contract-v1.md);
 the stricter fail-closed rule controls until a versioned successor says
 otherwise.
 
@@ -31,7 +31,7 @@ otherwise.
 
 An **acquisition** is one source-observation opportunity. A **dependent** is
 one logical consumer attached to an acquisition, including a dependent of a
-coalesced physical read. An **attempt** is a bounded ledger entry that groups
+coalesced physical read. An **attempt** is a bounded journal entry that groups
 the dependencies intended for one publication. A **claim** is the one-shot
 delivery decision made for exactly one dependent capability. An `AttemptKey`
 is a non-empty UTF-8 string compared by exact encoded bytes, without Unicode,
@@ -64,7 +64,7 @@ It MUST issue one only when all of the following are true:
 
 The source MUST validate the key's encoding and bound before capability
 allocation or binding. Capability issuance does not admit the M2 attempt; the
-ledger independently validates the same exact bindings during attempt admission.
+journal independently validates the same exact bindings during attempt admission.
 
 An `AttemptInstance` is an opaque, unforgeable, non-serializable source-owned
 identity for one attempt incarnation. It is not an `AttemptKey`, endpoint
@@ -73,7 +73,7 @@ reused `AttemptKey` always receives a fresh independent instance. Every member
 capability MUST register atomically with its exact instance before that
 capability becomes caller-visible.
 
-Instance membership begins `open`. Ledger admission atomically performs
+Instance membership begins `open`. Journal admission atomically performs
 `open -> closing`, blocks every later registration, waits for every registration
 that linearized before closure, validates the exact ordered member set, and then
 performs `closing -> closed`. A registration that loses the close race fails
@@ -93,7 +93,7 @@ capability operation and grants no cancellation authority to a caller.
 Deliverability is owned and decided by the runtime source after correlation.
 It is exactly post-correlation successful dependent production under the
 predecessor contract's
-[successful dependent production](./modbus-foundation-profile-contract-v1.md#physical-and-logical-identity)
+[successful dependent production](https://github.com/Project-Helianthus/helianthus-docs-ebus/blob/main/docs/platform/modbus-foundation-profile-contract-v1.md#physical-and-logical-identity)
 boundary: a request-bound response has outcome `successful_data`, the
 dependent remains attached, its exact logical slice validates, and production
 is coherent. The resulting capability remains non-serializable.
@@ -115,7 +115,7 @@ recoverable request for the consumer to synthesize one.
 
 Claiming a capability MUST be one-shot compare-and-swap (CAS) against private,
 source-issued `source_owned_shared_capability_state`. That state belongs to the
-M1 runtime source; it is not an M2 ledger pointer and is not owned by the
+M1 runtime source; it is not an M2 journal pointer and is not owned by the
 consumer. It starts in `open` and follows exactly one legal transition:
 
 | From | To | Source-owned trigger |
@@ -135,23 +135,23 @@ same claim state. When copied views race to claim it, exactly one claim wins;
 all other concurrent and later claims are rejected. An implementation MUST NOT
 create independent claim cells merely because it copied an acquisition value.
 After a capability is admitted to an M2 attempt, every conforming claim through
-any copied view MUST pass through that attempt's ledger claim-admission
-linearization. A direct claim that bypasses the ledger is invalid. An
+any copied view MUST pass through that attempt's journal claim-admission
+linearization. A direct claim that bypasses the journal is invalid. An
 implementation MUST enforce this by ownership transfer, an unforgeable
-ledger-admission permit, or an equivalent private mechanism; caller convention
+journal-admission permit, or an equivalent private mechanism; caller convention
 alone is insufficient.
 
 #### Source-Owned Attempt Cancellation
 
-The runtime source MUST expose the M2 ledger cancellation path to exactly one
+The runtime source MUST expose the M2 journal cancellation path to exactly one
 attempt-bound operation, `CancelOpen(AttemptInstance)`. The source owns and executes
 this operation and all capability CAS state. M2 owns the attempt and decides
 when its cancellation protocol invokes the operation. `CancelOpen` is not a
 caller-visible capability method, cannot be synthesized from an `AttemptKey`,
-and cannot mutate any ledger entry or attempt state.
+and cannot mutate any journal entry or attempt state.
 
 `CancelOpen` accepts only the exact opaque closed instance handle transferred at
-ledger admission and examines exactly that instance's frozen membership. For
+journal admission and examines exactly that instance's frozen membership. For
 each member capability it
 atomically performs `open -> cancelled` when the state is still `open`; it
 leaves `claimed`, `cancelled`, `failed`, and `expired` unchanged. It returns
@@ -241,19 +241,19 @@ capability and does not keep an entry in the source-owned live tracking or
 tombstone sets. Source-owned tracking plus tombstones therefore remains
 bounded even if callers retain arbitrarily many terminal wrapper values.
 
-## M2 Ledger And Publication Contract
+## M2 Journal And Publication Contract
 
-`helianthus-modbusreg` owns the attempt ledger, while the runtime remains the
+`helianthus-modbusreg` owns the attempt journal, while the runtime remains the
 sole capability issuer and owner of private capability state. Every attempt
-MUST use ledger-owned shared pointer state for attempt and publication state;
+MUST use journal-owned shared pointer state for attempt and publication state;
 copied attempt values and views observe that same attempt/publication state.
-The ledger may record a capability claim outcome, but it MUST NOT own, replace,
+The journal may record a capability claim outcome, but it MUST NOT own, replace,
 serialize, reconstruct, or expose the capability's private source-owned CAS
 state. A caller-supplied mutable DTO is forbidden as publication input.
 
-An `AttemptKey` documents one ledger attempt, which begins `open`; the exact
+An `AttemptKey` documents one journal attempt, which begins `open`; the exact
 opaque `AttemptInstance` is its security and cancellation identity. Before
-copying, hashing, interning, or otherwise allocating for a key, the ledger MUST
+copying, hashing, interning, or otherwise allocating for a key, the journal MUST
 validate its exact UTF-8 byte length against the finite positive
 `attempt_key_max_utf8_bytes`. An empty, invalidly encoded, or over-bound key is
 rejected. Insertion of a duplicate `AttemptKey` MUST be rejected before it
@@ -261,18 +261,18 @@ changes capability, claim, or publication state. Every runtime capability in
 the inserted attempt MUST carry the same exact source-owned key binding; a
 mismatch rejects the whole insertion without changing either owner's state.
 
-Before terminal-sequence reservation, ledger allocation, or any capability CAS,
+Before terminal-sequence reservation, journal allocation, or any capability CAS,
 admission MUST validate a non-empty ordered dependency declaration copied from
 the predecessor's exact ordered `dependency_set_id`. The dependency count and
 complete canonical encoded byte length are finite-positive bounded and checked
 before decoding or materializing the collection. Every dependent identity is
-non-empty and unique. The ledger computes `dependency_set_digest` as SHA-256 of
+non-empty and unique. The journal computes `dependency_set_digest` as SHA-256 of
 the domain-separated canonical encoding of the count followed by each dependent
 identity in declared ordinal order. Each capability, claim entry, and
 zero-based `claim_ordinal` is bound to that exact digest and ordinal. A
 permutation, omission, duplication, extra member, count mismatch, capability
 membership mismatch, or digest mismatch rejects the whole attempt before
-source or ledger state changes. Claim terminal sequences are reserved in that
+source or journal state changes. Claim terminal sequences are reserved in that
 same declared ordinal order.
 
 ### Claim-Entry Lifecycle
@@ -303,7 +303,7 @@ Every terminal claim outcome is immutable. A terminal claim entry cannot
 return to `unresolved`, change outcome, or be retried. Attempt cancellation
 synchronously closes only entries that are still `unresolved` as
 `attempt_cancelled`. It MUST NOT change `claim_in_progress` or any terminal
-entry. Claim admission and finalization use the ledger-owned shared state;
+entry. Claim admission and finalization use the journal-owned shared state;
 capability consumption remains a source-owned CAS.
 
 Claim admission is the atomic `unresolved -> claim_in_progress` transition
@@ -352,7 +352,7 @@ The complete legal attempt transition set is:
 `published`, `publish_failed`, and `cancelled` are immutable terminal attempt
 states. No other attempt transition is legal. Sealing creates one immutable
 attempt set containing the exact ordered dependent and terminal claim
-outcomes. `Publish()` MUST consume that sealed immutable ledger state and MUST
+outcomes. `Publish()` MUST consume that sealed immutable journal state and MUST
 NOT accept a mutable DTO or an unsealed attempt.
 
 `Seal()` MUST reject unless the ordered dependency set is non-empty, every
@@ -392,7 +392,7 @@ addition, deletion, substitution, or reordered dependent is valid.
 
 #### Closed Publication Projection
 
-The sealed normalization records and evidence are internal ledger state.
+The sealed normalization records and evidence are internal journal state.
 `Publish()` MUST emit only `published_attempt_v1`, a closed projection with
 exactly `schema_version`, `attempt_terminal_sequence`,
 `dependency_set_digest`, `runtime_dependency_count`, and
@@ -407,9 +407,9 @@ authorized by this receipt. Tests MUST inject distinct secret canaries into
 every forbidden source location and prove both field-level and byte-level
 absence from the published projection.
 
-### Ledger Bounds And Deterministic Reclamation
+### Journal Bounds And Deterministic Reclamation
 
-The ledger MUST configure finite positive hard limits for:
+The journal MUST configure finite positive hard limits for:
 
 - all retained attempts across `open`, `sealed`, `cancelling`, `publishing`,
   `published`, `publish_failed`, and `cancelled` pending reclamation;
@@ -422,23 +422,23 @@ The ledger MUST configure finite positive hard limits for:
 - immutable attempt/claim audit tombstones.
 
 Invalid, zero, negative, overflowing, or inconsistent bounds fail before
-ledger activation. Admission counts every retained state, not only `open`.
+journal activation. Admission counts every retained state, not only `open`.
 Reaching any bound rejects admission without eviction or reuse of live state.
 
 Before an attempt allocates or changes source, claim, attempt, or publication
-state, the ledger MUST reserve one unique attempt terminal sequence and one
+state, the journal MUST reserve one unique attempt terminal sequence and one
 unique claim terminal sequence for every admitted claim entry. The batch is
 reserved all-or-nothing from `1..2^64-1` using checked monotonic unsigned 64-bit
-arithmetic. Sequences never wrap or reuse while retained ledger state exists.
-They also never reuse after reclamation during the ledger owner instance, and
+arithmetic. Sequences never wrap or reuse while retained journal state exists.
+They also never reuse after reclamation during the journal owner instance, and
 restored retained state MUST restore the next unused sequence. If the full
 batch is unavailable, insertion is rejected without mutation.
 Sequence exhaustion blocks new attempts but cannot prevent any existing
 attempt or claim entry from reaching its terminal outcome.
 
 On every terminal transition and before every admission result returns, the
-ledger synchronously reclaims eligible terminal attempt and claim entries.
-Eligibility requires no in-progress ledger operation and no reference from a
+journal synchronously reclaims eligible terminal attempt and claim entries.
+Eligibility requires no in-progress journal operation and no reference from a
 retained nonterminal attempt; a terminal claim outcome required by an open,
 sealed, cancelling, or publishing attempt remains retained and counted.
 Reclamation order is deterministic by the terminal sequence reserved at
@@ -448,7 +448,7 @@ non-reconstructing immutable audit tombstone into a configured finite positive
 evicts the lowest terminal sequence first. Wall clock, map iteration, caller
 behavior, and randomness cannot alter reclamation or eviction.
 
-The ledger audit tombstone schema has exactly two closed variants:
+The journal audit tombstone schema has exactly two closed variants:
 
 | Variant | Exact required fields |
 | --- | --- |
@@ -459,13 +459,13 @@ Neither variant permits optional or extension fields. Audit tombstones MUST
 NOT retain raw `AttemptKey`, an `AttemptKey` digest, `source_evidence_id`,
 normalization records, evidence payloads, capability representations, or
 free-form diagnostics. Each retained encoding MUST fit the configured finite
-positive `ledger_audit_tombstone_max_encoded_bytes`, validated at ledger
+positive `ledger_audit_tombstone_max_encoded_bytes`, validated at journal
 activation against the largest legal encoding of both variants.
 
 A caller-retained terminal attempt or claim wrapper is an immutable, non-owning
-outcome view. It cannot mutate or keep alive ledger-owned attempt, claim, or
-audit state and does not count as retained ledger state. The
-`shared_ledger_owned_pointer` exists only while the bounded ledger owns the
+outcome view. It cannot mutate or keep alive journal-owned attempt, claim, or
+audit state and does not count as retained journal state. The
+`shared_ledger_owned_pointer` exists only while the bounded journal owns the
 attempt/publication state; it never becomes capability state.
 
 For a runtime acquisition, delivery trust requires the successful one-shot CAS
@@ -517,20 +517,20 @@ V1 requires the following named finite positive configuration bounds:
 | `retained_diagnostic_count_per_object_max` | diagnostic strings retained by one live object |
 | `retained_diagnostic_max_utf8_bytes` | each optional retained diagnostic string outside tombstones |
 | `capability_tombstone_max_encoded_bytes` | complete retained encoding of one capability tombstone |
-| `ledger_audit_tombstone_max_encoded_bytes` | complete retained encoding of either ledger tombstone variant |
+| `ledger_audit_tombstone_max_encoded_bytes` | complete retained encoding of either journal tombstone variant |
 
 The maximum normalization field count is the checked sum of the ten required
 fields and `normalization_extension_count_max`. Before activation, every bound
 MUST be nonzero and finite, every sum or product implied by count and byte
 bounds MUST be checked for overflow and fit the implementation's allocation
-limit, and source and ledger `attempt_key_max_utf8_bytes` values MUST agree.
+limit, and source and journal `attempt_key_max_utf8_bytes` values MUST agree.
 
 The complete encoded-record bound MUST be checked before decoding an encoded
 record or allocating its object tree. Field counts and the byte lengths of the
 source evidence identifier, required strings, extension keys, and extension
-values MUST be checked with a capped or counting decoder before the ledger
+values MUST be checked with a capped or counting decoder before the journal
 copies or retains them. A pre-decoded caller object requires the same checks by
-a bounded counting encoder before any ledger-owned copy. Duplicate field names,
+a bounded counting encoder before any journal-owned copy. Duplicate field names,
 empty extension keys, extension keys that collide with required fields,
 invalid UTF-8, truncation, and every over-bound input fail closed. Retained
 diagnostics, when present, are an ordered list of UTF-8 strings with no nested
@@ -551,7 +551,7 @@ record.
 
 The following are examples only; they do not define a language API or permit a
 different observable result. A runtime may keep an internal atomically claimed
-cell behind an unexported capability object. Separately, an M2 ledger may hold
+cell behind an unexported capability object. Separately, an M2 journal may hold
 a shared pointer to an immutable sealed attempt record that records the claim
 outcome without owning that cell. Another implementation may use a different
 private layout. Both are conforming only if public copying, endpoint
@@ -584,5 +584,5 @@ match without these behavioral tests is insufficient.
 
 V1 is closed. Any semantic addition or correction requires a new versioned
 contract and manifest; no implementation may silently broaden the enums,
-issuance conditions, claim operation, ledger ownership, or normalization
+issuance conditions, claim operation, journal ownership, or normalization
 record.

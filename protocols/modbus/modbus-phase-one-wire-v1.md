@@ -3,7 +3,7 @@
 ## License And Scope
 
 This implementation-neutral reference is covered by
-[the repository license policy](https://github.com/Project-Helianthus/helianthus-docs-modbus/blob/main/LICENSE), CC0-1.0. It summarizes the public wire facts
+[the repository license policy](../../LICENSE), CC0-1.0. It summarizes the public wire facts
 needed for FC03, FC04, FC2B/MEI0E, Modbus TCP, and Modbus RTU. It contains no
 Helianthus scheduler, profile, qualification, gateway, or semantic policy.
 

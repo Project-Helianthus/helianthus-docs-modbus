@@ -1,3 +1,4 @@
+import re
 from pathlib import Path
 
 import pytest
@@ -108,3 +109,69 @@ def test_allows_project_names_citations_and_public_urls(tmp_path: Path, text: st
 def test_rejects_project_named_application_contracts(tmp_path: Path, text: str) -> None:
     document(tmp_path, text)
     assert violations(tmp_path)
+
+
+ROOT = Path(__file__).resolve().parents[1]
+COMMIT_ID = re.compile(r"\b[0-9a-f]{40}\b")
+BANNED_RECORD_TERM = re.compile(r"\bledger\b", re.IGNORECASE)
+OWNER_FOUNDATION = (
+    "https://github.com/Project-Helianthus/helianthus-docs-ebus/blob/main/"
+    "docs/platform/modbus-foundation-profile-contract-v1.md"
+)
+JOURNAL_PAGES = (
+    "docs/platform/opaque-runtime-acquisition-v1.md",
+    "protocols/tesla/activation-evidence-worksheet.md",
+    "protocols/tesla/activation-observation-hook-v1.md",
+    "protocols/huawei/smartlogger-provider-lifecycle-v1.md",
+    "protocols/huawei/luna2000-optional-group-v1.md",
+)
+PROSE_WITHOUT_COMMIT_IDS = (
+    "architecture/protocol-routing-vendor-sunspec-model-chain-v1.md",
+    "protocols/sunspec/sunspec-model-chain-v1.md",
+    "protocols/sunspec/read-only-core-v1.md",
+    "architecture/protocol-routing-vendor-sunspec-additional-model-evidence-v1.md",
+    "architecture/protocol-routing-vendor-fronius-observed-flavor-v1-1.md",
+    "protocols/applicability-and-licensing.md",
+    "architecture/protocol-routing-vendor-huawei-candidate-evidence-v1.md",
+)
+FOUNDATION_LINK_PAGES = (
+    "docs/platform/opaque-runtime-acquisition-v1.md",
+    "docs/platform/modbus-multivendor-boundaries.md",
+    "development/modbus-sunspec-deduplication.md",
+)
+
+
+def test_repository_license_link_is_not_an_application_crossing(tmp_path: Path) -> None:
+    (tmp_path / "LICENSE").write_text("CC0-1.0\n", encoding="utf-8")
+    document(tmp_path, "[the repository license policy](../../LICENSE)\n")
+    assert violations(tmp_path) == []
+
+
+def test_retained_wire_page_keeps_its_local_license_link() -> None:
+    text = (ROOT / "protocols/modbus/modbus-phase-one-wire-v1.md").read_text(encoding="utf-8")
+    assert "[the repository license policy](../../LICENSE)" in text
+    assert "blob/main/LICENSE" not in text
+    assert violations(ROOT) == []
+
+
+def test_named_pages_do_not_use_the_banned_record_term() -> None:
+    for relative in JOURNAL_PAGES:
+        text = (ROOT / relative).read_text(encoding="utf-8")
+        assert BANNED_RECORD_TERM.search(text) is None, relative
+
+
+def test_cited_prose_omits_bare_commit_identifiers() -> None:
+    for relative in PROSE_WITHOUT_COMMIT_IDS:
+        text = (ROOT / relative).read_text(encoding="utf-8")
+        assert COMMIT_ID.search(text) is None, relative
+    note = (ROOT / "protocols/sunspec/additional-model-evidence-v1.md").read_text(encoding="utf-8")
+    assert "977614c944cd685bef75b5b12148e1110ed7653a" in note
+
+
+def test_retained_foundation_contract_links_use_the_owner_url() -> None:
+    for relative in FOUNDATION_LINK_PAGES:
+        text = (ROOT / relative).read_text(encoding="utf-8")
+        assert OWNER_FOUNDATION in text, relative
+        assert "](./modbus-foundation-profile-contract-v1.md" not in text
+        assert "](../docs/platform/modbus-foundation-profile-contract-v1.md" not in text
+        assert "](../docs/platform/manifests/modbus-foundation-profile-contract-v1.json" not in text

@@ -910,8 +910,8 @@
       "page": "protocols/applicability-and-licensing.md",
       "section": "## Applicability classes",
       "kind": "statement",
-      "value": "The SunSpec V2 offline contract is pinned to the public Apache-2.0 SunSpec model catalogue at commit `<pin:f/jzI2+NVYViu6r5Zz1zF4pLXd09KfrwZdtHISHWBCU>`.",
-      "reason": "Exact upstream catalogue revision of the V2 contract; the pin binds the exact revision."
+      "value": "The SunSpec V2 offline contract uses the public Apache-2.0 SunSpec model catalogue.",
+      "reason": "The V2 contract uses the public Apache-2.0 SunSpec model catalogue."
     },
     {
       "contract": "v2_licensing",

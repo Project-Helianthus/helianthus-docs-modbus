@@ -15,7 +15,6 @@ BOUNDARIES = ROOT / "docs/platform/modbus-multivendor-boundaries.md"
 QUALIFICATION = ROOT / "api/modbus-v1-addon-runtime.md"
 
 CAPABILITY_ID = "sunspec.inverter.three_phase.monitoring@1.0.0"
-MODELS_PIN = "7abdf8982d5364f8ae916deee18aac86c11be36d"
 FRONIUS_PDF_SHA256 = "aa1e69432472ae2f25075c01a651201f747ae0f9e85c8894dfa1f36883d06890"
 FRONIUS_PACKAGE_SHA256 = "dc4c5d49362ee0c9721f21886f17fa18497e54c4d92bb5cc2c50472deb266b55"
 
@@ -33,7 +32,8 @@ def test_application_contract_keeps_neutral_protocol_sources_separate() -> None:
     assert "implementation-neutral" in (ROOT / "protocols/sunspec/README.md").read_text()
     assert "independent summary" in contract.lower()
     assert "must not copy" in contract.lower()
-    assert MODELS_PIN in contract
+    assert "sunspec/models" in contract
+    assert re.search(r"\b[0-9a-f]{40}\b", contract) is None
     assert "Apache-2.0" in contract
     assert "SunSpec Device Information Model Specification v1.2" in contract
     assert "42,0410,2649" in contract

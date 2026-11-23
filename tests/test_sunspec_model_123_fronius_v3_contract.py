@@ -70,10 +70,10 @@ def test_old_flavor_is_immutable_and_new_flavor_is_exact() -> None:
         "1.41.11-1",
         "Model `123/L24`",
         "Immediate Controls",
-        "81e18e67a1b7d1adff5273c8c43f08243a3e2a0a",
         "CHAIN_MISMATCH",
     ):
         assert value in new
+    assert "81e18e67a1b7d1adff5273c8c43f08243a3e2a0a" not in new
     for phrase in (
         "does not reinterpret",
         "exact ordered chain",

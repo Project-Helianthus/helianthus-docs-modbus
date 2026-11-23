@@ -307,7 +307,7 @@
     "unknown_extension_fields": "preserved_losslessly_without_truncation"
   },
   "policy": "docs/platform/opaque-runtime-acquisition-v1.md",
-  "policy_sha256": "a95e2ec593a6c06584c06f1486b167c917e756d0af48b83896c51f05e58742d8",
+  "policy_sha256": "10068b4dfbd4455e37844ad4ea4fada25d6541e8694c3b1b54a06fef3a120aae",
   "public_authorization": {
     "device": "none",
     "gateway": "none",

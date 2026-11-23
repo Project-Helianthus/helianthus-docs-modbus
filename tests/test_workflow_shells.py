@@ -209,3 +209,17 @@ def test_shellcheck_tool_failure_is_propagated(tmp_path, monkeypatch):
 def test_missing_tool_is_a_clear_failure(tmp_path, capsys):
     assert lint.bounded([str(tmp_path / "missing-shellcheck")]) == 2
     assert "FAIL:" in capsys.readouterr().err
+
+
+def test_makefile_targets_call_files_present_in_this_checkout():
+    text = (ROOT / "Makefile").read_text(encoding="utf-8")
+    for absent in (
+        "scripts/check_runtime_state_schema.sh",
+        "scripts/validate_platform_contracts.py",
+        "scripts/validate_platform_combined_ref.py",
+        "tests/test_platform_contracts.py",
+    ):
+        assert absent not in text
+        assert not (ROOT / absent).exists()
+    assert "scripts/ci_local.sh" in text
+    assert (ROOT / "scripts/ci_local.sh").is_file()

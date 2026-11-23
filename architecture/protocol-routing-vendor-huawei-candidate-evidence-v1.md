@@ -14,7 +14,7 @@ Authoritative inputs, derived R&D, and live observations remain separate:
 
 | Family | Huawei-authored source | R&D lead | Live status |
 | --- | --- | --- | --- |
-| SmartLogger | SmartLogger V300R024C10 ModBus Interface Definitions, Issue 54, 2026-02-06; converted MD SHA-256 `f00b197c84a581bfcaec95a1b6a959ab8f08c670a31ea3d27414f1f2b33bc794` | `wlcrs/huawei-solar-lib` commit `7927a68d30d86078c1366a4acae7887bc47e62da`, AGPL-3.0, design lead only | historical read-only snapshot proves SmartLogger plus eight addressed children; it does not prove MEI inventory |
+| SmartLogger | SmartLogger V300R024C10 ModBus Interface Definitions, Issue 54, 2026-02-06; converted MD SHA-256 `f00b197c84a581bfcaec95a1b6a959ab8f08c670a31ea3d27414f1f2b33bc794` | `wlcrs/huawei-solar-lib`, AGPL-3.0, design lead only | historical read-only snapshot proves SmartLogger plus eight addressed children; it does not prove MEI inventory |
 | S-Dongle | SDongle V200R025C00SPC120 MODBUS Interface Definitions, Issue 01, 2025-12-23, SHA-256 `2806fac6a6176c3f815e8d8135f306b0bb585bcfed8770bfa822536fcf39ab1b`; TCP Guide Issue 05 SHA-256 `cc5b5c45e90d4607a6d79a4b5069632576731cb1165957bd120970a97ff45d47` | same clean-room research lead | no admitted live detector or child-inventory fixture |
 | EMMA | SmartHEMS V100R024C00 MODBUS Interface Definitions, Issue 01, SHA-256 `7a989d2b8d031582ce1fad5766c0168b47b5a4ba2cf96dbd65085590d3308a5e`; SmartHEMS V100R025C00SPC102 MODBUS Interface Definitions, SHA-256 `89bafd5f74ef7516daeb4d5de0d4212245080d1d6d1b03d7482854d0fe5244ce` | same clean-room research lead | historical unit-0 telemetry is confirmed; detector tuple, MEI inventory, and overlap rejection are not |
 
@@ -171,9 +171,7 @@ together. Any pairwise detector collision remains fail-closed.
 The standard `helianthus-modbus` Device Identification traversal remains
 strict: it starts at object `0`, requires the basic objects, and does not wrap.
 Transport PR [#18](https://github.com/Project-Helianthus/helianthus-modbus/pull/18)
-was squash-merged at
-`c78030472c24f0f2b849fd30124611157a81f834` and is available as
-`v0.0.0-20260820212315-c78030472c24`. It adds separate vendor-neutral,
+was squash-merged. It adds separate vendor-neutral,
 read-only primitives for response-bearing Modbus TCP `unit_id=0` and a bounded
 extended code-03 stream starting at object `0x87`. That extended stream permits
 one documented `0xFF -> 0x00` continuation and rejects loops, duplicate objects,

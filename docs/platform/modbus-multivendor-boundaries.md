@@ -310,7 +310,7 @@ expression, is caught by the approval rule and not by the tests. The
 base-owned `pull_request_target` workflow stays in the repository unchanged as
 a protected path of the V1 contract and produces the same status wherever the
 hosting platform starts workflows on that trigger. The statement of the
-[V1 policy page](./modbus-foundation-profile-contract-v1.md) that a head change
+[V1 policy page](https://github.com/Project-Helianthus/helianthus-docs-ebus/blob/main/docs/platform/modbus-foundation-profile-contract-v1.md) that a head change
 cannot remove, repin, or replace the anchor invocation describes this
 base-owned `pull_request_target` run only.
 

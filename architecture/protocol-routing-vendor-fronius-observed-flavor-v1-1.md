@@ -11,8 +11,7 @@ This contract is bounded to one sanitized observation of a Fronius
 `Symo GEN24 10.0` reporting firmware `1.41.11-1`. It is not a product-family
 support claim and does not infer another model, firmware, market variant, or
 chain. The observed flavor is a `tested_on_hardware` record of one model and
-bounds nothing. The observation followed gateway merge
-`81e18e67a1b7d1adff5273c8c43f08243a3e2a0a`; a preliminary registry run
+bounds nothing. The observation followed a gateway merge; a preliminary registry run
 correctly returned `CHAIN_MISMATCH` against V1 because the observed chain also
 contained Model `123/L24`. This statement motivates the versioned contract; it
 is not FMV3-M4-05 completion evidence.

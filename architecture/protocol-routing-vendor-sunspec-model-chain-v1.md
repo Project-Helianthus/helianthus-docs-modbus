@@ -11,8 +11,7 @@ specification text, Fronius manuals, or vendor workbook/register tables.
 The source pins below make the claimed catalog inspectable while preserving the
 source licenses and publication boundaries.
 
-- SunSpec Models: `sunspec/models` commit
-  `7abdf8982d5364f8ae916deee18aac86c11be36d`, Apache-2.0. The identifiers,
+- SunSpec Models: Apache-2.0 `sunspec/models`. The identifiers,
   names, and declared lengths summarized here are independently stated facts.
 - SunSpec Device Information Model Specification v1.2: reference only. Its
   presentation and tables are not reproduced or relicensed here.

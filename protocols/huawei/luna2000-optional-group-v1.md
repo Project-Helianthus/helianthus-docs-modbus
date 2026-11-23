@@ -179,7 +179,7 @@ state assume a future revised native contract; that prerequisite is unmet today.
 This is a partial documentation slice of the battery optional-group contract.
 It does not close registry implementation, acquisition, transport conformance,
 physical qualification, integration, or parent acceptance. No runtime success is
-inferred. No receipts, idempotency ledger, principal boundary, or recovery
+inferred. No receipts, idempotency journal, principal boundary, or recovery
 redesign is specified; those remain with their existing owners.
 
 There are no changes to protocol-neutral

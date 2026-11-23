@@ -9,9 +9,8 @@ Fronius chain.
 
 ## Primary Source
 
-The authoritative input is the Apache-2.0 `sunspec/models` repository pinned at
-commit `7abdf8982d5364f8ae916deee18aac86c11be36d`. Helianthus consumes only the
-model definitions at that immutable revision. This page independently
+The authoritative input is the Apache-2.0 `sunspec/models` repository.
+Helianthus consumes only the model definitions from that catalogue. This page independently
 summarizes model identity and admission constraints; it does not reproduce the
 upstream JSON model files.
 

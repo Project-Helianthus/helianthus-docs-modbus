@@ -74,6 +74,13 @@ def unpublishable_attribution(root: Path) -> list[str]:
     return errors
 
 
+def _link_skips_application_zone(root: Path, path: Path, target: str) -> bool:
+    """Absolute links and the repository license file are outside application docs."""
+    if not target or ":" in target:
+        return True
+    return (path.parent / target).resolve() == (root / "LICENSE").resolve()
+
+
 def violations(root: Path) -> list[str]:
     errors: list[str] = []
     for area in ("protocols", "types"):
@@ -112,7 +119,7 @@ def violations(root: Path) -> list[str]:
                     )
                 for match in LINK.finditer(line):
                     target = match.group(1).split("#", 1)[0]
-                    if not target or ":" in target:
+                    if _link_skips_application_zone(root, path, target):
                         continue
                     resolved = (path.parent / target).resolve()
                     if not any(
