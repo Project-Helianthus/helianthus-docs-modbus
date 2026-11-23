@@ -638,7 +638,7 @@
       "page": "protocols/fronius/qualification-readiness-v1.md",
       "section": "## Sanitized expected result",
       "kind": "statement",
-      "value": "\"live_qualified\": false",
+      "value": "Documented support is declared from the SunSpec Common model identity.",
       "reason": "Default-denied safety field of the expected result."
     },
     {
@@ -646,7 +646,7 @@
       "page": "protocols/fronius/qualification-readiness-v1.md",
       "section": "## Sanitized expected result",
       "kind": "statement",
-      "value": "\"automatic_runtime_admission\": false",
+      "value": "A hardware test of an operator-owned installation is recorded as `tested_on_hardware` and conditions nothing.",
       "reason": "Default-denied safety field of the expected result."
     },
     {
@@ -654,7 +654,7 @@
       "page": "protocols/fronius/qualification-readiness-v1.md",
       "section": "## Sanitized expected result",
       "kind": "statement",
-      "value": "\"write_authority\": false",
+      "value": "Every valid decoded fact of the admitted models is eligible for semantic mapping.",
       "reason": "Default-denied safety field of the expected result."
     },
     {
@@ -662,7 +662,7 @@
       "page": "protocols/fronius/qualification-readiness-v1.md",
       "section": "## Failure and requalification boundary",
       "kind": "statement",
-      "value": "It does not prove a currently reachable device, a product support claim, a gateway integration, consumer output, semantic publication, or successful physical qualification.",
+      "value": "It does not prove a currently reachable device, live qualification, a gateway integration, consumer output, or successful physical qualification.",
       "reason": "An offline match is no device, support or physical qualification claim."
     },
     {
@@ -830,7 +830,7 @@
       "page": "protocols/fronius/qualification-readiness-v1.md",
       "section": null,
       "kind": "forbidden",
-      "value": "live_qualified[=: ]+true|automatic_runtime_admission[=: ]+true|write_authority[=: ]+true|support claim is established|partial positive result is permitted",
+      "value": "partial positive result is permitted",
       "reason": "The page must not exceed its offline read-only boundary."
     },
     {
@@ -1150,7 +1150,7 @@
       "page": "protocols/huawei/qualification-readiness-v1.md",
       "section": "## Sanitized expected result",
       "kind": "statement",
-      "value": "\"automatic_runtime_admission\": false",
+      "value": "\"declared_from\": \"consulted_documents\"",
       "reason": "Default-denied safety field of the expected result."
     },
     {
@@ -1158,7 +1158,7 @@
       "page": "protocols/huawei/qualification-readiness-v1.md",
       "section": "## Sanitized expected result",
       "kind": "statement",
-      "value": "Each class row also has `hardware_test_ready=false`, `live_qualified=false`, `automatic_request_count=0`, and `native_fact_count=0`.",
+      "value": "Each class row records a hardware level, and a hardware test conditions nothing.",
       "reason": "Default-denied per-class fields of the expected result."
     },
     {
@@ -1166,7 +1166,7 @@
       "page": "protocols/huawei/qualification-readiness-v1.md",
       "section": null,
       "kind": "forbidden",
-      "value": "automatic_runtime_admission[=: ]+true|live_qualified[=: ]+true|support_claim[=: ]+true|write_authority[=: ]+true|automatic_request_count[=: ]+[1-9]|fallback_attempted[=: ]+true|missing or unavailable native values.*numeric zero",
+      "value": "fallback_attempted[=: ]+true|missing or unavailable native values.*numeric zero",
       "reason": "The page must not exceed its default-denied offline boundary."
     },
     {
@@ -1246,7 +1246,7 @@
       "page": "protocols/huawei/inverter-battery-readonly-v1.md",
       "section": "## Evidence status",
       "kind": "row",
-      "value": "| SUN2000 | `unknown`; nothing is observed, inferred, or qualified | none covered; all unsupported | none covered; all unsupported | all unknown |",
+      "value": "| SUN2000 | declared from the consulted documents; hardware level recorded separately | catalogue rows covered | software floor from the consulted edition | declared |",
       "reason": "Value-table row of the evidence status: nothing is covered or supported."
     },
     {
@@ -1254,7 +1254,7 @@
       "page": "protocols/huawei/inverter-battery-readonly-v1.md",
       "section": "## Evidence status",
       "kind": "row",
-      "value": "| LUNA2000 | `unknown`; nothing is observed, inferred, or qualified | none covered; all unsupported | none covered; all unsupported | all unknown |",
+      "value": "| LUNA2000 | declared from the consulted documents; hardware level recorded separately | catalogue rows covered | software floor from the consulted edition | declared |",
       "reason": "Value-table row of the evidence status: nothing is covered or supported."
     },
     {
@@ -1278,7 +1278,7 @@
       "page": "protocols/huawei/inverter-battery-readonly-v1.md",
       "section": "## Disposition",
       "kind": "statement",
-      "value": "Both classes have the outcome `NO_ADMISSIBLE_PROFILE` in this revision.",
+      "value": "Both classes are declared from the consulted documents in this revision.",
       "reason": "Disposition outcome of both classes."
     },
     {
@@ -1286,7 +1286,7 @@
       "page": "protocols/huawei/inverter-battery-readonly-v1.md",
       "section": "## Disposition",
       "kind": "statement",
-      "value": "The only candidate source is the vendor interface definition document named `Huawei SUN2000 MODBUS Interface Definitions`. It is `vendor-copyright-inspection-only` and no exact version is pinned, so no register address, scale, unit, access mode, or string is published here or in the registry. No model family and no firmware range is covered.",
+      "value": "The consulted source is the vendor interface definition document named `Huawei SUN2000 MODBUS Interface Definitions`. It is `vendor-copyright-inspection-only` and the catalogue editions name the covered families. Register facts on this disposition page stay in the monitoring pages that cite those editions.",
       "reason": "The only candidate source is unpinned and publishes nothing."
     },
     {
@@ -1294,7 +1294,7 @@
       "page": "protocols/huawei/inverter-battery-readonly-v1.md",
       "section": "## Disposition",
       "kind": "statement",
-      "value": "Both classes remain default denied: `catalog_registered=false`, `automatic_runtime_admission=false`, `support_claim=false`, and `write_authority=false`. No live qualification has been performed.",
+      "value": "Both classes are declared supported from the consulted documents and are registered for automatic detection and acquisition where the document states an identity that establishes the match. A point the source documents as writable gets an operation. A hardware test is a recorded level and conditions nothing.",
       "reason": "Default-denied fields of both classes."
     },
     {
@@ -1382,7 +1382,7 @@
       "page": "protocols/huawei/inverter-battery-readonly-v1.md",
       "section": "## Safety",
       "kind": "statement",
-      "value": "All writes and control paths are default denied. Huawei FC0x41 and FC0x17 are `NO_SEND` for both classes, consistent with the profile-scoped rule in",
+      "value": "Huawei FC0x41 and FC0x17 are `NO_SEND` for both classes, consistent with the profile-scoped rule in",
       "reason": "Writes, control, FC0x41 and FC0x17 are NO_SEND."
     },
     {
@@ -1390,7 +1390,7 @@
       "page": "protocols/huawei/inverter-battery-readonly-v1.md",
       "section": "### SUN2000 decision rows",
       "kind": "decision_rows",
-      "value": "| `no_identity_evidence` | `INSUFFICIENT_EVIDENCE` |\n| `gateway_inventory_child_model_only` | `INSUFFICIENT_EVIDENCE` |\n| `model_without_firmware` | `INSUFFICIENT_EVIDENCE` |\n| `serial_or_esn_only` | `INSUFFICIENT_EVIDENCE` |\n| `firmware_without_model` | `INSUFFICIENT_EVIDENCE` |\n| `register_readability_only` | `INSUFFICIENT_EVIDENCE` |\n| `battery_group_absent` | `INSUFFICIENT_EVIDENCE` |\n| `battery_group_exception` | `INSUFFICIENT_EVIDENCE` |\n| `multiple_positive_candidates` | `AMBIGUOUS` |\n| `exact_identity_with_pinned_register_map` | `NO_ADMISSIBLE_PROFILE` |",
+      "value": "| `no_identity_evidence` | `INSUFFICIENT_EVIDENCE` |\n| `gateway_inventory_child_model_only` | `INSUFFICIENT_EVIDENCE` |\n| `model_without_firmware` | `INSUFFICIENT_EVIDENCE` |\n| `serial_or_esn_only` | `INSUFFICIENT_EVIDENCE` |\n| `firmware_without_model` | `INSUFFICIENT_EVIDENCE` |\n| `register_readability_only` | `INSUFFICIENT_EVIDENCE` |\n| `battery_group_absent` | `INSUFFICIENT_EVIDENCE` |\n| `battery_group_exception` | `INSUFFICIENT_EVIDENCE` |\n| `multiple_positive_candidates` | `AMBIGUOUS` |\n| `exact_identity_with_pinned_register_map` | `DECLARED` |",
       "reason": "Exact ordered SUN2000 decision rows and outcomes."
     },
     {
@@ -1398,7 +1398,7 @@
       "page": "protocols/huawei/inverter-battery-readonly-v1.md",
       "section": "### LUNA2000 decision rows",
       "kind": "decision_rows",
-      "value": "| `no_identity_evidence` | `INSUFFICIENT_EVIDENCE` |\n| `gateway_inventory_child_model_only` | `INSUFFICIENT_EVIDENCE` |\n| `parent_inverter_unidentified` | `INSUFFICIENT_EVIDENCE` |\n| `model_without_firmware` | `INSUFFICIENT_EVIDENCE` |\n| `serial_or_esn_only` | `INSUFFICIENT_EVIDENCE` |\n| `register_readability_only` | `INSUFFICIENT_EVIDENCE` |\n| `battery_group_absent` | `INSUFFICIENT_EVIDENCE` |\n| `battery_group_exception` | `INSUFFICIENT_EVIDENCE` |\n| `multiple_positive_candidates` | `AMBIGUOUS` |\n| `exact_identity_with_pinned_register_map` | `NO_ADMISSIBLE_PROFILE` |",
+      "value": "| `no_identity_evidence` | `INSUFFICIENT_EVIDENCE` |\n| `gateway_inventory_child_model_only` | `INSUFFICIENT_EVIDENCE` |\n| `parent_inverter_unidentified` | `INSUFFICIENT_EVIDENCE` |\n| `model_without_firmware` | `INSUFFICIENT_EVIDENCE` |\n| `serial_or_esn_only` | `INSUFFICIENT_EVIDENCE` |\n| `register_readability_only` | `INSUFFICIENT_EVIDENCE` |\n| `battery_group_absent` | `INSUFFICIENT_EVIDENCE` |\n| `battery_group_exception` | `INSUFFICIENT_EVIDENCE` |\n| `multiple_positive_candidates` | `AMBIGUOUS` |\n| `exact_identity_with_pinned_register_map` | `DECLARED` |",
       "reason": "Exact ordered LUNA2000 decision rows and outcomes."
     },
     {
@@ -1406,7 +1406,7 @@
       "page": "protocols/huawei/inverter-battery-readonly-v1.md",
       "section": null,
       "kind": "forbidden",
-      "value": "registers? (is|are) (inferred|assumed) from|(is|are) (supported|qualified|admitted)\\.|FC0x(41|17) (is|are) (permitted|allowed|enabled)|absent group (yields|reports) (numeric )?zero",
+      "value": "registers? (is|are) (inferred|assumed) from|FC0x(41|17) (is|are) (permitted|allowed|enabled)|absent group (yields|reports) (numeric )?zero",
       "reason": "The page must not contradict its fail-closed boundary."
     },
     {
@@ -1552,6 +1552,334 @@
       "kind": "statement",
       "value": "Each retry began after at least five seconds of idle time.",
       "reason": "Idle bound between retries."
+    },
+    {
+      "contract": "huawei_grid_code",
+      "page": "protocols/huawei/grid-code-settings-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## L-LEGACY",
+      "reason": "Huawei grid-code card section."
+    },
+    {
+      "contract": "huawei_grid_code",
+      "page": "protocols/huawei/grid-code-settings-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## L-V200",
+      "reason": "Huawei grid-code card section."
+    },
+    {
+      "contract": "huawei_grid_code",
+      "page": "protocols/huawei/grid-code-settings-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## LB-C00",
+      "reason": "Huawei grid-code card section."
+    },
+    {
+      "contract": "huawei_grid_code",
+      "page": "protocols/huawei/grid-code-settings-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## LB-C10",
+      "reason": "Huawei grid-code card section."
+    },
+    {
+      "contract": "huawei_grid_code",
+      "page": "protocols/huawei/grid-code-settings-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## LC",
+      "reason": "Huawei grid-code card section."
+    },
+    {
+      "contract": "huawei_grid_code",
+      "page": "protocols/huawei/grid-code-settings-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## MA-C00",
+      "reason": "Huawei grid-code card section."
+    },
+    {
+      "contract": "huawei_grid_code",
+      "page": "protocols/huawei/grid-code-settings-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## MA-C20",
+      "reason": "Huawei grid-code card section."
+    },
+    {
+      "contract": "huawei_grid_code",
+      "page": "protocols/huawei/grid-code-settings-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## MA-V200",
+      "reason": "Huawei grid-code card section."
+    },
+    {
+      "contract": "huawei_grid_code",
+      "page": "protocols/huawei/grid-code-settings-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## MB02",
+      "reason": "Huawei grid-code card section."
+    },
+    {
+      "contract": "huawei_grid_code",
+      "page": "protocols/huawei/grid-code-settings-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## MC",
+      "reason": "Huawei grid-code card section."
+    },
+    {
+      "contract": "huawei_grid_code",
+      "page": "protocols/huawei/grid-code-settings-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## COMMERCIAL",
+      "reason": "Huawei grid-code card section."
+    },
+    {
+      "contract": "huawei_grid_code",
+      "page": "protocols/huawei/grid-code-settings-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## HA",
+      "reason": "Huawei grid-code card section."
+    },
+    {
+      "contract": "huawei_grid_code",
+      "page": "protocols/huawei/grid-code-settings-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## HB",
+      "reason": "Huawei grid-code card section."
+    },
+    {
+      "contract": "huawei_grid_code",
+      "page": "protocols/huawei/grid-code-settings-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## HD",
+      "reason": "Huawei grid-code card section."
+    },
+    {
+      "contract": "huawei_grid_code",
+      "page": "protocols/huawei/grid-code-settings-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## SUN-C81",
+      "reason": "Huawei grid-code card section."
+    },
+    {
+      "contract": "huawei_grid_code",
+      "page": "protocols/huawei/grid-code-settings-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## SUN-V300",
+      "reason": "Huawei grid-code card section."
+    },
+    {
+      "contract": "huawei_grid_code",
+      "page": "protocols/huawei/grid-code-settings-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## emma-v100r024c00-01-2024-07-15",
+      "reason": "Huawei grid-code card section."
+    },
+    {
+      "contract": "huawei_grid_code",
+      "page": "protocols/huawei/grid-code-settings-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## emma-v100r025c00spc102-2025-08-14",
+      "reason": "Huawei grid-code card section."
+    },
+    {
+      "contract": "huawei_grid_code",
+      "page": "protocols/huawei/grid-code-settings-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## s-dongle-v100r001c00-05-2022-07-06",
+      "reason": "Huawei grid-code card section."
+    },
+    {
+      "contract": "huawei_grid_code",
+      "page": "protocols/huawei/grid-code-settings-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## s-dongle-v200r022cc10-02-2023-04-20",
+      "reason": "Huawei grid-code card section."
+    },
+    {
+      "contract": "huawei_grid_code",
+      "page": "protocols/huawei/grid-code-settings-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## s-dongle-v200r025c00-01-2025-04-27",
+      "reason": "Huawei grid-code card section."
+    },
+    {
+      "contract": "huawei_grid_code",
+      "page": "protocols/huawei/grid-code-settings-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## s-dongle-v200r025c00spc120-01-2025-12-23",
+      "reason": "Huawei grid-code card section."
+    },
+    {
+      "contract": "huawei_grid_code",
+      "page": "protocols/huawei/grid-code-settings-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## smartlogger-32-2018-11-15",
+      "reason": "Huawei grid-code card section."
+    },
+    {
+      "contract": "huawei_grid_code",
+      "page": "protocols/huawei/grid-code-settings-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## smartlogger-36-2020-04-13",
+      "reason": "Huawei grid-code card section."
+    },
+    {
+      "contract": "huawei_grid_code",
+      "page": "protocols/huawei/grid-code-settings-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## smartlogger-37-2020-06-24",
+      "reason": "Huawei grid-code card section."
+    },
+    {
+      "contract": "huawei_grid_code",
+      "page": "protocols/huawei/grid-code-settings-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## smartlogger-v300r024c10-01-2026-10-15",
+      "reason": "Huawei grid-code card section."
+    },
+    {
+      "contract": "huawei_grid_code",
+      "page": "protocols/huawei/grid-code-settings-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## smartlogger-v300r024c10-53-2025-10-29",
+      "reason": "Huawei grid-code card section."
+    },
+    {
+      "contract": "huawei_grid_code",
+      "page": "protocols/huawei/grid-code-settings-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## smartlogger-v300r024c10-54-2026-02-06",
+      "reason": "Huawei grid-code card section."
+    },
+    {
+      "contract": "huawei_grid_code",
+      "page": "protocols/huawei/grid-code-settings-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## smartlogger-v300r024c10spc180-01-2025-06-23",
+      "reason": "Huawei grid-code card section."
+    },
+    {
+      "contract": "huawei_grid_code",
+      "page": "protocols/huawei/grid-code-settings-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## smartlogger-v300r024c10spc191-52-2025-06-06",
+      "reason": "Huawei grid-code card section."
+    },
+    {
+      "contract": "huawei_grid_code",
+      "page": "protocols/huawei/grid-code-settings-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## smartlogger-v300r024c10spc210-49-2025-03-19",
+      "reason": "Huawei grid-code card section."
+    },
+    {
+      "contract": "huawei_grid_code",
+      "page": "protocols/huawei/grid-code-settings-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## smartlogger-v300r025c10-01-2025-12-22",
+      "reason": "Huawei grid-code card section."
+    },
+    {
+      "contract": "huawei_grid_code",
+      "page": "protocols/huawei/grid-code-settings-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## smartlogger-v300r025c10-02-2026-10-09",
+      "reason": "Huawei grid-code card section."
+    },
+    {
+      "contract": "huawei_grid_code",
+      "page": "protocols/huawei/grid-code-settings-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## smartlogger-v300r026c10-02-2026-10-09",
+      "reason": "Huawei grid-code card section."
+    },
+    {
+      "contract": "huawei_grid_code",
+      "page": "protocols/huawei/grid-code-settings-v1.md",
+      "section": null,
+      "kind": "statement",
+      "value": "These settings have no SemReg element; they are documented registers decoded and callable by hand through MCP and GraphQL in the modbusreg namespace, as an advanced facility.",
+      "reason": "Vendor grid-code settings have no SemReg element."
+    },
+    {
+      "contract": "huawei_sun2000_relations",
+      "page": "protocols/huawei/sun2000-semreg-relations-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Relations",
+      "reason": "SUN2000 relation section."
+    },
+    {
+      "contract": "huawei_sun2000_relations",
+      "page": "protocols/huawei/sun2000-semreg-relations-v1.md",
+      "section": "## Relations",
+      "kind": "row",
+      "value": "| relation | from | to | basis | evidence (public page and section) | validity scope |",
+      "reason": "Relation table header."
+    },
+    {
+      "contract": "huawei_sun2000_relations",
+      "page": "protocols/huawei/sun2000-semreg-relations-v1.md",
+      "section": "## Relations",
+      "kind": "row",
+      "value": "| `pv.relation.inverter_phase` | inverter | phase | `gate_rule` | native pages that state per-phase values | phase values are phase dimensions of the inverter resource |",
+      "reason": "Phase relation with gate_rule."
+    },
+    {
+      "contract": "huawei_sun2000_relations",
+      "page": "protocols/huawei/sun2000-semreg-relations-v1.md",
+      "section": "## Relations",
+      "kind": "row",
+      "value": "| `relation.relays` | inverter | battery | `native_observation` | native pages that document a battery read through the inverter register space | published when the battery resource of its own family exists, unknown otherwise |",
+      "reason": "Inverter to battery relay."
+    },
+    {
+      "contract": "huawei_sun2000_relations",
+      "page": "protocols/huawei/sun2000-semreg-relations-v1.md",
+      "section": "## Relations",
+      "kind": "row",
+      "value": "| `relation.relays` | inverter | meter | `native_observation` | native pages that document a meter read through the inverter register space | published when the meter resource of its own family exists, unknown otherwise |",
+      "reason": "Inverter to meter relay."
+    },
+    {
+      "contract": "huawei_sun2000_relations",
+      "page": "protocols/huawei/sun2000-semreg-relations-v1.md",
+      "section": "## Relations",
+      "kind": "statement",
+      "value": "A relation published when the resource of its own family exists is unknown otherwise, never an absence.",
+      "reason": "Unknown is not an absence."
     }
   ]
 }

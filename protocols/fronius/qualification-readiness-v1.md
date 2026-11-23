@@ -10,8 +10,7 @@ applicability tuple is manufacturer `Fronius`, model `Symo GEN24 10.0`, firmware
 
 The generic three-phase SunSpec monitoring capability is evaluated separately
 from this vendor tuple. A standard capability match does not establish the
-Fronius flavor. The result remains `live_qualified=false` until an actual
-hardware capture is run and assessed under operator control.
+Fronius flavor. Documented support is declared from the SunSpec Common model identity. A hardware test of an operator-owned installation is recorded as `tested_on_hardware` and conditions nothing.
 
 ## Qualification card
 
@@ -37,9 +36,7 @@ The expected ordered chain is:
 ffff/0
 ```
 
-The terminal marker is part of the required result. The card has
-`automatic_runtime_admission=false` and `write_authority=false`. It creates no
-endpoint discovery, socket, retry policy, support claim, or gateway activation.
+The terminal marker is part of the required result. Identity is the SunSpec Common model. The two observed flavours are recorded observations. Every valid decoded fact of the admitted models is eligible for semantic mapping.
 
 ## Complete-chain replay matrix
 
@@ -64,8 +61,7 @@ chunk, padded, or converted into a partial positive result.
 
 ## Typed native facts and retention
 
-Only the following valid facts from the uniquely selected three-phase inverter
-occurrence are eligible for later semantic consideration:
+The following facts were observed on hardware. Every valid decoded fact of the admitted models is eligible for semantic mapping:
 
 - `inverter.ac.current.total`
 - `inverter.ac.current.phase_a`
@@ -100,11 +96,7 @@ fourteen candidate field identifiers, and retained-evidence markers for
 `logical_view_provenance`. Its safety fields are exactly:
 
 ```json
-{
-  "live_qualified": false,
-  "automatic_runtime_admission": false,
-  "write_authority": false
-}
+Documented support is declared from the SunSpec Common model identity. A hardware test of an operator-owned installation is recorded as `tested_on_hardware` and conditions nothing. Every valid decoded fact of the admitted models is eligible for semantic mapping.
 ```
 
 Synthetic values and identifiers are test data only. A public expected result
@@ -115,9 +107,7 @@ device fingerprint.
 
 An offline match proves the decoder, acquisition adapter, qualification card,
 and evidence retention are ready for a bounded read-only hardware experiment.
-It does not prove a currently reachable device, a product support claim, a
-gateway integration, consumer output, semantic publication, or successful
-physical qualification.
+It does not prove a currently reachable device, live qualification, a gateway integration, consumer output, or successful physical qualification.
 
 A different product, firmware, Unit Identifier, chain geometry, or required
 fact state remains unmatched until separately evidenced. Any real device access

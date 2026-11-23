@@ -486,7 +486,7 @@
       "page": "protocols/tesla/gen3-hsc-rtu.md",
       "section": "## Exact version profiles",
       "kind": "statement",
-      "value": "No numeric minimum version is asserted by this contract.",
+      "value": "An identified later build of the `wc3_24_44_3` line can qualify for these read observations when its activation, private function and operation schema agree.",
       "reason": "The contract has no numeric version threshold."
     },
     {
@@ -974,7 +974,7 @@
       "page": "protocols/tesla/gen3-current-limit-operation-v1.md",
       "section": "## Scope and evidence status",
       "kind": "statement",
-      "value": "Live state-changing operations require explicit operator confirmation at action time.",
+      "value": "An explicitly called provisional set or withdrawal whose capability is independently qualified and whose profile, version, generation, and dispatch checks pass is admitted without live operator confirmation at action time.",
       "reason": "Operator confirmation at action time is mandatory for any live write."
     },
     {
@@ -1062,7 +1062,7 @@
       "page": "protocols/tesla/gen3-current-limit-operation-v1.md",
       "section": "## Admission preconditions",
       "kind": "statement",
-      "value": "Live authority includes operator confirmation at action time; a cached read, configured endpoint, or document is insufficient.",
+      "value": "Live authority binds the route target, operation, values and validity interval; a cached read, configured endpoint, or document is insufficient. Separate operator approval stays only for an agent or test acting on a real installation.",
       "reason": "Operator confirmation at action time stays a live-authority condition."
     },
     {
@@ -1476,9 +1476,17 @@
     {
       "contract": "read_acquisition",
       "page": "protocols/tesla/gen3-read-acquisition-v1.md",
+      "section": "## Operations in scope",
+      "kind": "row",
+      "value": "| Provisional readback | 6 | 27 → 28 |",
+      "reason": "Sixth selectable observation operation."
+    },
+    {
+      "contract": "read_acquisition",
+      "page": "protocols/tesla/gen3-read-acquisition-v1.md",
       "section": "## Scope and evidence status",
       "kind": "statement",
-      "value": "The contract covers only the exact `wc3_24_44_3` operation version.",
+      "value": "The read observations are bound to the documented version their identification names and, as this documentation defines, apply to every later build of that same Gen3 version line, with level `not_tested_on_hardware`.",
       "reason": "The lifecycle is bound to one exact operation version."
     },
     {
@@ -1486,7 +1494,7 @@
       "page": "protocols/tesla/gen3-read-acquisition-v1.md",
       "section": "## Operations in scope",
       "kind": "statement",
-      "value": "The lifecycle admits family 6, tags 27 → 28, as a planned read and family 6, tags 25 → 26, as its only mutation, issued through the same single-flight owner and generation, and that mutation is never retried.",
+      "value": "The lifecycle admits family 6, tags 27 → 28, as a selectable observation and as the on-demand read of the separately admitted native mutation even when tag 27 is absent from periodic Operations, and family 6, tags 25 → 26, as its only mutation, issued through the same single-flight owner and generation, and that mutation is never retried.",
       "reason": "The lifecycle admits the provisional readback and one mutation, never retried."
     },
     {
@@ -1822,7 +1830,7 @@
       "page": "protocols/tesla/gen3-read-acquisition-v1.md",
       "section": "## What this contract does not claim",
       "kind": "statement",
-      "value": "No support, hardware, or live-qualification claim.",
+      "value": "Documented support is distinct from a hardware test level and from live qualification.",
       "reason": "Explicit non-claim: no qualification."
     },
     {
@@ -2128,6 +2136,110 @@
       "kind": "forbidden",
       "value": "wifi|wi-fi|(^|[\\W_])AP([\\W_]|$)|pairing|(?-i:provision(?!al current|al readback))|(?!(?-i:provision))provision|registration|activat(e|ion)|credential|password|auth(entication|orization)?|OCPP|(^|[\\W_])LED([\\W_]|$)|service|debug|eCAN|mailbox|(^|[\\W_])reset([\\W_]|$)|factory[\\s-]?reset|perform[\\s-]?reset|perform[\\s-]?update|check[\\s-]?for[\\s-]?update|clear[\\s-]?update|reboot|firmware[\\s-]?update|AccessControl|ChargeSchedule|SecurityParameter|CountryCode|Neurio",
       "reason": "The TEDAPI page stays inside EVSE interoperability: no network setup, pairing, provisioning, activation, credentials, authentication, OCPP, LED, service, debug, reset, update or other non-EVSE operation. The lowercase phrases \"provisional current\" and \"provisional readback\" name the admitted current-limit operations and are exempt."
+    },
+    {
+      "contract": "gen3_semreg_mapping",
+      "page": "protocols/tesla/gen3-semreg-mapping-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Operations",
+      "reason": "Mapping operations section."
+    },
+    {
+      "contract": "gen3_semreg_mapping",
+      "page": "protocols/tesla/gen3-semreg-mapping-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Field rules",
+      "reason": "Mapping field-rule section."
+    },
+    {
+      "contract": "gen3_semreg_mapping",
+      "page": "protocols/tesla/gen3-semreg-mapping-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Relations",
+      "reason": "Mapping relations section."
+    },
+    {
+      "contract": "gen3_semreg_mapping",
+      "page": "protocols/tesla/gen3-semreg-mapping-v1.md",
+      "section": "## Operations",
+      "kind": "statement",
+      "value": "A numeric set at the configured maximum is still a renewed set and 0 A still pauses.",
+      "reason": "Maximum set stays a renewed set and 0 A pauses."
+    },
+    {
+      "contract": "gen3_semreg_mapping",
+      "page": "protocols/tesla/gen3-semreg-mapping-v1.md",
+      "section": "## Operations",
+      "kind": "statement",
+      "value": "Require an exactly representable whole-ampere value with no truncation or rounding, and reject 6.5 A before any read or mutation.",
+      "reason": "A 6.5 A input sends no request."
+    },
+    {
+      "contract": "gen3_semreg_mapping",
+      "page": "protocols/tesla/gen3-semreg-mapping-v1.md",
+      "section": "## Operations",
+      "kind": "statement",
+      "value": "The pause encodes 6 A with inhibit and therefore needs a usable same-generation t28 configured bound of at least 6 A before t25.",
+      "reason": "Pause bound uses the encoded 6 A."
+    },
+    {
+      "contract": "gen3_semreg_mapping",
+      "page": "protocols/tesla/gen3-semreg-mapping-v1.md",
+      "section": "## Operations",
+      "kind": "statement",
+      "value": "A cached 5 A bound yields no request, and a bound of 5 A first learned by the prerequisite t27 sends no t25.",
+      "reason": "A 5 A bound blocks the pause before t25."
+    },
+    {
+      "contract": "gen3_semreg_mapping",
+      "page": "protocols/tesla/gen3-semreg-mapping-v1.md",
+      "section": "## Operations",
+      "kind": "statement",
+      "value": "Missing, zero or invalid configured current sends no release t25 and yields no confirmed release.",
+      "reason": "Release needs a valid nonzero configured current."
+    },
+    {
+      "contract": "gen3_semreg_mapping",
+      "page": "protocols/tesla/gen3-semreg-mapping-v1.md",
+      "section": "## Field rules",
+      "kind": "statement",
+      "value": "A t28 received 70 s after a 60 s provisional set withholds the current allocation and retains the expiry fact.",
+      "reason": "Ack-anchored expiry withholds the allocation at 70 s."
+    },
+    {
+      "contract": "gen3_semreg_mapping",
+      "page": "protocols/tesla/gen3-semreg-mapping-v1.md",
+      "section": "## Field rules",
+      "kind": "statement",
+      "value": "A newer t28 with field 2 explicitly zero supersedes an earlier persistent t8 as unknown and retains the raw zero and evidence without publishing a numeric limit.",
+      "reason": "Explicit zero configured current clears the numeric limit."
+    },
+    {
+      "contract": "gen3_semreg_mapping",
+      "page": "protocols/tesla/gen3-semreg-mapping-v1.md",
+      "section": "## Field rules",
+      "kind": "statement",
+      "value": "A t28 omitting field 2 supplies no update and the earlier still-current t8 remains the candidate.",
+      "reason": "An omitted configured-current field leaves the t8 candidate."
+    },
+    {
+      "contract": "gen3_semreg_mapping",
+      "page": "protocols/tesla/gen3-semreg-mapping-v1.md",
+      "section": "## Operations",
+      "kind": "statement",
+      "value": "An explicitly called set or withdrawal whose capability is independently qualified and whose profile, version, generation and dispatch checks pass needs no live operator confirmation.",
+      "reason": "An explicit qualified call needs no live operator confirmation."
+    },
+    {
+      "contract": "gen3_semreg_mapping",
+      "page": "protocols/tesla/gen3-semreg-mapping-v1.md",
+      "section": "## Relations",
+      "kind": "statement",
+      "value": "`evse.relation.connector_phase` is a gate rule where the pages document per-phase values, `evse.relation.connector_session` is a gate rule where the pages document a session per connector, and `evse.relation.evse_meter` is configuration for the charger's own energy counter.",
+      "reason": "Charger relations and their bases."
     }
   ]
 }

@@ -46,8 +46,7 @@ adds repeated multiple-MPPT information.
 
 These extensions are optional additions to a chain. Their absence is not an
 error, and a malformed extension does not justify decoding a different length.
-Models 123 and 124 are observed state only. Their presence does not add a write
-method, control operation, or authorization.
+Models 123 and 124 are the SemReg setters documented on the controls page, and models 120 through 124 follow the writable-point rule. The setters and the hand calls are on the [controls page](controls-v1.md).
 
 ## Meter Families
 
@@ -202,7 +201,7 @@ Models 120, 121, 122, and 123 are read-only observed state. The facts are the na
 ### MPPT inputs
 
 Model 160 emits one entry for each repeated module. The entry index is the repeated-group index, not a separate wire point. The entry carries the module identifier, label, DC current, voltage, power, lifetime DC energy, temperature, operating state, and events.
-A Model 160 module role is unknown unless a public SunSpec model definition states the module label meaning.
+An MPPT input is not assumed to be a string. String values come from string-level documentation. A Model 160 module role is unknown unless a public SunSpec model definition states the module label meaning.
 A storage charge label or a storage discharge label would fill the role only when a public SunSpec model definition states that label meaning. The model 160 label has no such meaning, so every role below is unknown. An unavailable module count emits no module entry.
 
 | Fact | Model | Point | Unit | Scale factor | Admission | Value kind | Role |
@@ -221,7 +220,7 @@ A storage charge label or a storage discharge label would fill the role only whe
 
 ### Storage
 
-Model 124 is observed state only, together with the optional storage ratings of model 120. Charge and discharge settings in this table are not requests.
+Model 124 charge and discharge limits are the SemReg setters on the [controls page](controls-v1.md), together with the optional storage ratings of model 120.
 
 | Fact | Model | Point | Unit | Scale factor | Admission | Value kind |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -252,7 +251,7 @@ Models 201, 202, 203, 204, 211, 212, 213, and 214 emit every current, phase-to-n
 
 Integer model 201 names the line voltages PPVphAB, PPVphBC, and PPVphCA. Integer models 202, 203, and 204 name them PhVphAB, PhVphBC, and PhVphCA. Float models 211, 212, 213, and 214 name them PPVphAB, PPVphBC, and PPVphCA. The fact identifier is the same. Integer reactive phase points use a capital Ph in the phase suffix. Float reactive phase points use ph. Integer power factor uses unit Pct. Float power factor uses unit PF.
 
-Positive meter current and positive meter active power are toward the load, and negative values are toward the grid.
+A multi-device chain is segmented at each Common model, and each segment is one device with its own identity. A chain whose segments cannot be attributed keeps a named reason. A device's identity anchor is its native position in the chain, so identities stay the same start after start. Positive meter current and positive meter active power are toward the load, and negative values are toward the grid.
 Negative meter current and negative meter active power are toward the grid. Positive reactive power is inductive, with current lagging voltage. Negative reactive power is capacitive, with current leading voltage.
 The power-factor sign follows reactive power: positive is lagging and negative is leading.
 Active energy, apparent energy, and reactive energy are separate counters, and a counter is not a signed instantaneous value.
@@ -356,10 +355,4 @@ The reactive counters are the imported quadrant 1, imported quadrant 2, exported
 | `meter.events` | 201, 202, 203, 204, 211, 212, 213, 214 | Evt | none | none | required | bitfield |
 ## Safety and Non-Claims
 
-This guide is read-only. It does not create a product, profile, or support
-claim. It does not establish a manufacturer flavor, runtime admission,
-automatic acquisition, telemetry publication, or consumer exposure.
-
-No model family in this guide authorizes Modbus writes. A live observation still
-requires the separate qualification and negative-overlap rules of the consuming
-profile registry.
+Documented support is declared from the public standard, and a hardware test is a recorded level. A point the model documents as writable gets an operation on the controls page or by hand in the modbusreg namespace.

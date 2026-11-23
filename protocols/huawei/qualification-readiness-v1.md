@@ -14,9 +14,7 @@ between Huawei classes. Identity is not telemetry support.
 | EMMA | `QUALIFICATION_EVIDENCE_BLOCKED` | sanitized read-only capability, SmartLogger negative-overlap, and model-specific capability fixtures |
 | S-Dongle | `QUALIFICATION_EVIDENCE_BLOCKED` | confirmed connection context, gateway/child topology, exact identity and protocol encoding, stable search/capacity, and separately qualified child inventory |
 
-No class is `HARDWARE_TEST_READY`. Every result remains default denied with
-`catalog_registered=false`, `automatic_runtime_admission=false`,
-`live_qualified=false`, `support_claim=false`, and `write_authority=false`.
+No class is `HARDWARE_TEST_READY`. Each class row records a hardware level, and a hardware test conditions nothing. Documented classes are declared from the consulted documents.
 
 ## SmartLogger qualification card
 
@@ -331,25 +329,21 @@ telemetry record, or a support claim.
 ## Sanitized expected result
 
 The shared expected result contains card identities for the three classes, their
-provider-local statuses, the missing-evidence names above, and false or zero
-safety fields. It contains no endpoint, port number, serial, ESN, account,
-credential, private capture, or device fingerprint.
+provider-local statuses, and the missing-evidence names above. It records
+`declared_from` as `consulted_documents`. It contains no endpoint, port number,
+serial, ESN, account, credential, private capture, or device fingerprint.
 
 The common safety result is:
 
 ```json
 {
-  "default_denied": true,
-  "catalog_registered": false,
-  "automatic_runtime_admission": false,
-  "support_claim": false,
-  "write_authority": false
+  "declared_from": "consulted_documents"
 }
 ```
 
-Each class row also has `hardware_test_ready=false`,
-`live_qualified=false`, `automatic_request_count=0`, and
-`native_fact_count=0`.
+A point the source documents as writable gets an operation, through SemReg where SemReg has the element, otherwise decoded and callable by hand through MCP and GraphQL in the modbusreg namespace.
+
+Each class row records a hardware level, and a hardware test conditions nothing.
 
 ## Integration and hardware boundary
 

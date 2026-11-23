@@ -56,13 +56,17 @@ documents.
 | What a page reads and uses from a document, and notes derived from it | one or more official vendor documents | CC0-1.0 for the page's own expression; vendor attribution for the information derived from the documents | the copyright note and a Documents consulted section listing every consulted document version |
 | The vendor document itself: its register map, tables, labels, screenshots, firmware, and prose | not applicable | not published in this repository | no copy; identity only, in the Documents consulted section |
 
-A document is a source for what to read and how to interpret it. A fact that
-only a document states is documentary and is never graded Proven. A document
-does not make a claim qualified, admitted, or supported: those states keep their
-own requirements, which are identity tuples, observation fixtures, and
-executable negative overlap, and admission stays fail-closed. This policy
-changes where a page may take facts from. It changes no admission, disposition,
-qualification, or support state.
+A document is a source for what to read and how to interpret it. An official
+public vendor document, a public interoperability standard, or an admitted
+independent reference work declares support: a profile, family, model row, or
+fact it states is declared supported, registered for automatic detection and
+acquisition, and qualified in the docs-semantic sense. Automatic detection and
+acquisition apply only where the document states an identity that establishes
+the match, and for Protocol II the selected-versus-automatic split applies. A
+fact only a document states is declared support with the level
+`not_tested_on_hardware`. An observation on an operator-owned installation with
+a public record is recorded as `tested_on_hardware`. Neither level conditions
+anything.
 
 Pages written before this policy that describe a vendor document as
 inspection-only are read under this policy. Each such statement is revised on
@@ -138,9 +142,10 @@ A pin is one exact document version, with the same citation rule as the page
 rows: it identifies the source and bounds no software applicability. A record
 that rests on a document whose pin lacks the title, the version, or the date, or
 whose pin differs from the page row in any of the three, has no consulted
-document and cannot be admitted on that basis. A pin does not prove that the
-document is current or that any device follows it. Observation fixtures,
-identity tuples, and negative overlap remain required.
+document and cannot be admitted on that basis. A record that rests on a pinned document is admitted on that basis. Observation
+fixtures are representative tests and recorded levels. Negative-overlap tests
+stay tests that two profiles never claim the same identity. A pin does not prove
+that the document is current or that any device follows it.
 
 ## Citation identity and software floors
 
@@ -242,26 +247,26 @@ a reference work, one note per work, beginning with the bold label
 
 | Profile | Applicability | Evidence class | Initial disposition |
 | --- | --- | --- | --- |
-| `sunspec.core.readonly.v1` | SunSpec model chains using the explicitly listed model identifiers and lengths | public interoperability standard facts | specified; downstream qualification required |
-| `sunspec.der.readonly.v2` | Common 1/66 plus Models 701/153, 702/50, 703/17, 713/7, 714 variable geometry, 715/7, 802/62, 803 variable geometry, and 804 variable geometry at the exact pinned V2 schema revision | public Apache-2.0 model catalogue and independently stated interoperability facts | offline decoder contract; runtime, vendor, and catalog admission default denied |
-| `fronius.sunspec.float.v1` | manufacturer `Fronius` and model `Symo GEN24 10.0`, each exact, with the chain compared exactly: flavor 1.1.0 from firmware `1.41.11-1`, flavor 1.2.0 from `1.42.9-1`, each until a changed chain is recorded; the V1.1 chain is on the [flavor page](fronius/sunspec-float-v1.md), and that page, the [Fronius qualification card](fronius/qualification-readiness-v1.md), and the registry keep their exact-tuple comparison of the firmware until a registry follow-up replaces it with these floors | vendor-copyright-inspection-only plus sanitized interoperability facts | specified flavor; downstream qualification required |
-| `huawei.smartlogger.readonly.v1` | SmartLogger at gateway unit 0, with an exact model and a software floor: model `SmartLogger` from `V300R001C00`, the minimum of the V300 line that every consulted SmartLogger edition with a V300 entry states, the editions with cover labels `V300R024C10SPC191` and `V300R024C10SPC210` among them, and model `Smart Logger` from the observed firmware `V300R023C10SPC620`, whose branch precedes V300R024C10 along the documented upgrade path and lies above that minimum; a build that follows a floor, or one of a branch with no documented relation to it, inherits with grade Hypothesis | vendor-copyright-inspection-only plus sanitized interoperability facts from observation | identity contract for the observed tuple; the documentary entries remain an offline candidate with no observation; default denied |
-| `huawei.sdongle.readonly.v1` | SDongleA-05, SDongleB-03, or SDongleB-06 from `V200R022C10`, the minimum that the consulted editions state for those models, whose cover labels `V200R025C00SPC120` and `V200R022CC10` identify the editions and are not floors, with protocol main revision 5 from D5.0 onward, plus, as a separate entry, one observed single-inverter path: gateway unit 100 and child unit 1, with no gateway model variant and no gateway software, so no floor relates it to the candidate | vendor-copyright-inspection-only plus sanitized interoperability facts from observation | offline candidate, default denied; the candidate's own tuple has no connected observation, so its identity is Unknown; the observed tuple has an identity contract and nothing more, and the recorded persistent non-response is superseded for that identity only by a same-class run that matches the whole tuple on one connection generation |
-| `huawei.emma.readonly.v1` | SmartHEMS, a model admitted by family through the catalogue rows of the family `EMMA`, which the consulted editions name without a model list, with `EMMA-A01` and `EMMA-A02` as the observed models and a model of the family beyond them graded Hypothesis until observed, from `SmartHEMS V100R024C00SPC100` onward in the R024C00 branch and from SPC102 onward in the R025C00 branch, the minima that the two editions state, a build that follows a floor, or one of a branch with neither a documented floor nor a documented relation, inheriting with grade Hypothesis, plus, as the observation of that candidate, one observed gateway at unit 0 whose model value, software branch, and suffix are withheld, with SUN2000-family inverters at their own routed units | vendor-copyright-inspection-only plus sanitized interoperability facts from observation | offline candidate, default denied; the candidate's FC03 tuple is observed on one installation, so identity is Proven for it and Unknown elsewhere, and the earlier non-response is superseded for that identity only; capability, battery addressing, and the other observed model, any further model of the family, and the other branch are Unknown; the qualification card stays evidence blocked |
-| `huawei.sun2000.readonly.v1` / `huawei.luna2000.readonly.v1` | no covered model family or firmware range; SUN2000 inverter and optional LUNA2000 battery | vendor-copyright-inspection-only | `NO_ADMISSIBLE_PROFILE`; default denied, no register map, no decoder |
-| `huawei.sun2000.identity.observed.v1` | SUN2000 behind a SmartLogger-family gateway: model `SUN2000-50KTL-M3`, exact, with the firmware text `V200R023` read at one routed unit as the floor, so another firmware text inherits with grade Hypothesis; the LUNA2000 optional group has no observed tuple and stays Unknown | vendor-copyright-inspection-only plus sanitized interoperability facts from observation | identity applicability only; profile selection stays `NO_ADMISSIBLE_PROFILE` because no register map is pinned; default denied |
-| `huawei.gateway.power-meter.v1` | power meters listed as children of a Huawei gateway; make, model, and firmware are Unknown, the exposure of the meter groups is observed to answer on three paths (value form Hypothesis), and the electrical role is configuration | vendor-copyright-inspection-only plus sanitized interoperability facts from observation | listing, class, and observed exposure facts only; every meter is `INSUFFICIENT_EVIDENCE`; no admitted meter tuple; default denied |
-| Huawei SUN2000 inverter catalogue dataset (a dataset, not a profile), described on the [catalogue page](huawei/sun2000-inverter-catalogue-v1.md) | reference baseline 2026-10-26.1: 16 profile cards and 2,401 model rows, each an exact token and model identifier with a software floor and no maximum, so a build at or above a floor that no observation has seen inherits with grade Hypothesis; read-only rows of the classes reviewed, conditional, raw-only, and conflict, where raw-only and conflict never decode; control rows as readable configuration or no-send; dictionaries bound to an edition and a mode; quarantined contradictions carried, never resolved by the generator | independent reference work, original writing CC0-1.0, consulted over official vendor documents, with the reference baseline tag as its citation key and vendor attribution for the information derived from the documents; the mirror-recovered SUN2000MB edition is admitted under the decision recorded on helianthus-docs-modbus issue 242 | inert: no selection, decoding, or provider reads it until the registry follow-ups land (the selection by token or wire alias, identifier, and floor, helianthus-modbusreg issue 362, and the monitoring profiles built on the catalogue, to be filed after the qualification captures); nothing registered, admitted, qualified, or supported; default denied; once consumed, Proven only against an observation, Hypothesis from the document |
-| `growatt.protocol2.tl3x.readonly.v1` | Growatt Protocol II v1.24 TL3-X class covering MAX, MID, and MAC register ranges | vendor-copyright-inspection-only | offline candidate, default denied |
+| `sunspec.core.readonly.v1` | SunSpec model chains using the explicitly listed model identifiers and lengths | public interoperability standard facts | declared from the public standard for the listed models |
+| `sunspec.der.readonly.v2` | Common 1/66 plus Models 701/153, 702/50, 703/17, 713/7, 714 variable geometry, 715/7, 802/62, 803 variable geometry, and 804 variable geometry at the exact pinned V2 schema revision | public Apache-2.0 model catalogue and independently stated interoperability facts | declared from the public standard for the listed models |
+| `fronius.sunspec.float.v1` | manufacturer `Fronius` and model `Symo GEN24 10.0`, each exact, with the chain compared exactly: flavor 1.1.0 from firmware `1.41.11-1`, flavor 1.2.0 from `1.42.9-1`, each until a changed chain is recorded; the V1.1 chain is on the [flavor page](fronius/sunspec-float-v1.md), and that page, the [Fronius qualification card](fronius/qualification-readiness-v1.md), and the registry keep their exact-tuple comparison of the firmware until a registry follow-up replaces it with these floors | vendor-copyright-inspection-only plus sanitized interoperability facts | declared from the SunSpec Common model; observed flavours recorded as tested_on_hardware |
+| `huawei.smartlogger.readonly.v1` | SmartLogger at gateway unit 0, with an exact model and a software floor: model `SmartLogger` from `V300R001C00`, the minimum of the V300 line that every consulted SmartLogger edition with a V300 entry states, the editions with cover labels `V300R024C10SPC191` and `V300R024C10SPC210` among them, and model `Smart Logger` from the observed firmware `V300R023C10SPC620`, whose branch precedes V300R024C10 along the documented upgrade path and lies above that minimum; a build that follows a floor, or one of a branch with no documented relation to it, inherits with grade Hypothesis | vendor-copyright-inspection-only plus sanitized interoperability facts from observation | declared from the consulted documents; observed tuples recorded as tested_on_hardware |
+| `huawei.sdongle.readonly.v1` | SDongleA-05, SDongleB-03, or SDongleB-06 from `V200R022C10`, the minimum that the consulted editions state for those models, whose cover labels `V200R025C00SPC120` and `V200R022CC10` identify the editions and are not floors, with protocol main revision 5 from D5.0 onward, plus, as a separate entry, one observed single-inverter path: gateway unit 100 and child unit 1, with no gateway model variant and no gateway software, so no floor relates it to the candidate | vendor-copyright-inspection-only plus sanitized interoperability facts from observation | declared from the consulted documents; the observed tuple is recorded as tested_on_hardware; a missing gateway identity stays Unknown; persistent non-response backs off, values stay stale or unknown, and reads resume without approval |
+| `huawei.emma.readonly.v1` | SmartHEMS, a model admitted by family through the catalogue rows of the family `EMMA`, which the consulted editions name without a model list, with `EMMA-A01` and `EMMA-A02` as the observed models and a model of the family beyond them graded Hypothesis until observed, from `SmartHEMS V100R024C00SPC100` onward in the R024C00 branch and from SPC102 onward in the R025C00 branch, the minima that the two editions state, a build that follows a floor, or one of a branch with neither a documented floor nor a documented relation, inheriting with grade Hypothesis, plus, as the observation of that candidate, one observed gateway at unit 0 whose model value, software branch, and suffix are withheld, with SUN2000-family inverters at their own routed units | vendor-copyright-inspection-only plus sanitized interoperability facts from observation | declared from the consulted documents; the observed tuple is recorded as tested_on_hardware; capability, battery addressing, further models, and the other branch stay Unknown; the qualification card stays evidence blocked |
+| `huawei.sun2000.readonly.v1` / `huawei.luna2000.readonly.v1` | catalogue rows of the SUN2000 inverter and optional LUNA2000 battery | vendor-copyright-inspection-only | declared from the consulted documents; hardware level recorded separately |
+| `huawei.sun2000.identity.observed.v1` | SUN2000 behind a SmartLogger-family gateway: model `SUN2000-50KTL-M3`, exact, with the firmware text `V200R023` read at one routed unit as the floor, so another firmware text inherits with grade Hypothesis; the LUNA2000 optional group has no observed tuple and stays Unknown | vendor-copyright-inspection-only plus sanitized interoperability facts from observation | declared from the consulted documents; the observed tuple is recorded as tested_on_hardware |
+| `huawei.gateway.power-meter.v1` | power meters listed as children of a Huawei gateway; make, model, and firmware are Unknown, the exposure of the meter groups is observed to answer on three paths (value form Hypothesis), and the electrical role is configuration | vendor-copyright-inspection-only plus sanitized interoperability facts from observation | declared from the consulted documents; hardware level recorded separately |
+| Huawei SUN2000 inverter catalogue dataset (a dataset, not a profile), described on the [catalogue page](huawei/sun2000-inverter-catalogue-v1.md) | reference baseline 2026-10-26.1: 16 profile cards and 2,401 model rows, each an exact token and model identifier with a software floor and no maximum, so a build at or above a floor that no observation has seen inherits with grade Hypothesis; read-only rows of the classes reviewed, conditional, raw-only, and conflict, where raw-only and conflict never decode; a point the source documents as writable gets an operation, through SemReg where SemReg has the element, otherwise decoded and callable by hand through MCP and GraphQL in the modbusreg namespace; dictionaries bound to an edition and a mode; quarantined contradictions carried, never resolved by the generator | independent reference work, original writing CC0-1.0, consulted over official vendor documents, with the reference baseline tag as its citation key and vendor attribution for the information derived from the documents; the mirror-recovered SUN2000MB edition is admitted under the decision recorded on helianthus-docs-modbus issue 242 | declared from the catalogue rows and consulted documents; registered for detection and acquisition where a catalogue row states an identity; hardware level recorded separately |
+| `growatt.protocol2.tl3x.readonly.v1` | Growatt Protocol II v1.24 TL3-X class covering MAX, MID, and MAC register ranges | vendor-copyright-inspection-only | declared from the vendor document; selected use and automatic matching stay split |
 | `growatt.shinewilan-x2.bridge.v1` | ShineWiLan-X2 transparent Modbus TCP to downstream Modbus RTU bridge boundary | vendor-copyright-inspection-only | transport contract only; no semantic profile or downstream admission |
-| `growatt.bms.rs485.1xsxxp.v2_02.readonly.v1` | exact 1xSxxP ESS tuple: Rev2.01 file family, V2.0 header, cumulative changes through 2.02 | vendor-copyright-inspection-only | protocol specified; registry NO_GO pending an exact permitted clean-room fixture |
-| `growatt.wit.family-protocol-matrix.v1` | exact WIT commercial family rows plus the isolated WIT 100KTL3-H / DTC 5601 VPP V2.01 tuple | vendor-copyright-inspection-only | qualification matrix only; all operations NO_SEND and registry NO_GO |
-| `outback.axs.sunspec.readonly.v1` | OutBack AXS public sources conflict: owner manual Rev C gives 64110/282 and 64111/23; application note Rev 5 gives 64110/420 and 64111/26 | vendor-copyright-inspection-only | `NO_GO`; no product/firmware-qualified read operation or provider admission until a source-pinned compatibility and operation contract exists |
+| `growatt.bms.rs485.1xsxxp.v2_02.readonly.v1` | exact 1xSxxP ESS tuple: Rev2.01 file family, V2.0 header, cumulative changes through 2.02 | vendor-copyright-inspection-only | declared from the vendor document; hardware level recorded separately |
+| `growatt.wit.family-protocol-matrix.v1` | exact WIT commercial family rows plus the isolated WIT 100KTL3-H / DTC 5601 VPP V2.01 tuple | vendor-copyright-inspection-only | declared from the vendor document; the family has no published register map and stays as documented |
+| `outback.axs.sunspec.readonly.v1` | OutBack AXS public sources conflict: owner manual Rev C gives 64110/282 and 64111/23; application note Rev 5 gives 64110/420 and 64111/26 | vendor-copyright-inspection-only | out of 0.7 and scheduled for 0.8; not a conflict candidate |
 
 No disposition in this table proves a particular installation, firmware image,
 endpoint, or live support state. `Offline candidate` is not registered for
 automatic detection or acquisition. The SUN2000 and LUNA2000 disposition row
-states that the disposition covers no model row yet. It sets no software limit,
+is declared from the catalogue rows. It sets no software limit,
 and its wording moves with the registry's document-identity pins under the owner
 decision recorded on helianthus-docs-modbus issue 242.
 
@@ -303,18 +308,14 @@ tables, labels, or generated model files.
 
 ## Admission rules
 
-Downstream profile admission requires an exact endpoint and unit observation,
-an exact family and model with the software condition of its row, a complete
-read-only fixture, and executable negative-overlap tests against every other
-candidate. For a Huawei or Fronius row that condition is a floor. A missing
-discriminator, a software build that its row does not cover (for a Huawei or
-Fronius row, a build below the floor within the floor's branch), a conflicting
-detector, a malformed field, a partial inventory, or an unlicensed required fact
-produces `insufficient_evidence` and no send. For a Huawei or Fronius row, a
-build that no observation has seen is not an unknown version: at or above the
-floor, or of a branch with no documented relation to it, it inherits the known
-behavior with grade Hypothesis under the citation identity and software floors
-section above.
+Admission comes from the documented identity of a row: family, model as the
+source lists it, and software floor. At runtime a missing, malformed, or
+conflicting identification, or a build below the floor the vendor's published
+interface documents, is refused with a named reason and nothing is sent, except
+for Protocol II, whose split between selected and automatic use is the one on
+the Protocol II page. An unobserved model or build of a documented row is
+admitted with the level `not_tested_on_hardware`. An observed flavour, firmware,
+or unit tuple bounds nothing.
 
 Function-code readability, a vendor string, a writable name, a serial number,
 registration material, or registration order is never sufficient. Profiles do

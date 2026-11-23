@@ -5,7 +5,7 @@
 This page proposes a future exact-profile admission record and validation
 algorithm for the TL3-X MAX/MID/MAC families. It supplies no successful record,
 allowlisted tuple, decoder, constructor, acquisition, or runtime admission.
-`NO_ADMISSIBLE_PROFILE` remains the current result: no exact tuple and no typed
+The live FC04 record uses offset 0 and width_words=250 for words 0 through 249. An explicit endpoint and family selection of a documented TL3-X MAX, MID, or MAC family activates that configured profile, and the same evidence without a selection gives no automatic match. `NO_ADMISSIBLE_PROFILE` remains the automatic-matching result: no exact tuple and no typed
 field. The historical V1 name does not declare stability; nothing is stable
 before Helianthus 1.0.
 

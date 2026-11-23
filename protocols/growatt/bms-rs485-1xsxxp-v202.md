@@ -184,9 +184,7 @@ their existing validation; no individual slice produces a partial typed result.
   cumulative charge and discharge capacity in 0.1 Ah. `0x0103`, `0x0107`
   through `0x010B`, and both `0x010D` slice words remain opaque.
 
-Warnings, errors, company-specific status interpretation, calibration, and
-every control-adjacent value remain opaque. Decoding any field is observation
-only and cannot authorize a request or control action.
+The warning, error, and protection words, the status word, and the capability and topology words of the 0x000D slice are read and published natively, with each defined bit position kept. The extension words 0x0103, 0x0107 through 0x010B, and 0x010D are read and published natively. The control and calibration words the document defines are read and published natively. A bit the document leaves undefined stays opaque and named. Decoding a field does not by itself send a write.
 
 ## Native observation projection
 

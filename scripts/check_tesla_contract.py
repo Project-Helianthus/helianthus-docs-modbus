@@ -49,7 +49,7 @@ EXPECTED = {
     ('current_limit_operation', 'statement'): 44,
     ('current_limit_operation', 'forbidden'): 1,
     ('read_acquisition', 'heading'): 13,
-    ('read_acquisition', 'row'): 5,
+    ('read_acquisition', 'row'): 6,
     ('read_acquisition', 'statement'): 47,
     ('read_acquisition', 'forbidden'): 1,
     ('tedapi', 'heading'): 11,
@@ -58,6 +58,8 @@ EXPECTED = {
     ('evse_scope', 'row'): 8,
     ('evse_scope', 'statement'): 12,
     ('evse_scope', 'forbidden'): 1,
+    ('gen3_semreg_mapping', 'heading'): 3,
+    ('gen3_semreg_mapping', 'statement'): 10,
 }
 CONTRACTS = frozenset(contract for contract, _ in EXPECTED)
 PAGE = re.compile(r'protocols/tesla/[a-z0-9]+(?:-[a-z0-9]+)*\.md')

@@ -14,14 +14,7 @@ the [SmartLogger observation](smartlogger-observed-inventory-v1.md), the
 [S-Dongle observation](sdongle-observed-identity-v1.md). The historical V1 name
 implies no stability before Helianthus 1.0.
 
-This page admits no acquisition. Every class stays default denied, and
-`catalog_registered=false`, `automatic_runtime_admission=false`,
-`live_qualified=false`, `support_claim=false`, and `write_authority=false` are
-unchanged. A provider that follows this page still needs the admission and the
-operator approvals that the linked pages require. On the S-Dongle path the
-recorded stop stays in force until a same-class run matches the whole tuple on
-one connection generation. The registry companion for the providers is
-helianthus-modbusreg issue 349.
+Read pacing is the transport's and follows the request interval the device's published interface states. Where the document states none, this page adds no pacing figure. On persistent dongle non-response the transport backs off, values show stale or unknown meanwhile, and reads resume without any approval. The registry companion for the providers is helianthus-modbusreg issue 349.
 
 The evidence is the bounded read-only runs behind the three observation pages,
 and the monitoring run per path that the monitoring contract describes. Each

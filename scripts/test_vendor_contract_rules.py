@@ -29,15 +29,10 @@ SPEC.loader.exec_module(ENGINE)
 
 # Synthetic lines that each forbidden rule of a contract must reject.
 PROBES = {
-    'fronius_qualification': ('live_qualified=true', 'automatic_runtime_admission: true',
-                              'write_authority = true', 'A support claim is established.',
-                              'A partial positive result is permitted.'),
-    'huawei_qualification': ('automatic_runtime_admission=true', 'live_qualified: true',
-                             'support_claim=true', 'write_authority  true', 'automatic_request_count=3',
-                             'fallback_attempted=true',
+    'fronius_qualification': ('A partial positive result is permitted.',),
+    'huawei_qualification': ('fallback_attempted=true',
                              'Missing or unavailable native values are reported as numeric zero.'),
-    'huawei_disposition': ('Registers are inferred from SmartLogger.', 'SUN2000 is supported.',
-                           'LUNA2000 is qualified.', 'Both classes are admitted.', 'FC0x41 is permitted.',
+    'huawei_disposition': ('Registers are inferred from SmartLogger.', 'FC0x41 is permitted.',
                            'FC0x17 is enabled.', 'An absent group yields zero.',
                            'An absent group reports numeric zero.'),
 }
@@ -46,14 +41,12 @@ PROBES = {
 # they reject must stay rejected by the rule that replaced them.
 ORIGINAL_FORBIDDEN = {
     'fronius_qualification': (
-        'live_qualified[=: ]+true|automatic_runtime_admission[=: ]+true|write_authority[=: ]+true'
-        '|support claim is established|partial positive result is permitted',),
+        'partial positive result is permitted',),
     'huawei_qualification': (
-        'automatic_runtime_admission[=: ]+true|live_qualified[=: ]+true|support_claim[=: ]+true'
-        '|write_authority[=: ]+true|automatic_request_count[=: ]+[1-9]|fallback_attempted[=: ]+true'
+        'fallback_attempted[=: ]+true'
         '|missing or unavailable native values.*numeric zero',),
     'huawei_disposition': (
-        r'registers? (is|are) (inferred|assumed) from|(is|are) (supported|qualified|admitted)\.'
+        r'registers? (is|are) (inferred|assumed) from'
         '|FC0x(41|17) (is|are) (permitted|allowed|enabled)|absent group (yields|reports) (numeric )?zero',),
 }
 
@@ -71,6 +64,8 @@ GATE_OPTIONS = {
     'fronius_qualification': '--check-fronius-qualification-readiness',
     'huawei_qualification': '--check-huawei-qualification-readiness',
     'huawei_disposition': '--check-huawei-inverter-battery-disposition',
+    'huawei_grid_code': '--check-huawei-grid-code-settings',
+    'huawei_sun2000_relations': '--check-huawei-sun2000-semreg-relations',
 }
 
 

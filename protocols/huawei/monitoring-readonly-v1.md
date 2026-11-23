@@ -15,12 +15,10 @@ production-site rules are on the companion
 name implies no stability before Helianthus 1.0.
 
 This page creates no admission and changes no disposition. Profile selection
-for the SUN2000 and LUNA2000 classes stays `NO_ADMISSIBLE_PROFILE` under the
+for the SUN2000 and LUNA2000 classes is declared from the consulted documents under the
 [inverter and battery disposition](inverter-battery-readonly-v1.md), the
 S-Dongle outcome stays `PRE_LIVE_INSUFFICIENT_EVIDENCE` with its recorded stop
-in force, and `catalog_registered=false`, `automatic_runtime_admission=false`,
-`live_qualified=false`, `support_claim=false`, and `write_authority=false` are
-unchanged. The registry companions are helianthus-modbusreg issue 348 for the
+in force, and a point the source documents as writable gets an operation, through SemReg where SemReg has the element, otherwise decoded and callable by hand through MCP and GraphQL in the modbusreg namespace. The registry companions are helianthus-modbusreg issue 348 for the
 monitoring profiles and issue 349 for the read-only providers.
 
 The page rests on two kinds of source. The vendor interface definitions listed
@@ -379,12 +377,7 @@ ends inside a value, and it defines exception 3 only in general terms, as a
 malformed remainder of a request. That reading points at the extent and does
 not settle the cause (MG-03).
 
-Until an operator-approved observation reads a value-aligned extent, the power
-group is not read on the M3 and MAP0 series, and per-inverter power on those
-paths stays Unknown. The candidate extents are offset 32064 with quantity 31,
-which stops before the two-register value, and offset 32064 with quantity 33,
-which includes it. Both are Unknown. The M1 series child is read with the
-observed extent.
+The value-aligned power-group extent is offset 32064, quantity 33, on every series. A quantity-32 refusal stays a recorded level. The group consumes reactive power, line and phase voltages, phase currents, frequency, power factor, efficiency, internal temperature, insulation resistance, and the status code with the consulted edition's types and gains. The separate FC03 energy-group response at offset 32106 and quantity 10 supplies the DC-input counter at 32108-32109, U32, kWh, gain 100. It is distinct from the accumulated counter at 32106-32107. A valid energy-group response still yields the exact DC-input counter when the power group is refused or undecodable. A group the device answers with an exception, or answers normally but cannot be decoded, is recorded as a loss with its reason and the other groups continue.
 
 ## Refusals: the SmartLogger meter groups
 

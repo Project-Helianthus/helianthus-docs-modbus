@@ -48,7 +48,7 @@ EXPECTED = {
     ('protocol_ii_identity', 'heading'): 3,
     ('protocol_ii_identity', 'statement'): 8,
     ('protocol_ii_fc04', 'heading'): 2,
-    ('protocol_ii_fc04', 'statement'): 14,
+    ('protocol_ii_fc04', 'statement'): 24,
     ('protocol_ii_fc04', 'row'): 10,
     ('protocol_ii_source_matrix', 'heading'): 1,
     ('protocol_ii_source_matrix', 'row'): 27,
@@ -59,7 +59,7 @@ EXPECTED = {
     ('wit_matrix', 'forbidden'): 1,
 }
 CONTRACTS = frozenset(contract for contract, _ in EXPECTED)
-PAGE = re.compile(r'protocols/growatt/[a-z0-9]+(?:-[a-z0-9]+)*\.md')
+PAGE = re.compile(r'(?:protocols/growatt|architecture)/[a-z0-9]+(?:-[a-z0-9]+)*\.md')
 HEADING = re.compile(r'(#{1,6}) \S(?:.*\S)?')
 PIN = re.compile(r'<pin:([^>\s]*)>')
 PIN_TOKEN = '([0-9A-Fa-f]{7,64})'

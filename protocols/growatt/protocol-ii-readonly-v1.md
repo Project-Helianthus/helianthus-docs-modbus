@@ -39,8 +39,7 @@ telemetry. Unknown device type, malformed ASCII, a protocol value outside the
 selected schema, or disagreement among identity fields remains
 `insufficient_evidence` for typed monitoring.
 
-The bounded result is `NO_ADMISSIBLE_PROFILE`: there is no exact tuple and no
-typed field. There is no current publicly admitted typed FC04 profile. The exported opaque
+The bounded result of automatic matching is `NO_ADMISSIBLE_PROFILE`: there is no exact tuple and no typed field while the edition publishes no numeric device-type and version map. There is no current publicly admitted typed FC04 profile. The exported opaque
 applicability value has no public successful constructor; its zero value and all
 externally constructible forms fail closed. Only an unexported synthetic
 in-package fixture helper may exercise the source-backed FC04 schema and
@@ -86,8 +85,8 @@ construction and fake execution without making a real-device write automatic.
 
 ## FC04 monitoring foundation
 
-Because no public FC04 profile is admitted, the public FC04 decoder and observer
-fail closed and create no typed telemetry or observer. The unexported synthetic
+Because no automatic FC04 profile is admitted, the public FC04 decoder and observer
+fail closed and create no typed telemetry or observer. The live FC04 record uses offset 0 and width_words=250 for words 0 through 249, acquired through FC04 0/125 and 125/125 in address order. An explicit endpoint and family selection of a documented TL3-X MAX, MID, or MAC family activates that configured profile, and the same evidence without a selection gives no automatic match. Word 113 keeps the MAX real power percent and the Storage Power daily AC-charge energy low word, and the raw observation is retained when the device qualifier is absent, inapplicable, or matches more than one interpretation. Word 125 keeps the PID and MAX HV Flyspan alternatives, and the raw observation is retained when the device qualifier is absent, inapplicable, or matches more than one interpretation. Word 939 is a source-table fact only and the live FC04 record is exactly two blocks. For n = 1 through 8 only, PV input n uses unsigned word 3 + 4(n-1) for voltage, unsigned word 4 + 4(n-1) for current, and the unsigned high/low pair starting at 5 + 4(n-1) for power. Holding register 43 is the device-type field and holding register 88 is the reported protocol-version field. The manufacturer uses 207 as an example of reported V2.07. Edition v1.24 is the document revision. The identified edition gives no numeric device-type and version map to that family schema, and that gap stays named. Words 35 through 38 keep their native AC and grid meanings and never serve as PV9. Temperature word 93 is the inverter temperature at 0.1 degrees Celsius. PV9 words 875 through 878 are source-only outside the 250-word live record. The unexported synthetic
 fixture exercises exactly one input-register slice: zero-based offsets 0 through 58 inclusive (59 words). It is an all-or-nothing fixture decode: wrong function,
 offset, word count, table/provenance, timeout, Modbus exception, missing
 admission, identity/applicability mismatch, malformed response, or an unlisted

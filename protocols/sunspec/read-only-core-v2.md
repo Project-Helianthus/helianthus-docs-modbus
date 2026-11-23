@@ -75,7 +75,7 @@ operation from those words.
 No point in Model 715 creates a write method, send authority, operation admission,
 dispatch, retry, runtime activation, vendor activation, or catalog activation.
 
-Model 703 enter-service settings are registers in the modbusreg namespace, with no SemReg element, and are decoded and callable by hand through MCP and GraphQL.
+Model 703 enter-service settings are registers in the modbusreg namespace, with no SemReg element, and are decoded and callable by hand through MCP and GraphQL. See the [grid-code settings](grid-code-settings-v1.md).
 A decoder may retain Model 703 observed words and derived state, including
 points that upstream describes as read/write.
 
@@ -109,7 +109,7 @@ For a model-specific point span `S`, the zero-based payload offset of
 offsets `+1`, `+2 + S*P`, and `+3 + 2*S*P`. Within each nested curve,
 `Pt[j]` begins one data register after `ActPt` plus `(j-1)*S`.
 
-Models 707, 708, and 709 are registers in the modbusreg namespace, with no SemReg element, and are decoded and callable by hand through MCP and GraphQL. They do not infer relationships to one another or to Models 710 through 712. Nothing is sent unless the operation is called.
+Models 707, 708, and 709 are registers in the modbusreg namespace, with no SemReg element, and are decoded and callable by hand through MCP and GraphQL. They do not infer relationships to one another or to Models 710 through 712. Nothing is sent unless the operation is called. See the [grid-code settings](grid-code-settings-v1.md) and the [Model 707 template](der-trip-lv-template-v2.md).
 
 ## DER Trip model-specific observed fields
 
@@ -277,13 +277,9 @@ occurrences; and an unsupported model length retained as opaque.
 ## Offline implementation boundary
 
 This contract permits a separate offline registry implementation to use the V2
-schema key and synthetic fixtures. No standard profile admission, runtime
-catalog registration, vendor admission, automatic acquisition, telemetry
-publication, capability admission, or consumer exposure may be derived from
-this contract.
+schema key and synthetic fixtures. The public standard declares the models this page specifies supported and registered for automatic detection and acquisition where the document states an identity that establishes the match.
 
-No Modbus transport change is implied. No control-capable point authorizes a
-Modbus write. No gateway, deployment, or live-device operation is part of this
+No Modbus transport change is implied. A point the model documents as writable is callable by hand in the modbusreg namespace where SemReg has no element. No gateway, deployment, or live-device operation is part of this
 contract.
 
 ## Monitoring capabilities

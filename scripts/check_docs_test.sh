@@ -67,7 +67,7 @@ tesla_current_limit_fixture="$fixture_root/tesla-current-limit.md"
 
 "$repo_root/scripts/check_docs.sh" --check-tesla-current-limit-operation "$tesla_current_limit_document"
 for mutation in \
-  's/state-changing operations require explicit operator confirmation at action time\./state-changing operations use cached permission./' \
+  's/admitted without live operator confirmation at action time/requires cached permission at action time/' \
   's/Mutation retries are zero;/Mutation retries are unlimited;/' \
   's/A readback exception or application error after ACK is overall `INDETERMINATE`/A readback error after ACK is overall `REJECTED`/' \
   's/An exchange timeout before the operation deadline is `TIMEOUT`/An exchange timeout before the operation deadline is `INDETERMINATE`/' \
@@ -133,7 +133,8 @@ for mutation in \
   's/selects the responder explicitly\./selects no responder./' \
   's/A record from another endpoint instance counted as current\./A record from another endpoint instance is historical./' \
   's/A readiness probe used after any event was reported, or without explicit configuration\./A readiness probe used after any event was reported is accepted./' \
-  's/The contract covers only the exact `wc3_24_44_3` operation version\./The contract covers every Gen3 operation version./' \
+  's/every later build of that same Gen3 version line/only the exact operation label/' \
+  's/| Provisional readback | 6 | 27 → 28 |/| Provisional readback | 6 | 27 → 29 |/' \
   's/| `indeterminate` |/| `unknown` |/' \
   's/at most five minutes\./at most one hour./' \
   's/positive and at most thirty seconds\./positive and at most ten minutes./' \
@@ -186,7 +187,7 @@ for mutation in \
   's/selects no class/selects the first class/' \
   's/any failed class stays/any failed class selects/' \
   's/zero automatic requests/one automatic request/' \
-  's/"automatic_runtime_admission": false/"automatic_runtime_admission": true/' \
+  's/"declared_from": "consulted_documents"/"declared_from": "observation"/' \
   's/they are never emitted as numeric zero/they are emitted as numeric zero/'; do
   sed "$mutation" "$huawei_qualification_document" > "$huawei_qualification_fixture"
   if "$repo_root/scripts/check_docs.sh" --check-huawei-qualification-readiness "$huawei_qualification_fixture"; then
@@ -204,9 +205,9 @@ for mutation in \
   's/remain incomplete and produce no qualification observation/pad the missing chunk and produce a qualification observation/' \
   's/retain the raw value; reject the generic capability and exact flavor/convert the sentinel to zero and admit the flavor/' \
   's/it is not a promotion or publication decision./it is a promotion and publication decision./' \
-  's/"live_qualified": false/"live_qualified": true/' \
-  's/"automatic_runtime_admission": false/"automatic_runtime_admission": true/' \
-  's/"write_authority": false/"write_authority": true/'; do
+  's/Documented support is declared from the SunSpec Common model identity./Documented support stays an observation./' \
+  's/recorded as `tested_on_hardware` and conditions nothing/recorded as a condition of admission/' \
+  's/eligible for semantic mapping/ineligible for semantic mapping/'; do
   sed "$mutation" "$fronius_qualification_document" > "$fronius_qualification_fixture"
   if "$repo_root/scripts/check_docs.sh" --check-fronius-qualification-readiness "$fronius_qualification_fixture"; then
     echo "Fronius qualification readiness mutation was accepted: $mutation" >&2
@@ -786,9 +787,9 @@ for mutation in \
   's/length 65 is a compatibility tuple/length 65 is a current product tuple/' \
   's/Models 101, 102, and 103/Models 101, 102, and 104/' \
   's/Models 111, 112, and 113 use IEEE FLOAT values/Models 111, 112, and 113 use integer values/' \
-  's/Models 123 and 124 are observed state only/Models 123 and 124 are writable operations/' \
+  's/Models 123 and 124 are the SemReg setters/Models 123 and 124 are observed state only/' \
   's/identifiers or lengths remain opaque blocks/identifiers or lengths are decoded best-effort/' \
-  's/does not create a product, profile, or support/creates a product, profile, and support/'; do
+  's/Documented support is declared from the public standard/Documented support is withheld from the public standard/'; do
   sed "$mutation" "$sunspec_v1_families_document" > "$sunspec_v1_families_fixture"
   if "$repo_root/scripts/check_docs.sh" --check-sunspec-v1-model-families-contract "$sunspec_v1_families_fixture"; then
     echo "SunSpec V1 model-families mutation was accepted: $mutation" >&2
@@ -798,7 +799,7 @@ done
 
 for contradiction in \
   'sunspec.models.candidate.v2' \
-  'Model 123 creates write authority.'; do
+  'The V2 registry admits this chain.'; do
   cp "$sunspec_v1_families_document" "$sunspec_v1_families_fixture"
   printf '\n%s\n' "$contradiction" >> "$sunspec_v1_families_fixture"
   if "$repo_root/scripts/check_docs.sh" --check-sunspec-v1-model-families-contract "$sunspec_v1_families_fixture"; then
@@ -966,7 +967,7 @@ for mutation in \
   's/truncate, or round/round to a float/' \
   's/are data and are not trimmed/are padding and are trimmed/' \
   's/V1 outputs remain unchanged/V1 outputs are revised/' \
-  's/catalog registration, vendor admission/catalog admission, vendor admission/' \
+  's/The public standard declares the models this page specifies supported/The public standard withholds the models this page specifies/' \
   's/raw-only opaque block/decoded best-effort/' \
   's/all-zero string extent is unavailable/all-zero string extent is empty/'; do
   sed "$mutation" "$sunspec_v2_document" > "$sunspec_v2_fixture"
@@ -983,7 +984,7 @@ for mutation in \
 	's/802\/62/802\/61/' \
 	's/803 variable geometry/803 fixed geometry/' \
 	's/804 variable geometry/804 fixed geometry/' \
-  's/offline decoder contract; runtime, vendor, and catalog admission default denied/runtime catalog approved/' \
+  's/declared from the public standard for the listed models/runtime catalog approved/' \
   's/uses the public Apache-2.0 SunSpec model/ignores the public Apache-2.0 SunSpec model/'; do
   sed "$mutation" "$sunspec_v2_licensing_document" > "$sunspec_v2_licensing_fixture"
   if cmp -s "$sunspec_v2_licensing_document" "$sunspec_v2_licensing_fixture"; then
@@ -999,8 +1000,8 @@ done
 for contradiction in \
   'sunspec.models.candidate.v2' \
   'Common 1/65 is accepted by the V2 decoder.' \
-  'V2 runtime catalog registration is enabled.' \
-  'V2 automatic acquisition is enabled.'; do
+  'The trailing spaces are trimmed.' \
+  'Common 1/65 feeds the V2 decoder.'; do
   cp "$sunspec_v2_document" "$sunspec_v2_fixture"
   printf '\n%s\n' "$contradiction" >> "$sunspec_v2_fixture"
   if "$repo_root/scripts/check_docs.sh" --check-sunspec-v2-contract "$sunspec_v2_fixture"; then
@@ -1098,12 +1099,12 @@ for leak in \
 done
 
 "$repo_root/scripts/check_docs.sh" --check-wit-matrix-contract "$wit_document"
-grep -Fq '| `WIT 50-100K-HU-US` | US branch; product context not established | not established by this contract | `UNKNOWN` | `UNKNOWN` | `INSUFFICIENT_EVIDENCE`; `NO_SEND` |' "$wit_document"
-grep -Fq '| `WIT 50-100K-AU-US` | US branch; product context not established | not established by this contract | `UNKNOWN` | `UNKNOWN` | `INSUFFICIENT_EVIDENCE`; `NO_SEND` |' "$wit_document"
+grep -Fq '| `WIT 50-100K-HU-US` | US branch; product context not established | not established by this contract | `UNKNOWN` | `UNKNOWN` | `DECLARED`; `MAP_UNPUBLISHED` |' "$wit_document"
+grep -Fq '| `WIT 50-100K-AU-US` | US branch; product context not established | not established by this contract | `UNKNOWN` | `UNKNOWN` | `DECLARED`; `MAP_UNPUBLISHED` |' "$wit_document"
 
 for mutation in \
   '/WIT 4-25K-HU/s/`UNKNOWN`/`V2.01`/' \
-  '/WIT 50-100K-AU/s/`INSUFFICIENT_EVIDENCE`/`PROFILE_ADMITTED`/' \
+  '/WIT 50-100K-AU/s/`DECLARED`/`PROFILE_ADMITTED`/' \
   's/WIT 4-25K-HU/WIT 4-25K-HU2/' \
   's/WIT 50-100K-AU/WIT 50-100K-HU\/AU/' \
   's/DTC `5601`/DTC `5602`/' \
@@ -1111,8 +1112,8 @@ for mutation in \
   's/does not admit `WIT 50-100K-HU`/also admits `WIT 50-100K-HU`/' \
   's/no qualified firmware gate/a qualified firmware gate/' \
   's/does not apply to a WIT row/applies to a WIT row/' \
-  's/Every VPP read, control, and write remains `NO_SEND`/VPP reads and controls are permitted/' \
-  's/No decoder, fixture, catalog registration/Decoder, fixture, and catalog registration/' \
+  's/The matrix declares reads of its documented rows./VPP reads are permitted./' \
+  's/No decoder or fixture is created./A decoder and a fixture are created./' \
   's/produces `INSUFFICIENT_EVIDENCE`, no match, and no send/chooses the first matching profile/'; do
   sed "$mutation" "$wit_document" > "$wit_fixture"
   if "$repo_root/scripts/check_docs.sh" --check-wit-matrix-contract "$wit_fixture"; then
@@ -1138,13 +1139,13 @@ huawei_inverter_battery_fixture="$fixture_root/huawei-inverter-battery-readonly-
 
 "$repo_root/scripts/check_docs.sh" --check-huawei-inverter-battery-disposition "$huawei_inverter_battery_document"
 for mutation in \
-  's/Both classes have the outcome `NO_ADMISSIBLE_PROFILE` in this revision\./Both classes have the outcome `PROFILE_ADMITTED` in this revision./' \
-  's/no exact version is pinned/an exact version is pinned/' \
-  's/No model family and no firmware range is covered\./Every model family and firmware range is covered./' \
-  's/`support_claim=false`/`support_claim=true`/' \
-  's/`write_authority=false`/`write_authority=true`/' \
-  's/`catalog_registered=false`/`catalog_registered=true`/' \
-  's/`automatic_runtime_admission=false`/`automatic_runtime_admission=true`/' \
+  's/Both classes are declared from the consulted documents in this revision\./Both classes have the outcome `PROFILE_ADMITTED` in this revision./' \
+  's/the catalogue editions name the covered families/an exact version is pinned/' \
+  's/are registered for automatic detection and acquisition/are not registered/' \
+  's/A point the source documents as writable gets an operation/A point the source documents as writable stays unread/' \
+  's/A hardware test is a recorded level and conditions nothing/A hardware test conditions admission/' \
+  's/hardware level recorded separately/hardware level required/' \
+  's/software floor from the consulted edition/software floor ignored/' \
   's/do not fall back to SmartLogger, EMMA, S-Dongle, or each other/fall back to SmartLogger when needed/' \
   's/never inferred from another Huawei class/inferred from another Huawei class/' \
   '/^- a pinned vendor document name and version;$/d' \
@@ -1159,7 +1160,7 @@ for mutation in \
   's/is `AMBIGUOUS` with no selection and no/is `AMBIGUOUS` with the first selection and no/' \
   's/ordering or priority rule\./ordering rule by priority./' \
   's/^| `multiple_positive_candidates` | `AMBIGUOUS` |/| `multiple_positive_candidates` | `INSUFFICIENT_EVIDENCE` |/' \
-  's/^| `exact_identity_with_pinned_register_map` | `NO_ADMISSIBLE_PROFILE` |/| `exact_identity_with_pinned_register_map` | `PROFILE_ADMITTED` |/' \
+  's/^| `exact_identity_with_pinned_register_map` | `DECLARED` |/| `exact_identity_with_pinned_register_map` | `PROFILE_ADMITTED` |/' \
   's/^| `battery_group_absent` | `INSUFFICIENT_EVIDENCE` |/| `battery_group_absent` | `PROFILE_ADMITTED` |/' \
   's/^| `parent_inverter_unidentified` | `INSUFFICIENT_EVIDENCE` |/| `parent_inverter_unidentified` | `AMBIGUOUS` |/' \
   '/^| `firmware_without_model` /d' \
@@ -1171,8 +1172,8 @@ for mutation in \
   's/FC0x41 and FC0x17 are$/FC0x41 and FC0x17 are permitted for/' \
   's/^`NO_SEND` for both classes/`SEND` for both classes/' \
   's/^## Reopen requirements$/## Notes/' \
-  '/^| SUN2000 | `unknown`; nothing is observed/d' \
-  '/^| LUNA2000 | `unknown`; nothing is observed/d' \
+  '/^| SUN2000 | declared from the consulted documents/d' \
+  '/^| LUNA2000 | declared from the consulted documents/d' \
   '/^facts. The table is a decision contract only; it is not executable detection\.$/d' \
   '/^The existence of this page satisfies only the registry/d' \
   '/^requirement. It satisfies none of the four requirements above, and reopening$/d' \
@@ -1210,7 +1211,7 @@ for leak in \
 done
 
 for contradiction in \
-  'SUN2000 is supported.' \
+  'Registers are inferred from the meter class.' \
   'FC0x41 is permitted.' \
   'An absent group yields zero.'; do
   cp "$huawei_inverter_battery_document" "$huawei_inverter_battery_fixture"
@@ -1504,8 +1505,8 @@ expect_growatt_rule_failure row --check-growatt-protocol-ii-source-matrix "$grow
 
 # statement: a rewrapped statement passes; a statement moved out of its
 # section is missing.
-sed 's/^Every VPP read, control, and write remains `NO_SEND`\. The document includes$/Every VPP read, control,\
-and write remains `NO_SEND`. The document includes/' "$wit_document" > "$growatt_fixture"
+sed 's/^The matrix declares reads of its documented rows\. The document includes$/The matrix declares reads of its documented rows.\
+The document includes/' "$wit_document" > "$growatt_fixture"
 if cmp -s "$wit_document" "$growatt_fixture"; then
   echo 'Growatt statement rewrap did not change the document' >&2
   exit 1
@@ -1603,7 +1604,7 @@ cp "$fronius_qualification_document" "$vendor_fixture"
 printf '\nThe card keeps `write_authority=false`; it never becomes true.\n' >> "$vendor_fixture"
 "$repo_root/scripts/check_docs.sh" --check-fronius-qualification-readiness "$vendor_fixture"
 cp "$fronius_qualification_document" "$vendor_fixture"
-printf '\nA later card sets `write_authority=true`.\n' >> "$vendor_fixture"
+printf '\nA partial positive result is permitted.\n' >> "$vendor_fixture"
 expect_vendor_rule_failure forbidden --check-fronius-qualification-readiness "$vendor_fixture"
 
 # decision_rows: a changed reason cell passes; two SUN2000 rows swapped fail.
@@ -1619,3 +1620,228 @@ awk '/^### SUN2000 decision rows$/ { in_rows = 1 } /^### LUNA2000 decision rows$
   in_rows && held != "" && /^\| `firmware_without_model` / { print held; held = "" }' \
   "$huawei_inverter_battery_document" > "$vendor_fixture"
 expect_vendor_rule_failure decision_rows --check-huawei-inverter-battery-disposition "$vendor_fixture"
+
+# Register write: the page passes, and a retry the page adds fails.
+register_write_document="$repo_root/protocols/modbus/register-write-v1.md"
+register_write_fixture="$fixture_root/register-write.md"
+"$repo_root/scripts/check_docs.sh" --check-modbus-register-write "$register_write_document"
+cp "$register_write_document" "$register_write_fixture"
+printf '\nThe page retries the write.\n' >> "$register_write_fixture"
+if "$repo_root/scripts/check_docs.sh" --check-modbus-register-write "$register_write_fixture"; then
+  echo 'Register write retry mutation was accepted' >&2
+  exit 1
+fi
+
+# SunSpec controls: each behavior fails on its own, with the table headers left in place.
+controls_document="$repo_root/protocols/sunspec/controls-v1.md"
+controls_fixture="$fixture_root/sunspec-controls.md"
+"$repo_root/scripts/check_docs.sh" --check-sunspec-controls "$controls_document"
+for mutation in \
+  's/The enable-only release writes `WMaxLim_Ena` = 0 only in its own request and re-reads only `WMaxLim_Ena`./The enable-only release writes the percent and re-reads every timing point./' \
+  's/No clear `storage.status.interlock` candidate produces zero FC16 writes./No clear interlock still sends the rate./' \
+  's/An unsupported or unencodable duration produces no write even when the rate is encodable./An unencodable duration still writes the rate./' \
+  's/A later runtime rejection after the rate is attempted reports partially executed or uncertain and distinguishes the unattempted steps./A later runtime rejection is the same no-send as prevalidation./' \
+  's/Cancellation between spans stops later writes./Cancellation between spans continues later writes./' \
+  's/Only correlated readbacks of all intended points from the same admitted setting owner, endpoint and generation confirm the whole setting./A readback from another generation confirms the whole setting./' \
+  's/For 3,333 W with an 8,000 W applicable rating and scale -1, write raw 416./For 3,333 W with an 8,000 W applicable rating and scale -1, write raw 417./' \
+  's/| 123 | `WMaxLimPct_WinTms` | uint16 | none | Secs | RW | own admitted span |/| 123 | `WMaxLimPct_WinTms` | uint16 | none | Secs | RW | sibling span |/' \
+  's/| 123 | `WMaxLimPct_RmpTms` | uint16 | none | Secs | RW | own admitted span |/| 123 | `WMaxLimPct_RmpTms` | uint16 | none | Secs | RW | sibling span |/' \
+  's/| 123 | `WMaxLimPct_RvrtTms` | uint16 | none | Secs | RW | own admitted span |/| 123 | `WMaxLimPct_RvrtTms` | uint16 | none | Secs | RW | sibling span |/' \
+  's/| 124 | `InOutWRte_RvrtTms` | uint16 | none | Secs | RW | own admitted span |/| 124 | `InOutWRte_RvrtTms` | uint16 | none | Secs | RW | sibling span |/'; do
+  sed "$mutation" "$controls_document" > "$controls_fixture"
+  if cmp -s "$controls_document" "$controls_fixture"; then
+    echo "SunSpec controls mutation did not change the document: $mutation" >&2
+    exit 1
+  fi
+  if ! grep -Fq '| SemReg operation | argument (SI) | SunSpec model | points written | conversion | release | readback |' "$controls_fixture"; then
+    echo 'SunSpec controls mutation changed the setter header' >&2
+    exit 1
+  fi
+  if ! grep -Fq '| model | point | type | scale factor | unit | access | value range or symbols |' "$controls_fixture"; then
+    echo 'SunSpec controls mutation changed the hand-call header' >&2
+    exit 1
+  fi
+  if "$repo_root/scripts/check_docs.sh" --check-sunspec-controls "$controls_fixture"; then
+    echo "SunSpec controls mutation was accepted: $mutation" >&2
+    exit 1
+  fi
+done
+for point in WMaxLimPct_WinTms WMaxLimPct_RmpTms WMaxLimPct_RvrtTms InOutWRte_RvrtTms; do
+  grep -v "| 12[34] | \`${point}\` |" "$controls_document" > "$controls_fixture"
+  if "$repo_root/scripts/check_docs.sh" --check-sunspec-controls "$controls_fixture"; then
+    echo "SunSpec controls timing row was accepted when removed: $point" >&2
+    exit 1
+  fi
+done
+
+# Grid-code pages: the opening statement and one heading are load-bearing.
+sunspec_grid_document="$repo_root/protocols/sunspec/grid-code-settings-v1.md"
+sunspec_grid_fixture="$fixture_root/sunspec-grid-code.md"
+"$repo_root/scripts/check_docs.sh" --check-sunspec-grid-code-settings "$sunspec_grid_document"
+sed 's/These settings have no SemReg element/These settings are SemReg elements/' \
+  "$sunspec_grid_document" > "$sunspec_grid_fixture"
+if "$repo_root/scripts/check_docs.sh" --check-sunspec-grid-code-settings "$sunspec_grid_fixture"; then
+  echo 'SunSpec grid-code SemReg mutation was accepted' >&2
+  exit 1
+fi
+sed 's/^## Model 708$/## Model 710/' "$sunspec_grid_document" > "$sunspec_grid_fixture"
+if "$repo_root/scripts/check_docs.sh" --check-sunspec-grid-code-settings "$sunspec_grid_fixture"; then
+  echo 'SunSpec grid-code heading mutation was accepted' >&2
+  exit 1
+fi
+
+huawei_grid_document="$repo_root/protocols/huawei/grid-code-settings-v1.md"
+huawei_grid_fixture="$fixture_root/huawei-grid-code.md"
+"$repo_root/scripts/check_docs.sh" --check-huawei-grid-code-settings "$huawei_grid_document"
+sed 's/These settings have no SemReg element/These settings are SemReg elements/' \
+  "$huawei_grid_document" > "$huawei_grid_fixture"
+if "$repo_root/scripts/check_docs.sh" --check-huawei-grid-code-settings "$huawei_grid_fixture"; then
+  echo 'Huawei grid-code SemReg mutation was accepted' >&2
+  exit 1
+fi
+sed 's/^## L-LEGACY$/## LEGACY/' "$huawei_grid_document" > "$huawei_grid_fixture"
+if "$repo_root/scripts/check_docs.sh" --check-huawei-grid-code-settings "$huawei_grid_fixture"; then
+  echo 'Huawei grid-code heading mutation was accepted' >&2
+  exit 1
+fi
+
+# SUN2000 relations: phase stays gate_rule and the two inverter relays stay native_observation.
+huawei_relations_document="$repo_root/protocols/huawei/sun2000-semreg-relations-v1.md"
+huawei_relations_fixture="$fixture_root/sun2000-relations.md"
+"$repo_root/scripts/check_docs.sh" --check-huawei-sun2000-semreg-relations "$huawei_relations_document"
+for mutation in \
+  's/| `pv.relation.inverter_phase` | inverter | phase | `gate_rule` |/| `pv.relation.inverter_phase` | inverter | phase | `native_observation` |/' \
+  's/| `relation.relays` | inverter | battery | `native_observation` |/| `relation.relays` | inverter | battery | `gate_rule` |/' \
+  's/| `relation.relays` | inverter | meter | `native_observation` |/| `relation.relays` | inverter | meter | `configuration` |/'; do
+  sed "$mutation" "$huawei_relations_document" > "$huawei_relations_fixture"
+  if cmp -s "$huawei_relations_document" "$huawei_relations_fixture"; then
+    echo "SUN2000 relation mutation did not change the document: $mutation" >&2
+    exit 1
+  fi
+  if "$repo_root/scripts/check_docs.sh" --check-huawei-sun2000-semreg-relations "$huawei_relations_fixture"; then
+    echo "SUN2000 relation mutation was accepted: $mutation" >&2
+    exit 1
+  fi
+done
+
+# Gen3 mapping: each same-epoch and admission sentence fails on its own.
+tesla_mapping_document="$repo_root/protocols/tesla/gen3-semreg-mapping-v1.md"
+tesla_mapping_fixture="$fixture_root/tesla-gen3-mapping.md"
+"$repo_root/scripts/check_docs.sh" --check-tesla-gen3-semreg-mapping "$tesla_mapping_document"
+for mutation in \
+  's/A numeric set at the configured maximum is still a renewed set and 0 A still pauses./A numeric set at the configured maximum is a release and 0 A sends zero./' \
+  's/and reject 6.5 A before any read or mutation./and accept 6.5 A before any read or mutation./' \
+  's/The pause encodes 6 A with inhibit and therefore needs a usable same-generation t28 configured bound of at least 6 A before t25./The pause encodes 0 A and therefore needs a usable same-generation t28 configured bound of at least 0 A before t25./' \
+  's/A cached 5 A bound yields no request, and a bound of 5 A first learned by the prerequisite t27 sends no t25./A cached 5 A bound sends the pause, and a bound of 5 A first learned by the prerequisite t27 sends t25./' \
+  's/Missing, zero or invalid configured current sends no release t25 and yields no confirmed release./Missing configured current sends release t25 and confirms the release./' \
+  's/A t28 received 70 s after a 60 s provisional set withholds the current allocation and retains the expiry fact./A t28 received 70 s after a 60 s provisional set keeps the current allocation./' \
+  's/A newer t28 with field 2 explicitly zero supersedes an earlier persistent t8 as unknown and retains the raw zero and evidence without publishing a numeric limit./A newer t28 with field 2 explicitly zero publishes the earlier t8 numeric limit./' \
+  's/A t28 omitting field 2 supplies no update and the earlier still-current t8 remains the candidate./A t28 omitting field 2 clears the earlier t8 candidate./' \
+  's/needs no live operator confirmation./needs live operator confirmation./'; do
+  sed "$mutation" "$tesla_mapping_document" > "$tesla_mapping_fixture"
+  if cmp -s "$tesla_mapping_document" "$tesla_mapping_fixture"; then
+    echo "Gen3 mapping mutation did not change the document: $mutation" >&2
+    exit 1
+  fi
+  if "$repo_root/scripts/check_docs.sh" --check-tesla-gen3-semreg-mapping "$tesla_mapping_fixture"; then
+    echo "Gen3 mapping mutation was accepted: $mutation" >&2
+    exit 1
+  fi
+done
+
+# Read acquisition: drop the sixth polling row and keep the on-demand sentence.
+grep -v '^| Provisional readback | 6 | 27 → 28 |$' "$tesla_read_acquisition_document" > "$tesla_read_acquisition_fixture"
+if ! grep -Fq 'even when tag 27 is absent from periodic Operations' "$tesla_read_acquisition_fixture"; then
+  echo 'Sixth-entry omission also removed the on-demand sentence' >&2
+  exit 1
+fi
+if ! grep -Fq 'The existing explicit t27 window supplies freshness' "$tesla_read_acquisition_fixture"; then
+  echo 'Sixth-entry omission also removed the off-poll window sentence' >&2
+  exit 1
+fi
+if "$repo_root/scripts/check_docs.sh" --check-tesla-read-acquisition "$tesla_read_acquisition_fixture"; then
+  echo 'Read acquisition accepted a polling set that omits provisional readback' >&2
+  exit 1
+fi
+sed 's/even when tag 27 is absent from periodic Operations/only when tag 27 is present in periodic Operations/' \
+  "$tesla_read_acquisition_document" > "$tesla_read_acquisition_fixture"
+if ! grep -Fq '| Provisional readback | 6 | 27 → 28 |' "$tesla_read_acquisition_fixture"; then
+  echo 'Periodic-t27 mutation removed the sixth polling row' >&2
+  exit 1
+fi
+if ! grep -Fq 'The existing explicit t27 window supplies freshness' "$tesla_read_acquisition_fixture"; then
+  echo 'Periodic-t27 mutation removed the off-poll window sentence' >&2
+  exit 1
+fi
+if "$repo_root/scripts/check_docs.sh" --check-tesla-read-acquisition "$tesla_read_acquisition_fixture"; then
+  echo 'Read acquisition accepted periodic t27 as required for the on-demand path' >&2
+  exit 1
+fi
+
+# HSC generation: restoring the unscoped no-minimum sentence, or exact-only qualification, fails.
+for mutation in \
+  's/An identified later build of the `wc3_24_44_3` line can qualify for these read observations when its activation, private function and operation schema agree./No numeric minimum version is asserted by this contract./' \
+  's/An identified later build of the `wc3_24_44_3` line can qualify for these read observations when its activation, private function and operation schema agree./The contract covers only the exact `wc3_24_44_3` operation version./'; do
+  sed "$mutation" "$tesla_gen3_document" > "$tesla_gen3_fixture"
+  if cmp -s "$tesla_gen3_document" "$tesla_gen3_fixture"; then
+    echo "HSC generation mutation did not change the document: $mutation" >&2
+    exit 1
+  fi
+  if "$repo_root/scripts/check_docs.sh" --check-tesla-generation-contracts "$tesla_legacy_document" "$tesla_gen3_fixture"; then
+    echo "HSC generation mutation was accepted: $mutation" >&2
+    exit 1
+  fi
+  if ! "$repo_root/scripts/check_docs.sh" --check-tesla-gen3-evse-current-limit-contract "$tesla_gen3_fixture"; then
+    echo 'HSC generation mutation changed exact current-limit qualification' >&2
+    exit 1
+  fi
+done
+
+# Protocol II live width: restoring 59 words, or collapsing configured and automatic, fails on each record page.
+fc04_pages=(
+  'protocols/growatt/protocol-ii-readonly-v1.md'
+  'protocols/growatt/protocol-ii-fc04-admission-record-v1.md'
+  'architecture/growatt-fc04-record-validation-implementation.md'
+)
+fc04_fixture="$fixture_root/protocol-ii-fc04-record.md"
+expect_fc04_page_failure() {
+  local changed="$1"
+  local fixture="$2"
+  local page args=()
+  for page in "${fc04_pages[@]}"; do
+    if [[ "$page" == "$changed" ]]; then
+      args+=("$page=$fixture")
+    else
+      args+=("$page=$repo_root/$page")
+    fi
+  done
+  if python3 "$repo_root/scripts/check_growatt_contract.py" \
+      "$repo_root/scripts/growatt_contract_rules.json" protocol_ii_fc04 "${args[@]}" \
+      2> "$fixture_root/fc04-record.stderr"; then
+    echo "Protocol II FC04 mutation was accepted on $changed" >&2
+    exit 1
+  fi
+  if ! grep -Fq ' statement ' "$fixture_root/fc04-record.stderr"; then
+    echo "Protocol II FC04 mutation did not report a statement failure on $changed" >&2
+    cat "$fixture_root/fc04-record.stderr" >&2
+    exit 1
+  fi
+}
+for page in "${fc04_pages[@]}"; do
+  sed 's/width_words=250/width_words=59/' "$repo_root/$page" > "$fc04_fixture"
+  if cmp -s "$repo_root/$page" "$fc04_fixture"; then
+    echo "Protocol II restored-59 mutation did not change $page" >&2
+    exit 1
+  fi
+  if ! grep -Fq 'offsets 0 through 58 inclusive (59 words)' "$repo_root/protocols/growatt/protocol-ii-readonly-v1.md"; then
+    echo 'Historical 59-word fixture sentence is missing from the readonly page' >&2
+    exit 1
+  fi
+  expect_fc04_page_failure "$page" "$fc04_fixture"
+  sed 's/gives no automatic match/gives an automatic match/' "$repo_root/$page" > "$fc04_fixture"
+  if cmp -s "$repo_root/$page" "$fc04_fixture"; then
+    echo "Protocol II configured/automatic mutation did not change $page" >&2
+    exit 1
+  fi
+  expect_fc04_page_failure "$page" "$fc04_fixture"
+done

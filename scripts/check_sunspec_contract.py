@@ -37,6 +37,9 @@ CONTRACT_PAGES = {
     'der_trip_lv_template': 'protocols/sunspec/der-trip-lv-template-v2.md',
     'der_trip_lv_projection': 'protocols/sunspec/der-trip-lv-typed-fact-projection-v2.md',
     'dynamic_structural_selection': 'protocols/sunspec/dynamic-structural-selection-v2.md',
+    'register_write': 'protocols/modbus/register-write-v1.md',
+    'sunspec_controls': 'protocols/sunspec/controls-v1.md',
+    'sunspec_grid_code': 'protocols/sunspec/grid-code-settings-v1.md',
 }
 EXPECTED = {
     ('v2_contract', 'heading'): 16,
@@ -63,6 +66,15 @@ EXPECTED = {
     ('dynamic_structural_selection', 'heading'): 5,
     ('dynamic_structural_selection', 'statement'): 14,
     ('dynamic_structural_selection', 'forbidden'): 1,
+    ('register_write', 'heading'): 3,
+    ('register_write', 'row'): 1,
+    ('register_write', 'statement'): 3,
+    ('register_write', 'forbidden'): 1,
+    ('sunspec_controls', 'heading'): 3,
+    ('sunspec_controls', 'row'): 9,
+    ('sunspec_controls', 'statement'): 8,
+    ('sunspec_grid_code', 'heading'): 25,
+    ('sunspec_grid_code', 'statement'): 1,
 }
 CONTRACTS = frozenset(CONTRACT_PAGES)
 HEADING = re.compile(r'(#{1,6}) \S(?:.*\S)?')

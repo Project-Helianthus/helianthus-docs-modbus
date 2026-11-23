@@ -51,6 +51,7 @@ tesla_legacy_page='protocols/tesla/legacy-wall-connector-rs485.md'
 tesla_gen3_page='protocols/tesla/gen3-hsc-rtu.md'
 tesla_current_limit_page='protocols/tesla/gen3-current-limit-operation-v1.md'
 tesla_read_acquisition_page='protocols/tesla/gen3-read-acquisition-v1.md'
+tesla_gen3_semreg_mapping_page='protocols/tesla/gen3-semreg-mapping-v1.md'
 
 # The Tesla contract rules live in scripts/tesla_contract_rules.json. The first
 # argument selects comma-separated contracts; each further argument maps a
@@ -73,6 +74,11 @@ check_tesla_read_acquisition() {
   check_tesla_contract read_acquisition "$tesla_read_acquisition_page=$1"
 }
 
+check_tesla_gen3_semreg_mapping() {
+  check_public_protocol "$1" || return 1
+  check_tesla_contract gen3_semreg_mapping "$tesla_gen3_semreg_mapping_page=$1"
+}
+
 vendor_private_function_page='protocols/modbus/private-function-codes.md'
 vendor_fronius_qualification_page='protocols/fronius/qualification-readiness-v1.md'
 vendor_fronius_float_page='protocols/fronius/sunspec-float-v1.md'
@@ -80,7 +86,9 @@ vendor_huawei_qualification_page='protocols/huawei/qualification-readiness-v1.md
 vendor_huawei_disposition_page='protocols/huawei/inverter-battery-readonly-v1.md'
 vendor_huawei_gateway_page='protocols/huawei/gateway-readonly-v1.md'
 vendor_sdongle_page='architecture/sdongle-qualification-disposition-v1.md'
-vendor_contracts='private_function,fronius_qualification,fronius_float_page,huawei_qualification,huawei_disposition,huawei_gateway_page,sdongle_page'
+vendor_huawei_grid_code_page='protocols/huawei/grid-code-settings-v1.md'
+vendor_huawei_sun2000_relations_page='protocols/huawei/sun2000-semreg-relations-v1.md'
+vendor_contracts='private_function,fronius_qualification,fronius_float_page,huawei_qualification,huawei_disposition,huawei_gateway_page,sdongle_page,huawei_grid_code,huawei_sun2000_relations'
 
 # The Huawei, Fronius, private-function and S-Dongle contract rules live in
 # scripts/vendor_contract_rules.json, with the former top-level lines of the
@@ -108,7 +116,10 @@ sunspec_nested_layout_page='protocols/sunspec/nested-layout-contract-v1.md'
 sunspec_der_trip_lv_template_page='protocols/sunspec/der-trip-lv-template-v2.md'
 sunspec_der_trip_lv_projection_page='protocols/sunspec/der-trip-lv-typed-fact-projection-v2.md'
 sunspec_dynamic_selection_page='protocols/sunspec/dynamic-structural-selection-v2.md'
-sunspec_contracts='v2_contract,v2_licensing,licensing_page,v1_core_page,v1_model_families,nested_layout,der_trip_lv_template,der_trip_lv_projection,dynamic_structural_selection'
+sunspec_register_write_page='protocols/modbus/register-write-v1.md'
+sunspec_controls_page='protocols/sunspec/controls-v1.md'
+sunspec_grid_code_page='protocols/sunspec/grid-code-settings-v1.md'
+sunspec_contracts='v2_contract,v2_licensing,licensing_page,v1_core_page,v1_model_families,nested_layout,der_trip_lv_template,der_trip_lv_projection,dynamic_structural_selection,register_write,sunspec_controls,sunspec_grid_code'
 
 # The SunSpec contract rules live in scripts/sunspec_contract_rules.json, with
 # the former top-level lines of the applicability and V1 core pages. The first
@@ -161,6 +172,21 @@ check_sunspec_dynamic_structural_selection_v2() {
   check_sunspec_contract dynamic_structural_selection "$sunspec_dynamic_selection_page=$1"
 }
 
+check_modbus_register_write() {
+  check_public_protocol "$1" || return 1
+  check_sunspec_contract register_write "$sunspec_register_write_page=$1"
+}
+
+check_sunspec_controls() {
+  check_public_protocol "$1" || return 1
+  check_sunspec_contract sunspec_controls "$sunspec_controls_page=$1"
+}
+
+check_sunspec_grid_code_settings() {
+  check_public_protocol "$1" || return 1
+  check_sunspec_contract sunspec_grid_code "$sunspec_grid_code_page=$1"
+}
+
 check_x2_publication() {
   local document="$1"
   local bare_revision='(^|[^[:xdigit:]])[[:xdigit:]]{40}([^[:xdigit:]]|$)|(^|[^[:xdigit:]])[[:xdigit:]]{64}([^[:xdigit:]]|$)'
@@ -178,6 +204,8 @@ growatt_bms_page='protocols/growatt/bms-rs485-1xsxxp-v202.md'
 growatt_protocol_ii_page='protocols/growatt/protocol-ii-readonly-v1.md'
 growatt_protocol_ii_matrix_page='protocols/growatt/protocol-ii-source-profile-matrix-v1.md'
 growatt_wit_page='protocols/growatt/wit-family-protocol-matrix-v1.md'
+growatt_protocol_ii_fc04_record_page='protocols/growatt/protocol-ii-fc04-admission-record-v1.md'
+growatt_fc04_architecture_page='architecture/growatt-fc04-record-validation-implementation.md'
 growatt_contracts='x2_page,x2_contract,bms_page,bms_contract,protocol_ii_identity,protocol_ii_fc04,protocol_ii_source_matrix,wit_matrix'
 
 # The Growatt contract rules live in scripts/growatt_contract_rules.json. The
@@ -206,7 +234,12 @@ check_growatt_protocol_ii_identity_projection() {
 
 check_growatt_protocol_ii_fc04_contract() {
   check_public_protocol "$1" || return 1
-  check_growatt_contract protocol_ii_fc04 "$growatt_protocol_ii_page=$1"
+  local root
+  root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+  check_growatt_contract protocol_ii_fc04 \
+    "$growatt_protocol_ii_page=$1" \
+    "$growatt_protocol_ii_fc04_record_page=$root/$growatt_protocol_ii_fc04_record_page" \
+    "$growatt_fc04_architecture_page=$root/$growatt_fc04_architecture_page"
 }
 
 check_growatt_protocol_ii_source_matrix() {
@@ -255,6 +288,16 @@ check_huawei_qualification_readiness() {
   check_vendor_contract huawei_qualification "$vendor_huawei_qualification_page=$1"
 }
 
+check_huawei_grid_code_settings() {
+  check_public_protocol "$1" || return 1
+  check_vendor_contract huawei_grid_code "$vendor_huawei_grid_code_page=$1"
+}
+
+check_huawei_sun2000_semreg_relations() {
+  check_public_protocol "$1" || return 1
+  check_vendor_contract huawei_sun2000_relations "$vendor_huawei_sun2000_relations_page=$1"
+}
+
 if [[ $# -gt 0 ]]; then
   if [[ "$1" == '--check-license-texts' ]]; then
     if [[ $# -ne 2 ]]; then
@@ -265,7 +308,7 @@ if [[ $# -gt 0 ]]; then
     exit $?
   fi
   if [[ $# -ne 2 ]] && [[ "$1" != '--check-tesla-generation-contracts' || $# -ne 3 ]]; then
-    echo 'usage: check_docs.sh [--check-tesla-current-limit-operation|--check-tesla-read-acquisition|--check-sdongle-admission|--check-public-protocol|--check-tesla-tedapi-contract|--check-tesla-generation-contracts|--check-private-function-contract|--check-sunspec-v1-model-families-contract|--check-fronius-qualification-readiness|--check-huawei-qualification-readiness|--check-huawei-inverter-battery-disposition|--check-sunspec-nested-layout-contract|--check-sunspec-der-trip-lv-template-v2|--check-sunspec-der-trip-lv-typed-fact-projection-v2|--check-sunspec-dynamic-structural-selection-v2|--check-sunspec-v2-contract|--check-sunspec-v2-licensing|--check-x2-publication|--check-x2-contract|--check-bms-contract|--check-growatt-protocol-ii-identity-projection|--check-growatt-protocol-ii-fc04-contract|--check-growatt-protocol-ii-source-matrix|--check-wit-matrix-contract document]' >&2
+    echo 'usage: check_docs.sh [--check-tesla-current-limit-operation|--check-tesla-read-acquisition|--check-sdongle-admission|--check-public-protocol|--check-tesla-tedapi-contract|--check-tesla-generation-contracts|--check-private-function-contract|--check-sunspec-v1-model-families-contract|--check-fronius-qualification-readiness|--check-huawei-qualification-readiness|--check-huawei-inverter-battery-disposition|--check-sunspec-nested-layout-contract|--check-sunspec-der-trip-lv-template-v2|--check-sunspec-der-trip-lv-typed-fact-projection-v2|--check-sunspec-dynamic-structural-selection-v2|--check-sunspec-v2-contract|--check-sunspec-v2-licensing|--check-x2-publication|--check-x2-contract|--check-bms-contract|--check-growatt-protocol-ii-identity-projection|--check-growatt-protocol-ii-fc04-contract|--check-growatt-protocol-ii-source-matrix|--check-wit-matrix-contract|--check-modbus-register-write|--check-sunspec-controls|--check-sunspec-grid-code-settings|--check-huawei-grid-code-settings|--check-huawei-sun2000-semreg-relations|--check-tesla-gen3-semreg-mapping document]' >&2
     exit 2
   fi
   case "$1" in
@@ -312,8 +355,14 @@ if [[ $# -gt 0 ]]; then
     --check-growatt-protocol-ii-source-matrix) check_growatt_protocol_ii_source_matrix "$2" ;;
     --check-wit-matrix-contract) check_wit_matrix_contract "$2" ;;
     --check-outback-axs-contract) check_outback_axs_contract "$2" ;;
+    --check-modbus-register-write) check_modbus_register_write "$2" ;;
+    --check-sunspec-controls) check_sunspec_controls "$2" ;;
+    --check-sunspec-grid-code-settings) check_sunspec_grid_code_settings "$2" ;;
+    --check-huawei-grid-code-settings) check_huawei_grid_code_settings "$2" ;;
+    --check-huawei-sun2000-semreg-relations) check_huawei_sun2000_semreg_relations "$2" ;;
+    --check-tesla-gen3-semreg-mapping) check_tesla_gen3_semreg_mapping "$2" ;;
     *)
-    echo 'usage: check_docs.sh [--check-tesla-current-limit-operation|--check-tesla-read-acquisition|--check-sdongle-admission|--check-public-protocol|--check-tesla-tedapi-contract|--check-private-function-contract|--check-sunspec-v1-model-families-contract|--check-fronius-qualification-readiness|--check-huawei-qualification-readiness|--check-huawei-inverter-battery-disposition|--check-sunspec-nested-layout-contract|--check-sunspec-der-trip-lv-template-v2|--check-sunspec-der-trip-lv-typed-fact-projection-v2|--check-sunspec-dynamic-structural-selection-v2|--check-sunspec-v2-contract|--check-sunspec-v2-licensing|--check-x2-publication|--check-x2-contract|--check-bms-contract|--check-growatt-protocol-ii-identity-projection|--check-wit-matrix-contract document]' >&2
+    echo 'usage: check_docs.sh [--check-tesla-current-limit-operation|--check-tesla-read-acquisition|--check-sdongle-admission|--check-public-protocol|--check-tesla-tedapi-contract|--check-private-function-contract|--check-sunspec-v1-model-families-contract|--check-fronius-qualification-readiness|--check-huawei-qualification-readiness|--check-huawei-inverter-battery-disposition|--check-sunspec-nested-layout-contract|--check-sunspec-der-trip-lv-template-v2|--check-sunspec-der-trip-lv-typed-fact-projection-v2|--check-sunspec-dynamic-structural-selection-v2|--check-sunspec-v2-contract|--check-sunspec-v2-licensing|--check-x2-publication|--check-x2-contract|--check-bms-contract|--check-growatt-protocol-ii-identity-projection|--check-wit-matrix-contract|--check-modbus-register-write|--check-sunspec-controls|--check-sunspec-grid-code-settings|--check-huawei-grid-code-settings|--check-huawei-sun2000-semreg-relations|--check-tesla-gen3-semreg-mapping document]' >&2
       exit 2
       ;;
   esac
@@ -383,6 +432,12 @@ multivendor_specs=(
   'protocols/growatt/bms-rs485-1xsxxp-v202.md'
   'protocols/growatt/wit-family-protocol-matrix-v1.md'
   'protocols/outback/axs-port-sunspec-readonly-v1.md'
+  'protocols/modbus/register-write-v1.md'
+  'protocols/sunspec/controls-v1.md'
+  'protocols/sunspec/grid-code-settings-v1.md'
+  'protocols/huawei/grid-code-settings-v1.md'
+  'protocols/huawei/sun2000-semreg-relations-v1.md'
+  'protocols/tesla/gen3-semreg-mapping-v1.md'
 )
 for multivendor_spec in "${multivendor_specs[@]}"; do
   test -f "$multivendor_spec"
@@ -393,6 +448,7 @@ check_tesla_contract \
   "$tesla_tedapi_page=$spec" "$tesla_legacy_page=$tesla_legacy_spec" "$tesla_gen3_page=$tesla_gen3_spec"
 check_tesla_current_limit_operation "$tesla_current_limit_spec"
 check_tesla_read_acquisition "$tesla_read_acquisition_spec"
+check_tesla_gen3_semreg_mapping "$tesla_gen3_semreg_mapping_page"
 
 check_public_protocol "$private_spec"
 
@@ -405,7 +461,10 @@ check_sunspec_contract "$sunspec_contracts" \
   "$sunspec_nested_layout_page=$nested_layout_spec" \
   "$sunspec_der_trip_lv_template_page=$der_trip_lv_template_spec" \
   "$sunspec_der_trip_lv_projection_page=$der_trip_lv_projection_spec" \
-  "$sunspec_dynamic_selection_page=$dynamic_structural_selection_spec"
+  "$sunspec_dynamic_selection_page=$dynamic_structural_selection_spec" \
+  "$sunspec_register_write_page=$sunspec_register_write_page" \
+  "$sunspec_controls_page=$sunspec_controls_page" \
+  "$sunspec_grid_code_page=$sunspec_grid_code_page"
 check_huawei_disposition_publication "$vendor_huawei_disposition_page"
 check_vendor_contract "$vendor_contracts" \
   "$vendor_private_function_page=$private_spec" \
@@ -414,10 +473,14 @@ check_vendor_contract "$vendor_contracts" \
   "$vendor_huawei_qualification_page=$huawei_qualification_spec" \
   "$vendor_huawei_disposition_page=$vendor_huawei_disposition_page" \
   "$vendor_huawei_gateway_page=$vendor_huawei_gateway_page" \
-  "$vendor_sdongle_page=$sdongle_admission"
+  "$vendor_sdongle_page=$sdongle_admission" \
+  "$vendor_huawei_grid_code_page=$vendor_huawei_grid_code_page" \
+  "$vendor_huawei_sun2000_relations_page=$vendor_huawei_sun2000_relations_page"
 check_growatt_contract "$growatt_contracts" \
   "$growatt_x2_page=$growatt_x2_page" "$growatt_bms_page=$growatt_bms_page" \
   "$growatt_protocol_ii_page=$growatt_protocol_ii_page" \
+  "$growatt_protocol_ii_fc04_record_page=$growatt_protocol_ii_fc04_record_page" \
+  "$growatt_fc04_architecture_page=$growatt_fc04_architecture_page" \
   "$growatt_protocol_ii_matrix_page=$growatt_protocol_ii_matrix_page" \
   "$growatt_wit_page=$growatt_wit_page"
 check_x2_publication "$growatt_x2_page"

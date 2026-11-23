@@ -37,7 +37,7 @@ Duplicate keys, including escaped equivalents, unknown keys, nulls, wrong
 types, coercions, trailing values, malformed references and invalid extents
 are rejected.
 Native words are unsigned 16-bit integers; family is MAX, MID or MAC, function
-is 4, offset is 0 and width is 59 words.
+is 4, offset is 0 and width_words is 250 for the live record. The live FC04 record uses offset 0 and width_words=250 for words 0 through 249. An explicit endpoint and family selection of a documented TL3-X MAX, MID, or MAC family activates that configured profile, and the same evidence without a selection gives no automatic match. The frozen 0 through 58 fixture remains historical evidence and supplies no current admissible record width.
 References are nonempty exact identifiers without whitespace or control
 characters; parsing does not resolve them or verify publication or review.
 

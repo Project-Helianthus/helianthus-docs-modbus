@@ -20,16 +20,14 @@ The retry, outcome-class, and recovery rules reuse the read-side rules of the
 The rules below are lifecycle requirements, not additional
 observations of firmware behavior.
 
-The contract covers only the exact `wc3_24_44_3` operation version. It claims
-no support, hardware qualification, or live qualification, and it grants no
-control authority. The legacy Wall Connector RS-485 profile is a separate,
+The read observations are bound to the documented version their identification names and, as this documentation defines, apply to every later build of that same Gen3 version line, with level `not_tested_on_hardware`. A version label by itself proves nothing. An ambiguous or missing version is refused with a reason. The legacy Wall Connector RS-485 profile is a separate,
 non-Modbus flow that this lifecycle never reaches and never falls back to; the
 two profiles are never substituted for each other.
 
 ## Operations in scope
 
-The lifecycle acquires the five observation operations below, and it admits
-one further planned read and one mutation. Each observation is
+The lifecycle acquires the six observation operations below, and it admits
+one mutation. Each observation is
 one FC100 family number with one request tag paired with one terminal tag, as
 listed by the [TEDAPI operation numbers](tedapi.md#fc100-evse-operation-numbers).
 Every observation request body is exact empty.
@@ -41,12 +39,10 @@ Every observation request body is exact empty.
 | WC lifetime statistics | 6 | 3 → 4 |
 | WC system information | 6 | 9 → 10 |
 | WC load-sharing state | 6 | 11 → 12 |
+| Provisional readback | 6 | 27 → 28 |
 
 A deployment configures an ordered, non-empty, duplicate-free subset of these
-five operations as its polling set. The lifecycle admits family 6, tags 27 → 28,
-as a planned read and family 6, tags 25 → 26, as its only mutation, issued
-through the same single-flight owner and generation, and that mutation is never
-retried. Values for that mutation and for that readback follow the
+operations as its polling set. Where the configured build establishes the t27 and t28 operation and body compatibility, a selection can include t27 alone or beside the other supported observations. The lifecycle admits family 6, tags 27 → 28, as a selectable observation and as the on-demand read of the separately admitted native mutation even when tag 27 is absent from periodic Operations, and family 6, tags 25 → 26, as its only mutation, issued through the same single-flight owner and generation, and that mutation is never retried. The existing explicit t27 window supplies freshness and retention to that on-demand path without scheduling it. A missing or invalid window prevents only the dependent mutation from sending and does not stop the configured five reads. Values for that mutation and for that readback follow the
 [current-limit operation contract V1](gen3-current-limit-operation-v1.md).
 The persistent settings write (family 6, tags 7 → 8) has no acquisition
 mapping. Any other family/tag pair has no acquisition mapping and is `NO_SEND`.
@@ -331,7 +327,7 @@ those durations and that count stay unknown.
   The provisional readback is a planned read of this lifecycle. Both follow the
   [current-limit operation contract V1](gen3-current-limit-operation-v1.md).
   The persistent settings write, enable, and disable stay outside.
-- No support, hardware, or live-qualification claim. The implementation has no
+- Documented support is distinct from a hardware test level and from live qualification. The implementation has no
   live device or real serial stream in its evidence; its tests run against a
   fake endpoint that mirrors this contract.
 - No new register, field, unit, scale, or range semantics. Terminal bodies stay

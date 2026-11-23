@@ -30,7 +30,7 @@ These values are not globally reserved and do not select a Tesla codec outside a
 
 `wc3_24_28_3` and `wc3_24_44_3` are known HSC observations, not a version whitelist. An unenumerated version is recorded as `compatible_candidate` when its separately supplied HSC activation, private-function, and operation capabilities are compatible; otherwise it is `unknown`. `compatible_candidate` retains an unenumerated Gen3 version with its native payloads.
 
-No numeric minimum version is asserted by this contract. The version label alone does not grant a HSC operation or live exchange. Compatibility evaluates version evidence independently from HSC activation, private-function path, and operation-schema capabilities. A legacy Wall Connector identity never qualifies this profile.
+An identified later build of the `wc3_24_44_3` line can qualify for these read observations when its activation, private function and operation schema agree. The version label alone does not grant a HSC operation or live exchange. Compatibility evaluates version evidence independently from HSC activation, private-function path, and operation-schema capabilities. A legacy Wall Connector identity never qualifies this profile.
 
 ## Qualification
 
@@ -138,7 +138,7 @@ The projection does not define a setter, must not infer a watt limit, and does n
 
 ## Safety boundary
 
-Offline codecs, request construction, and fake or replay dispatch may represent documented read and mutation operations. This contract does not authorize a live transmission, hardware action, deployment, or credential use. A live state-changing command requires action-time operator confirmation.
+Offline codecs, request construction, and fake or replay dispatch may represent documented read and mutation operations. This contract does not authorize a live transmission, hardware action, deployment, or credential use. An explicitly called provisional set or withdrawal whose capability is independently qualified needs no live operator confirmation. Separate operator approval stays only for an agent or test acting on a real installation.
 
 ## Compatibility
 

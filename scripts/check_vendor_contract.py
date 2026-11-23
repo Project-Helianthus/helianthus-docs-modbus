@@ -32,6 +32,8 @@ CONTRACT_PAGES = {
     'huawei_disposition': 'protocols/huawei/inverter-battery-readonly-v1.md',
     'huawei_gateway_page': 'protocols/huawei/gateway-readonly-v1.md',
     'sdongle_page': 'architecture/sdongle-qualification-disposition-v1.md',
+    'huawei_grid_code': 'protocols/huawei/grid-code-settings-v1.md',
+    'huawei_sun2000_relations': 'protocols/huawei/sun2000-semreg-relations-v1.md',
 }
 EXPECTED = {
     ('private_function', 'heading'): 12,
@@ -53,6 +55,11 @@ EXPECTED = {
     ('huawei_gateway_page', 'statement'): 5,
     ('sdongle_page', 'heading'): 6,
     ('sdongle_page', 'statement'): 3,
+    ('huawei_grid_code', 'heading'): 34,
+    ('huawei_grid_code', 'statement'): 1,
+    ('huawei_sun2000_relations', 'heading'): 1,
+    ('huawei_sun2000_relations', 'row'): 4,
+    ('huawei_sun2000_relations', 'statement'): 1,
 }
 CONTRACTS = frozenset(CONTRACT_PAGES)
 HEADING = re.compile(r'(#{1,6}) \S(?:.*\S)?')

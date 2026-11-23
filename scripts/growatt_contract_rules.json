@@ -750,7 +750,7 @@
       "page": "protocols/growatt/protocol-ii-readonly-v1.md",
       "section": "## Identity tuple",
       "kind": "statement",
-      "value": "The bounded result is `NO_ADMISSIBLE_PROFILE`: there is no exact tuple and no typed field. There is no current publicly admitted typed FC04 profile.",
+      "value": "The bounded result of automatic matching is `NO_ADMISSIBLE_PROFILE`: there is no exact tuple and no typed field while the edition publishes no numeric device-type and version map.",
       "reason": "Admitted profile result: none, with no exact tuple and no typed field."
     },
     {
@@ -806,7 +806,7 @@
       "page": "protocols/growatt/protocol-ii-readonly-v1.md",
       "section": "## FC04 monitoring foundation",
       "kind": "statement",
-      "value": "Because no public FC04 profile is admitted, the public FC04 decoder and observer fail closed and create no typed telemetry or observer.",
+      "value": "Because no automatic FC04 profile is admitted, the public FC04 decoder and observer fail closed and create no typed telemetry or observer.",
       "reason": "Without an admitted profile the public decoder and observer fail closed."
     },
     {
@@ -1198,7 +1198,7 @@
       "page": "protocols/growatt/wit-family-protocol-matrix-v1.md",
       "section": "## Family qualification matrix",
       "kind": "matrix_row",
-      "value": "| `WIT 4-25K-HU` | worldwide, 380/400 Vac, low-voltage battery | Modbus TCP available; ShineWiLAN-X2 listed | `UNKNOWN` | `UNKNOWN` | `INSUFFICIENT_EVIDENCE`; `NO_SEND` |",
+      "value": "| `WIT 4-25K-HU` | worldwide, 380/400 Vac, low-voltage battery | Modbus TCP available; ShineWiLAN-X2 listed | `UNKNOWN` | `UNKNOWN` | `DECLARED`; `MAP_UNPUBLISHED` |",
       "reason": "Exact family branch row: product context, exposure, protocol revision, firmware gate and disposition."
     },
     {
@@ -1206,7 +1206,7 @@
       "page": "protocols/growatt/wit-family-protocol-matrix-v1.md",
       "section": "## Family qualification matrix",
       "kind": "matrix_row",
-      "value": "| `WIT 4-25K-XHU` | worldwide, 380/400 Vac, high-voltage battery | Modbus TCP available; ShineWiLAN-X2 listed | `UNKNOWN` | `UNKNOWN` | `INSUFFICIENT_EVIDENCE`; `NO_SEND` |",
+      "value": "| `WIT 4-25K-XHU` | worldwide, 380/400 Vac, high-voltage battery | Modbus TCP available; ShineWiLAN-X2 listed | `UNKNOWN` | `UNKNOWN` | `DECLARED`; `MAP_UNPUBLISHED` |",
       "reason": "Exact family branch row: product context, exposure, protocol revision, firmware gate and disposition."
     },
     {
@@ -1214,7 +1214,7 @@
       "page": "protocols/growatt/wit-family-protocol-matrix-v1.md",
       "section": "## Family qualification matrix",
       "kind": "matrix_row",
-      "value": "| `WIT 29.9-50K-XHU` | worldwide, 380/400 Vac, high-voltage battery | ShineWiLan-X2 and ShineSEM-XA-R listed; wire exposure not established | `UNKNOWN` | `UNKNOWN` | `INSUFFICIENT_EVIDENCE`; `NO_SEND` |",
+      "value": "| `WIT 29.9-50K-XHU` | worldwide, 380/400 Vac, high-voltage battery | ShineWiLan-X2 and ShineSEM-XA-R listed; wire exposure not established | `UNKNOWN` | `UNKNOWN` | `DECLARED`; `MAP_UNPUBLISHED` |",
       "reason": "Exact family branch row: product context, exposure, protocol revision, firmware gate and disposition."
     },
     {
@@ -1222,7 +1222,7 @@
       "page": "protocols/growatt/wit-family-protocol-matrix-v1.md",
       "section": "## Family qualification matrix",
       "kind": "matrix_row",
-      "value": "| `WIT 50-100K-HU` | APAC, 380/400/415 Vac, high-voltage battery | ShineWiLan-X2 and ShineSEM-XA-R listed; wire exposure not established | `UNKNOWN` | `UNKNOWN` | `INSUFFICIENT_EVIDENCE`; `NO_SEND` |",
+      "value": "| `WIT 50-100K-HU` | APAC, 380/400/415 Vac, high-voltage battery | ShineWiLan-X2 and ShineSEM-XA-R listed; wire exposure not established | `UNKNOWN` | `UNKNOWN` | `DECLARED`; `MAP_UNPUBLISHED` |",
       "reason": "Exact family branch row: product context, exposure, protocol revision, firmware gate and disposition."
     },
     {
@@ -1230,7 +1230,7 @@
       "page": "protocols/growatt/wit-family-protocol-matrix-v1.md",
       "section": "## Family qualification matrix",
       "kind": "matrix_row",
-      "value": "| `WIT 50-100K-AU` | APAC, 380/400/415 Vac, high-voltage battery | ShineWiLan-X2 and ShineSEM-XA-R listed; wire exposure not established | `UNKNOWN` | `UNKNOWN` | `INSUFFICIENT_EVIDENCE`; `NO_SEND` |",
+      "value": "| `WIT 50-100K-AU` | APAC, 380/400/415 Vac, high-voltage battery | ShineWiLan-X2 and ShineSEM-XA-R listed; wire exposure not established | `UNKNOWN` | `UNKNOWN` | `DECLARED`; `MAP_UNPUBLISHED` |",
       "reason": "Exact family branch row: product context, exposure, protocol revision, firmware gate and disposition."
     },
     {
@@ -1238,7 +1238,7 @@
       "page": "protocols/growatt/wit-family-protocol-matrix-v1.md",
       "section": "## Family qualification matrix",
       "kind": "matrix_row",
-      "value": "| `WIT 50-100K-HU-US` | US branch; product context not established | not established by this contract | `UNKNOWN` | `UNKNOWN` | `INSUFFICIENT_EVIDENCE`; `NO_SEND` |",
+      "value": "| `WIT 50-100K-HU-US` | US branch; product context not established | not established by this contract | `UNKNOWN` | `UNKNOWN` | `DECLARED`; `MAP_UNPUBLISHED` |",
       "reason": "Exact family branch row: product context, exposure, protocol revision, firmware gate and disposition."
     },
     {
@@ -1246,7 +1246,7 @@
       "page": "protocols/growatt/wit-family-protocol-matrix-v1.md",
       "section": "## Family qualification matrix",
       "kind": "matrix_row",
-      "value": "| `WIT 50-100K-AU-US` | US branch; product context not established | not established by this contract | `UNKNOWN` | `UNKNOWN` | `INSUFFICIENT_EVIDENCE`; `NO_SEND` |",
+      "value": "| `WIT 50-100K-AU-US` | US branch; product context not established | not established by this contract | `UNKNOWN` | `UNKNOWN` | `DECLARED`; `MAP_UNPUBLISHED` |",
       "reason": "Exact family branch row: product context, exposure, protocol revision, firmware gate and disposition."
     },
     {
@@ -1254,7 +1254,7 @@
       "page": "protocols/growatt/wit-family-protocol-matrix-v1.md",
       "section": "## Family qualification matrix",
       "kind": "matrix_row",
-      "value": "| `WIT 63-125K-XHU` | worldwide, 380/400 Vac, high-voltage battery | not established by this contract | `UNKNOWN` | `UNKNOWN` | `INSUFFICIENT_EVIDENCE`; `NO_SEND` |",
+      "value": "| `WIT 63-125K-XHU` | worldwide, 380/400 Vac, high-voltage battery | not established by this contract | `UNKNOWN` | `UNKNOWN` | `DECLARED`; `MAP_UNPUBLISHED` |",
       "reason": "Exact family branch row: product context, exposure, protocol revision, firmware gate and disposition."
     },
     {
@@ -1262,7 +1262,7 @@
       "page": "protocols/growatt/wit-family-protocol-matrix-v1.md",
       "section": "## Family qualification matrix",
       "kind": "matrix_row",
-      "value": "| `WIT 28-55K-HU-US L2` | US L2, 208/220 Vac, high-voltage battery | ShineMaster listed; wire exposure not established | `UNKNOWN` | `UNKNOWN` | `INSUFFICIENT_EVIDENCE`; `NO_SEND` |",
+      "value": "| `WIT 28-55K-HU-US L2` | US L2, 208/220 Vac, high-voltage battery | ShineMaster listed; wire exposure not established | `UNKNOWN` | `UNKNOWN` | `DECLARED`; `MAP_UNPUBLISHED` |",
       "reason": "Exact family branch row: product context, exposure, protocol revision, firmware gate and disposition."
     },
     {
@@ -1270,7 +1270,7 @@
       "page": "protocols/growatt/wit-family-protocol-matrix-v1.md",
       "section": "## Family qualification matrix",
       "kind": "matrix_row",
-      "value": "| `WIT 28-55K-AU-US L2` | US L2, 208/220 Vac, high-voltage battery | ShineMaster listed; wire exposure not established | `UNKNOWN` | `UNKNOWN` | `INSUFFICIENT_EVIDENCE`; `NO_SEND` |",
+      "value": "| `WIT 28-55K-AU-US L2` | US L2, 208/220 Vac, high-voltage battery | ShineMaster listed; wire exposure not established | `UNKNOWN` | `UNKNOWN` | `DECLARED`; `MAP_UNPUBLISHED` |",
       "reason": "Exact family branch row: product context, exposure, protocol revision, firmware gate and disposition."
     },
     {
@@ -1278,7 +1278,7 @@
       "page": "protocols/growatt/wit-family-protocol-matrix-v1.md",
       "section": "## Family qualification matrix",
       "kind": "matrix_row",
-      "value": "| `WIT 50-150K-XHU-US` | US, 277/480 Vac, high-voltage battery | not established by this contract | `UNKNOWN` | `UNKNOWN` | `INSUFFICIENT_EVIDENCE`; `NO_SEND` |",
+      "value": "| `WIT 50-150K-XHU-US` | US, 277/480 Vac, high-voltage battery | not established by this contract | `UNKNOWN` | `UNKNOWN` | `DECLARED`; `MAP_UNPUBLISHED` |",
       "reason": "Exact family branch row: product context, exposure, protocol revision, firmware gate and disposition."
     },
     {
@@ -1350,7 +1350,7 @@
       "page": "protocols/growatt/wit-family-protocol-matrix-v1.md",
       "section": "## Explicit VPP V2.01 tuple",
       "kind": "statement",
-      "value": "Every VPP read, control, and write remains `NO_SEND`.",
+      "value": "The matrix declares reads of its documented rows.",
       "reason": "Every VPP operation stays unsent."
     },
     {
@@ -1366,7 +1366,7 @@
       "page": "protocols/growatt/wit-family-protocol-matrix-v1.md",
       "section": "## Admission and failure behavior",
       "kind": "statement",
-      "value": "No decoder, fixture, catalog registration, runtime admission, telemetry publication, or support claim is created.",
+      "value": "No decoder or fixture is created. Protocol revision and firmware gate stay Unknown where the document states neither.",
       "reason": "The matrix creates no decoder, fixture, registration, admission or support claim."
     },
     {
@@ -1376,6 +1376,86 @@
       "kind": "statement",
       "value": "Missing or conflicting evidence produces `INSUFFICIENT_EVIDENCE`, no match, and no send.",
       "reason": "Missing or conflicting evidence fails closed."
+    },
+    {
+      "contract": "protocol_ii_fc04",
+      "page": "protocols/growatt/protocol-ii-readonly-v1.md",
+      "section": "## FC04 monitoring foundation",
+      "kind": "statement",
+      "value": "The live FC04 record uses offset 0 and width_words=250 for words 0 through 249, acquired through FC04 0/125 and 125/125 in address order.",
+      "reason": "Live FC04 width is 250 words."
+    },
+    {
+      "contract": "protocol_ii_fc04",
+      "page": "protocols/growatt/protocol-ii-readonly-v1.md",
+      "section": "## FC04 monitoring foundation",
+      "kind": "statement",
+      "value": "An explicit endpoint and family selection of a documented TL3-X MAX, MID, or MAC family activates that configured profile, and the same evidence without a selection gives no automatic match.",
+      "reason": "Configured selection and automatic matching stay distinct."
+    },
+    {
+      "contract": "protocol_ii_fc04",
+      "page": "protocols/growatt/protocol-ii-readonly-v1.md",
+      "section": "## FC04 monitoring foundation",
+      "kind": "statement",
+      "value": "Word 113 keeps the MAX real power percent and the Storage Power daily AC-charge energy low word, and the raw observation is retained when the device qualifier is absent, inapplicable, or matches more than one interpretation.",
+      "reason": "Word 113 has two qualified meanings and a raw outcome."
+    },
+    {
+      "contract": "protocol_ii_fc04",
+      "page": "protocols/growatt/protocol-ii-readonly-v1.md",
+      "section": "## FC04 monitoring foundation",
+      "kind": "statement",
+      "value": "Word 125 keeps the PID and MAX HV Flyspan alternatives, and the raw observation is retained when the device qualifier is absent, inapplicable, or matches more than one interpretation.",
+      "reason": "Word 125 has two meanings and a raw outcome."
+    },
+    {
+      "contract": "protocol_ii_fc04",
+      "page": "protocols/growatt/protocol-ii-readonly-v1.md",
+      "section": "## FC04 monitoring foundation",
+      "kind": "statement",
+      "value": "Word 939 is a source-table fact only and the live FC04 record is exactly two blocks.",
+      "reason": "Word 939 supplies no live field."
+    },
+    {
+      "contract": "protocol_ii_fc04",
+      "page": "protocols/growatt/protocol-ii-readonly-v1.md",
+      "section": "## FC04 monitoring foundation",
+      "kind": "statement",
+      "value": "For n = 1 through 8 only, PV input n uses unsigned word 3 + 4(n-1) for voltage, unsigned word 4 + 4(n-1) for current, and the unsigned high/low pair starting at 5 + 4(n-1) for power.",
+      "reason": "PV1 through PV8 live formula."
+    },
+    {
+      "contract": "protocol_ii_fc04",
+      "page": "protocols/growatt/protocol-ii-fc04-admission-record-v1.md",
+      "section": "## Scope and current evidence",
+      "kind": "statement",
+      "value": "The live FC04 record uses offset 0 and width_words=250 for words 0 through 249.",
+      "reason": "Admission record live width is 250 words."
+    },
+    {
+      "contract": "protocol_ii_fc04",
+      "page": "protocols/growatt/protocol-ii-fc04-admission-record-v1.md",
+      "section": "## Scope and current evidence",
+      "kind": "statement",
+      "value": "An explicit endpoint and family selection of a documented TL3-X MAX, MID, or MAC family activates that configured profile, and the same evidence without a selection gives no automatic match.",
+      "reason": "Admission record keeps configured and automatic paths distinct."
+    },
+    {
+      "contract": "protocol_ii_fc04",
+      "page": "architecture/growatt-fc04-record-validation-implementation.md",
+      "section": "## Reviewed API and implementation boundary",
+      "kind": "statement",
+      "value": "The live FC04 record uses offset 0 and width_words=250 for words 0 through 249.",
+      "reason": "Implementation companion live width is 250 words."
+    },
+    {
+      "contract": "protocol_ii_fc04",
+      "page": "architecture/growatt-fc04-record-validation-implementation.md",
+      "section": "## Reviewed API and implementation boundary",
+      "kind": "statement",
+      "value": "An explicit endpoint and family selection of a documented TL3-X MAX, MID, or MAC family activates that configured profile, and the same evidence without a selection gives no automatic match.",
+      "reason": "Implementation companion keeps configured and automatic paths distinct."
     }
   ]
 }
