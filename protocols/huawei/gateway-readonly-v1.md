@@ -80,7 +80,7 @@ states that minimum for all three models, and the V200R022CC10 edition
 identify the editions and are not floors; the second spells its branch with a
 doubled C on its cover while its requirement names V200R022C10. The
 S-DongleA-05 / V200R022C10SPC312 tuple, which the
-[S-Dongle qualification disposition](../../architecture/sdongle-qualification-disposition-v1.md)
+S-Dongle qualification disposition
 names as its qualification target, is a build of the V200R022C10 branch at or
 above that floor. It falls under this one candidate and inherits the
 candidate's documented facts with grade Hypothesis; it is not a separate entry.

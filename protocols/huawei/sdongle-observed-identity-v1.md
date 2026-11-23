@@ -7,7 +7,7 @@ operator-owned S-Dongle fronting one SUN2000-family inverter established about
 the gateway unit, the child inverter unit, the neighbouring units, and the
 overlap with the other Huawei classes. Both were taken with the operator's
 approval at action time, after the persistent non-response recorded in the
-[S-Dongle qualification disposition](../../architecture/sdongle-qualification-disposition-v1.md).
+[S-Dongle qualification disposition](https://github.com/Project-Helianthus/helianthus-docs-modbus/blob/main/architecture/sdongle-qualification-disposition-v1.md).
 It is the observation record behind the S-Dongle entry of the
 [gateway contract](gateway-readonly-v1.md) and behind the supersession rule of
 the [qualification readiness contract](qualification-readiness-v1.md). It

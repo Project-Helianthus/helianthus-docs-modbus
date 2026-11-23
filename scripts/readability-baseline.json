@@ -1,0 +1,139 @@
+{
+  "schema_version": 1,
+  "ruff_version": "0.15.10",
+  "generation": "Initial reviewed snapshot: ruff check --no-cache --no-respect-gitignore --output-format=json --config ruff.toml scripts tests; records use repository-relative path, qualified lexical symbol (plus diagnostic identifier for non-metric rules), rule and observed count. C901 and PLR0915 counts are Ruff measurements; other counts are diagnostic occurrences. Line numbers are not identities. Remove resolved entries and lower ceilings on review; never regenerate this baseline in CI.",
+  "findings": [
+    {
+      "path": "scripts/check_public_domain_boundary.py",
+      "symbol": "violations",
+      "rule": "C901",
+      "count": 12
+    },
+    {
+      "path": "scripts/validate_opaque_runtime_acquisition.py",
+      "symbol": "_validate_prior_revision",
+      "rule": "C901",
+      "count": 13
+    },
+    {
+      "path": "scripts/validate_opaque_runtime_acquisition.py",
+      "symbol": "validate",
+      "rule": "C901",
+      "count": 22
+    },
+    {
+      "path": "scripts/validate_opaque_runtime_acquisition.py",
+      "symbol": "validate",
+      "rule": "PLR0915",
+      "count": 68
+    },
+    {
+      "path": "scripts/validate_prometheus_semantic_coverage.py",
+      "symbol": "validate",
+      "rule": "C901",
+      "count": 15
+    },
+    {
+      "path": "tests/test_fronius_m4_05_live_evidence.py",
+      "symbol": "contains_network_identifier:address",
+      "rule": "F841",
+      "count": 1
+    },
+    {
+      "path": "tests/test_fronius_sunspec_phase1_contract.py",
+      "symbol": "fixture_sanitization_errors",
+      "rule": "C901",
+      "count": 15
+    },
+    {
+      "path": "tests/test_fronius_sunspec_phase1_contract.py",
+      "symbol": "test_synthetic_values_exercise_standard_decode_rules",
+      "rule": "PLR0915",
+      "count": 83
+    },
+    {
+      "path": "tests/test_modbus_v1_addon_runtime_contract.py",
+      "symbol": "ReferenceValidator._entry",
+      "rule": "C901",
+      "count": 17
+    },
+    {
+      "path": "tests/test_modbus_v1_addon_runtime_contract.py",
+      "symbol": "ReferenceValidator.validate",
+      "rule": "C901",
+      "count": 21
+    },
+    {
+      "path": "tests/test_sunspec_model_123_fronius_v3_contract.py",
+      "symbol": "assert_v12_contract",
+      "rule": "PLR0915",
+      "count": 79
+    },
+    {
+      "path": "scripts/check_growatt_contract.py",
+      "symbol": "check_groups",
+      "rule": "C901",
+      "count": 11
+    },
+    {
+      "path": "scripts/check_growatt_contract.py",
+      "symbol": "compile_rule",
+      "rule": "C901",
+      "count": 23
+    },
+    {
+      "path": "scripts/check_outback_contract.py",
+      "symbol": "check",
+      "rule": "C901",
+      "count": 14
+    },
+    {
+      "path": "scripts/check_sunspec_contract.py",
+      "symbol": "compile_rule",
+      "rule": "C901",
+      "count": 18
+    },
+    {
+      "path": "scripts/check_sunspec_contract.py",
+      "symbol": "run",
+      "rule": "C901",
+      "count": 11
+    },
+    {
+      "path": "scripts/check_tesla_contract.py",
+      "symbol": "compile_rule",
+      "rule": "C901",
+      "count": 17
+    },
+    {
+      "path": "scripts/check_tesla_contract.py",
+      "symbol": "evaluate",
+      "rule": "C901",
+      "count": 12
+    },
+    {
+      "path": "scripts/check_vendor_contract.py",
+      "symbol": "compile_rule",
+      "rule": "C901",
+      "count": 19
+    },
+    {
+      "path": "scripts/check_vendor_contract.py",
+      "symbol": "evaluate",
+      "rule": "C901",
+      "count": 12
+    },
+    {
+      "path": "scripts/check_vendor_contract.py",
+      "symbol": "run",
+      "rule": "C901",
+      "count": 11
+    },
+    {
+      "path": "scripts/test_outback_contract_rules.py",
+      "symbol": "ContractRules.test_missing_malformed_duplicate_and_unknown_rules_fail_closed:<expression>",
+      "rule": "E701",
+      "count": 3
+    }
+  ]
+}

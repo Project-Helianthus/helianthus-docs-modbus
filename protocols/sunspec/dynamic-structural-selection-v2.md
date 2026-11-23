@@ -59,5 +59,4 @@ V1 selection, keys, raw outputs, and behavior remain unchanged. Models 708 and
 709 remain outside this contract and do not become candidates through Model
 707 data or structure.
 
-This contract creates no operation, write, send authority, vendor activation,
-catalog activation, transport behavior, gateway behavior, or live I/O.
+Model 707 registers are in the modbusreg namespace, with no SemReg element, and are decoded and callable by hand through MCP and GraphQL. Nothing is sent unless the operation is called.

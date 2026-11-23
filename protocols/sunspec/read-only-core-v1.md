@@ -40,8 +40,7 @@ best-effort decode.
 
 The public logical schema identifier is `sunspec.models.v1`. The executable
 registry revision for this catalog is
-`sunspec.models@7abdf898-v1`, pinned to upstream model source commit
-`7abdf8982d5364f8ae916deee18aac86c11be36d`. Decoder keys use that pinned
+`sunspec.models@7abdf898-v1`. Decoder keys use that pinned
 revision; the logical identifier alone is not an executable decoder key. The
 exact decoder keys are:
 

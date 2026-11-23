@@ -349,6 +349,24 @@ test -f "$private_spec"
 sdongle_admission='architecture/sdongle-qualification-disposition-v1.md'
 test -f "$sdongle_admission"
 
+incoming_pages=(
+  'protocols/index.md'
+  'protocols/LICENSE'
+  'protocols/modbus/README.md'
+  'protocols/modbus/growatt-candidate-evidence-v1.md'
+  'protocols/modbus/huawei-gateway-candidate-evidence-v1.md'
+  'protocols/sunspec/README.md'
+  'protocols/sunspec/additional-model-evidence-v1.md'
+  'protocols/sunspec/fronius-observed-flavor-v1.md'
+  'protocols/sunspec/fronius-observed-flavor-v1-1.md'
+  'protocols/sunspec/sunspec-model-chain-v1.md'
+  'docs/platform/opaque-runtime-acquisition-v1.md'
+  'docs/platform/manifests/opaque-runtime-acquisition-v1.json'
+)
+for incoming_page in "${incoming_pages[@]}"; do
+  test -f "$incoming_page"
+done
+
 multivendor_specs=(
   'protocols/applicability-and-licensing.md'
   'protocols/sunspec/read-only-core-v1.md'

@@ -2,8 +2,8 @@
 
 ## Scope and evidence basis
 
-This is the transport contract for two opt-in modes of the Helianthus Modbus TCP
-transport, written for logger-class devices. It records how a caller selects
+This page records two opt-in framing modes for Modbus TCP
+logger-class devices. It records how a caller selects
 each mode, what stays strict by default, the bounds, what the tolerant decoder
 guarantees, and the vocabulary of named deviations it reports. The strict
 reading these modes depart from is stated in the

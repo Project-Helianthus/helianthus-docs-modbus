@@ -4,8 +4,7 @@
 
 This page defines the offline structural template for exactly Model 707 under
 the V2 schema. It describes one bounded occurrence at a time and preserves
-raw evidence when that occurrence is invalid. It makes no product claim and
-does not create live acquisition or operational behavior.
+raw evidence when that occurrence is invalid. It makes no product claim.
 
 ## Template identity and top-level map
 
@@ -69,6 +68,6 @@ partial group. No partial typed result is retained.
 
 ## Observed-state boundary
 
-Every field is observed state only and is `NO_SEND`. In particular, `Ena`,
+Model 707 registers are in the modbusreg namespace, with no SemReg element, and are decoded and callable by hand through MCP and GraphQL. In particular, `Ena`,
 `AdptCrvReq`, `ReadOnly`, every `ActPt`, and every point remain observations
 even where their wire access permits modification.

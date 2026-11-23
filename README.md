@@ -35,6 +35,15 @@ Current protocol contracts:
 - [Growatt 1xSxxP ESS BMS RS485 read-only candidate](protocols/growatt/bms-rs485-1xsxxp-v202.md)
 - [Growatt WIT family and protocol qualification matrix](protocols/growatt/wit-family-protocol-matrix-v1.md)
 - [OutBack AXS Port SunSpec read-only boundary](protocols/outback/axs-port-sunspec-readonly-v1.md)
+- [Modbus protocol index](protocols/modbus/README.md)
+- [SunSpec protocol index](protocols/sunspec/README.md)
+- [Growatt candidate evidence](protocols/modbus/growatt-candidate-evidence-v1.md)
+- [Huawei gateway candidate evidence](protocols/modbus/huawei-gateway-candidate-evidence-v1.md)
+- [Fronius observed flavor](protocols/sunspec/fronius-observed-flavor-v1.md)
+- [Fronius observed flavor 1.1](protocols/sunspec/fronius-observed-flavor-v1-1.md)
+- [SunSpec model chain](protocols/sunspec/sunspec-model-chain-v1.md)
+- [`opaque-runtime-acquisition-v1.md`](docs/platform/opaque-runtime-acquisition-v1.md)
+- [`manifests/opaque-runtime-acquisition-v1.json`](docs/platform/manifests/opaque-runtime-acquisition-v1.json)
 
 Protocol pages are public contracts. They define bounded, fail-closed behavior
 and do not expose private device identity or unsafe control procedures.

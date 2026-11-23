@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "description": "Inputs of the heavy Docs Checks suites. A same-repository pull request skips a suite only when no file matched by shared_inputs or by the suite's inputs differs between the trusted base checkout and the pull-request head. Main pushes, the nightly run, manual dispatches and fork pull requests run every suite. Patterns are repository-relative POSIX paths: a plain path names one file, a trailing /** names a directory tree, and *, ? and [] are shell-style wildcards that may also match a slash. The lists were derived by tracing every file each suite opens, lists or globs while it runs (Python audit hooks, child processes included), then widened to whole directories where a suite enumerates them.",
+  "shared_inputs": [
+    "scripts/**",
+    "requirements-ci.txt",
+    ".github/workflows/**",
+    ".gitattributes",
+    "conftest.py",
+    "tests/conftest.py",
+    "tests/__init__.py",
+    "pytest.ini",
+    "pyproject.toml",
+    "setup.cfg",
+    "tox.ini"
+  ],
+  "suites": {
+    "opaque_runtime_acquisition": {
+      "inputs": [
+        "tests/test_opaque_runtime_acquisition_contract.py",
+        "scripts/validate_opaque_runtime_acquisition.py",
+        "README.md",
+        "docs/platform/opaque-runtime-acquisition-v1.md",
+        "docs/platform/manifests/opaque-runtime-acquisition-v1.json"
+      ]
+    }
+  }
+}

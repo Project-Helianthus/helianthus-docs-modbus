@@ -179,12 +179,12 @@ state assume a future revised native contract; that prerequisite is unmet today.
 This is a partial documentation slice of the battery optional-group contract.
 It does not close registry implementation, acquisition, transport conformance,
 physical qualification, integration, or parent acceptance. No runtime success is
-inferred. No receipts, idempotency ledger, principal boundary, or recovery
+inferred. No receipts, idempotency journal, principal boundary, or recovery
 redesign is specified; those remain with their existing owners.
 
-There are no changes to eBUS MCP envelopes, GraphQL surfaces, protocol-neutral
+There are no changes to protocol-neutral
 semantics, or consumer bindings. Any later projection must preserve the native
 state, per-field history validity, source association, and reason, and explicitly
 identify projection loss rather than flatten absent, stale, or unreadable values
-to zero. MCP compatibility and GraphQL parity remain separate integration
+to zero. Compatibility and parity remain separate integration
 acceptance obligations. This page grants no writes or live-device access.

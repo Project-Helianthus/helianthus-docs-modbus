@@ -67,7 +67,7 @@ Passive observation must remain distinct from a separately admitted read.
 If preconditions or bounds cannot be established, record the limitation and
 withhold admission. Do not turn this form into permission to send candidates.
 
-## Ordered native evidence ledger
+## Ordered native evidence journal
 
 Duplicate the unfilled row for every observed segment, including unrelated,
 partial, malformed, and missing-terminal evidence. Preserve arrival order and
@@ -101,7 +101,7 @@ fixture demonstrates structure only and cannot establish second-site behavior.
 
 ## Independent repeats and negative controls
 
-Each row needs its own case label, preconditions, ordered ledger, evidence
+Each row needs its own case label, preconditions, ordered journal, evidence
 grade, and limitations. Replaying one record is not an independent repeat.
 Record the number of independent sessions and which conditions differ.
 
@@ -160,5 +160,5 @@ application policy and implementation retain their separate licensing lane.
 This worksheet redistributes no vendor source and grants no source relicensing.
 The [current-limit operation contract](gen3-current-limit-operation-v1.md)
 continues to govern that separate path. No setter, password procedure,
-namespace, MCP/GraphQL contract, runtime implementation, or live qualification
+namespace contract, runtime implementation, or live qualification
 is introduced by this worksheet.

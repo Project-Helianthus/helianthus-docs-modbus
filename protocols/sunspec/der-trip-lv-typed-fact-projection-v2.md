@@ -4,11 +4,9 @@
 
 This page defines the stable typed-fact names, value rules, and public offline
 projection API that a separately reviewed implementation may use for exactly
-Model 707 under `sunspec.models@90b4a331-v2`. It does not change the current raw-only behavior, select a model, or authorize a profile.
+Model 707 under `sunspec.models@90b4a331-v2`. It selects no model and authorizes no profile.
 
-Every observation in this contract is `NO_SEND`, including fields whose wire
-access permits modification. This contract creates no operation, write method,
-device support claim, acquisition behavior, or live-system behavior.
+Model 707 registers are in the modbusreg namespace, with no SemReg element, and are decoded and callable by hand through MCP and GraphQL. Nothing is sent unless the operation is called.
 
 ## Public offline projection API
 

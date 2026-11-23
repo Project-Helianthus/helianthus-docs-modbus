@@ -142,24 +142,24 @@
       "page": "protocols/sunspec/read-only-core-v2.md",
       "section": "## Model scope",
       "kind": "row",
-      "value": "| 707 | `7 + NCrvSet*(4 + 9*NPt)` | DER Trip LV nested geometry, raw-only quarantine |",
-      "reason": "Model table value: Model 707 length formula and raw-only quarantine."
+      "value": "| 707 | `7 + NCrvSet*(4 + 9*NPt)` | DER Trip LV nested geometry |",
+      "reason": "Model table value: Model 707 length formula."
     },
     {
       "contract": "v2_contract",
       "page": "protocols/sunspec/read-only-core-v2.md",
       "section": "## Model scope",
       "kind": "row",
-      "value": "| 708 | `7 + NCrvSet*(4 + 9*NPt)` | DER Trip HV nested geometry, raw-only quarantine |",
-      "reason": "Model table value: Model 708 length formula and raw-only quarantine."
+      "value": "| 708 | `7 + NCrvSet*(4 + 9*NPt)` | DER Trip HV nested geometry |",
+      "reason": "Model table value: Model 708 length formula."
     },
     {
       "contract": "v2_contract",
       "page": "protocols/sunspec/read-only-core-v2.md",
       "section": "## Model scope",
       "kind": "row",
-      "value": "| 709 | `7 + NCrvSet*(4 + 12*NPt)` | DER Trip LF nested geometry, raw-only quarantine |",
-      "reason": "Model table value: Model 709 length formula and raw-only quarantine."
+      "value": "| 709 | `7 + NCrvSet*(4 + 12*NPt)` | DER Trip LF nested geometry |",
+      "reason": "Model table value: Model 709 length formula."
     },
     {
       "contract": "v2_contract",
@@ -254,16 +254,16 @@
       "page": "protocols/sunspec/read-only-core-v2.md",
       "section": "## Control-observability boundary",
       "kind": "statement",
-      "value": "Models 703 and 715 are control-observability only.",
-      "reason": "Models 703 and 715 are observed, never a control interface."
+      "value": "Model 715 is control-observability only.",
+      "reason": "Model 715 is observed, never a control interface."
     },
     {
       "contract": "v2_contract",
       "page": "protocols/sunspec/read-only-core-v2.md",
       "section": "## Control-observability boundary",
       "kind": "statement",
-      "value": "No point in either model creates a write method, send authority, operation admission, dispatch, retry, runtime activation, vendor activation, or catalog activation.",
-      "reason": "No point of Models 703 or 715 creates write, send or activation authority."
+      "value": "No point in Model 715 creates a write method, send authority, operation admission, dispatch, retry, runtime activation, vendor activation, or catalog activation.",
+      "reason": "No point of Model 715 creates write, send or activation authority."
     },
     {
       "contract": "v2_contract",
@@ -342,32 +342,32 @@
       "page": "protocols/sunspec/read-only-core-v2.md",
       "section": "## DER Trip nested geometry",
       "kind": "statement",
-      "value": "Models 707, 708, and 709 are inventory-known raw-only quarantine blocks.",
-      "reason": "The DER Trip models emit no typed facts under this contract."
+      "value": "Models 707, 708, and 709 are registers in the modbusreg namespace, with no SemReg element, and are decoded and callable by hand through MCP and GraphQL.",
+      "reason": "Models 707, 708, and 709 are registers in the modbusreg namespace and are decoded and callable by hand through MCP and GraphQL."
+    },
+    {
+      "contract": "v2_contract",
+      "page": "protocols/sunspec/read-only-core-v2.md",
+      "section": "## Control-observability boundary",
+      "kind": "statement",
+      "value": "Model 703 enter-service settings are registers in the modbusreg namespace, with no SemReg element, and are decoded and callable by hand through MCP and GraphQL.",
+      "reason": "Model 703 enter-service settings are registers in the modbusreg namespace and are decoded and callable by hand through MCP and GraphQL."
     },
     {
       "contract": "v2_contract",
       "page": "protocols/sunspec/read-only-core-v2.md",
       "section": "## DER Trip nested geometry",
       "kind": "statement",
-      "value": "A separate occurrence-aware nested-layout contract is required before any typed facts may be emitted.",
-      "reason": "Typed DER Trip facts need a separate nested-layout contract."
+      "value": "Nothing is sent unless the operation is called.",
+      "reason": "A Model 707, 708, or 709 register is sent only when its operation is called."
     },
     {
       "contract": "v2_contract",
       "page": "protocols/sunspec/read-only-core-v2.md",
       "section": "## DER Trip nested geometry",
       "kind": "statement",
-      "value": "Every field in Models 707, 708, and 709, including `Ena`, `AdptCrvReq`, `ReadOnly`, `ActPt`, and every nested point, is observed state only and is `NO_SEND`.",
-      "reason": "Every DER Trip field, including the writable-looking ones, is observed state only."
-    },
-    {
-      "contract": "v2_contract",
-      "page": "protocols/sunspec/read-only-core-v2.md",
-      "section": "## DER Trip nested geometry",
-      "kind": "statement",
-      "value": "No field creates a write method, send authority, operation admission, dispatch, retry, control behavior, runtime activation, vendor activation, catalog activation, transport behavior, gateway behavior, or live I/O.",
-      "reason": "No DER Trip field creates write, send, control or activation behavior."
+      "value": "They do not infer relationships to one another or to Models 710 through 712.",
+      "reason": "Models 707, 708, and 709 do not infer relationships to one another or to Models 710 through 712."
     },
     {
       "contract": "v2_contract",
@@ -910,8 +910,8 @@
       "page": "protocols/applicability-and-licensing.md",
       "section": "## Applicability classes",
       "kind": "statement",
-      "value": "The SunSpec V2 offline contract is pinned to the public Apache-2.0 SunSpec model catalogue at commit `<pin:f/jzI2+NVYViu6r5Zz1zF4pLXd09KfrwZdtHISHWBCU>`.",
-      "reason": "Exact upstream catalogue revision of the V2 contract; the pin binds the exact revision."
+      "value": "The SunSpec V2 offline contract uses the public Apache-2.0 SunSpec model catalogue.",
+      "reason": "The V2 contract uses the public Apache-2.0 SunSpec model catalogue."
     },
     {
       "contract": "v2_licensing",
@@ -1350,8 +1350,8 @@
       "page": "protocols/sunspec/der-trip-lv-template-v2.md",
       "section": "## Observed-state boundary",
       "kind": "statement",
-      "value": "Every field is observed state only and is `NO_SEND`.",
-      "reason": "Observed-state boundary."
+      "value": "Model 707 registers are in the modbusreg namespace, with no SemReg element, and are decoded and callable by hand through MCP and GraphQL.",
+      "reason": "Model 707 registers are in the modbusreg namespace and are decoded and callable by hand through MCP and GraphQL."
     },
     {
       "contract": "der_trip_lv_template",
@@ -1414,16 +1414,16 @@
       "page": "protocols/sunspec/der-trip-lv-typed-fact-projection-v2.md",
       "section": "## Scope and non-emission",
       "kind": "statement",
-      "value": "It does not change the current raw-only behavior, select a model, or authorize a profile.",
-      "reason": "The projection changes no raw-only behavior."
+      "value": "It selects no model and authorizes no profile.",
+      "reason": "The projection selects no model and authorizes no profile."
     },
     {
       "contract": "der_trip_lv_projection",
       "page": "protocols/sunspec/der-trip-lv-typed-fact-projection-v2.md",
       "section": "## Scope and non-emission",
       "kind": "statement",
-      "value": "Every observation in this contract is `NO_SEND`, including fields whose wire access permits modification.",
-      "reason": "Every observation is `NO_SEND`."
+      "value": "Model 707 registers are in the modbusreg namespace, with no SemReg element, and are decoded and callable by hand through MCP and GraphQL.",
+      "reason": "Model 707 registers are in the modbusreg namespace and are decoded and callable by hand through MCP and GraphQL."
     },
     {
       "contract": "der_trip_lv_projection",
@@ -1774,8 +1774,8 @@
       "page": "protocols/sunspec/dynamic-structural-selection-v2.md",
       "section": "## Isolation and no activation",
       "kind": "statement",
-      "value": "This contract creates no operation, write, send authority, vendor activation, catalog activation, transport behavior, gateway behavior, or live I/O.",
-      "reason": "No operation, write or activation."
+      "value": "Model 707 registers are in the modbusreg namespace, with no SemReg element, and are decoded and callable by hand through MCP and GraphQL.",
+      "reason": "Model 707 registers are in the modbusreg namespace and are decoded and callable by hand through MCP and GraphQL."
     },
     {
       "contract": "dynamic_structural_selection",

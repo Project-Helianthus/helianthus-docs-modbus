@@ -11,7 +11,7 @@ record and the contracts derived from it are the
 [EMMA observation](emma-observed-identity-v1.md), the
 [SUN2000 identity contract](sun2000-observed-identity-v1.md), and the
 [power-meter contract](gateway-power-meter-v1.md).
-This protocol evidence summary follows the [CC0 publication lane](../../LICENSE).
+This protocol evidence summary follows the [CC0 publication lane](https://github.com/Project-Helianthus/helianthus-docs-modbus/blob/main/LICENSE).
 It does not copy or relicense registry implementation or vendor source material.
 
 ## Distinct evidence levels
@@ -145,7 +145,7 @@ The items below are closed for the observed tuple only, or stay open.
 
 Non-response proves neither absence nor incompatibility. Private functions
 remain no-send under the native contract; the
-[sanitized disposition](../../architecture/sdongle-qualification-disposition-v1.md)
+[sanitized disposition](https://github.com/Project-Helianthus/helianthus-docs-modbus/blob/main/architecture/sdongle-qualification-disposition-v1.md)
 provides application admission guidance under its separate AGPL license.
 
 ## SUN2000 and LUNA2000 closure, independently per family

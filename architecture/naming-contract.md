@@ -2,7 +2,7 @@
 
 This is a bounded implementation-name contract, not new native evidence or a
 qualification decision. The naming grammar is owned by the public
-[eBUS naming contract](https://github.com/Project-Helianthus/helianthus-docs-ebus/blob/main/architecture/naming.md).
+[eBUS naming contract](https://github.com/Project-Helianthus/helianthus-docs/blob/main/architecture/naming.md).
 The correspondence below is historical documentation, never a runtime fallback
 key, alias, duplicate field or migration instruction. Before the schema freeze,
 changes are coordinated across consumers without a migration path.
@@ -46,7 +46,7 @@ this table. Inventory extension is tracked in
 
 ## Consumer correspondence
 
-The inventory lists `ebusgateway/cmd/gateway/huawei_pv_semreg.go` for both
+The inventory lists `helianthus-gateway/cmd/gateway/huawei_pv_semreg.go` for both
 bounded-map names. The source switches on both old suffixes: the status branch
 accepts only `grid_connected`, and the energy branch publishes generated energy.
 The consumer must coordinate the supported status rename; energy remains

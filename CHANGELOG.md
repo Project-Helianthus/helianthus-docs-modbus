@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+- This repository now holds the Modbus, SunSpec and Fronius pages and the
+  documentation checks that travel with them. The Modbus Trusted Revision
+  workflow, its contract and its required check stay in helianthus-docs-ebus.
+  SunSpec chain support is the support the SunSpec specification declares.
+  An observed Fronius flavor is a tested_on_hardware record and bounds
+  nothing. Models 125 through 145, DER Model 703 enter-service settings and
+  DER curves 707, 708 and 709 are registers, decoded and callable by hand
+  through MCP and GraphQL in the modbusreg namespace, with no SemReg element.
 - For `wc3_24_44_3`, the provisional current-limit path (t25 to t26, with
   readback t27 to t28) is the qualified setter of
   `evse.limit.allocated_current`, declared from the public field layout. The
