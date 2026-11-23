@@ -12,6 +12,7 @@ from test_fronius_m4_05_live_evidence import (
     contains_private_path,
     evidence_keys,
     evidence_strings,
+    publication_only_correlator,
     sensitive_key,
 )
 
@@ -297,7 +298,7 @@ def test_0651_exact_runtime_and_terminal_go() -> None:
         ),
     }
     assert evidence["target"] == {
-        "endpoint_ref": "sha256:cc2d63775c6f0074",
+        "endpoint_ref": publication_only_correlator(),
         "manufacturer": "Fronius",
         "model": "Symo GEN24 10.0",
         "firmware": "1.41.11-1",
