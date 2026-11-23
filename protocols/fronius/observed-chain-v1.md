@@ -19,7 +19,7 @@ None of these evidence labels grants qualification or permission to send.
 
 ## Earlier ordered chain and acquisition context
 
-The [earlier public observation](https://github.com/Project-Helianthus/helianthus-docs-ebus/blob/main/protocols/sunspec/fronius-observed-flavor-v1.md)
+The [earlier public observation](../sunspec/fronius-observed-flavor-v1.md)
 records this ordered sequence, Proven as a documentary observation:
 
 ```text
@@ -46,7 +46,7 @@ recipe for acquiring another endpoint. They do not select a transport,
 construct a request, configure acquisition, or activate runtime work.
 
 The original public preflight provenance is
-[gateway issue #807](https://github.com/Project-Helianthus/helianthus-ebusgateway/issues/807).
+[gateway issue #807](https://github.com/Project-Helianthus/helianthus-gateway/issues/807).
 The source constrains the observation by exact Common manufacturer, model,
 and firmware strings; this note retains that constraint by citation without
 republishing its device fingerprint. It establishes no broader Fronius
@@ -55,7 +55,7 @@ are not reproduced.
 
 ## Separate later observation
 
-The [V1.1 source note](https://github.com/Project-Helianthus/helianthus-docs-ebus/blob/main/protocols/sunspec/fronius-observed-flavor-v1-1.md)
+The [V1.1 source note](../sunspec/fronius-observed-flavor-v1-1.md)
 describes a separate observation adding standard Model `123/L24`. The accepted
 [destination geometry](sunspec-float-v1.md) records its full order:
 
@@ -78,7 +78,7 @@ firmware change, device change, or acquisition difference would be Hypothesis
 without separate evidence. Neither observation proves optional-block presence
 or absence across the family.
 
-The [public migration inventory](https://github.com/Project-Helianthus/helianthus-docs-ebus/blob/main/development/modbus-sunspec-deduplication.md)
+The [public migration inventory](https://github.com/Project-Helianthus/helianthus-docs-modbus/blob/main/development/modbus-sunspec-deduplication.md)
 explicitly distinguishes these revisions. Citations use moving public branch
 links; this note records the compared documentary state and does not assert
 that future source revisions remain identical.
@@ -104,4 +104,4 @@ This note grants no write, configuration, control, automatic activation,
 gateway publication, or consumer binding. It provides no decoder fixture,
 negative-overlap proof, live qualification, or transport/smoke evidence.
 Downstream admission stays fail-closed under its owning contracts; documentary
-preservation changes neither eBUS MCP compatibility nor GraphQL parity.
+preservation changes no consumer compatibility or parity obligation.

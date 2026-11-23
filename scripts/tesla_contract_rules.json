@@ -766,7 +766,7 @@
       "page": "protocols/tesla/gen3-hsc-rtu.md",
       "section": "### Exact 24.44.3 body and evidence contract",
       "kind": "statement",
-      "value": "Unknown members remain retained as raw evidence; malformed encodings and duplicate documented singular members are rejected by Helianthus decoder policy.",
+      "value": "Unknown members remain retained as raw evidence; malformed encodings and duplicate documented singular members are rejected.",
       "reason": "Raw evidence retention and fail-closed decoding."
     },
     {
@@ -790,21 +790,21 @@
       "page": "protocols/tesla/gen3-hsc-rtu.md",
       "section": null,
       "kind": "heading",
-      "value": "## MCP read-only current-limit projection",
-      "reason": "Section that owns the read-only MCP projection."
+      "value": "## Read-only current-limit projection",
+      "reason": "Section that owns the read-only current-limit projection."
     },
     {
       "contract": "gen3_mcp_projection",
       "page": "protocols/tesla/gen3-hsc-rtu.md",
-      "section": "## MCP read-only current-limit projection",
+      "section": "## Read-only current-limit projection",
       "kind": "statement",
-      "value": "The no-argument `modbus.v1.tesla.gen3.evse.current_limit.get` tool projects only already-injected records for `wc3_24_44_3`.",
-      "reason": "Tool name, argument shape and the single projected operation version."
+      "value": "A read-only projection reports only already-injected records for `wc3_24_44_3`.",
+      "reason": "The projection reports only already-injected records for one operation version."
     },
     {
       "contract": "gen3_mcp_projection",
       "page": "protocols/tesla/gen3-hsc-rtu.md",
-      "section": "## MCP read-only current-limit projection",
+      "section": "## Read-only current-limit projection",
       "kind": "statement",
       "value": "The projection is `READ_ONLY`: it always reports `outbound_allowed` as `false`, constructs no request, performs no acquisition, and never sends a frame.",
       "reason": "The projection is read-only and never reaches the bus."
@@ -812,7 +812,7 @@
     {
       "contract": "gen3_mcp_projection",
       "page": "protocols/tesla/gen3-hsc-rtu.md",
-      "section": "## MCP read-only current-limit projection",
+      "section": "## Read-only current-limit projection",
       "kind": "statement",
       "value": "Its optional persistent object retains the integer-A `max_output_current_amps` fact with the bounded family-6 t7 request and t8 terminal payloads.",
       "reason": "Persistent object field and its retained native payloads."
@@ -820,7 +820,7 @@
     {
       "contract": "gen3_mcp_projection",
       "page": "protocols/tesla/gen3-hsc-rtu.md",
-      "section": "## MCP read-only current-limit projection",
+      "section": "## Read-only current-limit projection",
       "kind": "statement",
       "value": "Its optional provisional object retains `limit_current_max_amps`, `limit_timeout_s`, and `inhibit_charging` with all four bounded payloads: t25 request, t26 acknowledgement, t27 readback request, and t28 readback terminal.",
       "reason": "Provisional object fields and its retained native payloads."
@@ -828,7 +828,7 @@
     {
       "contract": "gen3_mcp_projection",
       "page": "protocols/tesla/gen3-hsc-rtu.md",
-      "section": "## MCP read-only current-limit projection",
+      "section": "## Read-only current-limit projection",
       "kind": "statement",
       "value": "A provisional object is available only when that complete correlated sequence is retained.",
       "reason": "No partial provisional sequence is projected."
@@ -836,7 +836,7 @@
     {
       "contract": "gen3_mcp_projection",
       "page": "protocols/tesla/gen3-hsc-rtu.md",
-      "section": "## MCP read-only current-limit projection",
+      "section": "## Read-only current-limit projection",
       "kind": "statement",
       "value": "Each object is validated independently.",
       "reason": "Objects are admitted independently."
@@ -844,7 +844,7 @@
     {
       "contract": "gen3_mcp_projection",
       "page": "protocols/tesla/gen3-hsc-rtu.md",
-      "section": "## MCP read-only current-limit projection",
+      "section": "## Read-only current-limit projection",
       "kind": "statement",
       "value": "An invalid object is not projected, but a complete qualified sibling remains available even when the provider reports an error.",
       "reason": "Partial last-known-good state survives a failed sibling."
@@ -852,15 +852,15 @@
     {
       "contract": "gen3_mcp_projection",
       "page": "protocols/tesla/gen3-hsc-rtu.md",
-      "section": "## MCP read-only current-limit projection",
+      "section": "## Read-only current-limit projection",
       "kind": "statement",
-      "value": "If neither object qualifies, the tool returns no projected data with a structured error.",
+      "value": "If neither object qualifies, the projection returns no projected data with a structured error.",
       "reason": "Fail-closed result when nothing qualifies."
     },
     {
       "contract": "gen3_mcp_projection",
       "page": "protocols/tesla/gen3-hsc-rtu.md",
-      "section": "## MCP read-only current-limit projection",
+      "section": "## Read-only current-limit projection",
       "kind": "statement",
       "value": "The projection does not define a setter, must not infer a watt limit, and does not make zero timeout interoperable.",
       "reason": "No setter, no watt inference, no zero-timeout admission."
@@ -868,7 +868,7 @@
     {
       "contract": "gen3_mcp_projection",
       "page": "protocols/tesla/gen3-hsc-rtu.md",
-      "section": "## MCP read-only current-limit projection",
+      "section": "## Read-only current-limit projection",
       "kind": "statement",
       "value": "It does not expose a result for another operation version or assign semantics to FC101 or FC102.",
       "reason": "No cross-version result and no FC101/FC102 semantics."
@@ -1054,7 +1054,7 @@
       "page": "protocols/tesla/gen3-current-limit-operation-v1.md",
       "section": "## Admission preconditions",
       "kind": "statement",
-      "value": "For an operation admitted through the semantic operation route (docs-ebus), the route's runtime intent owner supplies the authority evidence that binds target, operation, values, and validity interval.",
+      "value": "For an operation admitted through the semantic operation route (helianthus-docs), the route's runtime intent owner supplies the authority evidence that binds target, operation, values, and validity interval.",
       "reason": "The semantic route's intent owner supplies authority evidence."
     },
     {

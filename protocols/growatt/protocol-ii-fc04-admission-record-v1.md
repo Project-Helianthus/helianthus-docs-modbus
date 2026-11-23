@@ -150,5 +150,5 @@ no K21, M52, or S06 implementation/test evidence. Remaining acceptance includes
 reviewed publishable tuple-to-schema evidence, owning-runtime validation and
 negative tests, bounded FC04 acquisition/decoder proof, and any separately
 required real-build qualification. The broader native-readiness parent remains
-open. Existing admission/trust, eBUS MCP envelopes, and GraphQL parity remain
+open. Existing admission and trust remain
 unchanged; this page supplies no projection, control operation, or live write.

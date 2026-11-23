@@ -180,7 +180,7 @@ last-known-good read state with invented values. Historical read records keep
 their original provenance/freshness; they are not made current by token matches.
 
 This seam changes no existing profile qualification, trust/admission predicate,
-read-only MCP envelope, eBUS MCP compatibility, GraphQL parity or semantic
+read-only consumer envelope, consumer compatibility, parity, or semantic
 projection. It defines no receipt system, idempotency ledger, principal boundary,
 or recovery redesign. Gateway composition remains outside this contract.
 

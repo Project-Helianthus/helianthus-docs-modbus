@@ -17,7 +17,7 @@ numbers are owned by the existing pages: the
 [private-function transport contract](../modbus/private-function-codes.md#configured-production-read-and-private-function-endpoint).
 The retry, outcome-class, and recovery rules reuse the read-side rules of the
 [current-limit operation contract V1](gen3-current-limit-operation-v1.md).
-The rules below are Helianthus lifecycle requirements, not additional
+The rules below are lifecycle requirements, not additional
 observations of firmware behavior.
 
 The contract covers only the exact `wc3_24_44_3` operation version. It claims

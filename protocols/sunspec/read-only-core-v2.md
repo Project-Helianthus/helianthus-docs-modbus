@@ -45,9 +45,9 @@ The bounded V2 scope contains Common Model 1 and Models 701, 702, 703, 707, 708,
 | 701 | 153 | DER AC measurement |
 | 702 | 50 | DER capacity |
 | 703 | 17 | DER enter-service observed state |
-| 707 | `7 + NCrvSet*(4 + 9*NPt)` | DER Trip LV nested geometry, raw-only quarantine |
-| 708 | `7 + NCrvSet*(4 + 9*NPt)` | DER Trip HV nested geometry, raw-only quarantine |
-| 709 | `7 + NCrvSet*(4 + 12*NPt)` | DER Trip LF nested geometry, raw-only quarantine |
+| 707 | `7 + NCrvSet*(4 + 9*NPt)` | DER Trip LV nested geometry |
+| 708 | `7 + NCrvSet*(4 + 9*NPt)` | DER Trip HV nested geometry |
+| 709 | `7 + NCrvSet*(4 + 12*NPt)` | DER Trip LF nested geometry |
 | 713 | 7 | DER storage capacity |
 | 714 | `18 + 25*NPrt` | DER DC measurement with repeated ports |
 | 715 | 7 | DER controller observed state |
@@ -67,13 +67,18 @@ remains opaque. No fixed ordering is inferred among Models 701, 702, 703, 707,
 
 ## Control-observability boundary
 
-Models 703 and 715 are control-observability only. A decoder may retain their
-observed words and derived state, including points that upstream describes as
+Model 715 is control-observability only. A decoder may retain its observed
+words and derived state, including points that upstream describes as
 read/write, but it does not infer current control authority or a permitted
 operation from those words.
 
-No point in either model creates a write method, send authority, operation admission,
+No point in Model 715 creates a write method, send authority, operation admission,
 dispatch, retry, runtime activation, vendor activation, or catalog activation.
+
+Model 703 enter-service settings are registers in the modbusreg namespace, with no SemReg element.
+A decoder may retain Model 703 observed words and derived state, including
+points that upstream describes as read/write.
+
 Models 704 through 706 and 710 through 712 remain outside this V2 wave and remain opaque.
 
 ## DER Trip nested geometry
@@ -104,16 +109,7 @@ For a model-specific point span `S`, the zero-based payload offset of
 offsets `+1`, `+2 + S*P`, and `+3 + 2*S*P`. Within each nested curve,
 `Pt[j]` begins one data register after `ActPt` plus `(j-1)*S`.
 
-Models 707, 708, and 709 are inventory-known raw-only quarantine blocks. A
-separate occurrence-aware nested-layout contract is required before any typed
-facts may be emitted. They do not infer relationships to one another or to
-Models 710 through 712.
-
-Every field in Models 707, 708, and 709, including `Ena`, `AdptCrvReq`,
-`ReadOnly`, `ActPt`, and every nested point, is observed state only and is
-`NO_SEND`. No field creates a write method, send authority, operation admission,
-dispatch, retry, control behavior, runtime activation, vendor activation,
-catalog activation, transport behavior, gateway behavior, or live I/O.
+Models 707, 708, and 709 are registers in the modbusreg namespace, with no SemReg element. They do not infer relationships to one another or to Models 710 through 712. Nothing is sent unless the operation is called.
 
 ## DER Trip model-specific observed fields
 
@@ -133,8 +129,7 @@ registers. Its exact declared data-register length is
 `L = 7 + C*(4 + 12*P)`.
 
 For Models 707 and 708, `S` is 3; for Model 709, `S` is 4. These type, span,
-scale-factor, and offset differences do not authorize a decoder, product
-profile, or control operation.
+scale-factor, and offset differences are the declared geometry of each model.
 
 ## BESS base observed-state boundary
 

@@ -832,9 +832,9 @@ for mutation in \
   's/L = 7 + C\*(4 + 9\*P)/L = 7 + C*(4 + 8*P)/' \
   's/L <= 65534/L <= 65535/' \
   's/Invalid geometry remains raw-only with zero typed facts/Invalid geometry emits partial typed facts/' \
-  's/Every field is observed state only and is `NO_SEND`/Every field creates a write operation/' \
+  's/Model 707 registers are decoded and callable by hand through MCP and GraphQL in the modbusreg namespace, with no SemReg element/Every field is observed state only and is `NO_SEND`/' \
   's/Model 707/Model 708/' \
-  's/does not create live acquisition or operational behavior/does not create live acquisition; 708 uses this template/'; do
+  's/Model 707 registers are decoded and callable by hand through MCP and GraphQL in the modbusreg namespace, with no SemReg element/Model 708 uses this template/'; do
   sed "$mutation" "$der_trip_lv_template_document" > "$der_trip_lv_template_fixture"
   if "$repo_root/scripts/check_docs.sh" --check-sunspec-der-trip-lv-template-v2 "$der_trip_lv_template_fixture"; then
     echo "SunSpec Model 707 template mutation was accepted: $mutation" >&2
@@ -863,7 +863,7 @@ for mutation in \
   's/no substituted symbol/a default symbol/' \
   's/but produces no scaled value/and produces a scaled default/' \
   's/Malformed geometry produces zero typed facts/Malformed geometry produces partial typed facts/' \
-  's/Every observation in this contract is `NO_SEND`/Every observation in this contract can send/'; do
+  's/Model 707 registers are decoded and callable by hand through MCP and GraphQL in the modbusreg namespace, with no SemReg element/Every observation in this contract is `NO_SEND`/'; do
   sed "$mutation" "$der_trip_lv_projection_document" > "$der_trip_lv_projection_fixture"
   if "$repo_root/scripts/check_docs.sh" --check-sunspec-der-trip-lv-typed-fact-projection-v2 "$der_trip_lv_projection_fixture"; then
     echo "SunSpec Model 707 typed-fact projection mutation was accepted: $mutation" >&2
@@ -883,7 +883,7 @@ for mutation in \
   's/does not terminate a chain/terminates a chain/' \
   's/V1 selection, keys, raw outputs, and behavior remain unchanged/V1 selection shares V2 behavior/' \
   's/do not become candidates/become candidates/' \
-  's/This contract creates no operation, write, send authority/This contract creates write authority/'; do
+  's/Model 707 registers are decoded and callable by hand through MCP and GraphQL in the modbusreg namespace, with no SemReg element/This contract creates write authority/'; do
   sed "$mutation" "$dynamic_structural_selection_document" > "$dynamic_structural_selection_fixture"
   if "$repo_root/scripts/check_docs.sh" --check-sunspec-dynamic-structural-selection-v2 "$dynamic_structural_selection_fixture"; then
     echo "SunSpec dynamic structural selection mutation was accepted: $mutation" >&2
@@ -909,7 +909,7 @@ for mutation in \
 	's/| 808 | 1 |/| 808 | 2 |/' \
 	's/| 809 | 1 |/| 809 | 2 |/' \
 	's/18 + 25\*NPrt/18 + 24*NPrt/g' \
-  's/Models 703 and 715 are control-observability only/Models 703 and 715 create operations/' \
+  's/Model 703 enter-service settings are registers, decoded and callable by hand through MCP and GraphQL in the modbusreg namespace, with no SemReg element/Model 703 enter-service settings create no operation/' \
 	's/Models 704 through 706 and 710 through 712 remain outside this V2 wave and remain opaque/Models 704 through 712 are decoded/' \
 	's/`L = 7 + C\*(4 + 9\*P)`/`L = 7 + C*(4 + 8*P)`/' \
 	's/`L = 7 + C\*(4 + 12\*P)`/`L = 7 + C*(4 + 11*P)`/' \
@@ -920,8 +920,8 @@ for mutation in \
 	's/`Crv\[i\]` is `7 + (i-1)\*(4 + 3\*S\*P)`/`Crv[i]` is inferred from trailing words/' \
 	's/offsets `+1`, `+2 + S\*P`, and `+3 + 2\*S\*P`/offsets are implementation-defined/' \
 	's/For Models 707 and 708, `S` is 3; for Model 709, `S` is 4/Every model uses `S` 3/' \
-	's/Models 707, 708, and 709 are inventory-known raw-only quarantine blocks/Models 707, 708, and 709 emit typed facts/' \
-	's/Every field in Models 707, 708, and 709, including `Ena`, `AdptCrvReq`,/Models 707, 708, and 709 permit sends, including `Ena`,/' \
+	's/Models 707, 708, and 709 are registers, decoded and callable by hand through MCP and GraphQL in the modbusreg namespace, with no SemReg element/Models 707, 708, and 709 are inventory-known raw-only quarantine blocks/' \
+	's/Nothing is sent unless the operation is called/Every field in Models 707, 708, and 709, including `Ena`, `AdptCrvReq`, is sent without a call/' \
 	's/Model 707 has `V_SF` and `Tms_SF`/Model 707 has `Hz_SF` and `Tms_SF`/' \
 	's/Model 708 has the same source-derived point spans as Model 707/Model 708 infers its point spans from Model 707/' \
 	's/Model 709 has `Hz_SF` and `Tms_SF`/Model 709 has `V_SF` and `Tms_SF`/' \

@@ -149,7 +149,7 @@ under item 5, until an observation records an answer.
 
 ## Decoded naming correspondence
 
-The bounded [naming contract](../../architecture/naming-contract.md) records
+The bounded [naming contract](https://github.com/Project-Helianthus/helianthus-docs-modbus/blob/main/architecture/naming-contract.md) records
 `device_status` to `status` for the monitoring profile. The offset, state
 code, `grid_connected` enumeration and evidence grade remain unchanged. This is
 an implementation-name change, not admission or qualification. The accumulated

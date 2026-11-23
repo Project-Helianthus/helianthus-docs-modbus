@@ -160,5 +160,5 @@ application policy and implementation retain their separate licensing lane.
 This worksheet redistributes no vendor source and grants no source relicensing.
 The [current-limit operation contract](gen3-current-limit-operation-v1.md)
 continues to govern that separate path. No setter, password procedure,
-namespace, MCP/GraphQL contract, runtime implementation, or live qualification
+namespace contract, runtime implementation, or live qualification
 is introduced by this worksheet.

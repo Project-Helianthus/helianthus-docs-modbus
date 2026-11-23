@@ -1,0 +1,14 @@
+{
+  "table": "docs-modbus local page inventory",
+  "owner": "helianthus-docs-modbus",
+  "scope": "Publishable Markdown pages in helianthus-docs-modbus. The docs-ebus file architecture/page-status.json stays in that repository; its rename rows are eBUS pages and are not an inventory of this tree. This file records the local rename set, which is empty because the moved pages kept their names. The checker still rejects a publishable basename that is not lowercase kebab-case and any later rename that leaves a stale earlier name.",
+  "name_rule": "lowercase-kebab-case",
+  "control_files": [
+    "AGENTS.md",
+    "CHANGELOG.md",
+    "CONTRIBUTING.md",
+    "README.md",
+    "SECURITY.md"
+  ],
+  "renames": []
+}

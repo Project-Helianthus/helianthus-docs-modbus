@@ -17,7 +17,7 @@ The publishable wire and body basis is the existing
 including its bounded static evidence for `wc3_24_44_3`. The
 [TEDAPI contract](tedapi.md) and
 [private-function transport contract](../modbus/private-function-codes.md)
-define the surrounding boundaries. The rules below are Helianthus operation
+define the surrounding boundaries. The rules below are operation
 requirements, not additional observations of firmware behavior. No new
 register map or device qualification is asserted.
 
@@ -50,7 +50,7 @@ the reason retained. Admission is scoped to exactly one
 
 | Required input | Fail-closed rule |
 | --- | --- |
-| Action authority | For an operation admitted through the semantic operation route (docs-ebus), the route's runtime intent owner supplies the authority evidence that binds target, operation, values, and validity interval. Explicit authority binds the selected target, operation, values, and validity interval. Offline fake/replay authority cannot authorize live I/O. Live authority includes operator confirmation at action time; a cached read, configured endpoint, or document is insufficient. |
+| Action authority | For an operation admitted through the semantic operation route (helianthus-docs), the route's runtime intent owner supplies the authority evidence that binds target, operation, values, and validity interval. Explicit authority binds the selected target, operation, values, and validity interval. Offline fake/replay authority cannot authorize live I/O. Live authority includes operator confirmation at action time; a cached read, configured endpoint, or document is insufficient. |
 | Profile and version | Explicit Gen3 identity, exact HSC profile compatibility, `wc3_24_44_3` operation schema, and independently qualified capability for the selected operation. Unknown, conflicting, legacy, or unenumerated operation versions deny dispatch. |
 | Endpoint and generation | Explicit unicast node and configured endpoint, current nonzero lifecycle generation, compatible HSC activation state, and no fence/quarantine. No discovery, broadcast, profile fallback, or inferred default target. |
 | Single-flight ownership | One serialized initiator and one in-flight exchange per endpoint. The mutation and its readback remain bound to one operation identity and the same lifecycle generation; no competing local mutation may interleave. This does not exclude an external actor. |

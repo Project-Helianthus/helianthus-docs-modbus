@@ -66,9 +66,9 @@ identity values and do not publish installation-specific identifiers, captures,
 or endpoint coordinates. A failed tuple gate produces no partial identity
 projection.
 
-## MCP native identity projection
+## Native identity projection
 
-An MCP result for a qualified identity returns the selected family, unicast
+A qualified identity result returns the selected family, unicast
 unit, normalized firmware text, native serial text, device type code,
 model-build pair, protocol version, and the five exact FC03 identity slices as
 `native_identity` without a redaction marker or a substitute digest. Each field

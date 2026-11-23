@@ -180,7 +180,7 @@ K19/M51 behavioral tests nor closes the K34 evidence checklist. Registry
 implementation, admission evidence, production acquisition, concurrency and
 transport isolation tests, connected read-only qualification, hardware acceptance,
 and end-to-end native/consumer replay remain separate acceptance work. Existing
-eBUS MCP envelopes and GraphQL parity are unchanged; no new consumer surface or
+Consumer envelopes and parity obligations are unchanged; no new consumer surface or
 semantic mapping is defined. G5 D1-D5/O8 remain J01-J17-owned: this page creates
 no receipts, idempotency ledger, principal boundary or recovery redesign. It
 closes no parent issue or release gate.

@@ -182,8 +182,8 @@
       "page": "protocols/growatt/bms-rs485-1xsxxp-v202.md",
       "section": null,
       "kind": "heading",
-      "value": "## MCP native observation projection",
-      "reason": "Required section of the native MCP projection."
+      "value": "## Native observation projection",
+      "reason": "Required section of the native observation projection."
     },
     {
       "contract": "bms_contract",
@@ -476,23 +476,23 @@
     {
       "contract": "bms_contract",
       "page": "protocols/growatt/bms-rs485-1xsxxp-v202.md",
-      "section": "## MCP native observation projection",
+      "section": "## Native observation projection",
       "kind": "statement",
-      "value": "For a qualified observation, an MCP status result must return the selected",
-      "reason": "An MCP result returns the selected native observation."
+      "value": "For a qualified observation, a status result must return the selected",
+      "reason": "A status result returns the selected native observation."
     },
     {
       "contract": "bms_contract",
       "page": "protocols/growatt/bms-rs485-1xsxxp-v202.md",
-      "section": "## MCP native observation projection",
+      "section": "## Native observation projection",
       "kind": "statement",
       "value": "all four exact FC03 slices that formed the bounded base observation. It must preserve every retained word at its native offset, in",
-      "reason": "An MCP result keeps all four base slices and every word at its native offset."
+      "reason": "A status result keeps all four base slices and every word at its native offset."
     },
     {
       "contract": "bms_contract",
       "page": "protocols/growatt/bms-rs485-1xsxxp-v202.md",
-      "section": "## MCP native observation projection",
+      "section": "## Native observation projection",
       "kind": "statement",
       "value": "A failed diagnostic evaluation emits no repeated diagnostic facts and does not erase qualified base status telemetry.",
       "reason": "A failed diagnostic does not erase the qualified base projection."
@@ -662,8 +662,8 @@
       "page": "protocols/growatt/protocol-ii-readonly-v1.md",
       "section": null,
       "kind": "heading",
-      "value": "## MCP native identity projection",
-      "reason": "Required section of the Protocol II identity contract: MCP native identity projection."
+      "value": "## Native identity projection",
+      "reason": "Required section of the Protocol II identity contract: native identity projection."
     },
     {
       "contract": "protocol_ii_identity",
@@ -700,15 +700,15 @@
     {
       "contract": "protocol_ii_identity",
       "page": "protocols/growatt/protocol-ii-readonly-v1.md",
-      "section": "## MCP native identity projection",
+      "section": "## Native identity projection",
       "kind": "statement",
       "value": "`native_identity` without a redaction marker or a substitute digest.",
-      "reason": "The MCP projection returns the native identity without redaction or substitute digest."
+      "reason": "The identity projection returns the native identity without redaction or substitute digest."
     },
     {
       "contract": "protocol_ii_identity",
       "page": "protocols/growatt/protocol-ii-readonly-v1.md",
-      "section": "## MCP native identity projection",
+      "section": "## Native identity projection",
       "kind": "statement",
       "value": "identity projection. The identity projection does not authorize an FC06, FC16,",
       "reason": "The identity projection authorizes no write."
@@ -716,7 +716,7 @@
     {
       "contract": "protocol_ii_identity",
       "page": "protocols/growatt/protocol-ii-readonly-v1.md",
-      "section": "## MCP native identity projection",
+      "section": "## Native identity projection",
       "kind": "statement",
       "value": "The currently enumerated operation is FC03 identity acquisition. This contract does not define an FC06 or FC16 control operation, so no control command is",
       "reason": "FC03 identity acquisition is the only enumerated operation; no control command exists."

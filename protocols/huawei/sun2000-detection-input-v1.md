@@ -173,7 +173,7 @@ telemetry, an empty telemetry record, or fabricated successes. No partial
 profile or partial admission exists. An application projection must preserve
 outcome, reasons, null selection and zero facts; if references or native detail
 are omitted, report that projection loss explicitly. This contract changes no
-existing eBUS MCP envelope or GraphQL surface; any later adapter must preserve
+existing consumer envelope or surface; any later adapter must preserve
 the same denial and evidence meaning on both surfaces.
 
 ## Four synthetic examples
