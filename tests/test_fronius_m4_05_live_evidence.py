@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import hashlib
 import json
 import ipaddress
 import re
@@ -20,10 +19,8 @@ LIVE_0651 = ROOT / "docs/platform/live/fronius-m4-04-0.6.51"
 README_0651 = LIVE_0651 / "README.md"
 EVIDENCE_0651 = LIVE_0651 / "evidence.json"
 PLATFORM_INDEX = PLATFORM_ROOT / "docs/platform/README.md"
-# Fixed non-endpoint preimage. The published correlator is its SHA-256 prefix.
-PUBLICATION_ONLY_FIXTURE_PHRASE = (
-    "publication-only synthetic correlator for the public Fronius live packets"
-)
+# Frozen public identifier shared by the three live packets. Item 7 keeps it.
+FROZEN_ENDPOINT_REF = "sha256:cc2d63775c6f0074"
 
 EXPECTED_CHAIN = [
     (1, 65),
@@ -68,12 +65,6 @@ SAFE_DOTTED_IDENTIFIERS = {
     "sunspec.flavor.fronius.gen24.float.observed@1.1.0",
 }
 LOCAL_FILE_SUFFIXES = (".json", ".md", ".py", ".sh", ".yaml", ".yml")
-
-
-def publication_only_correlator() -> str:
-    """Return the shared publication-only identifier for the three live packets."""
-    digest = hashlib.sha256(PUBLICATION_ONLY_FIXTURE_PHRASE.encode("utf-8")).hexdigest()
-    return "sha256:" + digest[:16]
 
 
 def load_evidence() -> dict[str, object]:
@@ -217,7 +208,7 @@ def test_runtime_identity_chain_and_read_only_boundary_are_exact() -> None:
         ),
     }
     assert evidence["target"] == {
-        "endpoint_ref": publication_only_correlator(),
+        "endpoint_ref": FROZEN_ENDPOINT_REF,
         "manufacturer": "Fronius",
         "model": "Symo GEN24 10.0",
         "firmware": "1.41.11-1",
@@ -470,29 +461,28 @@ def test_0647_readiness_redaction_and_rollback_are_exact() -> None:
     assert "fronius-m4-04-0.6.47" in PLATFORM_INDEX.read_text(encoding="utf-8")
 
 
-def test_published_correlator_is_synthetic_and_shared() -> None:
-    phrase = PUBLICATION_ONLY_FIXTURE_PHRASE
-    assert not contains_endpoint_value(phrase)
-    assert ":" not in phrase and "/" not in phrase
-    expected = publication_only_correlator()
-    assert re.fullmatch(r"sha256:[0-9a-f]{16}", expected)
+def test_published_endpoint_ref_stays_the_frozen_shared_record() -> None:
+    bullet = f"target reference `{FROZEN_ENDPOINT_REF}`."
+    pseudonymous = (
+        "The `endpoint_ref` is the stable pseudonymous correlator required by the"
+    )
     packets = (
-        (EVIDENCE, README),
-        (EVIDENCE_0647, README_0647),
-        (EVIDENCE_0651, README_0651),
+        (EVIDENCE, README, True),
+        (EVIDENCE_0647, README_0647, False),
+        (EVIDENCE_0651, README_0651, False),
     )
     published = set()
-    for evidence_path, readme_path in packets:
+    for evidence_path, readme_path, keeps_pseudonymous_sentence in packets:
         evidence = json.loads(evidence_path.read_text(encoding="utf-8"))
         readme = readme_path.read_text(encoding="utf-8")
         published.add(evidence["target"]["endpoint_ref"])
-        assert evidence["target"]["endpoint_ref"] == expected
-        assert expected in readme
-        assert phrase in readme
-        assert "publication-only" in readme
-        assert "not the runtime endpoint reference" in readme
-        assert "stable pseudonymous correlator required by the" not in readme
-    assert published == {expected}
+        assert evidence["target"]["endpoint_ref"] == FROZEN_ENDPOINT_REF
+        assert bullet in readme
+        assert "publication-only correlator" not in readme
+        assert "publication-only synthetic correlator" not in readme
+        assert "not the runtime endpoint reference" not in readme
+        assert (pseudonymous in readme) is keeps_pseudonymous_sentence
+    assert published == {FROZEN_ENDPOINT_REF}
 
 
 def test_public_evidence_contains_no_private_operational_identifiers() -> None:

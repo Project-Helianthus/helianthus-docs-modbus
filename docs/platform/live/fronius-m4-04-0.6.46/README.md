@@ -19,15 +19,13 @@ The bounded run used:
   `16a7dfbf8016750613d086fb98d10364953ea915`;
 - image digest
   `sha256:9169f41b1d15ccf989d182ad125239df682602d87f74c1665b42802b96cabfca`;
-- publication-only correlator `sha256:ea36637b78ba71b6`.
+- target reference `sha256:cc2d63775c6f0074`.
 
 The endpoint remained hidden. Acquisition was Modbus TCP unit `1`, FC03 only.
 Writes were forbidden and none were performed.
-The published correlator is synthetic and publication-only. It is the leading
-16 hexadecimal digits of SHA-256 over the fixed non-endpoint fixture phrase
-`publication-only synthetic correlator for the public Fronius live packets`.
-The same value correlates the public Fronius live packets.
-It is not the runtime endpoint reference.
+The `endpoint_ref` is the stable pseudonymous correlator required by the
+current runtime contract. It is not an unlinkability or enumeration-resistance
+claim; changing that identifier scheme requires a separate contract revision.
 
 ## Registry Qualification
 
