@@ -23,10 +23,15 @@ The authorized read-only run used:
   `16a7dfbf8016750613d086fb98d10364953ea915`;
 - multi-architecture image digest
   `sha256:876098e26a6b5f698d0f992f61a0784af8f677f4e3b96a424869fda9609eec6e`;
-- target reference `sha256:cc2d63775c6f0074`.
+- publication-only correlator `sha256:ea36637b78ba71b6`.
 
 The endpoint remained hidden. Acquisition used Modbus TCP unit `1`, FC03 only.
 Writes were forbidden and none were performed.
+The published correlator is synthetic and publication-only. It is the leading
+16 hexadecimal digits of SHA-256 over the fixed non-endpoint fixture phrase
+`publication-only synthetic correlator for the public Fronius live packets`.
+The same value correlates the public Fronius live packets.
+It is not the runtime endpoint reference.
 
 ## Qualification Result
 

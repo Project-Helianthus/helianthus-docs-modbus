@@ -14,7 +14,7 @@
     "image_digest": "sha256:876098e26a6b5f698d0f992f61a0784af8f677f4e3b96a424869fda9609eec6e"
   },
   "target": {
-    "endpoint_ref": "sha256:cc2d63775c6f0074",
+    "endpoint_ref": "sha256:ea36637b78ba71b6",
     "manufacturer": "Fronius",
     "model": "Symo GEN24 10.0",
     "firmware": "1.41.11-1"

@@ -14,7 +14,7 @@
     "image_digest": "sha256:9d79fed17e4ea682adae25ae00f667dc7277bf88f4e6635dd8561c74ac8828b6"
   },
   "target": {
-    "endpoint_ref": "sha256:cc2d63775c6f0074"
+    "endpoint_ref": "sha256:ea36637b78ba71b6"
   },
   "prior_exact_target_reference": {
     "basis": "PUBLIC_EVIDENCE_0_6_46",
