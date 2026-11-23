@@ -20,7 +20,7 @@ The retry, outcome-class, and recovery rules reuse the read-side rules of the
 The rules below are lifecycle requirements, not additional
 observations of firmware behavior.
 
-The read observations are bound to the documented version their identification names and, as this documentation defines, apply to every later build of that same Gen3 version line, with level `not_tested_on_hardware`. A version label by itself proves nothing. An ambiguous or missing version is refused with a reason. The legacy Wall Connector RS-485 profile is a separate,
+The read observations are bound to the documented version their identification names and, as this documentation defines, apply to every later build of that same Gen3 version line, with level `not_tested_on_hardware`. A version label by itself proves nothing. An ambiguous or missing version is refused with a reason. The version label has the form `wc3_` followed by three underscore-separated integers. Builds of one line share the first two integers, so the read line is `wc3_24_44`, and the third integer orders builds of that line. The read floor is the identified, capability-compatible label `wc3_24_44_3`: a build on that line whose third integer is at least 3, and whose activation, private-function, and operation capabilities are compatible. An unidentified build, including an ambiguous or missing version and a build that is not on the `wc3_24_44` line, is refused with that reason and nothing is sent. A build on that line whose third integer is below 3 is refused as below-floor and nothing is sent. A build whose activation, private function, or operation schema is incompatible is refused as capability-incompatible and nothing is sent. The level stays `not_tested_on_hardware` unless an operator-owned public observation records `tested_on_hardware`, and neither level conditions admission. The independently qualified provisional current-limit mutation stays bound to the exact operation version `wc3_24_44_3`. The legacy Wall Connector RS-485 profile is a separate,
 non-Modbus flow that this lifecycle never reaches and never falls back to; the
 two profiles are never substituted for each other.
 
@@ -121,12 +121,11 @@ lock, for each exchange. A candidate is admitted only when all hold:
 The standard register-read admission of the owned endpoint (FC03 and FC04)
 admits nothing; this lifecycle never reads registers. The configuration itself
 is refused as `NO_SEND` unless it names an explicit endpoint label and local
-path, a qualified Gen3 profile, exactly the version `wc3_24_44_3`, an
-activation driver, valid time bounds, an attempt bound of 1 through 3, and a
-valid freshness and retention window for every configured operation. A Gen3
-version label that is known, or a `compatible_candidate`, but is not
-`wc3_24_44_3`, is refused: the operation contract is bound to that exact version
-and a version label alone grants no operation.
+path, a qualified Gen3 profile, an identified build at or above the read floor
+on the `wc3_24_44` line whose activation, private-function, and operation
+capabilities are compatible, an activation driver, valid time bounds, an
+attempt bound of 1 through 3, and a valid freshness and retention window for
+every configured operation. The read floor is the identified, capability-compatible label `wc3_24_44_3` on the `wc3_24_44` line. A `compatible_candidate` is admitted for these reads only when it is identified on that line at or above the floor and those capabilities are compatible. An unidentified build, including an ambiguous or missing version and a build that is not on the `wc3_24_44` line, is refused with that reason and nothing is sent. A build on that line whose third integer is below 3 is refused as below-floor and nothing is sent. A build whose activation, private function, or operation schema is incompatible is refused as capability-incompatible and nothing is sent. A version label alone grants no operation. The independently qualified provisional current-limit mutation stays bound to the exact operation version `wc3_24_44_3`.
 
 The lifecycle owns one production endpoint at a time and builds its
 configuration: 115200 baud, eight data bits, no parity, one stop bit, the
@@ -348,8 +347,7 @@ family/tag pair and operation contract; additional evidence fields; or new
 bounded diagnostics. A change that removes or reinterprets a state, a
 transition, an admission rule, an evidence state, the budgets, or the
 no-value rule for `timeout` and `indeterminate` requires a new contract
-version. Binding to the operation version `wc3_24_44_3` changes only through a
-published revision of the operation numbers.
+version. The operation numbers change only through a published revision. The read build floor is the identified, capability-compatible label `wc3_24_44_3` on the `wc3_24_44` line.
 
 ## Falsifiers
 
@@ -365,9 +363,7 @@ is observed:
   or is followed by a retry in the same transport generation.
 - A request other than the planned exact payload, or for a retired endpoint
   instance or another generation, is admitted; or FC03 or FC04 is admitted.
-- A configuration bound to a Gen3 version other than `wc3_24_44_3` constructs,
-  or an operation outside the five observation pairs, the provisional readback,
-  and the one provisional mutation is acquired.
+- Read acquisition at an unidentified, below-floor, or capability-incompatible build constructs a request, or an operation outside the five observation pairs, the provisional readback, and the one provisional mutation is acquired.
 - More than three attempts, an attempt after the acquisition deadline expired,
   a retry without recovery, a retry that repeats the activation, a retry
   admitted on a fenced generation, or a retry after an exception or

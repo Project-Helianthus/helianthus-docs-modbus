@@ -487,7 +487,7 @@
       "section": "## Exact version profiles",
       "kind": "statement",
       "value": "An identified later build of the `wc3_24_44_3` line can qualify for these read observations when its activation, private function and operation schema agree.",
-      "reason": "The contract has no numeric version threshold."
+      "reason": "An identified later build on the read line can qualify for these read observations when its capabilities agree."
     },
     {
       "contract": "generation",
@@ -614,8 +614,8 @@
       "page": "protocols/tesla/gen3-hsc-rtu.md",
       "section": "## EVSE current-limit records",
       "kind": "statement",
-      "value": "Only the `wc3_24_44_3` operation version qualifies this contract.",
-      "reason": "The current-limit records are bound to one exact operation version."
+      "value": "Only the `wc3_24_44_3` operation version qualifies these current-limit body records. Read observations on this page use the identified, capability-compatible read floor on the `wc3_24_44` line.",
+      "reason": "Current-limit body records stay on one exact operation version, and reads use the read floor."
     },
     {
       "contract": "gen3_evse_current_limit",
@@ -1487,7 +1487,7 @@
       "section": "## Scope and evidence status",
       "kind": "statement",
       "value": "The read observations are bound to the documented version their identification names and, as this documentation defines, apply to every later build of that same Gen3 version line, with level `not_tested_on_hardware`.",
-      "reason": "The lifecycle is bound to one exact operation version."
+      "reason": "Read observations apply to later builds of the documented line at the read floor."
     },
     {
       "contract": "read_acquisition",
@@ -2240,6 +2240,54 @@
       "kind": "statement",
       "value": "`evse.relation.connector_phase` is a gate rule where the pages document per-phase values, `evse.relation.connector_session` is a gate rule where the pages document a session per connector, and `evse.relation.evse_meter` is configuration for the charger's own energy counter.",
       "reason": "Charger relations and their bases."
+    },
+    {
+      "contract": "generation",
+      "page": "protocols/tesla/gen3-hsc-rtu.md",
+      "section": "## Exact version profiles",
+      "kind": "statement",
+      "value": "The version label has the form `wc3_` followed by three underscore-separated integers. Builds of one line share the first two integers, so the read line is `wc3_24_44`, and the third integer orders builds of that line. The read floor is the identified, capability-compatible label `wc3_24_44_3`: a build on that line whose third integer is at least 3, and whose activation, private-function, and operation capabilities are compatible. An unidentified build, including an ambiguous or missing version and a build that is not on the `wc3_24_44` line, is refused with that reason and nothing is sent. A build on that line whose third integer is below 3 is refused as below-floor and nothing is sent. A build whose activation, private function, or operation schema is incompatible is refused as capability-incompatible and nothing is sent. The level stays `not_tested_on_hardware` unless an operator-owned public observation records `tested_on_hardware`, and neither level conditions admission. The independently qualified provisional current-limit mutation stays bound to the exact operation version `wc3_24_44_3`.",
+      "reason": "The HSC read observations use one identified, capability-compatible floor and name the three refusals."
+    },
+    {
+      "contract": "generation",
+      "page": "protocols/tesla/gen3-hsc-rtu.md",
+      "section": "## Qualification",
+      "kind": "statement",
+      "value": "An unidentified, below-floor, or capability-incompatible build does not qualify, and nothing is sent.",
+      "reason": "Qualification refuses an unidentified, below-floor, or capability-incompatible build."
+    },
+    {
+      "contract": "read_acquisition",
+      "page": "protocols/tesla/gen3-read-acquisition-v1.md",
+      "section": "## Scope and evidence status",
+      "kind": "statement",
+      "value": "The version label has the form `wc3_` followed by three underscore-separated integers. Builds of one line share the first two integers, so the read line is `wc3_24_44`, and the third integer orders builds of that line. The read floor is the identified, capability-compatible label `wc3_24_44_3`: a build on that line whose third integer is at least 3, and whose activation, private-function, and operation capabilities are compatible. An unidentified build, including an ambiguous or missing version and a build that is not on the `wc3_24_44` line, is refused with that reason and nothing is sent. A build on that line whose third integer is below 3 is refused as below-floor and nothing is sent. A build whose activation, private function, or operation schema is incompatible is refused as capability-incompatible and nothing is sent. The level stays `not_tested_on_hardware` unless an operator-owned public observation records `tested_on_hardware`, and neither level conditions admission. The independently qualified provisional current-limit mutation stays bound to the exact operation version `wc3_24_44_3`.",
+      "reason": "Read admission uses one identified, capability-compatible floor and names the three refusals."
+    },
+    {
+      "contract": "read_acquisition",
+      "page": "protocols/tesla/gen3-read-acquisition-v1.md",
+      "section": "## Admission rules",
+      "kind": "statement",
+      "value": "The read floor is the identified, capability-compatible label `wc3_24_44_3` on the `wc3_24_44` line. A `compatible_candidate` is admitted for these reads only when it is identified on that line at or above the floor and those capabilities are compatible. An unidentified build, including an ambiguous or missing version and a build that is not on the `wc3_24_44` line, is refused with that reason and nothing is sent. A build on that line whose third integer is below 3 is refused as below-floor and nothing is sent. A build whose activation, private function, or operation schema is incompatible is refused as capability-incompatible and nothing is sent.",
+      "reason": "Admission admits an identified build at or above the read floor and refuses the other three cases."
+    },
+    {
+      "contract": "read_acquisition",
+      "page": "protocols/tesla/gen3-read-acquisition-v1.md",
+      "section": "## Compatibility and versioning",
+      "kind": "statement",
+      "value": "The read build floor is the identified, capability-compatible label `wc3_24_44_3` on the `wc3_24_44` line.",
+      "reason": "A published revision keeps authority over the operation numbers and states the read floor."
+    },
+    {
+      "contract": "read_acquisition",
+      "page": "protocols/tesla/gen3-read-acquisition-v1.md",
+      "section": "## Falsifiers",
+      "kind": "statement",
+      "value": "Read acquisition at an unidentified, below-floor, or capability-incompatible build constructs a request,",
+      "reason": "Read acquisition at an unidentified, below-floor, or incompatible build is a falsifier."
     }
   ]
 }

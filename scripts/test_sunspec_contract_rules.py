@@ -44,6 +44,10 @@ PROBES = {
                                      'The candidate emits a typed fact.', 'The candidate causes a new request.',
                                      'The candidate terminates a chain.', 'Model 708 data can form a candidate.',
                                      'Model 709 is a candidate.'),
+    'sunspec_grid_code': (
+        'The catalog defines none, and this section adds no points.',
+        'The reachable catalog defines no point rows for model 703.',
+    ),
 }
 
 # The extended regular expressions the gate used before the rule table; a line

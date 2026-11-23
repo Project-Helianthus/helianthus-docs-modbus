@@ -48,7 +48,7 @@ EXPECTED = {
     ('protocol_ii_identity', 'heading'): 3,
     ('protocol_ii_identity', 'statement'): 8,
     ('protocol_ii_fc04', 'heading'): 2,
-    ('protocol_ii_fc04', 'statement'): 24,
+    ('protocol_ii_fc04', 'statement'): 29,
     ('protocol_ii_fc04', 'row'): 10,
     ('protocol_ii_source_matrix', 'heading'): 1,
     ('protocol_ii_source_matrix', 'row'): 27,

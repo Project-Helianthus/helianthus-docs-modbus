@@ -74,7 +74,9 @@ EXPECTED = {
     ('sunspec_controls', 'row'): 9,
     ('sunspec_controls', 'statement'): 8,
     ('sunspec_grid_code', 'heading'): 25,
-    ('sunspec_grid_code', 'statement'): 1,
+    ('sunspec_grid_code', 'row'): 2,
+    ('sunspec_grid_code', 'statement'): 5,
+    ('sunspec_grid_code', 'forbidden'): 1,
 }
 CONTRACTS = frozenset(CONTRACT_PAGES)
 HEADING = re.compile(r'(#{1,6}) \S(?:.*\S)?')

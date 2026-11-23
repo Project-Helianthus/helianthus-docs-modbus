@@ -32,9 +32,11 @@ These values are not globally reserved and do not select a Tesla codec outside a
 
 An identified later build of the `wc3_24_44_3` line can qualify for these read observations when its activation, private function and operation schema agree. The version label alone does not grant a HSC operation or live exchange. Compatibility evaluates version evidence independently from HSC activation, private-function path, and operation-schema capabilities. A legacy Wall Connector identity never qualifies this profile.
 
+The version label has the form `wc3_` followed by three underscore-separated integers. Builds of one line share the first two integers, so the read line is `wc3_24_44`, and the third integer orders builds of that line. The read floor is the identified, capability-compatible label `wc3_24_44_3`: a build on that line whose third integer is at least 3, and whose activation, private-function, and operation capabilities are compatible. An unidentified build, including an ambiguous or missing version and a build that is not on the `wc3_24_44` line, is refused with that reason and nothing is sent. A build on that line whose third integer is below 3 is refused as below-floor and nothing is sent. A build whose activation, private function, or operation schema is incompatible is refused as capability-incompatible and nothing is sent. The level stays `not_tested_on_hardware` unless an operator-owned public observation records `tested_on_hardware`, and neither level conditions admission. The independently qualified provisional current-limit mutation stays bound to the exact operation version `wc3_24_44_3`.
+
 ## Qualification
 
-Qualification requires an explicit endpoint, configured node, exact version profile, compatible activation state, bounded single-flight correlation, and an operation contract. A frame that parses successfully is not itself a capability, admission, or completion claim.
+Qualification requires an explicit endpoint, configured node, an identified build at or above the read floor on the `wc3_24_44` line whose activation, private function and operation schema agree, bounded single-flight correlation, and an operation contract. An unidentified, below-floor, or capability-incompatible build does not qualify, and nothing is sent. A frame that parses successfully is not itself a capability, admission, or completion claim.
 
 ## Native retention
 
@@ -58,7 +60,7 @@ defines offline admission, outcome, evidence, quarantine, and idempotency
 requirements. The body evidence below does not independently qualify a live
 setter or grant operation authority.
 
-Only the `wc3_24_44_3` operation version qualifies this contract. Persistent current configuration is FC100 family `6`, request tag `7`, terminal tag `8`. Its `settings.maxOutputCurrentAmps` value is an integer number of amperes.
+Only the `wc3_24_44_3` operation version qualifies these current-limit body records. Read observations on this page use the identified, capability-compatible read floor on the `wc3_24_44` line. Persistent current configuration is FC100 family `6`, request tag `7`, terminal tag `8`. Its `settings.maxOutputCurrentAmps` value is an integer number of amperes.
 
 Temporary provisional current configuration is family `6`, request tag `25`, terminal tag `26`. Its native request fields are `limitCurrentMaxAmps` in amperes, `limitTimeoutS`, and `inhibitCharging`. The terminal is an acknowledgement only; correlated family-`6` tag-`27` to tag-`28` readback is required to confirm a retained provisional value.
 

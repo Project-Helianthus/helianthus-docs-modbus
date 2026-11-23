@@ -90,7 +90,7 @@ fail closed and create no typed telemetry or observer. The live FC04 record uses
 fixture exercises exactly one input-register slice: zero-based offsets 0 through 58 inclusive (59 words). It is an all-or-nothing fixture decode: wrong function,
 offset, word count, table/provenance, timeout, Modbus exception, missing
 admission, identity/applicability mismatch, malformed response, or an unlisted
-inverter-state value yields no typed record. The complete 59-word slice remains
+inverter-state value yields no typed record. The frozen 0 through 58 fixture remains historical evidence and supplies no current admissible record width. Its retained words stay
 native raw evidence where the owning runtime contract permits retention; no
 unlisted word is typed by this document.
 

@@ -1456,6 +1456,46 @@
       "kind": "statement",
       "value": "An explicit endpoint and family selection of a documented TL3-X MAX, MID, or MAC family activates that configured profile, and the same evidence without a selection gives no automatic match.",
       "reason": "Implementation companion keeps configured and automatic paths distinct."
+    },
+    {
+      "contract": "protocol_ii_fc04",
+      "page": "protocols/growatt/protocol-ii-fc04-admission-record-v1.md",
+      "section": "## Scope and current evidence",
+      "kind": "statement",
+      "value": "the live FC04 record is offset 0 and width_words=250 for words 0 through 249",
+      "reason": "The evidence row states the live 250-word FC04 record."
+    },
+    {
+      "contract": "protocol_ii_fc04",
+      "page": "protocols/growatt/protocol-ii-fc04-admission-record-v1.md",
+      "section": "## Scope and current evidence",
+      "kind": "statement",
+      "value": "The frozen 0 through 58 fixture remains historical evidence and supplies no current admissible record width.",
+      "reason": "The frozen 0 through 58 fixture is historical and is not a current width."
+    },
+    {
+      "contract": "protocol_ii_fc04",
+      "page": "protocols/growatt/protocol-ii-fc04-admission-record-v1.md",
+      "section": "## Proposed public record fields and equality joins",
+      "kind": "statement",
+      "value": "this proposal covers only words 0 through 249 (`width_words=250`)",
+      "reason": "The width field covers words 0 through 249."
+    },
+    {
+      "contract": "protocol_ii_fc04",
+      "page": "protocols/growatt/protocol-ii-readonly-v1.md",
+      "section": "## FC04 monitoring foundation",
+      "kind": "statement",
+      "value": "The frozen 0 through 58 fixture remains historical evidence and supplies no current admissible record width.",
+      "reason": "The readonly page keeps the frozen fixture historical."
+    },
+    {
+      "contract": "protocol_ii_fc04",
+      "page": "architecture/growatt-fc04-record-validation-implementation.md",
+      "section": "## Reviewed API and implementation boundary",
+      "kind": "statement",
+      "value": "The frozen 0 through 58 fixture remains historical evidence and supplies no current admissible record width.",
+      "reason": "The implementation companion keeps the frozen fixture historical."
     }
   ]
 }

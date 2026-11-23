@@ -2584,6 +2584,62 @@
       "kind": "statement",
       "value": "These settings have no SemReg element; they are documented registers decoded and callable by hand through MCP and GraphQL in the modbusreg namespace, as an advanced facility.",
       "reason": "Grid-code settings have no SemReg element."
+    },
+    {
+      "contract": "sunspec_grid_code",
+      "page": "protocols/sunspec/grid-code-settings-v1.md",
+      "section": "## Model 125",
+      "kind": "statement",
+      "value": "Model 125, Pricing, declared length 8.",
+      "reason": "Model 125 is the catalog pricing model of declared length 8."
+    },
+    {
+      "contract": "sunspec_grid_code",
+      "page": "protocols/sunspec/grid-code-settings-v1.md",
+      "section": "## Model 126",
+      "kind": "statement",
+      "value": "Model 126, Static Volt-VAR, declared length 10 + NCrv * 54.",
+      "reason": "Model 126 is the catalog static volt-var model."
+    },
+    {
+      "contract": "sunspec_grid_code",
+      "page": "protocols/sunspec/grid-code-settings-v1.md",
+      "section": "## Model 703",
+      "kind": "statement",
+      "value": "Model 703, Enter Service, declared length 17.",
+      "reason": "Model 703 is the catalog enter-service model of declared length 17."
+    },
+    {
+      "contract": "sunspec_grid_code",
+      "page": "protocols/sunspec/grid-code-settings-v1.md",
+      "section": null,
+      "kind": "statement",
+      "value": "A point in the tables is callable by hand only when its access is RW.",
+      "reason": "A hand call follows the access stated by the model definition."
+    },
+    {
+      "contract": "sunspec_grid_code",
+      "page": "protocols/sunspec/grid-code-settings-v1.md",
+      "section": "## Model 125",
+      "kind": "row",
+      "value": "| ModEna | 2 | 1 | bitfield16 | none | none | RW | ENABLE=0 | Mode-enable bits. | yes |",
+      "reason": "Model 125 ModEna is a writable catalog point."
+    },
+    {
+      "contract": "sunspec_grid_code",
+      "page": "protocols/sunspec/grid-code-settings-v1.md",
+      "section": "## Model 703",
+      "kind": "row",
+      "value": "| ES | 2 | 1 | enum16 | none | none | RW | DISABLED=0, ENABLED=1 | Enter-service permission. | yes |",
+      "reason": "Model 703 enter-service permission is a writable catalog point."
+    },
+    {
+      "contract": "sunspec_grid_code",
+      "page": "protocols/sunspec/grid-code-settings-v1.md",
+      "section": null,
+      "kind": "forbidden",
+      "value": "catalog defines none|defines no point rows",
+      "reason": "The page does not assert that the catalog defines no points."
     }
   ]
 }
