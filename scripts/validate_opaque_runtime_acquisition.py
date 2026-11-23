@@ -917,6 +917,18 @@ def _has_symlink_component(path: pathlib.Path) -> bool:
     return False
 
 
+def _require_prior_revision(
+    root: pathlib.Path,
+    prior_root: pathlib.Path | None,
+    manifest: dict[str, Any],
+    errors: list[str],
+) -> None:
+    if prior_root is None:
+        errors.append("prior revision check was not run")
+        return
+    _validate_prior_revision(root, prior_root, manifest, errors)
+
+
 def _validate_prior_revision(
     root: pathlib.Path,
     prior_root: pathlib.Path,
@@ -1185,8 +1197,7 @@ def validate(
             errors.append(f"policy contains forbidden legacy term: {term}")
 
     _validate_discoverability(root, errors, platform_root, source_pin)
-    if prior_root is not None:
-        _validate_prior_revision(root, prior_root, manifest, errors)
+    _require_prior_revision(root, prior_root, manifest, errors)
 
     return errors, policy_digest
 

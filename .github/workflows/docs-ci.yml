@@ -90,7 +90,7 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           repository: Project-Helianthus/helianthus-docs
-          ref: main
+          ref: ff8fccc7d5fbcbfe1e156fce302549d04a2f6228
           path: checkouts/docs
           clean: true
           persist-credentials: false

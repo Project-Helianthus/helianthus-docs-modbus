@@ -98,10 +98,26 @@ def refresh_policy_hash(root: pathlib.Path, manifest: dict[str, object]) -> None
     ).hexdigest()
 
 
-def test_repository_opaque_runtime_acquisition_contract_is_valid() -> None:
-    result = run_validator(REPO_ROOT)
+def empty_prior(path: pathlib.Path) -> pathlib.Path:
+    prior = path / "empty-prior"
+    prior.mkdir()
+    return prior
+
+
+def test_repository_opaque_runtime_acquisition_contract_is_valid(
+    tmp_path: pathlib.Path,
+) -> None:
+    prior = tmp_path / "prior"
+    prior.mkdir()
+    result = run_validator(REPO_ROOT, prior_root=prior)
     assert result.returncode == 0, result.stdout + result.stderr
     assert "opaque_runtime_acquisition_contract_ok" in result.stdout
+
+
+def test_omitted_prior_root_does_not_pass() -> None:
+    result = run_validator(REPO_ROOT)
+    assert result.returncode != 0
+    assert "prior revision check was not run" in result.stderr
 
 
 def test_empty_manifest_fails_closed(tmp_path: pathlib.Path) -> None:
@@ -184,6 +200,7 @@ def test_ledger_eviction_required_term_cannot_use_capability_occurrence(
     digest = hashlib.sha256(policy.read_bytes()).hexdigest()
     errors, _ = contract_validator.validate(
         root.resolve(),
+        empty_prior(tmp_path),
         expected_policy_sha256=digest,
         required_terms=(ledger_term,),
     )
@@ -212,6 +229,7 @@ def test_capability_eviction_required_term_cannot_use_ledger_occurrence(
     digest = hashlib.sha256(policy.read_bytes()).hexdigest()
     errors, _ = contract_validator.validate(
         root.resolve(),
+        empty_prior(tmp_path),
         expected_policy_sha256=digest,
         required_terms=(capability_term,),
     )
@@ -918,6 +936,7 @@ def test_each_required_normative_term_has_independent_diagnostic(
     digest = hashlib.sha256(policy.read_bytes()).hexdigest()
     errors, _ = contract_validator.validate(
         root.resolve(),
+        empty_prior(tmp_path),
         expected_policy_sha256=digest,
         required_terms=(term,),
     )
@@ -932,6 +951,7 @@ def test_required_term_loop_canary_fails_when_term_is_absent(
     canary = "required-term-loop-canary-that-is-not-in-policy"
     errors, _ = contract_validator.validate(
         root.resolve(),
+        empty_prior(tmp_path),
         expected_policy_sha256=digest,
         required_terms=(canary,),
     )
@@ -975,6 +995,7 @@ def test_required_terms_in_nonvisible_markdown_do_not_satisfy_contract(
     digest = hashlib.sha256(policy.read_bytes()).hexdigest()
     errors, _ = contract_validator.validate(
         root.resolve(),
+        empty_prior(tmp_path),
         expected_policy_sha256=digest,
         required_terms=(term,),
     )
@@ -1006,6 +1027,7 @@ def test_raw_html_cannot_hide_required_normative_text(
     digest = hashlib.sha256(policy.read_bytes()).hexdigest()
     errors, _ = contract_validator.validate(
         root.resolve(),
+        empty_prior(tmp_path),
         expected_policy_sha256=digest,
         required_terms=(term,),
     )

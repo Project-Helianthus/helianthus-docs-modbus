@@ -19,7 +19,7 @@ Their focused contract test is
 This packet refines the evidence and legacy-harness boundary in
 [`modbus-multivendor-boundaries.md`](./modbus-multivendor-boundaries.md). The
 Modbus transport operation boundary remains authoritative in
-[`modbus-foundation-profile-contract-v1.md`](./modbus-foundation-profile-contract-v1.md)
+[`modbus-foundation-profile-contract-v1.md`](https://github.com/Project-Helianthus/helianthus-docs-ebus/blob/main/docs/platform/modbus-foundation-profile-contract-v1.md)
 and its CC0 wire companion; this packet does not redefine Modbus framing.
 
 ## Evidence register

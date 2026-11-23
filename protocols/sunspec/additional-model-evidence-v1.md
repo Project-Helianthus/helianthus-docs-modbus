@@ -18,8 +18,8 @@ note does not state stay `Unknown`.
 The [original documentary note](https://github.com/Project-Helianthus/helianthus-docs-ebus/blob/977614c944cd685bef75b5b12148e1110ed7653a/protocols/sunspec/additional-model-evidence-v1.md)
 records grid/control model identifiers **125 through 145** in the Apache-2.0
 [SunSpec model catalog](https://github.com/sunspec/models). Models 125 through
-145 are registers in the
-modbusreg namespace, with no SemReg element. Unknown device and source facts
+145 are registers in the modbusreg namespace, with no SemReg element, and are
+decoded and callable by hand through MCP and GraphQL. Unknown device and source facts
 remain unknown. This range is outside the admitted V1 decoder catalog.
 
 The source also records the standard signature request context: **FC03, PDU
@@ -54,7 +54,7 @@ The [read-only V2 contract](read-only-core-v2.md) has a distinct schema revision
 and model scope. It is not a replacement for V1 and does not list models 125
 through 145. This note supplies no decoder key or fallback between V1 and V2.
 
-Models 125 through 145 are registers in the modbusreg namespace, with no SemReg element. Unknown device
+Models 125 through 145 are registers in the modbusreg namespace, with no SemReg element, and are decoded and callable by hand through MCP and GraphQL. Unknown device
 and source facts remain unknown. These facts do not establish device
 availability where the documentation does not state it. Missing or conflicting
 evidence remains fail-closed under the native contracts;

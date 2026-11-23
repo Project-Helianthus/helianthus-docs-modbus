@@ -68,6 +68,6 @@ partial group. No partial typed result is retained.
 
 ## Observed-state boundary
 
-Model 707 registers are in the modbusreg namespace, with no SemReg element. In particular, `Ena`,
+Model 707 registers are in the modbusreg namespace, with no SemReg element, and are decoded and callable by hand through MCP and GraphQL. In particular, `Ena`,
 `AdptCrvReq`, `ReadOnly`, every `ActPt`, and every point remain observations
 even where their wire access permits modification.

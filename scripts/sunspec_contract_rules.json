@@ -342,16 +342,16 @@
       "page": "protocols/sunspec/read-only-core-v2.md",
       "section": "## DER Trip nested geometry",
       "kind": "statement",
-      "value": "Models 707, 708, and 709 are registers in the modbusreg namespace, with no SemReg element.",
-      "reason": "Models 707, 708, and 709 are registers in the modbusreg namespace."
+      "value": "Models 707, 708, and 709 are registers in the modbusreg namespace, with no SemReg element, and are decoded and callable by hand through MCP and GraphQL.",
+      "reason": "Models 707, 708, and 709 are registers in the modbusreg namespace and are decoded and callable by hand through MCP and GraphQL."
     },
     {
       "contract": "v2_contract",
       "page": "protocols/sunspec/read-only-core-v2.md",
       "section": "## Control-observability boundary",
       "kind": "statement",
-      "value": "Model 703 enter-service settings are registers in the modbusreg namespace, with no SemReg element.",
-      "reason": "Model 703 enter-service settings are registers in the modbusreg namespace."
+      "value": "Model 703 enter-service settings are registers in the modbusreg namespace, with no SemReg element, and are decoded and callable by hand through MCP and GraphQL.",
+      "reason": "Model 703 enter-service settings are registers in the modbusreg namespace and are decoded and callable by hand through MCP and GraphQL."
     },
     {
       "contract": "v2_contract",
@@ -1350,8 +1350,8 @@
       "page": "protocols/sunspec/der-trip-lv-template-v2.md",
       "section": "## Observed-state boundary",
       "kind": "statement",
-      "value": "Model 707 registers are in the modbusreg namespace, with no SemReg element.",
-      "reason": "Model 707 registers are in the modbusreg namespace."
+      "value": "Model 707 registers are in the modbusreg namespace, with no SemReg element, and are decoded and callable by hand through MCP and GraphQL.",
+      "reason": "Model 707 registers are in the modbusreg namespace and are decoded and callable by hand through MCP and GraphQL."
     },
     {
       "contract": "der_trip_lv_template",
@@ -1422,8 +1422,8 @@
       "page": "protocols/sunspec/der-trip-lv-typed-fact-projection-v2.md",
       "section": "## Scope and non-emission",
       "kind": "statement",
-      "value": "Model 707 registers are in the modbusreg namespace, with no SemReg element.",
-      "reason": "Model 707 registers are in the modbusreg namespace."
+      "value": "Model 707 registers are in the modbusreg namespace, with no SemReg element, and are decoded and callable by hand through MCP and GraphQL.",
+      "reason": "Model 707 registers are in the modbusreg namespace and are decoded and callable by hand through MCP and GraphQL."
     },
     {
       "contract": "der_trip_lv_projection",
@@ -1774,8 +1774,8 @@
       "page": "protocols/sunspec/dynamic-structural-selection-v2.md",
       "section": "## Isolation and no activation",
       "kind": "statement",
-      "value": "Model 707 registers are in the modbusreg namespace, with no SemReg element.",
-      "reason": "Model 707 registers are in the modbusreg namespace."
+      "value": "Model 707 registers are in the modbusreg namespace, with no SemReg element, and are decoded and callable by hand through MCP and GraphQL.",
+      "reason": "Model 707 registers are in the modbusreg namespace and are decoded and callable by hand through MCP and GraphQL."
     },
     {
       "contract": "dynamic_structural_selection",

@@ -66,7 +66,13 @@ git() {
   case "$1" in
     ls-files) printf 'synthetic.md\n' ;;
     grep) return 1 ;;
-    -C) printf 'synthetic-pin\n' ;;
+    -C)
+      if [ "${3:-}" = "rev-parse" ] && [ "${2:-}" = "${HELIANTHUS_DOCS_ROOT}" ]; then
+        printf 'ff8fccc7d5fbcbfe1e156fce302549d04a2f6228\n'
+      else
+        printf 'synthetic-pin\n'
+      fi
+      ;;
     *) return 98 ;;
   esac
 }

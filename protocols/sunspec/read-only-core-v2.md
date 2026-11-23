@@ -75,7 +75,7 @@ operation from those words.
 No point in Model 715 creates a write method, send authority, operation admission,
 dispatch, retry, runtime activation, vendor activation, or catalog activation.
 
-Model 703 enter-service settings are registers in the modbusreg namespace, with no SemReg element.
+Model 703 enter-service settings are registers in the modbusreg namespace, with no SemReg element, and are decoded and callable by hand through MCP and GraphQL.
 A decoder may retain Model 703 observed words and derived state, including
 points that upstream describes as read/write.
 
@@ -109,7 +109,7 @@ For a model-specific point span `S`, the zero-based payload offset of
 offsets `+1`, `+2 + S*P`, and `+3 + 2*S*P`. Within each nested curve,
 `Pt[j]` begins one data register after `ActPt` plus `(j-1)*S`.
 
-Models 707, 708, and 709 are registers in the modbusreg namespace, with no SemReg element. They do not infer relationships to one another or to Models 710 through 712. Nothing is sent unless the operation is called.
+Models 707, 708, and 709 are registers in the modbusreg namespace, with no SemReg element, and are decoded and callable by hand through MCP and GraphQL. They do not infer relationships to one another or to Models 710 through 712. Nothing is sent unless the operation is called.
 
 ## DER Trip model-specific observed fields
 

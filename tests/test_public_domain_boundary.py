@@ -111,20 +111,58 @@ def test_rejects_project_named_application_contracts(tmp_path: Path, text: str) 
     assert violations(tmp_path)
 
 
+def test_hand_call_sentence_is_not_an_application_contract(tmp_path: Path) -> None:
+    document(
+        tmp_path,
+        "Models 707, 708, and 709 are registers in the modbusreg namespace, "
+        "with no SemReg element, and are decoded and callable by hand through "
+        "MCP and GraphQL.\n",
+    )
+    assert violations(tmp_path) == []
+
+
+def test_other_graphql_text_stays_an_application_contract(tmp_path: Path) -> None:
+    document(tmp_path, "The GraphQL planner admits this profile.\n")
+    assert violations(tmp_path)
+
+
 ROOT = Path(__file__).resolve().parents[1]
 COMMIT_ID = re.compile(r"\b[0-9a-f]{40}\b")
-BANNED_RECORD_TERM = re.compile(r"\bledger\b", re.IGNORECASE)
+# Match the token as written, including underscore-joined identifiers.
+BANNED_RECORD_TERM = re.compile(r"ledger", re.IGNORECASE)
+# Closed opaque-acquisition identifiers. Any other spelling, including the bare
+# word, stays banned on the named pages and on the acquisition manifest.
+OPAQUE_ACQUISITION_LEDGER_IDENTIFIERS = (
+    "ledger_admission_atomic_open_to_closing_blocks_new_registration",
+    "ledger_audit_tombstone_limit_finite_positive",
+    "ledger_audit_tombstone_max_encoded_bytes_finite_positive",
+    "ledger_audit_tombstone_max_encoded_bytes",
+    "ledger_audit_tombstone_limit",
+    "ledger_linearization_required",
+    "ledger_mutation",
+    "lowest_ledger_reserved_terminal_sequence_first",
+    "immutable_non_owning_not_retained_ledger_state",
+    "sealed_immutable_ledger_state_only",
+    "shared_ledger_owned_pointer",
+    "source_ledger_agreement",
+    "m2_ledger",
+)
 OWNER_FOUNDATION = (
     "https://github.com/Project-Helianthus/helianthus-docs-ebus/blob/main/"
     "docs/platform/modbus-foundation-profile-contract-v1.md"
 )
 JOURNAL_PAGES = (
     "docs/platform/opaque-runtime-acquisition-v1.md",
+    "docs/platform/manifests/opaque-runtime-acquisition-v1.json",
     "protocols/tesla/activation-evidence-worksheet.md",
     "protocols/tesla/activation-observation-hook-v1.md",
     "protocols/huawei/smartlogger-provider-lifecycle-v1.md",
     "protocols/huawei/luna2000-optional-group-v1.md",
 )
+OPAQUE_ACQUISITION_RECORDS = {
+    "docs/platform/opaque-runtime-acquisition-v1.md",
+    "docs/platform/manifests/opaque-runtime-acquisition-v1.json",
+}
 PROSE_WITHOUT_COMMIT_IDS = (
     "architecture/protocol-routing-vendor-sunspec-model-chain-v1.md",
     "protocols/sunspec/sunspec-model-chain-v1.md",
@@ -136,8 +174,13 @@ PROSE_WITHOUT_COMMIT_IDS = (
 )
 FOUNDATION_LINK_PAGES = (
     "docs/platform/opaque-runtime-acquisition-v1.md",
+    "docs/platform/fronius-sunspec-evidence-v1.md",
     "docs/platform/modbus-multivendor-boundaries.md",
     "development/modbus-sunspec-deduplication.md",
+)
+COMPANION_TEST_URL = (
+    "https://github.com/Project-Helianthus/helianthus-docs-ebus/blob/main/"
+    "tests/test_modbus_companion_contract.py"
 )
 
 
@@ -154,9 +197,23 @@ def test_retained_wire_page_keeps_its_local_license_link() -> None:
     assert violations(ROOT) == []
 
 
+def without_closed_acquisition_identifiers(text: str) -> str:
+    for identifier in sorted(OPAQUE_ACQUISITION_LEDGER_IDENTIFIERS, key=len, reverse=True):
+        text = text.replace(identifier, "")
+    return text
+
+
+def test_banned_record_term_matches_the_token_inside_an_identifier() -> None:
+    assert BANNED_RECORD_TERM.search("m2_ledger")
+    assert BANNED_RECORD_TERM.search("ledger_audit_tombstone_limit")
+    assert BANNED_RECORD_TERM.search("shared_ledger_owned_pointer")
+
+
 def test_named_pages_do_not_use_the_banned_record_term() -> None:
     for relative in JOURNAL_PAGES:
         text = (ROOT / relative).read_text(encoding="utf-8")
+        if relative in OPAQUE_ACQUISITION_RECORDS:
+            text = without_closed_acquisition_identifiers(text)
         assert BANNED_RECORD_TERM.search(text) is None, relative
 
 
@@ -175,3 +232,7 @@ def test_retained_foundation_contract_links_use_the_owner_url() -> None:
         assert "](./modbus-foundation-profile-contract-v1.md" not in text
         assert "](../docs/platform/modbus-foundation-profile-contract-v1.md" not in text
         assert "](../docs/platform/manifests/modbus-foundation-profile-contract-v1.json" not in text
+    dedup = (ROOT / "development/modbus-sunspec-deduplication.md").read_text(encoding="utf-8")
+    assert COMPANION_TEST_URL in dedup
+    assert "](../tests/test_modbus_companion_contract.py" not in dedup
+    assert "#L" not in dedup

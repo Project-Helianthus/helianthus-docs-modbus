@@ -44,3 +44,23 @@ def test_receiver_workflow_has_no_local_combined_ref_caller():
     assert "checkouts/docs-modbus" in checkout_paths
     assert "checkouts/docs-modbus-base" in checkout_paths
     assert "checkouts/docs" in checkout_paths
+
+
+NN03_MERGED_REVISION = "ff8fccc7d5fbcbfe1e156fce302549d04a2f6228"
+
+
+def test_hosted_and_local_callers_use_the_merged_nn03_revision():
+    workflow = load(DOCS_CI)
+    docs = workflow["jobs"]["markdown-checks"]
+    platform = [
+        step
+        for step in docs["steps"]
+        if step.get("with", {}).get("path") == "checkouts/docs"
+    ]
+    assert len(platform) == 1
+    assert platform[0]["with"]["repository"] == "Project-Helianthus/helianthus-docs"
+    assert platform[0]["with"]["ref"] == NN03_MERGED_REVISION
+    local = (ROOT / "scripts/ci_local.sh").read_text(encoding="utf-8")
+    assert f'nn03_revision="{NN03_MERGED_REVISION}"' in local
+    assert 'echo "NN03 platform revision ${actual_nn03}"' in local
+    assert 'git -C "${HELIANTHUS_DOCS_ROOT}" rev-parse HEAD' in local

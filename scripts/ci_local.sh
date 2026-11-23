@@ -204,6 +204,14 @@ if [ -z "${HELIANTHUS_DOCS_ROOT:-}" ] || [ ! -f "${HELIANTHUS_DOCS_ROOT}/scripts
   echo "HELIANTHUS_DOCS_ROOT must name the helianthus-docs checkout that provides scripts/validate_platform_contracts.py." >&2
   exit 2
 fi
+# Hosted Docs Checks check out this same merged NN03 revision and this script records it.
+nn03_revision="ff8fccc7d5fbcbfe1e156fce302549d04a2f6228"
+actual_nn03="$(git -C "${HELIANTHUS_DOCS_ROOT}" rev-parse HEAD)"
+echo "NN03 platform revision ${actual_nn03}"
+if [ "${actual_nn03}" != "${nn03_revision}" ]; then
+  echo "HELIANTHUS_DOCS_ROOT is ${actual_nn03}; the exact merged NN03 revision is ${nn03_revision}." >&2
+  exit 2
+fi
 PYTHONPATH="${HELIANTHUS_DOCS_ROOT}/scripts${PYTHONPATH:+:$PYTHONPATH}" python3 - <<'PY'
 from __future__ import annotations
 

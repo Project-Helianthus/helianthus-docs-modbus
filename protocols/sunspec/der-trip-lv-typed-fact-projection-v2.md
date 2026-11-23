@@ -6,7 +6,7 @@ This page defines the stable typed-fact names, value rules, and public offline
 projection API that a separately reviewed implementation may use for exactly
 Model 707 under `sunspec.models@90b4a331-v2`. It selects no model and authorizes no profile.
 
-Model 707 registers are in the modbusreg namespace, with no SemReg element. Nothing is sent unless the operation is called.
+Model 707 registers are in the modbusreg namespace, with no SemReg element, and are decoded and callable by hand through MCP and GraphQL. Nothing is sent unless the operation is called.
 
 ## Public offline projection API
 

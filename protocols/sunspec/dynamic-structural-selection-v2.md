@@ -59,4 +59,4 @@ V1 selection, keys, raw outputs, and behavior remain unchanged. Models 708 and
 709 remain outside this contract and do not become candidates through Model
 707 data or structure.
 
-Model 707 registers are in the modbusreg namespace, with no SemReg element. Nothing is sent unless the operation is called.
+Model 707 registers are in the modbusreg namespace, with no SemReg element, and are decoded and callable by hand through MCP and GraphQL. Nothing is sent unless the operation is called.

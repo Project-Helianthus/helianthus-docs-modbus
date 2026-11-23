@@ -23,6 +23,20 @@ def text(path: Path) -> str:
     return path.read_text(encoding="utf-8")
 
 
+def test_sunspec_pages_state_mcp_and_graphql_callability() -> None:
+    phrase = "decoded and callable by hand through MCP and GraphQL"
+    expectations = {
+        "protocols/sunspec/read-only-core-v2.md": 2,
+        "protocols/sunspec/additional-model-evidence-v1.md": 2,
+        "protocols/sunspec/der-trip-lv-template-v2.md": 1,
+        "protocols/sunspec/der-trip-lv-typed-fact-projection-v2.md": 1,
+        "protocols/sunspec/dynamic-structural-selection-v2.md": 1,
+    }
+    for relative, count in expectations.items():
+        normalized = " ".join((ROOT / relative).read_text(encoding="utf-8").split())
+        assert normalized.count(phrase) >= count, relative
+
+
 def test_application_contract_keeps_neutral_protocol_sources_separate() -> None:
     readme = text(SUNSPEC_README)
     contract = text(CHAIN_CONTRACT)

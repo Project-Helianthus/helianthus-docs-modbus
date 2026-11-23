@@ -10,6 +10,12 @@ from pathlib import Path
 
 PROJECT = re.compile(r"\b(?:Helianthus|VRC[ -]Explorer)\b", re.IGNORECASE)
 APP_TEXT = re.compile(r"\b(?:planner|GraphQL|MCP|Portal|Browser)\b", re.IGNORECASE)
+# Item 48 requires this hand-call sentence on the SunSpec register pages.
+# It names the namespace operations and does not admit any other application text.
+HAND_CALL = re.compile(
+    r"decoded and callable by hand through MCP and GraphQL\b",
+    re.IGNORECASE,
+)
 ARGV = re.compile(r"(?<![\w#/-])--[a-z][a-z0-9-]*(?=[\s`=,.;)]|$)")
 URL = re.compile(r"https?://[^\s)<>]+")
 LINK = re.compile(r"\]\(([^\s)]+)\)")
@@ -59,6 +65,15 @@ def project_name_violation(line: str, source: bool, exclusion: bool) -> bool:
     if APPLICATION_FRAMING.search(line):
         return True
     return not (NAME_CONTEXT.search(line) or NAME_CONTEXT_MORE.search(line) or CITATION.search(line))
+
+
+def application_text(prose: str) -> bool:
+    """Reject application words. The hand-call sentence may name MCP and GraphQL."""
+    if not APP_TEXT.search(prose):
+        return False
+    if not HAND_CALL.search(prose):
+        return True
+    return APP_TEXT.search(HAND_CALL.sub("", prose)) is not None
 
 
 def unpublishable_attribution(root: Path) -> list[str]:
@@ -111,7 +126,7 @@ def violations(root: Path) -> list[str]:
                     errors.append(
                         f"{path.relative_to(root)}:{number}: CLI argument in CC0 reference"
                     )
-                if APP_TEXT.search(prose) or project_name_violation(
+                if application_text(prose) or project_name_violation(
                     prose, source, exclusion
                 ):
                     errors.append(
