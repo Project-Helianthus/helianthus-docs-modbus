@@ -7,10 +7,11 @@ The SunSpec phase-one change in
 declares the vendor-neutral `sunspec.phase1` profile for Common model `1` and
 inverter models `101`, `102`, and `103` as `qualified`, `active`, and
 default-enabled. The detector records maturity and the default-enabled flag but
-does not reject a catalog profile on either field. A candidate still needs an
-active profile, an enabled detector declaration, applicable fixture opt-in, and
-matching documented identity evidence; revoked and superseded profiles do not
-match. This is standard-profile admission, not a Fronius flavor or product
+does not reject a catalog profile on either field. Eligibility requires an
+active profile, an enabled detector declaration, and applicable fixture opt-in;
+revoked and superseded profiles do not match. A positive detector match then
+checks manufacturer, model, and firmware identity from the declared probes.
+This is standard-profile admission, not a Fronius flavor or product
 qualification. Physical hardware verification remains a separately recorded
 level, and no live result is claimed here.
 
