@@ -20,7 +20,12 @@ Implementation-neutral wire references remain separately under CC0-1.0 in
   model and bounds nothing.
 - [`additional-model-evidence-v1.md`](protocol-routing-vendor-sunspec-additional-model-evidence-v1.md)
   records the FMV3-M7-01 manufacturer-neutral candidate sets and read-only
-  admission boundary for later standard-model expansion.
+  admission boundary for later standard-model expansion. The same page records
+  the grid-support hand-write surface and the model 703 enter-service voltage
+  thresholds.
+- [`sunspec-model-chain-v1.md`](protocol-routing-vendor-sunspec-model-chain-v1.md)
+  states the multi-register data-encoding rule. Models 708 and 709 refer to
+  that rule for their 32-bit writable points.
 
 The page is an independently authored contract. It does not redistribute
 upstream specification text, model files, vendor manuals, or vendor register

@@ -317,3 +317,15 @@ vendor flavors. The gateway only acquires, schedules, activates, and dispatches
 already-defined registry outcomes. Private bindings consume later canonical
 facts only. This documentation change does not authorize changes in any of
 those repositories.
+
+## Multi-register data encoding
+
+The SunSpec Device Information Model Specification v1.2, section Data
+Encoding, fixes one rule for every model. A value that spans several registers
+is sent most significant register first, and each register is sent most
+significant byte first. This page states that rule once. Declared from the
+specification. A hardware test is a later level.
+
+Model 708 uses this rule for its writable `Tms` points. Model 709 uses this
+rule for its writable `Hz` and `Tms` points. The point rows of those models
+do not restate the rule.
