@@ -1400,6 +1400,8 @@ its device models on page 6. The access column is the access the edition records
 not qualified writable support.
 Writable support: verified only for device models of the SUN2000HB family at that firmware floor.
 
+`hb.control.dispatch.40129` records quantity 1 and type I32. Those disagree, so this setting is unsupported until its geometry is established and no hand call writes it.
+
 ### Dispatch settings
 
 | point key | address | quantity | type | gain | unit | access (RO, RW or WO as the card gives) | range or dictionary | functional class | meaning (own words) |
@@ -1410,7 +1412,7 @@ Writable support: verified only for device models of the SUN2000HB family at tha
 | hb.control.dispatch.40040 | 40040 | 1 | I16 | 100 | % | RW | unknown | dispatch-settings | Dispatch setting. Name unknown. |
 | hb.control.dispatch.40043 | 40043 | 2 | I32 | 1000 | kW | RW | unknown | dispatch-settings | Dispatch setting. Name unknown. |
 | hb.control.dispatch.40122 | 40122 | 1 | I16 | 1000 | unknown | RW | unknown | dispatch-settings | Dispatch setting. Name unknown. |
-| hb.control.dispatch.40129 | 40129 | 1 | I32 | 1000 | kVar | RW | unknown | dispatch-settings | Dispatch setting. Name unknown. write-only command class. |
+| hb.control.dispatch.40129 | 40129 | 1 | I32 | 1000 | kVar | RW | unknown | dispatch-settings | Dispatch setting. Name unknown. Quantity 1 and type I32 disagree, so this setting is unsupported until its geometry is established. No hand call writes it. |
 | hb.control.dispatch.40133 | 40133 | 21 | MLD | 1 | unknown | RW | unknown | dispatch-settings | Dispatch block of 21 registers. Interior unknown. |
 | hb.control.dispatch.40154 | 40154 | 21 | MLD | 1 | unknown | RW | unknown | dispatch-settings | Dispatch block of 21 registers. Interior unknown. |
 | hb.control.dispatch.40175 | 40175 | 21 | MLD | 1 | unknown | RW | unknown | dispatch-settings | Dispatch block of 21 registers. Interior unknown. |
@@ -1449,6 +1451,7 @@ No row in this block.
 - Unnamed inverter dispatch rows stay unnamed.
 - The inner layout of each quantity-21 curve block is missing.
 - Quarantine D01 merged enumerations stay unsplit.
+- `hb.control.dispatch.40129` stays unsupported until its geometry is established.
 
 ## HD
 

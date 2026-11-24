@@ -32,7 +32,8 @@ PROBES = {
     'bms_contract': ('/Users/example/private-capture', 'sha256-deadbeef01234567',
                      'The vendor material is public domain.', 'canonical facts',
                      'gateway.example.internal:1502', '192.0.2.1', 'port 1502',
-                     '0123456789abcdef' * 2 + '01234567', '0123456789abcdef' * 4),
+                     '0123456789abcdef' * 2 + '01234567', '0123456789abcdef' * 4,
+                     'The control and calibration words the document defines are read and published natively.'),
     'protocol_ii_source_matrix': ('https://example.invalid/', '/Users/example', '192.0.2.1',
                                   'gateway.example.internal:1502', 'Port 502'),
     'wit_matrix': ('VPP reads are permitted.', 'Growatt Protocol II applies to a WIT family.',
@@ -47,7 +48,8 @@ ORIGINAL_FORBIDDEN = {
         r'|sunspec\.inverter\.|canonical facts)',
         '(^|[^[:xdigit:]])[[:xdigit:]]{40}([^[:xdigit:]]|$)|(^|[^[:xdigit:]])[[:xdigit:]]{64}'
         r'([^[:xdigit:]]|$)|([0-9]{1,3}\.){3}[0-9]{1,3}|([[:alnum:]][[:alnum:].-]*):([0-9]{1,5}'
-        '|[[:alpha:]][[:alnum:].-]*)|[Pp]ort[[:space:]]+[0-9]{1,5}'),
+        '|[[:alpha:]][[:alnum:].-]*)|[Pp]ort[[:space:]]+[0-9]{1,5}',
+        'The control and calibration words the document defines are read and published natively\\.'),
     'protocol_ii_source_matrix': (
         r'https?://|/[Uu]sers/|([0-9]{1,3}\.){3}[0-9]{1,3}|([[:alnum:]][[:alnum:].-]*):([0-9]{1,5}'
         '|[[:alpha:]][[:alnum:].-]*)|[Pp]ort[[:space:]]+[0-9]{1,5}',),
@@ -268,6 +270,21 @@ class GrowattContractRules(unittest.TestCase):
                 self.assert_contract_fails('bms_contract', 'slice')
         self.write(BMS, original.replace('## Offline identity tuple\n', '## Offline identity tuple\n\n- offset 0x0029 is cell-series count context.\n'))
         self.assertEqual(self.run_contract('bms_contract').returncode, 0)
+
+    def test_excluded_control_words_are_not_a_publication_requirement(self):
+        original = self.page_text(BMS)
+        old = ('The control and calibration words the document defines are read and '
+               'published natively.')
+        held = ('Control and calibration words at offset 0x010C and offsets 0x010F '
+                'through 0x0161 stay outside the admitted read plan and stay unpublished.')
+        self.assertNotIn(old, original)
+        self.assertIn(held, original)
+        self.write(BMS, original.replace(held, old))
+        self.assert_contract_fails('bms_contract', 'statement')
+        self.restore(BMS)
+        self.write(BMS, original + '\n' + old + '\n')
+        self.assert_contract_fails('bms_contract', 'forbidden')
+        self.restore(BMS)
 
     def test_matrix_rows_are_exact_ordered_and_bounded_to_their_section(self):
         original = self.page_text(WIT)

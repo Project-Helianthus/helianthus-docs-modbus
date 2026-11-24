@@ -557,6 +557,32 @@ class VendorContractRules(unittest.TestCase):
         self.assert_contract_fails('huawei_grid_code', 'statement')
         self.restore(page)
 
+    def test_hb_40129_geometry_is_not_a_verified_write(self):
+        """HB 40129 keeps quantity 1 and type I32 and is not a hand write.
+
+        Replacing the unsupported mark with a verified write fails the card
+        statement.
+        """
+        page = 'protocols/huawei/grid-code-settings-v1.md'
+        text = self.page_text(page)
+        prefix = '| hb.control.dispatch.40129 |'
+        rows = [line for line in text.split('\n') if line.startswith(prefix)]
+        self.assertEqual(len(rows), 1)
+        self.assertIn('| 40129 | 1 | I32 |', rows[0])
+        self.assertNotIn('write-only', rows[0])
+        self.assertIn('unsupported until its geometry is established', rows[0])
+        mark = (
+            '`hb.control.dispatch.40129` records quantity 1 and type I32. '
+            'Those disagree, so this setting is unsupported until its '
+            'geometry is established and no hand call writes it.')
+        self.assertIn(mark, text)
+        verified = 'hb.control.dispatch.40129 is verified writable.'
+        unsafe = text.replace(mark, verified)
+        self.assertNotEqual(unsafe, text)
+        self.write(page, unsafe)
+        self.assert_contract_fails('huawei_grid_code', 'statement')
+        self.restore(page)
+
 
 if __name__ == '__main__':
     unittest.main()

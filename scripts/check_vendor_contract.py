@@ -56,7 +56,7 @@ EXPECTED = {
     ('sdongle_page', 'heading'): 6,
     ('sdongle_page', 'statement'): 3,
     ('huawei_grid_code', 'heading'): 34,
-    ('huawei_grid_code', 'statement'): 36,
+    ('huawei_grid_code', 'statement'): 37,
     ('huawei_sun2000_relations', 'heading'): 1,
     ('huawei_sun2000_relations', 'row'): 4,
     ('huawei_sun2000_relations', 'statement'): 1,

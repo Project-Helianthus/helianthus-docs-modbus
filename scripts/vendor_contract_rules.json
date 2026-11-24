@@ -1948,6 +1948,14 @@
     {
       "contract": "huawei_grid_code",
       "page": "protocols/huawei/grid-code-settings-v1.md",
+      "section": "## HB",
+      "kind": "statement",
+      "value": "`hb.control.dispatch.40129` records quantity 1 and type I32. Those disagree, so this setting is unsupported until its geometry is established and no hand call writes it.",
+      "reason": "HB address 40129 keeps quantity 1 and type I32, so the setting stays unsupported and unwritten until its geometry is established."
+    },
+    {
+      "contract": "huawei_grid_code",
+      "page": "protocols/huawei/grid-code-settings-v1.md",
       "section": "## HD",
       "kind": "statement",
       "value": "Source edition: SUN2000HD V100R026C00 Modbus Interface Definitions, Issue 01, 2026-03-30. Family: SUN2000HD. Firmware floor: SUN2000HD V100R026C00. The edition lists its device models on page 6. The access column is the access the edition records and is not qualified writable support. Writable support: verified only for device models of the SUN2000HD family at that firmware floor.",
