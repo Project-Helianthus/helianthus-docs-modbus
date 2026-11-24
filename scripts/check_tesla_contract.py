@@ -35,7 +35,7 @@ EXPECTED = {
     ('gen3_public_protocol', 'forbidden'): 1,
     ('gen3_public_protocol', 'allowed_digest'): 16,
     ('generation', 'heading'): 19,
-    ('generation', 'statement'): 25,
+    ('generation', 'statement'): 28,
     ('generation', 'forbidden'): 1,
     ('legacy_evse_current', 'heading'): 1,
     ('legacy_evse_current', 'statement'): 7,
@@ -49,8 +49,8 @@ EXPECTED = {
     ('current_limit_operation', 'statement'): 44,
     ('current_limit_operation', 'forbidden'): 1,
     ('read_acquisition', 'heading'): 13,
-    ('read_acquisition', 'row'): 5,
-    ('read_acquisition', 'statement'): 47,
+    ('read_acquisition', 'row'): 6,
+    ('read_acquisition', 'statement'): 51,
     ('read_acquisition', 'forbidden'): 1,
     ('tedapi', 'heading'): 11,
     ('tedapi', 'statement'): 1,
@@ -58,6 +58,8 @@ EXPECTED = {
     ('evse_scope', 'row'): 8,
     ('evse_scope', 'statement'): 12,
     ('evse_scope', 'forbidden'): 1,
+    ('gen3_semreg_mapping', 'heading'): 3,
+    ('gen3_semreg_mapping', 'statement'): 10,
 }
 CONTRACTS = frozenset(contract for contract, _ in EXPECTED)
 PAGE = re.compile(r'protocols/tesla/[a-z0-9]+(?:-[a-z0-9]+)*\.md')

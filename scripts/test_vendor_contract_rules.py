@@ -29,15 +29,10 @@ SPEC.loader.exec_module(ENGINE)
 
 # Synthetic lines that each forbidden rule of a contract must reject.
 PROBES = {
-    'fronius_qualification': ('live_qualified=true', 'automatic_runtime_admission: true',
-                              'write_authority = true', 'A support claim is established.',
-                              'A partial positive result is permitted.'),
-    'huawei_qualification': ('automatic_runtime_admission=true', 'live_qualified: true',
-                             'support_claim=true', 'write_authority  true', 'automatic_request_count=3',
-                             'fallback_attempted=true',
+    'fronius_qualification': ('A partial positive result is permitted.',),
+    'huawei_qualification': ('fallback_attempted=true',
                              'Missing or unavailable native values are reported as numeric zero.'),
-    'huawei_disposition': ('Registers are inferred from SmartLogger.', 'SUN2000 is supported.',
-                           'LUNA2000 is qualified.', 'Both classes are admitted.', 'FC0x41 is permitted.',
+    'huawei_disposition': ('Registers are inferred from SmartLogger.', 'FC0x41 is permitted.',
                            'FC0x17 is enabled.', 'An absent group yields zero.',
                            'An absent group reports numeric zero.'),
 }
@@ -46,14 +41,12 @@ PROBES = {
 # they reject must stay rejected by the rule that replaced them.
 ORIGINAL_FORBIDDEN = {
     'fronius_qualification': (
-        'live_qualified[=: ]+true|automatic_runtime_admission[=: ]+true|write_authority[=: ]+true'
-        '|support claim is established|partial positive result is permitted',),
+        'partial positive result is permitted',),
     'huawei_qualification': (
-        'automatic_runtime_admission[=: ]+true|live_qualified[=: ]+true|support_claim[=: ]+true'
-        '|write_authority[=: ]+true|automatic_request_count[=: ]+[1-9]|fallback_attempted[=: ]+true'
+        'fallback_attempted[=: ]+true'
         '|missing or unavailable native values.*numeric zero',),
     'huawei_disposition': (
-        r'registers? (is|are) (inferred|assumed) from|(is|are) (supported|qualified|admitted)\.'
+        r'registers? (is|are) (inferred|assumed) from'
         '|FC0x(41|17) (is|are) (permitted|allowed|enabled)|absent group (yields|reports) (numeric )?zero',),
 }
 
@@ -71,6 +64,8 @@ GATE_OPTIONS = {
     'fronius_qualification': '--check-fronius-qualification-readiness',
     'huawei_qualification': '--check-huawei-qualification-readiness',
     'huawei_disposition': '--check-huawei-inverter-battery-disposition',
+    'huawei_grid_code': '--check-huawei-grid-code-settings',
+    'huawei_sun2000_relations': '--check-huawei-sun2000-semreg-relations',
 }
 
 
@@ -527,6 +522,92 @@ class VendorContractRules(unittest.TestCase):
         self.write(PRIVATE, self.page_text(PRIVATE).replace('## RTU serialization', '## Serialization'))
         self.assertNotEqual(self.gate(GATE_OPTIONS['private_function'], self.copies[PRIVATE]), 0)
         self.restore(PRIVATE)
+
+    def test_each_huawei_grid_card_cites_source_or_withholds_writes(self):
+        """Each grid-code card cites its source edition or withholds writes.
+
+        A catalog file name is not applicability. Replacing a verified limit
+        or an unsupported mark with a blanket qualified write fails the card
+        statement.
+        """
+        page = 'protocols/huawei/grid-code-settings-v1.md'
+        text = self.page_text(page)
+        lines = text.split('\n')
+        headings = [rule for rule in ENGINE.load_rules(RULES)
+                    if rule['contract'] == 'huawei_grid_code' and rule['kind'] == 'heading']
+        self.assertEqual(len(headings), 34)
+        for rule in headings:
+            start, end = ENGINE.section_bounds(lines, rule['value'])
+            section = '\n'.join(lines[start:end])
+            self.assertIn('Source edition:', section)
+            self.assertTrue(
+                'Writable support: verified only for' in section
+                or 'Writable support: unsupported.' in section,
+                rule['value'])
+        verified = ('Writable support: verified only for device models of the SUN2000L family '
+                    'at that firmware floor.')
+        unsafe = text.replace(verified, 'Writable support: qualified for every device.', 1)
+        self.assertNotEqual(unsafe, text)
+        self.write(page, unsafe)
+        self.assert_contract_fails('huawei_grid_code', 'statement')
+        self.restore(page)
+        unsafe = text.replace('Writable support: unsupported.', 'Writable support: qualified.', 1)
+        self.assertNotEqual(unsafe, text)
+        self.write(page, unsafe)
+        self.assert_contract_fails('huawei_grid_code', 'statement')
+        self.restore(page)
+
+    def test_hb_40129_geometry_is_not_a_verified_write(self):
+        """HB 40129 keeps quantity 1 and type I32 and is not a hand write.
+
+        Replacing the unsupported mark with a verified write fails the card
+        statement.
+        """
+        page = 'protocols/huawei/grid-code-settings-v1.md'
+        text = self.page_text(page)
+        prefix = '| hb.control.dispatch.40129 |'
+        rows = [line for line in text.split('\n') if line.startswith(prefix)]
+        self.assertEqual(len(rows), 1)
+        self.assertIn('| 40129 | 1 | I32 |', rows[0])
+        self.assertNotIn('write-only', rows[0])
+        self.assertIn('unsupported until its geometry is established', rows[0])
+        mark = (
+            '`hb.control.dispatch.40129` records quantity 1 and type I32. '
+            'Those disagree, so this setting is unsupported until its '
+            'geometry is established and no hand call writes it.')
+        self.assertIn(mark, text)
+        verified = 'hb.control.dispatch.40129 is verified writable.'
+        unsafe = text.replace(mark, verified)
+        self.assertNotEqual(unsafe, text)
+        self.write(page, unsafe)
+        self.assert_contract_fails('huawei_grid_code', 'statement')
+        self.restore(page)
+
+    def test_battery_groups_name_packs_and_keep_map0_native(self):
+        text = (ROOT / 'protocols/huawei/monitoring-readonly-v1.md').read_text(encoding='utf-8')
+        required = (
+            '## Battery groups',
+            'offsets 37000 through 37068',
+            'offsets 37741 through 37786',
+            'Packs 1 to 3',
+            "A pack's identity anchor is its native position under the configured battery",
+            'pack 1, pack 2, and pack 3 stay the same start after start',
+            'including MAP0, the words stay native and named',
+            'A zero word on an inverter without a battery is not a value.',
+            '| 37000 | 1 | U16, gain 1 |',
+            '| 37741 | 1 | U16, gain 1 |',
+            '| 37786 | 2 | U32, gain 100 |',
+            '38200 + 126*(u-1) + 42*(n-1)',
+        )
+        for phrase in required:
+            self.assertIn(phrase, text)
+        start = text.index('## Battery groups\n')
+        end = text.index('## Derived notes\n')
+        self.assertLess(start, end)
+        removed = text[:start] + text[end:]
+        self.assertNotEqual(removed, text)
+        for phrase in required:
+            self.assertNotIn(phrase, removed)
 
 
 if __name__ == '__main__':

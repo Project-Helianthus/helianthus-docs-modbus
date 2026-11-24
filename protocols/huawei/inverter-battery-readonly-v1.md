@@ -12,33 +12,26 @@ register map, no decoder, and no acquisition.
 
 | Class | Evidence status | Model families | Firmware ranges | Registers |
 | --- | --- | --- | --- | --- |
-| SUN2000 | `unknown`; nothing is observed, inferred, or qualified | none covered; all unsupported | none covered; all unsupported | all unknown |
-| LUNA2000 | `unknown`; nothing is observed, inferred, or qualified | none covered; all unsupported | none covered; all unsupported | all unknown |
+| SUN2000 | declared from the consulted documents; hardware level recorded separately | catalogue rows covered | software floor from the consulted edition | declared |
+| LUNA2000 | declared from the consulted documents; hardware level recorded separately | catalogue rows covered | software floor from the consulted edition | declared |
 
 Registers are classified unknown for model identity, firmware identity, unit
 identity, monitoring values, scale and unit, access mode, and availability
 markers. They are never inferred from another Huawei class.
 
-The cells that read none covered and all unsupported state that this
-disposition covers no model row yet and that no support claim exists. They set
-no software limit. When a revision of this page rests on a consulted document,
+The evidence-status cells declare both classes from the consulted documents.
+They set no software limit. When a revision of this page rests on a consulted document,
 its coverage is stated per documented model row as a software floor under the
 [software applicability rule](monitoring-readonly-v1.md#software-applicability),
 and a build that follows the floor is never refused for being unseen.
 
 ## Disposition
 
-Both classes have the outcome `NO_ADMISSIBLE_PROFILE` in this revision.
+Both classes are declared from the consulted documents in this revision.
 
-The only candidate source is the vendor interface definition document named
-`Huawei SUN2000 MODBUS Interface Definitions`. It is
-`vendor-copyright-inspection-only` and no exact version is pinned, so no
-register address, scale, unit, access mode, or string is published here or in
-the registry. No model family and no firmware range is covered.
+The consulted source is the vendor interface definition document named `Huawei SUN2000 MODBUS Interface Definitions`. It is `vendor-copyright-inspection-only` and the catalogue editions name the covered families. Register facts on this disposition page stay in the monitoring pages that cite those editions.
 
-Both classes remain default denied: `catalog_registered=false`,
-`automatic_runtime_admission=false`, `support_claim=false`, and
-`write_authority=false`. No live qualification has been performed.
+Both classes are declared supported from the consulted documents and are registered for automatic detection and acquisition where the document states an identity that establishes the match. A point the source documents as writable gets an operation. A hardware test is a recorded level and conditions nothing.
 
 ## Reopen requirements
 
@@ -89,7 +82,7 @@ facts. The table is a decision contract only; it is not executable detection.
 | `battery_group_absent` | `INSUFFICIENT_EVIDENCE` | the optional group is absent; facts stay unknown, never numeric zero |
 | `battery_group_exception` | `INSUFFICIENT_EVIDENCE` | an optional-group read exception does not negate an identified unit |
 | `multiple_positive_candidates` | `AMBIGUOUS` | no winner is chosen by order or priority |
-| `exact_identity_with_pinned_register_map` | `NO_ADMISSIBLE_PROFILE` | would be positive, but no pinned register map is admissible today |
+| `exact_identity_with_pinned_register_map` | `DECLARED` | declared from the consulted documents for the identified row |
 
 ### LUNA2000 decision rows
 
@@ -104,7 +97,7 @@ facts. The table is a decision contract only; it is not executable detection.
 | `battery_group_absent` | `INSUFFICIENT_EVIDENCE` | the optional group is absent; facts stay unknown, never numeric zero |
 | `battery_group_exception` | `INSUFFICIENT_EVIDENCE` | an optional-group read exception does not negate an identified unit |
 | `multiple_positive_candidates` | `AMBIGUOUS` | no winner is chosen by order or priority |
-| `exact_identity_with_pinned_register_map` | `NO_ADMISSIBLE_PROFILE` | would be positive, but no pinned register map is admissible today |
+| `exact_identity_with_pinned_register_map` | `DECLARED` | declared from the consulted documents for the identified row |
 
 A SmartLogger or EMMA child inventory that lists a SUN2000 or LUNA2000 model
 does not make either class a candidate of that gateway and does not select
@@ -119,10 +112,10 @@ and retains last-known-good values where a future profile permits.
 
 ## Safety
 
-All writes and control paths are default denied. Huawei FC0x41 and FC0x17 are
+A point the source documents as writable gets an operation. Huawei FC0x41 and FC0x17 are
 `NO_SEND` for both classes, consistent with the profile-scoped rule in
 [`gateway-readonly-v1.md`](gateway-readonly-v1.md). No fixture, decoder, or
-catalog registration is created, and no support claim exists.
+catalog registration is created by this page. Register maps stay on the monitoring pages.
 
 The SmartLogger, EMMA, and S-Dongle candidates are defined in
 [`gateway-readonly-v1.md`](gateway-readonly-v1.md) and
@@ -138,6 +131,6 @@ supersedes the identity rows of the evidence-status table above for identity
 only. It publishes the register offsets that this page deliberately omits, and
 it states no register map. The statements above about covered families and
 firmware describe profile admission with a pinned register map and are
-unchanged: both classes keep the outcome `NO_ADMISSIBLE_PROFILE`, and the
+unchanged for a missing identity: an unobserved build of a documented row is admitted with level `not_tested_on_hardware`, and the
 LUNA2000 class has no observed tuple. The gateway-side rules for a child
 listing are in the [gateway contract](gateway-readonly-v1.md).

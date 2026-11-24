@@ -32,7 +32,8 @@ PROBES = {
     'bms_contract': ('/Users/example/private-capture', 'sha256-deadbeef01234567',
                      'The vendor material is public domain.', 'canonical facts',
                      'gateway.example.internal:1502', '192.0.2.1', 'port 1502',
-                     '0123456789abcdef' * 2 + '01234567', '0123456789abcdef' * 4),
+                     '0123456789abcdef' * 2 + '01234567', '0123456789abcdef' * 4,
+                     'Control and calibration words at offset 0x010C and offsets 0x010F through 0x0161 stay outside the admitted read plan and stay unpublished.'),
     'protocol_ii_source_matrix': ('https://example.invalid/', '/Users/example', '192.0.2.1',
                                   'gateway.example.internal:1502', 'Port 502'),
     'wit_matrix': ('VPP reads are permitted.', 'Growatt Protocol II applies to a WIT family.',
@@ -47,7 +48,8 @@ ORIGINAL_FORBIDDEN = {
         r'|sunspec\.inverter\.|canonical facts)',
         '(^|[^[:xdigit:]])[[:xdigit:]]{40}([^[:xdigit:]]|$)|(^|[^[:xdigit:]])[[:xdigit:]]{64}'
         r'([^[:xdigit:]]|$)|([0-9]{1,3}\.){3}[0-9]{1,3}|([[:alnum:]][[:alnum:].-]*):([0-9]{1,5}'
-        '|[[:alpha:]][[:alnum:].-]*)|[Pp]ort[[:space:]]+[0-9]{1,5}'),
+        '|[[:alpha:]][[:alnum:].-]*)|[Pp]ort[[:space:]]+[0-9]{1,5}',
+        'Control and calibration words at offset 0x010C and offsets 0x010F through 0x0161 stay outside the admitted read plan and stay unpublished\\.'),
     'protocol_ii_source_matrix': (
         r'https?://|/[Uu]sers/|([0-9]{1,3}\.){3}[0-9]{1,3}|([[:alnum:]][[:alnum:].-]*):([0-9]{1,5}'
         '|[[:alpha:]][[:alnum:].-]*)|[Pp]ort[[:space:]]+[0-9]{1,5}',),
@@ -268,6 +270,51 @@ class GrowattContractRules(unittest.TestCase):
                 self.assert_contract_fails('bms_contract', 'slice')
         self.write(BMS, original.replace('## Offline identity tuple\n', '## Offline identity tuple\n\n- offset 0x0029 is cell-series count context.\n'))
         self.assertEqual(self.run_contract('bms_contract').returncode, 0)
+
+    def test_defined_control_words_are_published_natively(self):
+        original = self.page_text(BMS)
+        held = ('The control and calibration words the document defines are read and '
+                'published natively.')
+        withdrawn = ('Control and calibration words at offset 0x010C and offsets 0x010F '
+                     'through 0x0161 stay outside the admitted read plan and stay unpublished.')
+        self.assertIn(held, original)
+        self.assertIn('A bit the document leaves undefined stays opaque and named.', original)
+        self.assertNotIn(withdrawn, original)
+        self.write(BMS, original.replace(held, withdrawn))
+        self.assert_contract_fails('bms_contract', 'statement')
+        self.restore(BMS)
+        self.write(BMS, original + '\n' + withdrawn + '\n')
+        self.assert_contract_fails('bms_contract', 'forbidden')
+        self.restore(BMS)
+
+    def test_protocol_ii_source_table_publishes_native_rows(self):
+        text = self.page_text(P2)
+        required = (
+            '| 3 | PV input 1 voltage | one unsigned word, 0.1 V |',
+            '| 93 | inverter temperature | one word, 0.1 degrees Celsius; signedness not stated |',
+            '| 104 | derating code |',
+            '| 113 | real output power percent, or daily AC-charge energy low word |',
+            '| 125 | PV1 positive-to-earth or MAX HV flyspan voltage |',
+            '| 142 | string 1 voltage | one unsigned word, 0.1 V |',
+            '| 875 | PV9 voltage | one unsigned word, 0.1 V |',
+            '| 939 | PV9 positive-to-earth or MAX HV flyspan voltage |',
+            'Live DD06 telemetry decodes a documented row only when every word of that row is inside the actual 0 through 249 record',
+            'BB03 string reading uses the same native scales',
+            'Words 35 through 38 keep their AC and grid meanings and never serve as PV9.',
+            'word 939 are source-only and supply neither a live field nor another request.',
+        )
+        for phrase in required:
+            self.assertIn(phrase, text)
+        start = text.index('## Input register source table\n')
+        end = text.index('## Offline telemetry candidate\n')
+        self.assertLess(start, end)
+        removed = text[:start] + text[end:]
+        self.assertNotEqual(removed, text)
+        self.write(P2, removed)
+        mutated = self.page_text(P2)
+        for phrase in required:
+            self.assertNotIn(phrase, mutated)
+        self.restore(P2)
 
     def test_matrix_rows_are_exact_ordered_and_bounded_to_their_section(self):
         original = self.page_text(WIT)

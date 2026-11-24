@@ -5,7 +5,7 @@
 This page proposes a future exact-profile admission record and validation
 algorithm for the TL3-X MAX/MID/MAC families. It supplies no successful record,
 allowlisted tuple, decoder, constructor, acquisition, or runtime admission.
-`NO_ADMISSIBLE_PROFILE` remains the current result: no exact tuple and no typed
+The live FC04 record uses offset 0 and width_words=250 for words 0 through 249. The frozen 0 through 58 fixture remains historical evidence and supplies no current admissible record width. An explicit endpoint and family selection of a documented TL3-X MAX, MID, or MAC family activates that configured profile, and the same evidence without a selection gives no automatic match. `NO_ADMISSIBLE_PROFILE` remains the automatic-matching result: no exact tuple and no typed
 field. The historical V1 name does not declare stability; nothing is stable
 before Helianthus 1.0.
 
@@ -16,7 +16,7 @@ The native evidence contracts precede this proposal:
 
 | Evidence status | Claim | Separate qualification/admission consequence |
 | --- | --- | --- |
-| Proven within the published native contract | FC03 identity positions are device type at 43, model-build words at 82 and 83, and reported protocol word at 88; the schema-only FC04 slice is offset 0, width 59 words | Establishes positions and mechanics, not applicability to a device tuple |
+| Proven within the published native contract | FC03 identity positions are device type at 43, model-build words at 82 and 83, and reported protocol word at 88; the live FC04 record is offset 0 and width_words=250 for words 0 through 249 | Establishes positions and mechanics, not applicability to a device tuple |
 | Hypothesis / proposed contract | The exact joins below could support future admission after independent public evidence review | No admission or acquisition is enabled by this page |
 | Unknown | An exact device-type, both-model-build-word, reported-protocol tuple bound to the FC04 schema | No current public typed profile or real-build qualification |
 
@@ -54,7 +54,7 @@ record; the existing full identity gate still applies in the runtime owner.
 | `source_schema_ref` | Resolves one exact schema edition and amendment identity; equals E.source_schema_ref and S's identity | Replace only R.source_schema_ref with another schema identity; mismatch → invalid |
 | `function` | Equals E.function and S.function and is exactly FC04 | Replace only R.function with FC03; invalid |
 | `offset` | Equals E.offset and S.offset; this proposal covers only 0 | Replace only R.offset with a distinct nonnegative offset; invalid |
-| `width_words` | Equals E.width_words and S.width_words; this proposal covers only 59 | Replace only R.width_words with a distinct positive width; invalid |
+| `width_words` | Equals E.width_words and S.width_words; this proposal covers only words 0 through 249 (`width_words=250`) | Replace only R.width_words with a distinct positive width; invalid |
 | `field_schema_ref` | Resolves one exact field-definition edition within S; equals E.field_schema_ref | Replace only R.field_schema_ref with a different field-definition reference; mismatch → invalid |
 | `tuple_evidence_ref` | Resolves one current, independently reviewed, publishable E binding every preceding field together | Replace only R.tuple_evidence_ref with an unreviewed assertion reference; missing / insufficient evidence |
 

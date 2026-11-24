@@ -15,17 +15,17 @@ not establish protocol equivalence.
 
 | Exact family branch | Product context | Documented communication exposure | Protocol revision | Firmware gate | Disposition |
 | --- | --- | --- | --- | --- | --- |
-| `WIT 4-25K-HU` | worldwide, 380/400 Vac, low-voltage battery | Modbus TCP available; ShineWiLAN-X2 listed | `UNKNOWN` | `UNKNOWN` | `INSUFFICIENT_EVIDENCE`; `NO_SEND` |
-| `WIT 4-25K-XHU` | worldwide, 380/400 Vac, high-voltage battery | Modbus TCP available; ShineWiLAN-X2 listed | `UNKNOWN` | `UNKNOWN` | `INSUFFICIENT_EVIDENCE`; `NO_SEND` |
-| `WIT 29.9-50K-XHU` | worldwide, 380/400 Vac, high-voltage battery | ShineWiLan-X2 and ShineSEM-XA-R listed; wire exposure not established | `UNKNOWN` | `UNKNOWN` | `INSUFFICIENT_EVIDENCE`; `NO_SEND` |
-| `WIT 50-100K-HU` | APAC, 380/400/415 Vac, high-voltage battery | ShineWiLan-X2 and ShineSEM-XA-R listed; wire exposure not established | `UNKNOWN` | `UNKNOWN` | `INSUFFICIENT_EVIDENCE`; `NO_SEND` |
-| `WIT 50-100K-AU` | APAC, 380/400/415 Vac, high-voltage battery | ShineWiLan-X2 and ShineSEM-XA-R listed; wire exposure not established | `UNKNOWN` | `UNKNOWN` | `INSUFFICIENT_EVIDENCE`; `NO_SEND` |
-| `WIT 50-100K-HU-US` | US branch; product context not established | not established by this contract | `UNKNOWN` | `UNKNOWN` | `INSUFFICIENT_EVIDENCE`; `NO_SEND` |
-| `WIT 50-100K-AU-US` | US branch; product context not established | not established by this contract | `UNKNOWN` | `UNKNOWN` | `INSUFFICIENT_EVIDENCE`; `NO_SEND` |
-| `WIT 63-125K-XHU` | worldwide, 380/400 Vac, high-voltage battery | not established by this contract | `UNKNOWN` | `UNKNOWN` | `INSUFFICIENT_EVIDENCE`; `NO_SEND` |
-| `WIT 28-55K-HU-US L2` | US L2, 208/220 Vac, high-voltage battery | ShineMaster listed; wire exposure not established | `UNKNOWN` | `UNKNOWN` | `INSUFFICIENT_EVIDENCE`; `NO_SEND` |
-| `WIT 28-55K-AU-US L2` | US L2, 208/220 Vac, high-voltage battery | ShineMaster listed; wire exposure not established | `UNKNOWN` | `UNKNOWN` | `INSUFFICIENT_EVIDENCE`; `NO_SEND` |
-| `WIT 50-150K-XHU-US` | US, 277/480 Vac, high-voltage battery | not established by this contract | `UNKNOWN` | `UNKNOWN` | `INSUFFICIENT_EVIDENCE`; `NO_SEND` |
+| `WIT 4-25K-HU` | worldwide, 380/400 Vac, low-voltage battery | Modbus TCP available; ShineWiLAN-X2 listed | `UNKNOWN` | `UNKNOWN` | `DECLARED`; `MAP_UNPUBLISHED` |
+| `WIT 4-25K-XHU` | worldwide, 380/400 Vac, high-voltage battery | Modbus TCP available; ShineWiLAN-X2 listed | `UNKNOWN` | `UNKNOWN` | `DECLARED`; `MAP_UNPUBLISHED` |
+| `WIT 29.9-50K-XHU` | worldwide, 380/400 Vac, high-voltage battery | ShineWiLan-X2 and ShineSEM-XA-R listed; wire exposure not established | `UNKNOWN` | `UNKNOWN` | `DECLARED`; `MAP_UNPUBLISHED` |
+| `WIT 50-100K-HU` | APAC, 380/400/415 Vac, high-voltage battery | ShineWiLan-X2 and ShineSEM-XA-R listed; wire exposure not established | `UNKNOWN` | `UNKNOWN` | `DECLARED`; `MAP_UNPUBLISHED` |
+| `WIT 50-100K-AU` | APAC, 380/400/415 Vac, high-voltage battery | ShineWiLan-X2 and ShineSEM-XA-R listed; wire exposure not established | `UNKNOWN` | `UNKNOWN` | `DECLARED`; `MAP_UNPUBLISHED` |
+| `WIT 50-100K-HU-US` | US branch; product context not established | not established by this contract | `UNKNOWN` | `UNKNOWN` | `DECLARED`; `MAP_UNPUBLISHED` |
+| `WIT 50-100K-AU-US` | US branch; product context not established | not established by this contract | `UNKNOWN` | `UNKNOWN` | `DECLARED`; `MAP_UNPUBLISHED` |
+| `WIT 63-125K-XHU` | worldwide, 380/400 Vac, high-voltage battery | not established by this contract | `UNKNOWN` | `UNKNOWN` | `DECLARED`; `MAP_UNPUBLISHED` |
+| `WIT 28-55K-HU-US L2` | US L2, 208/220 Vac, high-voltage battery | ShineMaster listed; wire exposure not established | `UNKNOWN` | `UNKNOWN` | `DECLARED`; `MAP_UNPUBLISHED` |
+| `WIT 28-55K-AU-US L2` | US L2, 208/220 Vac, high-voltage battery | ShineMaster listed; wire exposure not established | `UNKNOWN` | `UNKNOWN` | `DECLARED`; `MAP_UNPUBLISHED` |
+| `WIT 50-150K-XHU-US` | US, 277/480 Vac, high-voltage battery | not established by this contract | `UNKNOWN` | `UNKNOWN` | `DECLARED`; `MAP_UNPUBLISHED` |
 
 Product context is descriptive and is never an identity input.
 Modbus TCP availability and a listed logger or bridge are transport facts only.
@@ -42,10 +42,8 @@ The VPP tuple has no qualified firmware gate in this contract. DTC readability,
 an RTU response, an overlapping power rating, or the substring `WIT` is not
 sufficient identity evidence.
 
-Every VPP read, control, and write remains `NO_SEND`. The document includes
-remote-dispatch authority, so its read and write surfaces must not be split or
-partially enabled before an exact firmware gate, sanitized fixture, and
-independent safety review exist.
+The matrix declares reads of its documented rows. The document includes
+remote-dispatch authority. Protocol revision and a firmware gate stay Unknown where the document states neither.
 
 ## Protocol isolation
 
@@ -60,7 +58,7 @@ that satisfies more than one candidate is ambiguous.
 
 ## Admission and failure behavior
 
-No decoder, fixture, catalog registration, runtime admission, telemetry publication, or support claim is created.
+No decoder or fixture is created. Protocol revision and firmware gate stay Unknown where the document states neither.
 Missing or conflicting evidence produces `INSUFFICIENT_EVIDENCE`, no match, and no send.
 
 Qualification of one row requires all of:

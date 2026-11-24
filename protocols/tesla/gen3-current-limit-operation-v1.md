@@ -9,8 +9,7 @@ implementations. For `wc3_24_44_3`, the provisional path (t25 to t26, readback
 t27 to t28) is the qualified setter of the semantic `evse.limit.allocated_current`,
 declared from the public field layout. The persistent settings write (t7 to t8)
 is not a setter. FC101, FC102, enable, and disable stay outside. This contract
-does not authorize installation, deployment, or credential use. Live
-state-changing operations require explicit operator confirmation at action time.
+does not authorize installation, deployment, or credential use. An explicitly called provisional set or withdrawal whose capability is independently qualified and whose profile, version, generation, and dispatch checks pass is admitted without explicit operator confirmation at action time. Separate operator approval stays only for an agent or test acting on a real installation. The readback alone is also a read observation of the read lifecycle.
 
 The publishable wire and body basis is the existing
 [Gen3 HSC contract](gen3-hsc-rtu.md#exact-24443-body-and-evidence-contract),
@@ -50,7 +49,7 @@ the reason retained. Admission is scoped to exactly one
 
 | Required input | Fail-closed rule |
 | --- | --- |
-| Action authority | For an operation admitted through the semantic operation route (helianthus-docs), the route's runtime intent owner supplies the authority evidence that binds target, operation, values, and validity interval. Explicit authority binds the selected target, operation, values, and validity interval. Offline fake/replay authority cannot authorize live I/O. Live authority includes operator confirmation at action time; a cached read, configured endpoint, or document is insufficient. |
+| Action authority | For an operation admitted through the semantic operation route (helianthus-docs), the route's runtime intent owner supplies the authority evidence that binds target, operation, values, and validity interval. Explicit authority binds the selected target, operation, values, and validity interval. Offline fake/replay authority cannot authorize live I/O. Live authority binds the route target, operation, values and validity interval; a cached read, configured endpoint, or document is insufficient. A qualified explicit provisional set or withdrawal is admitted without explicit operator confirmation at action time. Separate operator approval stays only for an agent or test acting on a real installation. Profile, version, generation, and dispatch checks remain admission conditions. |
 | Profile and version | Explicit Gen3 identity, exact HSC profile compatibility, `wc3_24_44_3` operation schema, and independently qualified capability for the selected operation. Unknown, conflicting, legacy, or unenumerated operation versions deny dispatch. |
 | Endpoint and generation | Explicit unicast node and configured endpoint, current nonzero lifecycle generation, compatible HSC activation state, and no fence/quarantine. No discovery, broadcast, profile fallback, or inferred default target. |
 | Single-flight ownership | One serialized initiator and one in-flight exchange per endpoint. The mutation and its readback remain bound to one operation identity and the same lifecycle generation; no competing local mutation may interleave. This does not exclude an external actor. |

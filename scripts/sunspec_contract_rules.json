@@ -886,7 +886,7 @@
       "page": "protocols/sunspec/read-only-core-v2.md",
       "section": "## Offline implementation boundary",
       "kind": "statement",
-      "value": "No standard profile admission, runtime catalog registration, vendor admission, automatic acquisition, telemetry publication, capability admission, or consumer exposure may be derived from this contract.",
+      "value": "The public standard declares the models this page specifies supported and registered for automatic detection and acquisition where the document states an identity that establishes the match.",
       "reason": "Admission, acquisition and exposure stay default denied."
     },
     {
@@ -894,7 +894,7 @@
       "page": "protocols/sunspec/read-only-core-v2.md",
       "section": null,
       "kind": "forbidden",
-      "value": "sunspec\\.models\\.candidate\\.v2|Common\\s+1/65[^.]*V2 decoder|V2 runtime catalog registration is enabled|V2 automatic acquisition is enabled|trailing spaces[^.]*trimmed",
+      "value": "sunspec\\.models\\.candidate\\.v2|Common\\s+1/65[^.]*V2 decoder|trailing spaces[^.]*trimmed",
       "reason": "The page must not contradict its offline-only boundary: no candidate key, no V1 Common in the V2 decoder, no runtime registration or acquisition, no trimmed spaces."
     },
     {
@@ -902,7 +902,7 @@
       "page": "protocols/applicability-and-licensing.md",
       "section": "## Applicability classes",
       "kind": "row",
-      "value": "| `sunspec.der.readonly.v2` | Common 1/66 plus Models 701/153, 702/50, 703/17, 713/7, 714 variable geometry, 715/7, 802/62, 803 variable geometry, and 804 variable geometry at the exact pinned V2 schema revision | public Apache-2.0 model catalogue and independently stated interoperability facts | offline decoder contract; runtime, vendor, and catalog admission default denied |",
+      "value": "| `sunspec.der.readonly.v2` | Common 1/66 plus Models 701/153, 702/50, 703/17, 713/7, 714 variable geometry, 715/7, 802/62, 803 variable geometry, and 804 variable geometry at the exact pinned V2 schema revision | public Apache-2.0 model catalogue and independently stated interoperability facts | declared from the public standard for the listed models |",
       "reason": "Applicability row of the V2 profile: exact model tuples, evidence class and default-denied disposition."
     },
     {
@@ -942,7 +942,7 @@
       "page": "protocols/applicability-and-licensing.md",
       "section": "## Applicability classes",
       "kind": "row",
-      "value": "| `huawei.sun2000.readonly.v1` / `huawei.luna2000.readonly.v1` | no covered model family or firmware range; SUN2000 inverter and optional LUNA2000 battery | vendor-copyright-inspection-only | `NO_ADMISSIBLE_PROFILE`; default denied, no register map, no decoder |",
+      "value": "| `huawei.sun2000.readonly.v1` / `huawei.luna2000.readonly.v1` | catalogue rows of the SUN2000 inverter and optional LUNA2000 battery | vendor-copyright-inspection-only | declared from the consulted documents; hardware level recorded separately |",
       "reason": "Applicability row of the SUN2000 and LUNA2000 profiles: no admissible profile, default denied."
     },
     {
@@ -1046,7 +1046,7 @@
       "page": "protocols/sunspec/read-only-core-v1-model-families.md",
       "section": "## Inverter Extensions",
       "kind": "statement",
-      "value": "Models 123 and 124 are observed state only.",
+      "value": "Models 123 and 124 are the SemReg setters documented on the controls page, and models 120 through 124 follow the writable-point rule.",
       "reason": "The control models are observed state only."
     },
     {
@@ -1062,7 +1062,7 @@
       "page": "protocols/sunspec/read-only-core-v1-model-families.md",
       "section": "## Safety and Non-Claims",
       "kind": "statement",
-      "value": "It does not create a product, profile, or support claim.",
+      "value": "Documented support is declared from the public standard, and a hardware test is a recorded level.",
       "reason": "The guide is not a support claim."
     },
     {
@@ -1070,7 +1070,7 @@
       "page": "protocols/sunspec/read-only-core-v1-model-families.md",
       "section": null,
       "kind": "forbidden",
-      "value": "sunspec\\.models\\.candidate\\.v2|V2 registry|PROFILE_ADMITTED|write authority",
+      "value": "sunspec\\.models\\.candidate\\.v2|V2 registry",
       "reason": "The V1 guide must not exceed its docs-only boundary: no V2 key or registry, no admission, no write authority."
     },
     {
@@ -1358,7 +1358,7 @@
       "page": "protocols/sunspec/der-trip-lv-template-v2.md",
       "section": null,
       "kind": "forbidden",
-      "value": "decoder|catalog|admission|support|runtime|(^|[^0-9])708([^0-9]|$)|(^|[^0-9])709([^0-9]|$)",
+      "value": "decoder|catalog|runtime|(^|[^0-9])708([^0-9]|$)|(^|[^0-9])709([^0-9]|$)",
       "reason": "The template must not exceed its docs-only boundary: no decoder, catalog, admission, support or runtime claim, and no Model 708 or 709."
     },
     {
@@ -2152,6 +2152,502 @@
       "kind": "row",
       "value": "| `battery.module.state_of_charge` | 805 | SoC | % | SoC_SF | optional | number |",
       "reason": "Monitoring capability: V2 monitoring row: | `battery.module.state_of_charge` | 805 | SoC |"
+    },
+    {
+      "contract": "register_write",
+      "page": "protocols/modbus/register-write-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Request",
+      "reason": "Register write request section."
+    },
+    {
+      "contract": "register_write",
+      "page": "protocols/modbus/register-write-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Outcome",
+      "reason": "Register write outcome section."
+    },
+    {
+      "contract": "register_write",
+      "page": "protocols/modbus/register-write-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Readback",
+      "reason": "Register write readback section."
+    },
+    {
+      "contract": "register_write",
+      "page": "protocols/modbus/register-write-v1.md",
+      "section": "## Outcome",
+      "kind": "row",
+      "value": "| response | meaning |",
+      "reason": "Outcome table header."
+    },
+    {
+      "contract": "register_write",
+      "page": "protocols/modbus/register-write-v1.md",
+      "section": "## Request",
+      "kind": "statement",
+      "value": "Write Multiple Registers, function code 16, on a configured TCP or RTU endpoint, for one contiguous admitted register span per request.",
+      "reason": "Function 16 writes one contiguous admitted span."
+    },
+    {
+      "contract": "register_write",
+      "page": "protocols/modbus/register-write-v1.md",
+      "section": "## Request",
+      "kind": "statement",
+      "value": "The page adds no retry of its own.",
+      "reason": "The page adds no retry."
+    },
+    {
+      "contract": "register_write",
+      "page": "protocols/modbus/register-write-v1.md",
+      "section": "## Outcome",
+      "kind": "statement",
+      "value": "Nothing is retried, and the endpoint generation is fenced as a read failure fences it.",
+      "reason": "No retry, and the generation is fenced."
+    },
+    {
+      "contract": "register_write",
+      "page": "protocols/modbus/register-write-v1.md",
+      "section": null,
+      "kind": "forbidden",
+      "value": "page retries|write is retried|retried by the page|adds a retry",
+      "reason": "The page must not add a retry."
+    },
+    {
+      "contract": "sunspec_controls",
+      "page": "protocols/sunspec/controls-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## SemReg setters",
+      "reason": "SemReg setter section."
+    },
+    {
+      "contract": "sunspec_controls",
+      "page": "protocols/sunspec/controls-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Model 124 compound setting",
+      "reason": "Model 124 compound setting section."
+    },
+    {
+      "contract": "sunspec_controls",
+      "page": "protocols/sunspec/controls-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Points callable by hand",
+      "reason": "Hand-callable points section."
+    },
+    {
+      "contract": "sunspec_controls",
+      "page": "protocols/sunspec/controls-v1.md",
+      "section": "## SemReg setters",
+      "kind": "row",
+      "value": "| SemReg operation | argument (SI) | SunSpec model | points written | conversion | release | readback |",
+      "reason": "SemReg setter table header."
+    },
+    {
+      "contract": "sunspec_controls",
+      "page": "protocols/sunspec/controls-v1.md",
+      "section": "## SemReg setters",
+      "kind": "row",
+      "value": "| `pv.operation.set_active_power_limit` | `pv.limit.active_power` (W) | 123 (with `WMax` of model 121) | one contiguous range `WMaxLimPct` through `WMaxLim_Ena` | percent = W / `WMax` x 100, scaled by `WMaxLimPct_SF`, rounded down | boolean `false` for `pv.limit.active_power_enabled` writes `WMaxLim_Ena` = 0 only | re-read of the written points; release re-reads only `WMaxLim_Ena` |",
+      "reason": "Model 123 active-power setter row."
+    },
+    {
+      "contract": "sunspec_controls",
+      "page": "protocols/sunspec/controls-v1.md",
+      "section": "## SemReg setters",
+      "kind": "row",
+      "value": "| `storage.operation.set_charge_limit` | `storage.limit.charge_power` (W) | 124 | `InWRte`, optional `InOutWRte_RvrtTms`, then `StorCtl_Mod` | percent of `WChaMax` | clears the matching `StorCtl_Mod` bit | re-read |",
+      "reason": "Model 124 charge setter row."
+    },
+    {
+      "contract": "sunspec_controls",
+      "page": "protocols/sunspec/controls-v1.md",
+      "section": "## SemReg setters",
+      "kind": "row",
+      "value": "| `storage.operation.set_discharge_limit` | `storage.limit.discharge_power` (W) | 124 | `OutWRte`, optional `InOutWRte_RvrtTms`, then `StorCtl_Mod` | percent of `WDisChaMax`; `WChaMax` only with explicit evidence it equals `WDisChaMax`; otherwise withheld | clears the matching bit | re-read |",
+      "reason": "Model 124 discharge setter uses WDisChaMax and withholds an unknown denominator."
+    },
+    {
+      "contract": "sunspec_controls",
+      "page": "protocols/sunspec/controls-v1.md",
+      "section": "## Points callable by hand",
+      "kind": "row",
+      "value": "| model | point | type | scale factor | unit | access | value range or symbols |",
+      "reason": "Hand-call table header."
+    },
+    {
+      "contract": "sunspec_controls",
+      "page": "protocols/sunspec/controls-v1.md",
+      "section": "## Points callable by hand",
+      "kind": "row",
+      "value": "| 123 | `WMaxLimPct_WinTms` | uint16 | none | Secs | RW | own admitted span |",
+      "reason": "Independent hand call for WMaxLimPct_WinTms."
+    },
+    {
+      "contract": "sunspec_controls",
+      "page": "protocols/sunspec/controls-v1.md",
+      "section": "## Points callable by hand",
+      "kind": "row",
+      "value": "| 123 | `WMaxLimPct_RmpTms` | uint16 | none | Secs | RW | own admitted span |",
+      "reason": "Independent hand call for WMaxLimPct_RmpTms."
+    },
+    {
+      "contract": "sunspec_controls",
+      "page": "protocols/sunspec/controls-v1.md",
+      "section": "## Points callable by hand",
+      "kind": "row",
+      "value": "| 123 | `WMaxLimPct_RvrtTms` | uint16 | none | Secs | RW | own admitted span |",
+      "reason": "Independent hand call for WMaxLimPct_RvrtTms."
+    },
+    {
+      "contract": "sunspec_controls",
+      "page": "protocols/sunspec/controls-v1.md",
+      "section": "## Points callable by hand",
+      "kind": "row",
+      "value": "| 124 | `InOutWRte_RvrtTms` | uint16 | none | Secs | RW | own admitted span |",
+      "reason": "Independent hand call for InOutWRte_RvrtTms."
+    },
+    {
+      "contract": "sunspec_controls",
+      "page": "protocols/sunspec/controls-v1.md",
+      "section": "## SemReg setters",
+      "kind": "statement",
+      "value": "The enable-only release writes `WMaxLim_Ena` = 0 only in its own request and re-reads only `WMaxLim_Ena`.",
+      "reason": "Model 123 enable-only release and enable-only readback."
+    },
+    {
+      "contract": "sunspec_controls",
+      "page": "protocols/sunspec/controls-v1.md",
+      "section": "## Model 124 compound setting",
+      "kind": "statement",
+      "value": "No clear `storage.status.interlock` candidate produces zero FC16 writes.",
+      "reason": "Model 124 no clear interlock produces no send."
+    },
+    {
+      "contract": "sunspec_controls",
+      "page": "protocols/sunspec/controls-v1.md",
+      "section": "## Model 124 compound setting",
+      "kind": "statement",
+      "value": "An unsupported or unencodable duration produces no write even when the rate is encodable.",
+      "reason": "Full prevalidation refuses an unencodable duration before any send."
+    },
+    {
+      "contract": "sunspec_controls",
+      "page": "protocols/sunspec/controls-v1.md",
+      "section": "## Model 124 compound setting",
+      "kind": "statement",
+      "value": "A later runtime rejection after the rate is attempted reports partially executed or uncertain and distinguishes the unattempted steps.",
+      "reason": "A later device rejection is a partial result, distinct from a prevalidation no-send."
+    },
+    {
+      "contract": "sunspec_controls",
+      "page": "protocols/sunspec/controls-v1.md",
+      "section": "## Model 124 compound setting",
+      "kind": "statement",
+      "value": "Cancellation between spans stops later writes.",
+      "reason": "Cancellation between spans stops the remaining spans."
+    },
+    {
+      "contract": "sunspec_controls",
+      "page": "protocols/sunspec/controls-v1.md",
+      "section": "## Model 124 compound setting",
+      "kind": "statement",
+      "value": "Only correlated readbacks of all intended points from the same admitted setting owner, endpoint and generation confirm the whole setting.",
+      "reason": "Confirmation requires the same owner, endpoint and generation."
+    },
+    {
+      "contract": "sunspec_controls",
+      "page": "protocols/sunspec/controls-v1.md",
+      "section": "## SemReg setters",
+      "kind": "statement",
+      "value": "For 3,333 W with an 8,000 W applicable rating and scale -1, write raw 416.",
+      "reason": "Model 124 raw 416 example."
+    },
+    {
+      "contract": "sunspec_controls",
+      "page": "protocols/sunspec/controls-v1.md",
+      "section": "## SemReg setters",
+      "kind": "statement",
+      "value": "Discharge uses percent of `WDisChaMax`. `WChaMax` is the discharge denominator only when explicit evidence shows it equals `WDisChaMax`. When the discharge denominator is unknown, the discharge setter is withheld.",
+      "reason": "Model 124 OutWRte discharge conversion uses WDisChaMax or withholds the setter."
+    },
+    {
+      "contract": "sunspec_controls",
+      "page": "protocols/sunspec/controls-v1.md",
+      "section": "## Points callable by hand",
+      "kind": "statement",
+      "value": "A hand call selects that point's own admitted span and qualified readback.",
+      "reason": "A hand call does not select a sibling span."
+    },
+    {
+      "contract": "sunspec_grid_code",
+      "page": "protocols/sunspec/grid-code-settings-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Model 125",
+      "reason": "Grid-code model section."
+    },
+    {
+      "contract": "sunspec_grid_code",
+      "page": "protocols/sunspec/grid-code-settings-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Model 126",
+      "reason": "Grid-code model section."
+    },
+    {
+      "contract": "sunspec_grid_code",
+      "page": "protocols/sunspec/grid-code-settings-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Model 127",
+      "reason": "Grid-code model section."
+    },
+    {
+      "contract": "sunspec_grid_code",
+      "page": "protocols/sunspec/grid-code-settings-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Model 128",
+      "reason": "Grid-code model section."
+    },
+    {
+      "contract": "sunspec_grid_code",
+      "page": "protocols/sunspec/grid-code-settings-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Model 129",
+      "reason": "Grid-code model section."
+    },
+    {
+      "contract": "sunspec_grid_code",
+      "page": "protocols/sunspec/grid-code-settings-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Model 130",
+      "reason": "Grid-code model section."
+    },
+    {
+      "contract": "sunspec_grid_code",
+      "page": "protocols/sunspec/grid-code-settings-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Model 131",
+      "reason": "Grid-code model section."
+    },
+    {
+      "contract": "sunspec_grid_code",
+      "page": "protocols/sunspec/grid-code-settings-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Model 132",
+      "reason": "Grid-code model section."
+    },
+    {
+      "contract": "sunspec_grid_code",
+      "page": "protocols/sunspec/grid-code-settings-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Model 133",
+      "reason": "Grid-code model section."
+    },
+    {
+      "contract": "sunspec_grid_code",
+      "page": "protocols/sunspec/grid-code-settings-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Model 134",
+      "reason": "Grid-code model section."
+    },
+    {
+      "contract": "sunspec_grid_code",
+      "page": "protocols/sunspec/grid-code-settings-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Model 135",
+      "reason": "Grid-code model section."
+    },
+    {
+      "contract": "sunspec_grid_code",
+      "page": "protocols/sunspec/grid-code-settings-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Model 136",
+      "reason": "Grid-code model section."
+    },
+    {
+      "contract": "sunspec_grid_code",
+      "page": "protocols/sunspec/grid-code-settings-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Model 137",
+      "reason": "Grid-code model section."
+    },
+    {
+      "contract": "sunspec_grid_code",
+      "page": "protocols/sunspec/grid-code-settings-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Model 138",
+      "reason": "Grid-code model section."
+    },
+    {
+      "contract": "sunspec_grid_code",
+      "page": "protocols/sunspec/grid-code-settings-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Model 139",
+      "reason": "Grid-code model section."
+    },
+    {
+      "contract": "sunspec_grid_code",
+      "page": "protocols/sunspec/grid-code-settings-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Model 140",
+      "reason": "Grid-code model section."
+    },
+    {
+      "contract": "sunspec_grid_code",
+      "page": "protocols/sunspec/grid-code-settings-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Model 141",
+      "reason": "Grid-code model section."
+    },
+    {
+      "contract": "sunspec_grid_code",
+      "page": "protocols/sunspec/grid-code-settings-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Model 142",
+      "reason": "Grid-code model section."
+    },
+    {
+      "contract": "sunspec_grid_code",
+      "page": "protocols/sunspec/grid-code-settings-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Model 143",
+      "reason": "Grid-code model section."
+    },
+    {
+      "contract": "sunspec_grid_code",
+      "page": "protocols/sunspec/grid-code-settings-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Model 144",
+      "reason": "Grid-code model section."
+    },
+    {
+      "contract": "sunspec_grid_code",
+      "page": "protocols/sunspec/grid-code-settings-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Model 145",
+      "reason": "Grid-code model section."
+    },
+    {
+      "contract": "sunspec_grid_code",
+      "page": "protocols/sunspec/grid-code-settings-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Model 703",
+      "reason": "Grid-code model section."
+    },
+    {
+      "contract": "sunspec_grid_code",
+      "page": "protocols/sunspec/grid-code-settings-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Model 707",
+      "reason": "Grid-code model section."
+    },
+    {
+      "contract": "sunspec_grid_code",
+      "page": "protocols/sunspec/grid-code-settings-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Model 708",
+      "reason": "Grid-code model section."
+    },
+    {
+      "contract": "sunspec_grid_code",
+      "page": "protocols/sunspec/grid-code-settings-v1.md",
+      "section": null,
+      "kind": "heading",
+      "value": "## Model 709",
+      "reason": "Grid-code model section."
+    },
+    {
+      "contract": "sunspec_grid_code",
+      "page": "protocols/sunspec/grid-code-settings-v1.md",
+      "section": null,
+      "kind": "statement",
+      "value": "These settings have no SemReg element; they are documented registers decoded and callable by hand through MCP and GraphQL in the modbusreg namespace, as an advanced facility.",
+      "reason": "Grid-code settings have no SemReg element."
+    },
+    {
+      "contract": "sunspec_grid_code",
+      "page": "protocols/sunspec/grid-code-settings-v1.md",
+      "section": "## Model 125",
+      "kind": "statement",
+      "value": "Model 125, Pricing, declared length 8.",
+      "reason": "Model 125 is the catalog pricing model of declared length 8."
+    },
+    {
+      "contract": "sunspec_grid_code",
+      "page": "protocols/sunspec/grid-code-settings-v1.md",
+      "section": "## Model 126",
+      "kind": "statement",
+      "value": "Model 126, Static Volt-VAR, declared length 10 + NCrv * 54.",
+      "reason": "Model 126 is the catalog static volt-var model."
+    },
+    {
+      "contract": "sunspec_grid_code",
+      "page": "protocols/sunspec/grid-code-settings-v1.md",
+      "section": "## Model 703",
+      "kind": "statement",
+      "value": "Model 703, Enter Service, declared length 17.",
+      "reason": "Model 703 is the catalog enter-service model of declared length 17."
+    },
+    {
+      "contract": "sunspec_grid_code",
+      "page": "protocols/sunspec/grid-code-settings-v1.md",
+      "section": null,
+      "kind": "statement",
+      "value": "A point in the tables is callable by hand only when its access is RW.",
+      "reason": "A hand call follows the access stated by the model definition."
+    },
+    {
+      "contract": "sunspec_grid_code",
+      "page": "protocols/sunspec/grid-code-settings-v1.md",
+      "section": "## Model 125",
+      "kind": "row",
+      "value": "| ModEna | 2 | 1 | bitfield16 | none | none | RW | ENABLE=0 | Mode-enable bits. | yes |",
+      "reason": "Model 125 ModEna is a writable catalog point."
+    },
+    {
+      "contract": "sunspec_grid_code",
+      "page": "protocols/sunspec/grid-code-settings-v1.md",
+      "section": "## Model 703",
+      "kind": "row",
+      "value": "| ES | 2 | 1 | enum16 | none | none | RW | DISABLED=0, ENABLED=1 | Enter-service permission. | yes |",
+      "reason": "Model 703 enter-service permission is a writable catalog point."
+    },
+    {
+      "contract": "sunspec_grid_code",
+      "page": "protocols/sunspec/grid-code-settings-v1.md",
+      "section": null,
+      "kind": "forbidden",
+      "value": "catalog defines none|defines no point rows",
+      "reason": "The page does not assert that the catalog defines no points."
     }
   ]
 }

@@ -374,6 +374,39 @@ class TeslaContractRules(unittest.TestCase):
         self.assertEqual(gate('--check-tesla-generation-contracts', legacy, gen3), 0)
         self.assertNotEqual(gate('--check-tesla-generation-contracts', legacy), 0)
 
+    def test_qualified_provisional_set_needs_no_action_time_confirmation(self):
+        """A qualified explicit set or withdrawal is admitted without action-time confirmation.
+
+        Restoring an action-time confirmation requirement fails the contract.
+        Separate operator approval stays only for an agent or test on a real
+        installation. The bench confirmation sentence stays a bench fact.
+        """
+        cases = (
+            ('protocols/tesla/gen3-current-limit-operation-v1.md', 'current_limit_operation'),
+            ('protocols/tesla/gen3-hsc-rtu.md', 'generation'),
+            ('protocols/tesla/gen3-semreg-mapping-v1.md', 'gen3_semreg_mapping'),
+        )
+        blocked = (
+            'still requires explicit operator confirmation at action time',
+            'an ordinary live caller, including a gateway or MCP caller, is not exempt',
+            'A live-device write requires explicit operator confirmation at action time',
+        )
+        for page, contract in cases:
+            with self.subTest(page=page):
+                text = self.copies[page].read_text(encoding='utf-8')
+                self.assertIn('admitted without explicit operator confirmation at action time', text)
+                self.assertIn('only for an agent or test acting on a real installation', text)
+                for phrase in blocked:
+                    self.assertNotIn(phrase, text)
+                unsafe = text.replace(
+                    'admitted without explicit operator confirmation at action time',
+                    'still requires explicit operator confirmation at action time',
+                )
+                self.assertNotEqual(unsafe, text)
+                self.copies[page].write_text(unsafe, encoding='utf-8')
+                self.assertNotEqual(self.run_contract(contract).returncode, 0)
+                self.restore(page)
+
 
 if __name__ == '__main__':
     unittest.main()

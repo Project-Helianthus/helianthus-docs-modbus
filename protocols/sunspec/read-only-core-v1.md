@@ -28,8 +28,8 @@ The V1 read-only catalog contains:
 - nameplate Model 120;
 - basic settings Model 121;
 - extended measurements and status Model 122;
-- immediate controls Model 123 as read-only state;
-- basic storage controls Model 124 as read-only state;
+- immediate controls Model 123 and basic storage Model 124, as the [controls page](controls-v1.md) states them;
+- models 120 through 124 follow the writable-point rule: a point the model documents as writable gets an operation, through SemReg where SemReg has the element, otherwise decoded and callable by hand through MCP and GraphQL in the modbusreg namespace;
 - multiple-MPPT Model 160;
 - meter Models 201 through 204 and 211 through 214; and
 - environmental Models 302 through 308.

@@ -15,12 +15,10 @@ production-site rules are on the companion
 name implies no stability before Helianthus 1.0.
 
 This page creates no admission and changes no disposition. Profile selection
-for the SUN2000 and LUNA2000 classes stays `NO_ADMISSIBLE_PROFILE` under the
+for the SUN2000 and LUNA2000 classes is declared from the consulted documents under the
 [inverter and battery disposition](inverter-battery-readonly-v1.md), the
 S-Dongle outcome stays `PRE_LIVE_INSUFFICIENT_EVIDENCE` with its recorded stop
-in force, and `catalog_registered=false`, `automatic_runtime_admission=false`,
-`live_qualified=false`, `support_claim=false`, and `write_authority=false` are
-unchanged. The registry companions are helianthus-modbusreg issue 348 for the
+in force, and a point the source documents as writable gets an operation, through SemReg where SemReg has the element, otherwise decoded and callable by hand through MCP and GraphQL in the modbusreg namespace. The registry companions are helianthus-modbusreg issue 348 for the
 monitoring profiles and issue 349 for the read-only providers.
 
 The page rests on two kinds of source. The vendor interface definitions listed
@@ -188,7 +186,7 @@ this path.
 
 The edition defines offset 37000 as a battery state word and leaves offset 47000
 undefined, so the answer at 47000 in MS-07 is a read of an offset that the
-edition does not define.
+edition does not define. The storage-unit group, the system group, and packs 1 to 3 are stated in [Battery groups](#battery-groups).
 
 Consumed fields of the M3 series groups:
 
@@ -379,12 +377,7 @@ ends inside a value, and it defines exception 3 only in general terms, as a
 malformed remainder of a request. That reading points at the extent and does
 not settle the cause (MG-03).
 
-Until an operator-approved observation reads a value-aligned extent, the power
-group is not read on the M3 and MAP0 series, and per-inverter power on those
-paths stays Unknown. The candidate extents are offset 32064 with quantity 31,
-which stops before the two-register value, and offset 32064 with quantity 33,
-which includes it. Both are Unknown. The M1 series child is read with the
-observed extent.
+The value-aligned power-group extent is offset 32064, quantity 33, on every series. A quantity-32 refusal stays a recorded level. The group consumes reactive power, line and phase voltages, phase currents, frequency, power factor, efficiency, internal temperature, insulation resistance, and the status code with the consulted edition's types and gains. The separate FC03 energy-group response at offset 32106 and quantity 10 supplies the DC-input counter at 32108-32109, U32, kWh, gain 100. It is distinct from the accumulated counter at 32106-32107. A valid energy-group response still yields the exact DC-input counter when the power group is refused or undecodable. A group the device answers with an exception, or answers normally but cannot be decoded, is recorded as a loss with its reason and the other groups continue.
 
 ## Refusals: the SmartLogger meter groups
 
@@ -551,6 +544,70 @@ Energy counters are published as read (rule 8). No meter power is published with
 an assumed sign (MM-06, MM-14, MM-22), and the grid signs of different sources
 are never mixed (DN-05).
 
+## Battery groups
+
+The storage-unit group is offsets 37000 through 37068. The system group is offsets 37741 through 37786. Packs 1 to 3 are the per-pack rows of up to three packs under each storage unit. A pack's identity anchor is its native position under the configured battery, so pack 1, pack 2, and pack 3 stay the same start after start. The groups are read for every family whose consulted edition defines them. For a family no consulted edition covers, including MAP0, the words stay native and named. A zero word on an inverter without a battery is not a value. Observation grades in the runs above stay a level and condition nothing.
+
+Catalog files `registers-l-v200.json`, `registers-lb-c00.json`, `registers-lb-c10.json`, `registers-lc.json`, and `registers-ma-c00.json` define the rows below in common. The SUN2000MC edition consulted for the M3 series defines the battery state word at offset 37000 and does not define this full group. `registers-mc.json` likewise defines offset 37000 and does not define 37741 through 37786. `registers-ma-v200.json` uses standby where the common cards use idle for state code 1, states no gain at offset 37014, and does not define the pack rows. Those differences stay named. A word in either span that this table does not name stays opaque and named. A sign the cards do not state is not assumed.
+
+Running-state codes at 37000 and 37741 are 0 offline, 2 running, 3 fault, and 4 sleep. Code 1 is idle on the common cards and standby on `registers-ma-v200.json`, so code 1 stays that card's own word. An unlisted code stays raw.
+
+| Offset | Quantity | Type and gain | Unit | Meaning |
+| --- | --- | --- | --- | --- |
+| 37000 | 1 | U16, gain 1 | none | storage unit 1 running state |
+| 37001 | 2 | I32, gain 1 | W | storage unit 1 power; sign not stated |
+| 37003 | 1 | U16, gain 10 | V | storage unit 1 bus voltage |
+| 37004 | 1 | U16, gain 10 | percent | storage unit 1 state of charge |
+| 37006 | 1 | U16, gain 1 | none | storage unit 1 running mode; an unnamed enumeration is also recorded here with no symbols, so a disagreement stays native |
+| 37007 | 2 | U32, gain 1 | W | storage unit 1 charge rating |
+| 37009 | 2 | U32, gain 1 | W | storage unit 1 discharge rating |
+| 37014 | 1 | U16, gain 1 | none | storage unit 1 fault identifier; `registers-ma-v200.json` states no gain, so that card keeps the word native |
+| 37015 | 2 | U32, gain 100 | kWh | storage unit 1 charge energy today |
+| 37017 | 2 | U32, gain 100 | kWh | storage unit 1 discharge energy today |
+| 37021 | 1 | I16, gain 10 | A | storage unit 1 bus current |
+| 37022 | 1 | I16, gain 10 | degrees Celsius | storage unit 1 pack temperature |
+| 37025 | 1 | U16, gain 1 | minutes | storage unit 1 remaining charge or discharge time |
+| 37026 | 10 | text | none | storage unit 1 converter software text; identity text is not published |
+| 37036 | 10 | text | none | storage unit 1 battery software text; identity text is not published |
+| 37046 | 2 | U32, gain 1 | W | maximum charge power of the storage system |
+| 37048 | 2 | U32, gain 1 | W | maximum discharge power of the storage system |
+| 37052 | 10 | text | none | storage unit 1 identity text; not published |
+| 37066 | 2 | U32, gain 100 | kWh | storage unit 1 charge energy total |
+| 37068 | 2 | U32, gain 100 | kWh | storage unit 1 discharge energy total; the low word is the next offset |
+| 37741 | 1 | U16, gain 1 | none | storage unit 2 running state |
+| 37743 | 2 | I32, gain 1 | W | storage unit 2 power; sign not stated |
+| 37746 | 2 | U32, gain 100 | kWh | storage unit 2 charge energy today |
+| 37748 | 2 | U32, gain 100 | kWh | storage unit 2 discharge energy today |
+| 37750 | 1 | U16, gain 10 | V | storage unit 2 bus voltage |
+| 37751 | 1 | I16, gain 10 | A | storage unit 2 bus current |
+| 37752 | 1 | I16, gain 10 | degrees Celsius | storage unit 2 pack temperature |
+| 37753 | 2 | U32, gain 100 | kWh | storage unit 2 charge energy total |
+| 37755 | 2 | U32, gain 100 | kWh | storage unit 2 discharge energy total |
+| 37758 | 2 | U32, gain 1 | Wh | storage system rated capacity |
+| 37760 | 1 | U16, gain 10 | percent | storage system state of charge |
+| 37762 | 1 | U16, gain 1 | none | storage system running state |
+| 37763 | 1 | U16, gain 10 | V | storage system bus voltage |
+| 37764 | 1 | I16, gain 10 | A | storage system bus current |
+| 37765 | 2 | I32, gain 1 | W | storage system power; sign not stated |
+| 37780 | 2 | U32, gain 100 | kWh | storage system charge energy total |
+| 37782 | 2 | U32, gain 100 | kWh | storage system discharge energy total |
+| 37784 | 2 | U32, gain 100 | kWh | storage system charge energy today |
+| 37786 | 2 | U32, gain 100 | kWh | storage system discharge energy today; the low word is the next offset |
+
+For storage unit `u` of 1 or 2 and pack `n` of 1, 2, or 3, the pack block origin is `38200 + 126*(u-1) + 42*(n-1)`. Identity text occupies the first 10 words and is not published. Software text occupies the next 15 words. The measured words, counted from the running-state word at origin plus 28, are:
+
+| Field | Offset from the running-state word | Type and gain | Unit |
+| --- | --- | --- | --- |
+| pack running state | 0 | U16, gain not stated | none |
+| pack state of charge | 1 | U16, gain 10 | percent |
+| pack power | 5 | I32, gain 1000 | kW; sign not stated |
+| pack voltage | 7 | U16, gain 10 | V |
+| pack current | 8 | I16, gain 10 | A |
+| pack charge energy total | 10 | U32, gain 100 | kWh |
+| pack discharge energy total | 12 | U32, gain 100 | kWh |
+
+Pack maximum temperature for the same `u` and `n` is one signed word at `38452 + 2*((u-1)*3 + (n-1))`, gain 10, degrees Celsius, and the minimum temperature is the next word with the same type and gain. Calibration status words 37920 through 37925 are one word each for unit 1 packs 1 to 3 and then unit 2 packs 1 to 3. Their gain is not stated, so they stay native and named. Words inside a pack block that this table does not name stay opaque and named.
+
 ## Derived notes
 
 These notes are findings that no consulted document states in one place.
@@ -590,6 +647,7 @@ These notes are findings that no consulted document states in one place.
 | SDongle V200R022CC10 MODBUS Interface Definitions | Issue 02 | 2023-04-20 | the S-Dongle plant groups and their signs, and DN-06 |
 | LUNA2000B V200R024C00SPC410 Modbus Port Definitions | Issue 01 | 2026-01-24 | DN-07 only |
 | LUNA2000C ESS Modbus Port Definitions | Issue 01 | 2023-06-13 | DN-07 only |
+| Huawei inverter catalog storage rows | the five catalog files named in Battery groups | the editions those files cite on the grid-code page | storage-unit group 37000 through 37068, system group 37741 through 37786, and packs 1 to 3 |
 | Huawei gateway Modbus reference | reference baseline 2026-10-26.1 | 2026-10-26 | MG-05: that a route established as Modbus lies outside the DL/T 645 condition and that RS-485 alone does not identify a meter's protocol; MG-06: that the inspected editions print no comparable condition for the configuration group; locating the meter rows of the five SmartLogger issues above |
 
 The observations that grade these facts are the runs described in the scope

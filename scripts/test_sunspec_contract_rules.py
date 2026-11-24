@@ -29,14 +29,12 @@ SPEC.loader.exec_module(ENGINE)
 # Synthetic lines that each forbidden rule of a contract must reject.
 PROBES = {
     'v2_contract': ('sunspec.models.candidate.v2', 'Common 1/65 is accepted by the V2 decoder.',
-                    'V2 runtime catalog registration is enabled.', 'V2 automatic acquisition is enabled.',
                     'Trailing spaces before the terminator are trimmed.'),
-    'v1_model_families': ('sunspec.models.candidate.v2', 'The V2 registry decodes Model 103.',
-                          'Model 103 is PROFILE_ADMITTED.', 'Model 123 creates write authority.'),
+    'v1_model_families': ('sunspec.models.candidate.v2', 'The V2 registry decodes Model 103.'),
     'der_trip_lv_template': ('The decoder emits typed facts.', 'A catalog entry exists.',
-                             'Profile admission is granted.', 'Product support is claimed.',
                              'The runtime registers it.', 'Model 708 uses this template.',
                              '709 shares the layout.'),
+    'register_write': ('The page retries the write.',),
     'der_trip_lv_projection': ('The projection is admitted.', 'The projection has a decoder key.',
                                'The projection is a `SunSpecDecodedChain`.',
                                'The projection authorizes a profile.', 'The projection permits sends.',
@@ -46,6 +44,10 @@ PROBES = {
                                      'The candidate emits a typed fact.', 'The candidate causes a new request.',
                                      'The candidate terminates a chain.', 'Model 708 data can form a candidate.',
                                      'Model 709 is a candidate.'),
+    'sunspec_grid_code': (
+        'The catalog defines none, and this section adds no points.',
+        'The reachable catalog defines no point rows for model 703.',
+    ),
 }
 
 # The extended regular expressions the gate used before the rule table; a line
@@ -53,11 +55,11 @@ PROBES = {
 ORIGINAL_FORBIDDEN = {
     'v2_contract': (
         r'sunspec\.models\.candidate\.v2|Common[[:space:]]+1/65[^.]*V2 decoder'
-        '|V2 runtime catalog registration is enabled|V2 automatic acquisition is enabled'
         '|trailing spaces[^.]*trimmed',),
-    'v1_model_families': (r'sunspec\.models\.candidate\.v2|V2 registry|PROFILE_ADMITTED|write authority',),
+    'v1_model_families': (r'sunspec\.models\.candidate\.v2|V2 registry',),
     'der_trip_lv_template': (
-        'decoder|catalog|admission|support|runtime|(^|[^0-9])708([^0-9]|$)|(^|[^0-9])709([^0-9]|$)',),
+        'decoder|catalog|runtime|(^|[^0-9])708([^0-9]|$)|(^|[^0-9])709([^0-9]|$)',),
+    'register_write': ('page retries|write is retried|retried by the page|adds a retry',),
     'der_trip_lv_projection': (
         'projection is admitted|projection has a decoder key|projection is a `SunSpecDecodedChain`'
         '|projection authorizes a profile|projection permits sends|projection writes to a device'
@@ -77,6 +79,9 @@ GATE_OPTIONS = {
     'der_trip_lv_template': '--check-sunspec-der-trip-lv-template-v2',
     'der_trip_lv_projection': '--check-sunspec-der-trip-lv-typed-fact-projection-v2',
     'dynamic_structural_selection': '--check-sunspec-dynamic-structural-selection-v2',
+    'register_write': '--check-modbus-register-write',
+    'sunspec_controls': '--check-sunspec-controls',
+    'sunspec_grid_code': '--check-sunspec-grid-code-settings',
 }
 
 
@@ -208,7 +213,7 @@ class SunSpecContractRules(unittest.TestCase):
 
     def test_each_pin_binds_its_exact_token(self):
         pinned = [rule for rule in ENGINE.load_rules(RULES) if rule['pins']]
-        self.assertEqual(len(pinned), 4)
+        self.assertEqual(len(pinned), 3)
         digits = string.hexdigits[:16]
         swap = str.maketrans(digits, digits[1:] + digits[0])
         for rule in pinned:
@@ -542,6 +547,36 @@ class SunSpecContractRules(unittest.TestCase):
                     group = [item for item in rules if item['contract'] == rule['contract']]
                     failures = ENGINE.check_page(group, lines)
                     self.assertIn(caught_by, [item['kind'] for item, _ in failures])
+
+    def test_model_124_discharge_uses_wdischamax_or_withholds(self):
+        """OutWRte discharge conversion divides by WDisChaMax.
+
+        Using WChaMax when the discharge denominator is unknown fails the
+        discharge row and the withhold statement.
+        """
+        page = 'protocols/sunspec/controls-v1.md'
+        text = self.page_text(page)
+        self.assertIn('percent of `WDisChaMax`', text)
+        self.assertIn(
+            'When the discharge denominator is unknown, the discharge setter is withheld.',
+            text)
+        self.assertNotIn('percent of `WChaMax`, or of the maximum discharge rate', text)
+        unsafe_row = text.replace(
+            'percent of `WDisChaMax`; `WChaMax` only with explicit evidence it equals `WDisChaMax`; otherwise withheld',
+            'percent of `WChaMax`, or of the maximum discharge rate where the device reports one',
+        )
+        self.assertNotEqual(unsafe_row, text)
+        self.write(page, unsafe_row)
+        self.assert_contract_fails('sunspec_controls', 'row')
+        self.restore(page)
+        unsafe_statement = text.replace(
+            'When the discharge denominator is unknown, the discharge setter is withheld.',
+            'When `WDisChaMax` is absent, discharge uses percent of `WChaMax`.',
+        )
+        self.assertNotEqual(unsafe_statement, text)
+        self.write(page, unsafe_statement)
+        self.assert_contract_fails('sunspec_controls', 'statement')
+        self.restore(page)
 
 
 if __name__ == '__main__':
