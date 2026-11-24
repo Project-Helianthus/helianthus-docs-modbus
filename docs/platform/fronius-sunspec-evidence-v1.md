@@ -1,5 +1,23 @@
 # Fronius SunSpec Phase-One Evidence Packet V1
 
+## Current 0.7 registry behavior
+
+The SunSpec phase-one change in
+[`helianthus-modbusreg` PR #465](https://github.com/Project-Helianthus/helianthus-modbusreg/pull/465)
+declares the vendor-neutral `sunspec.phase1` profile for Common model `1` and
+inverter models `101`, `102`, and `103` as `qualified`, `active`, and
+default-enabled. The detector records maturity and the default-enabled flag but
+does not reject a catalog profile on either field. A candidate still needs an
+active profile, an enabled detector declaration, applicable fixture opt-in, and
+matching documented identity evidence; revoked and superseded profiles do not
+match. This is standard-profile admission, not a Fronius flavor or product
+qualification. Physical hardware verification remains a separately recorded
+level, and no live result is claimed here.
+
+The historical M3-01/M3-03 packet below keeps its original evidence and
+terminal disposition. Its statements about the earlier absent detector describe
+that historical phase; they do not override the 0.7 registry behavior above.
+
 ## Status and scope
 
 This is the `FMV3-M3-01` evidence packet for issue #397. It records a legacy qualification harness and documentary boundary, not a Fronius-oriented support

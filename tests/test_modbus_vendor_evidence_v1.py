@@ -16,7 +16,7 @@ def test_mixed_catalog_runtime_contract_is_explicit_and_fail_closed():
     required = {
         "## Mixed-Catalog Selection Contract",
         "requires exclusive selection",
-        "qualified, active, default-enabled, and enabled",
+        "Profile maturity and `DefaultEnabled` remain recorded metadata",
         "`INSUFFICIENT_EVIDENCE` before score ranking",
         "regardless of candidate score, catalog order, or detector order",
         "`outcome=ambiguous`, `reason=multiple_matches`",
