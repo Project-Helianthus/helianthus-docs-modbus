@@ -35,7 +35,7 @@ EXPECTED = {
     ('gen3_public_protocol', 'forbidden'): 1,
     ('gen3_public_protocol', 'allowed_digest'): 16,
     ('generation', 'heading'): 19,
-    ('generation', 'statement'): 27,
+    ('generation', 'statement'): 28,
     ('generation', 'forbidden'): 1,
     ('legacy_evse_current', 'heading'): 1,
     ('legacy_evse_current', 'statement'): 7,

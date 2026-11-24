@@ -72,7 +72,7 @@ EXPECTED = {
     ('register_write', 'forbidden'): 1,
     ('sunspec_controls', 'heading'): 3,
     ('sunspec_controls', 'row'): 9,
-    ('sunspec_controls', 'statement'): 8,
+    ('sunspec_controls', 'statement'): 9,
     ('sunspec_grid_code', 'heading'): 25,
     ('sunspec_grid_code', 'row'): 2,
     ('sunspec_grid_code', 'statement'): 5,

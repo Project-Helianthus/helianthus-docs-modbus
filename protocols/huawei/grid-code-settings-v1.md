@@ -4,9 +4,21 @@ These settings have no SemReg element; they are documented registers decoded and
 
 Each card below is one catalog file. A missing dictionary, curve layout, unnamed point, merged enumeration, or name and unit disagreement stays named and is not filled in.
 
+A writable row is unsupported unless that card names its source edition and a verified
+device-model and firmware-floor applicability. A catalog file name does not establish
+the edition, the device models, or the firmware floor. Where device-model applicability
+is unverified or unknown, or the card defines no grid-code row, writable support is
+unsupported.
+
 ## L-LEGACY
 
 Catalog file `registers-l-legacy.json`.
+
+Source edition: SUN2000L V100R001 MODBUS Interface Definitions, Issue 05, 2018-04-03.
+Family: SUN2000L. Firmware floor: V100R001C00. The edition lists its device models on
+pages 7 and 8. Other editions of this title are outside this card. This card defines no
+grid-code row.
+Writable support: unsupported.
 
 This card defines no grid-code row.
 
@@ -22,6 +34,12 @@ This card defines no grid-code row.
 ## L-V200
 
 Catalog file `registers-l-v200.json`.
+
+Source edition: SUN2000L V200R001C00 Modbus Interface Definitions, Issue 11, 2026-06-27.
+Family: SUN2000L. Firmware floor: SUN2000L V200R001C00. The edition lists its device
+models on page 6. Other editions of this title are outside this card. The access column
+is the access the edition records and is not qualified writable support.
+Writable support: verified only for device models of the SUN2000L family at that firmware floor.
 
 ### Grid-protection block
 
@@ -60,6 +78,12 @@ Catalog file `registers-l-v200.json`.
 
 Catalog file `registers-lb-c00.json`.
 
+Source edition: SUN2000LB V300R024C00 Modbus Interface Definitions, Issue 06,
+2026-06-27. Families: SUN2000LB and SUN5000. Firmware floor: V300R024C00. The edition
+lists its device models on page 6. The access column is the access the edition records
+and is not qualified writable support.
+Writable support: verified only for device models of the SUN2000LB and SUN5000 families at that firmware floor.
+
 ### Grid-protection block
 
 | point key | address | quantity | type | gain | unit | access (RO, RW or WO as the card gives) | range or dictionary | functional class | meaning (own words) |
@@ -95,6 +119,13 @@ Catalog file `registers-lb-c00.json`.
 ## LB-C10
 
 Catalog file `registers-lb-c10.json`.
+
+Source edition: SUN2000LB V300R024C10 Modbus Interface Definitions, Issue 08,
+2026-06-23. Families: SUN2000LB and SUN5000. Firmware floor: V300R024C10SPC100. The
+edition lists its device models on page 7. Other editions of this title are outside this
+card. The access column is the access the edition records and is not qualified writable
+support.
+Writable support: verified only for device models of the SUN2000LB and SUN5000 families at that firmware floor.
 
 ### Grid-protection block
 
@@ -132,6 +163,12 @@ Catalog file `registers-lb-c10.json`.
 
 Catalog file `registers-lc.json`.
 
+Source edition: SUN2000LC V100R023C10 Modbus Interface Definitions, Issue 12,
+2026-06-29. Family: SUN2000LC. Firmware floor: V100R023C10. The edition lists its device
+models on page 6. Other editions of this title are outside this card. The access column
+is the access the edition records and is not qualified writable support.
+Writable support: verified only for device models of the SUN2000LC family at that firmware floor.
+
 ### Grid-protection block
 
 | point key | address | quantity | type | gain | unit | access (RO, RW or WO as the card gives) | range or dictionary | functional class | meaning (own words) |
@@ -168,6 +205,19 @@ Catalog file `registers-lc.json`.
 
 Catalog file `registers-ma-c00.json`.
 
+Source edition: SUN2000MA V100R001C00SPC178 Modbus Interface Definitions, Issue 10,
+2026-09-09. Families: SUN2000, SUN2000HA, SUN2000L, SUN2000MA, and SUN8000. Firmware
+floors: SUN2000 V100R001; SUN2000 V200R001C02; SUN2000 V200R001C90; SUN2000 V200R002C00;
+SUN2000 V200R002C20; SUN2000 V300R001C00; SUN2000 V500R001C00; SUN2000HA V100R001;
+SUN2000HA V200R001C00; SUN2000HA V300R001C00; SUN2000L V100R001C00; SUN2000L
+V100R001C10; SUN2000L V100R001C12; SUN2000L V100R001C20; SUN2000L V200R001C00; SUN2000MA
+V100R001C00; SUN2000MA V100R001C10; SUN2000MA V100R001C20; SUN8000 V100R001. The edition
+lists its device models on pages 6, 7, 8, 9, 10, 11, and 12. Recorded floor strings
+SUN2000L V200R001C0 and SUN2000MA V100R001C10SUN2000MA are not usable labels and do not
+establish writable support. The access column is the access the edition records and is
+not qualified writable support.
+Writable support: verified only for device models of the SUN2000, SUN2000HA, SUN2000L, SUN2000MA, and SUN8000 families at one of those firmware floors.
+
 ### Grid-protection block
 
 | point key | address | quantity | type | gain | unit | access (RO, RW or WO as the card gives) | range or dictionary | functional class | meaning (own words) |
@@ -203,6 +253,13 @@ Catalog file `registers-ma-c00.json`.
 ## MA-C20
 
 Catalog file `registers-ma-c20.json`.
+
+Source edition: SUN2000MA V100R001C20 Modbus Interface Definitions, Issue 01,
+2026-07-03. Family: SUN2000MA. Firmware floor: SUN2000MA V100R001C20. The edition lists
+its device models on pages 6 and 7. Other editions of this title are outside this card.
+The access column is the access the edition records and is not qualified writable
+support.
+Writable support: verified only for device models of the SUN2000MA family at that firmware floor.
 
 ### Grid-code identity
 
@@ -445,6 +502,12 @@ Catalog file `registers-ma-c20.json`.
 ## MA-V200
 
 Catalog file `registers-ma-v200.json`.
+
+Source edition: SUN2000MA V200R024C00SPC111 Modbus Interface Definitions, Issue 10,
+2026-09-09. Families: SUN2000MA and SUN5000. Firmware floor: V200R024C00. The edition
+lists its device models on page 6. The access column is the access the edition records
+and is not qualified writable support.
+Writable support: verified only for device models of the SUN2000MA and SUN5000 families at that firmware floor.
 
 ### Grid-code identity
 
@@ -727,6 +790,12 @@ Catalog file `registers-ma-v200.json`.
 
 Catalog file `registers-mb02.json`.
 
+Source edition: SUN2000MB V200R023C10 Modbus Interface Definitions, Issue 02,
+2024-02-01. Families: SUN2000MB and SUN600. Firmware floors: V200R022C10;
+V200R023C10PSC110. The edition lists its device models on pages 6 and 7. The access
+column is the access the edition records and is not qualified writable support.
+Writable support: verified only for device models of the SUN2000MB and SUN600 families at one of those firmware floors.
+
 ### Grid-code identity
 
 | point key | address | quantity | type | gain | unit | access (RO, RW or WO as the card gives) | range or dictionary | functional class | meaning (own words) |
@@ -963,6 +1032,12 @@ Catalog file `registers-mb02.json`.
 ## MC
 
 Catalog file `registers-mc.json`.
+
+Source edition: SUN2000MC V200R023C00 Modbus Interface Definitions, Issue 01,
+2023-03-17. Family: SUN2000MC. Firmware floor: SUN2000MC V200R023C00. The edition lists
+its device models on page 5. The access column is the access the edition records and is
+not qualified writable support.
+Writable support: verified only for device models of the SUN2000MC family at that firmware floor.
 
 ### Grid-code identity
 
@@ -1214,6 +1289,12 @@ Catalog file `registers-mc.json`.
 
 Catalog file `registers-commercial.json`.
 
+Source edition: SUN2000 Commercial Inverter MODBUS Interface Definitions, Issue 01,
+2017-12-26. The edition records no device-model rows. The firmware floor is unknown.
+Device-model applicability is unknown. The access column is the access the edition
+records and is not qualified writable support.
+Writable support: unsupported.
+
 ### Dispatch settings
 
 | point key | address | quantity | type | gain | unit | access (RO, RW or WO as the card gives) | range or dictionary | functional class | meaning (own words) |
@@ -1245,6 +1326,12 @@ No row in this block.
 ## HA
 
 Catalog file `registers-ha.json`.
+
+Source edition: Solar Inverter Modbus Interface Definitions (V3.0), Issue 08,
+2026-06-01. Family: SUN2000HA. Firmware floor: SUN2000HA V500R026C10. The edition lists
+its device models on page 6. Other editions of this title are outside this card. The
+access column is the access the edition records and is not qualified writable support.
+Writable support: verified only for device models of the SUN2000HA family at that firmware floor.
 
 ### Dispatch settings
 
@@ -1307,6 +1394,12 @@ Catalog file `registers-ha.json`.
 
 Catalog file `registers-hb.json`.
 
+Source edition: SUN2000HB V100R023C00 Inverter Modbus Interface Definitions, Issue 01,
+2024-07-18. Family: SUN2000HB. Firmware floor: SUN2000HB V100R023C00. The edition lists
+its device models on page 6. The access column is the access the edition records and is
+not qualified writable support.
+Writable support: verified only for device models of the SUN2000HB family at that firmware floor.
+
 ### Dispatch settings
 
 | point key | address | quantity | type | gain | unit | access (RO, RW or WO as the card gives) | range or dictionary | functional class | meaning (own words) |
@@ -1360,6 +1453,12 @@ No row in this block.
 ## HD
 
 Catalog file `registers-hd.json`.
+
+Source edition: SUN2000HD V100R026C00 Modbus Interface Definitions, Issue 01,
+2026-03-30. Family: SUN2000HD. Firmware floor: SUN2000HD V100R026C00. The edition lists
+its device models on page 6. The access column is the access the edition records and is
+not qualified writable support.
+Writable support: verified only for device models of the SUN2000HD family at that firmware floor.
 
 ### Dispatch settings
 
@@ -1421,6 +1520,13 @@ Catalog file `registers-hd.json`.
 ## SUN-C81
 
 Catalog file `registers-sun-c81.json`.
+
+Source edition: SUN2000 V100R001C81 Solar Inverter Modbus Interface Definitions, Issue
+01, 2025-03-27. Families: SUN2000 and SUN2000HA. Firmware floors: SUN2000 V100R001C81;
+SUN2000 V200R001C02; SUN2000 V200R001C90; SUN2000 V200R002C00; SUN2000 V200R002C20;
+SUN2000HA V100R001C00. The edition lists its device models on pages 6, 7, and 8. The
+access column is the access the edition records and is not qualified writable support.
+Writable support: verified only for device models of the SUN2000 and SUN2000HA families at one of those firmware floors.
 
 ### Dispatch settings
 
@@ -1538,6 +1644,12 @@ No row in this block.
 
 Catalog file `registers-sun-v300.json`.
 
+Source edition: SUN2000 V300R001C00 Solar Inverter Modbus Interface Definitions, Issue
+01, 2025-01-09. Family: SUN2000. Firmware floor: SUN2000 V300R001C00. The edition lists
+its device models on page 5. The access column is the access the edition records and is
+not qualified writable support.
+Writable support: verified only for device models of the SUN2000 family at that firmware floor.
+
 ### Dispatch settings
 
 | point key | address | quantity | type | gain | unit | access (RO, RW or WO as the card gives) | range or dictionary | functional class | meaning (own words) |
@@ -1590,6 +1702,13 @@ No row in this block.
 
 Catalog file `registers-emma-v100r024c00-01-2024-07-15.json`.
 
+Source edition: EMMA V100R024C00, Issue 01, 2024-07-15. Family: EMMA. Firmware floor:
+SmartHEMS V100R024C00SPC100, inclusive. The edition records this floor on page 7. The
+edition does not confirm exact device models. Device-model applicability is unverified.
+The access column is the access the edition records and is not qualified writable
+support.
+Writable support: unsupported.
+
 ### Plant dispatch and grid-connection settings
 
 | point key | address | quantity | type | gain | unit | access (RO, RW or WO as the card gives) | range or dictionary | functional class | meaning (own words) |
@@ -1603,6 +1722,13 @@ Catalog file `registers-emma-v100r024c00-01-2024-07-15.json`.
 ## emma-v100r025c00spc102-2025-08-14
 
 Catalog file `registers-emma-v100r025c00spc102-2025-08-14.json`.
+
+Source edition: EMMA V100R025C00SPC102, issue not stated, 2025-08-14. Family: EMMA.
+Firmware floor: SmartHEMS V100R025C00SPC102, inclusive. The edition records this floor
+on page 7. The edition does not confirm exact device models. Device-model applicability
+is unverified. The access column is the access the edition records and is not qualified
+writable support.
+Writable support: unsupported.
 
 ### Plant dispatch and grid-connection settings
 
@@ -1618,6 +1744,12 @@ Catalog file `registers-emma-v100r025c00spc102-2025-08-14.json`.
 
 Catalog file `registers-s-dongle-v100r001c00-05-2022-07-06.json`.
 
+Source edition: S-Dongle V100R001C00, Issue 05, 2022-07-06. Family: S-Dongle. Firmware
+floor: V100R001C00SPC100. The component of that floor is not stated. The edition records
+this floor on page 8. The edition's device-model list is exhaustive for the S-Dongle
+family. This card defines no grid-code row.
+Writable support: unsupported.
+
 This card defines no grid-code row.
 
 This card defines no grid-code row.
@@ -1629,6 +1761,12 @@ This card defines no grid-code row.
 ## s-dongle-v200r022cc10-02-2023-04-20
 
 Catalog file `registers-s-dongle-v200r022cc10-02-2023-04-20.json`.
+
+Source edition: S-Dongle V200R022CC10, Issue 02, 2023-04-20. Family: S-Dongle. Firmware
+floor: V200R022C10. The component of that floor is not stated. The edition records this
+floor on page 8. The edition's device-model list is exhaustive for the S-Dongle family.
+This card defines no grid-code row.
+Writable support: unsupported.
 
 This card defines no grid-code row.
 
@@ -1642,6 +1780,12 @@ This card defines no grid-code row.
 
 Catalog file `registers-s-dongle-v200r025c00-01-2025-04-27.json`.
 
+Source edition: S-Dongle V200R025C00, Issue 01, 2025-04-27. Family: S-Dongle. Firmware
+floor: V200R022C10. The component of that floor is not stated. The edition records this
+floor on page 8. The edition's device-model list is exhaustive for the S-Dongle family.
+This card defines no grid-code row.
+Writable support: unsupported.
+
 This card defines no grid-code row.
 
 This card defines no grid-code row.
@@ -1654,6 +1798,12 @@ This card defines no grid-code row.
 
 Catalog file `registers-s-dongle-v200r025c00spc120-01-2025-12-23.json`.
 
+Source edition: S-Dongle V200R025C00SPC120, Issue 01, 2025-12-23. Family: S-Dongle.
+Firmware floor: V200R022C10. The component of that floor is not stated. The edition
+records this floor on page 8. The edition's device-model list is exhaustive for the
+S-Dongle family. This card defines no grid-code row.
+Writable support: unsupported.
+
 This card defines no grid-code row.
 
 This card defines no grid-code row.
@@ -1665,6 +1815,13 @@ This card defines no grid-code row.
 ## smartlogger-32-2018-11-15
 
 Catalog file `registers-smartlogger-32-2018-11-15.json`.
+
+Source edition: SmartLogger, Issue 32, 2018-11-15. Family: SmartLogger. Firmware floors,
+each inclusive: SUN2000 V100R001C95; SmartLogger V100R001C00; SmartLogger V200R001C00.
+The edition records these floors on page 10. The edition does not confirm exact device
+models. Device-model applicability is unverified. The access column is the access the
+edition records and is not qualified writable support.
+Writable support: unsupported.
 
 ### Plant dispatch and grid-connection settings
 
@@ -1690,6 +1847,14 @@ Catalog file `registers-smartlogger-32-2018-11-15.json`.
 
 Catalog file `registers-smartlogger-36-2020-04-13.json`.
 
+Source edition: SmartLogger, Issue 36, 2020-04-13. Family: SmartLogger. Firmware floors,
+each inclusive: SUN2000 V100R001C95; SmartLogger V100R001C00; SmartLogger V100R002C00;
+SmartLogger V200R001C00; SmartLogger V300R001C00. The edition records these floors on
+page 10. The edition does not confirm exact device models. Device-model applicability is
+unverified. The access column is the access the edition records and is not qualified
+writable support.
+Writable support: unsupported.
+
 ### Plant dispatch and grid-connection settings
 
 | point key | address | quantity | type | gain | unit | access (RO, RW or WO as the card gives) | range or dictionary | functional class | meaning (own words) |
@@ -1714,6 +1879,14 @@ Catalog file `registers-smartlogger-36-2020-04-13.json`.
 
 Catalog file `registers-smartlogger-37-2020-06-24.json`.
 
+Source edition: SmartLogger, Issue 37, 2020-06-24. Family: SmartLogger. Firmware floors,
+each inclusive: SUN2000 V100R001C95; SmartLogger V100R001C00; SmartLogger V100R002C00;
+SmartLogger V200R001C00; SmartLogger V300R001C00. The edition records these floors on
+page 11. The edition does not confirm exact device models. Device-model applicability is
+unverified. The access column is the access the edition records and is not qualified
+writable support.
+Writable support: unsupported.
+
 ### Plant dispatch and grid-connection settings
 
 | point key | address | quantity | type | gain | unit | access (RO, RW or WO as the card gives) | range or dictionary | functional class | meaning (own words) |
@@ -1737,6 +1910,14 @@ Catalog file `registers-smartlogger-37-2020-06-24.json`.
 ## smartlogger-v300r024c10-01-2026-10-15
 
 Catalog file `registers-smartlogger-v300r024c10-01-2026-10-15.json`.
+
+Source edition: SmartLogger V300R024C10, Issue 01, 2026-10-15. Family: SmartLogger.
+Firmware floors, each inclusive: SUN2000 V100R001C95; SmartLogger V100R001C00;
+SmartLogger V100R002C00; SmartLogger V200R001C00; SmartLogger V300R001C00. The edition
+records these floors on page 15. The edition does not confirm exact device models.
+Device-model applicability is unverified. The access column is the access the edition
+records and is not qualified writable support.
+Writable support: unsupported.
 
 ### Plant dispatch and grid-connection settings
 
@@ -1770,6 +1951,14 @@ Catalog file `registers-smartlogger-v300r024c10-01-2026-10-15.json`.
 
 Catalog file `registers-smartlogger-v300r024c10-53-2025-10-29.json`.
 
+Source edition: SmartLogger V300R024C10, Issue 53, 2025-10-29. Family: SmartLogger.
+Firmware floors, each inclusive: SUN2000 V100R001C95; SmartLogger V100R001C00;
+SmartLogger V100R002C00; SmartLogger V200R001C00; SmartLogger V300R001C00. The edition
+records these floors on page 15. The edition does not confirm exact device models.
+Device-model applicability is unverified. The access column is the access the edition
+records and is not qualified writable support.
+Writable support: unsupported.
+
 ### Plant dispatch and grid-connection settings
 
 | point key | address | quantity | type | gain | unit | access (RO, RW or WO as the card gives) | range or dictionary | functional class | meaning (own words) |
@@ -1800,6 +1989,14 @@ Catalog file `registers-smartlogger-v300r024c10-53-2025-10-29.json`.
 ## smartlogger-v300r024c10-54-2026-02-06
 
 Catalog file `registers-smartlogger-v300r024c10-54-2026-02-06.json`.
+
+Source edition: SmartLogger V300R024C10, Issue 54, 2026-02-06. Family: SmartLogger.
+Firmware floors, each inclusive: SUN2000 V100R001C95; SmartLogger V100R001C00;
+SmartLogger V100R002C00; SmartLogger V200R001C00; SmartLogger V300R001C00. The edition
+records these floors on page 15. The edition does not confirm exact device models.
+Device-model applicability is unverified. The access column is the access the edition
+records and is not qualified writable support.
+Writable support: unsupported.
 
 ### Plant dispatch and grid-connection settings
 
@@ -1832,6 +2029,14 @@ Catalog file `registers-smartlogger-v300r024c10-54-2026-02-06.json`.
 
 Catalog file `registers-smartlogger-v300r024c10spc180-01-2025-06-23.json`.
 
+Source edition: SmartLogger V300R024C10SPC180, Issue 01, 2025-06-23. Family:
+SmartLogger. Firmware floors, each inclusive: SUN2000 V100R001C95; SmartLogger
+V100R001C00; SmartLogger V100R002C00; SmartLogger V200R001C00; SmartLogger V300R001C00.
+The edition records these floors on page 16. The edition does not confirm exact device
+models. Device-model applicability is unverified. The access column is the access the
+edition records and is not qualified writable support.
+Writable support: unsupported.
+
 ### Plant dispatch and grid-connection settings
 
 | point key | address | quantity | type | gain | unit | access (RO, RW or WO as the card gives) | range or dictionary | functional class | meaning (own words) |
@@ -1863,6 +2068,14 @@ Catalog file `registers-smartlogger-v300r024c10spc180-01-2025-06-23.json`.
 
 Catalog file `registers-smartlogger-v300r024c10spc191-52-2025-06-06.json`.
 
+Source edition: SmartLogger V300R024C10SPC191, Issue 52, 2025-06-06. Family:
+SmartLogger. Firmware floors, each inclusive: SUN2000 V100R001C95; SmartLogger
+V100R001C00; SmartLogger V100R002C00; SmartLogger V200R001C00; SmartLogger V300R001C00.
+The edition records these floors on page 15. The edition does not confirm exact device
+models. Device-model applicability is unverified. The access column is the access the
+edition records and is not qualified writable support.
+Writable support: unsupported.
+
 ### Plant dispatch and grid-connection settings
 
 | point key | address | quantity | type | gain | unit | access (RO, RW or WO as the card gives) | range or dictionary | functional class | meaning (own words) |
@@ -1893,6 +2106,14 @@ Catalog file `registers-smartlogger-v300r024c10spc191-52-2025-06-06.json`.
 ## smartlogger-v300r024c10spc210-49-2025-03-19
 
 Catalog file `registers-smartlogger-v300r024c10spc210-49-2025-03-19.json`.
+
+Source edition: SmartLogger V300R024C10SPC210, Issue 49, 2025-03-19. Family:
+SmartLogger. Firmware floors, each inclusive: SUN2000 V100R001C95; SmartLogger
+V100R001C00; SmartLogger V100R002C00; SmartLogger V200R001C00; SmartLogger V300R001C00;
+LUNA2000B V300R024C00. The edition records these floors on page 13. The edition does not
+confirm exact device models. Device-model applicability is unverified. The access column
+is the access the edition records and is not qualified writable support.
+Writable support: unsupported.
 
 ### Plant dispatch and grid-connection settings
 
@@ -1926,6 +2147,14 @@ Catalog file `registers-smartlogger-v300r024c10spc210-49-2025-03-19.json`.
 
 Catalog file `registers-smartlogger-v300r025c10-01-2025-12-22.json`.
 
+Source edition: SmartLogger V300R025C10, Issue 01, 2025-12-22. Family: SmartLogger.
+Firmware floors, each inclusive: SUN2000 V100R001C95; SmartLogger V100R001C00;
+SmartLogger V100R002C00; SmartLogger V200R001C00; SmartLogger V300R001C00. The edition
+records these floors on page 7. The edition does not confirm exact device models.
+Device-model applicability is unverified. The access column is the access the edition
+records and is not qualified writable support.
+Writable support: unsupported.
+
 ### Plant dispatch and grid-connection settings
 
 | point key | address | quantity | type | gain | unit | access (RO, RW or WO as the card gives) | range or dictionary | functional class | meaning (own words) |
@@ -1956,6 +2185,14 @@ Catalog file `registers-smartlogger-v300r025c10-01-2025-12-22.json`.
 ## smartlogger-v300r025c10-02-2026-10-09
 
 Catalog file `registers-smartlogger-v300r025c10-02-2026-10-09.json`.
+
+Source edition: SmartLogger V300R025C10, Issue 02, 2026-10-09. Family: SmartLogger.
+Firmware floors, each inclusive: SUN2000 V100R001C95; SmartLogger V100R001C00;
+SmartLogger V100R002C00; SmartLogger V200R001C00; SmartLogger V300R001C00. The edition
+records these floors on page 7. The edition does not confirm exact device models.
+Device-model applicability is unverified. The access column is the access the edition
+records and is not qualified writable support.
+Writable support: unsupported.
 
 ### Plant dispatch and grid-connection settings
 
@@ -1989,6 +2226,14 @@ Catalog file `registers-smartlogger-v300r025c10-02-2026-10-09.json`.
 
 Catalog file `registers-smartlogger-v300r026c10-02-2026-10-09.json`.
 
+Source edition: SmartLogger V300R026C10, Issue 02, 2026-10-09. Family: SmartLogger.
+Firmware floors, each inclusive: SUN2000 V100R001C95; SmartLogger V100R001C00;
+SmartLogger V100R002C00; SmartLogger V200R001C00; SmartLogger V300R001C00. The edition
+records these floors on page 7. The edition does not confirm exact device models.
+Device-model applicability is unverified. The access column is the access the edition
+records and is not qualified writable support.
+Writable support: unsupported.
+
 ### Plant dispatch and grid-connection settings
 
 | point key | address | quantity | type | gain | unit | access (RO, RW or WO as the card gives) | range or dictionary | functional class | meaning (own words) |
@@ -2016,3 +2261,13 @@ Catalog file `registers-smartlogger-v300r026c10-02-2026-10-09.json`.
 - Unnamed numeric intervals stay unnamed.
 - `gateway-self.40486` has a name and unit disagreement and stays open.
 - `gateway-self.40608` repeats code 3 and leaves code 1 unassigned.
+
+## Documents consulted
+
+The source edition, family, and firmware floor named on each card are the edition identity and the model-floor rows of the Huawei PV inverter Modbus reference and the Huawei gateway Modbus reference, reference baseline 2026-10-26.1. Each card names that edition by title, issue, and date. This page restates no vendor table and no device-model token.
+
+**Copyright note.** The information on this page that is derived from the inverter and SmartLogger editions named above is attributed to Huawei Technologies Co., Ltd., which retains the copyright in those documents. This page states that information in its own words and does not reproduce the documents. The CC0-1.0 dedication of this page covers its own expression only and does not relicense those documents.
+
+**Copyright note.** The information on this page that is derived from the EMMA and S-Dongle editions named above is attributed to Huawei Digital Power Technologies Co., Ltd., which retains the copyright in those documents. This page states that information in its own words and does not reproduce the documents. The CC0-1.0 dedication of this page covers its own expression only and does not relicense those documents.
+
+**Reference note.** The edition identity, family, and firmware floor attributed to the Huawei PV inverter Modbus reference and the Huawei gateway Modbus reference were taken through those independent documentary works, whose contributors dedicate their original writing under CC0-1.0. The vendor documents they cite keep their rights, as the copyright notes state. This page restates those facts in its own words.

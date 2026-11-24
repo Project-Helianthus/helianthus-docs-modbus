@@ -67,7 +67,7 @@ tesla_current_limit_fixture="$fixture_root/tesla-current-limit.md"
 
 "$repo_root/scripts/check_docs.sh" --check-tesla-current-limit-operation "$tesla_current_limit_document"
 for mutation in \
-  's/admitted without live operator confirmation at action time/requires cached permission at action time/' \
+  's/explicit operator confirmation at action time/cached permission at action time/' \
   's/Mutation retries are zero;/Mutation retries are unlimited;/' \
   's/A readback exception or application error after ACK is overall `INDETERMINATE`/A readback error after ACK is overall `REJECTED`/' \
   's/An exchange timeout before the operation deadline is `TIMEOUT`/An exchange timeout before the operation deadline is `INDETERMINATE`/' \
@@ -1704,6 +1704,15 @@ if "$repo_root/scripts/check_docs.sh" --check-huawei-grid-code-settings "$huawei
   echo 'Huawei grid-code heading mutation was accepted' >&2
   exit 1
 fi
+sed 's/Source edition:/Catalog name:/' "$huawei_grid_document" > "$huawei_grid_fixture"
+if cmp -s "$huawei_grid_document" "$huawei_grid_fixture"; then
+  echo 'Huawei grid-code source-edition mutation did not change the document' >&2
+  exit 1
+fi
+if "$repo_root/scripts/check_docs.sh" --check-huawei-grid-code-settings "$huawei_grid_fixture"; then
+  echo 'Huawei grid-code source-edition mutation was accepted' >&2
+  exit 1
+fi
 
 # SUN2000 relations: phase stays gate_rule and the two inverter relays stay native_observation.
 huawei_relations_document="$repo_root/protocols/huawei/sun2000-semreg-relations-v1.md"
@@ -1737,7 +1746,7 @@ for mutation in \
   's/A t28 received 70 s after a 60 s provisional set withholds the current allocation and retains the expiry fact./A t28 received 70 s after a 60 s provisional set keeps the current allocation./' \
   's/A newer t28 with field 2 explicitly zero supersedes an earlier persistent t8 as unknown and retains the raw zero and evidence without publishing a numeric limit./A newer t28 with field 2 explicitly zero publishes the earlier t8 numeric limit./' \
   's/A t28 omitting field 2 supplies no update and the earlier still-current t8 remains the candidate./A t28 omitting field 2 clears the earlier t8 candidate./' \
-  's/needs no live operator confirmation./needs live operator confirmation./'; do
+  's/explicit operator confirmation at action time/cached permission at action time/'; do
   sed "$mutation" "$tesla_mapping_document" > "$tesla_mapping_fixture"
   if cmp -s "$tesla_mapping_document" "$tesla_mapping_fixture"; then
     echo "Gen3 mapping mutation did not change the document: $mutation" >&2
@@ -1796,6 +1805,18 @@ for mutation in \
     exit 1
   fi
 done
+
+# HSC safety: dropping action-time confirmation for a live provisional set fails.
+sed 's/explicit operator confirmation at action time/cached permission at action time/' \
+  "$tesla_gen3_document" > "$tesla_gen3_fixture"
+if cmp -s "$tesla_gen3_document" "$tesla_gen3_fixture"; then
+  echo 'HSC confirmation mutation did not change the document' >&2
+  exit 1
+fi
+if "$repo_root/scripts/check_docs.sh" --check-tesla-generation-contracts "$tesla_legacy_document" "$tesla_gen3_fixture"; then
+  echo 'HSC confirmation mutation was accepted' >&2
+  exit 1
+fi
 
 # Protocol II live width: restoring 59 words, or collapsing configured and automatic, fails on each record page.
 fc04_pages=(

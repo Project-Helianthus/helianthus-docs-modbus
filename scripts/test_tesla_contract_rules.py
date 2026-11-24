@@ -374,6 +374,39 @@ class TeslaContractRules(unittest.TestCase):
         self.assertEqual(gate('--check-tesla-generation-contracts', legacy, gen3), 0)
         self.assertNotEqual(gate('--check-tesla-generation-contracts', legacy), 0)
 
+    def test_live_provisional_set_requires_action_time_confirmation(self):
+        """A live provisional set or withdrawal keeps action-time confirmation.
+
+        Replacing that confirmation with an exemption fails the contract that
+        pins the page. Profile, version, generation, and dispatch checks stay
+        additional conditions.
+        """
+        cases = (
+            ('protocols/tesla/gen3-current-limit-operation-v1.md', 'current_limit_operation'),
+            ('protocols/tesla/gen3-hsc-rtu.md', 'generation'),
+            ('protocols/tesla/gen3-semreg-mapping-v1.md', 'gen3_semreg_mapping'),
+        )
+        exempt = (
+            'without live operator confirmation',
+            'needs no live operator confirmation',
+            'only for an agent or test',
+        )
+        for page, contract in cases:
+            with self.subTest(page=page):
+                text = self.copies[page].read_text(encoding='utf-8')
+                self.assertIn('explicit operator confirmation at action time', text)
+                self.assertIn('an ordinary live caller, including a gateway or MCP caller, is not exempt', text)
+                for phrase in exempt:
+                    self.assertNotIn(phrase, text)
+                unsafe = text.replace(
+                    'explicit operator confirmation at action time',
+                    'no live operator confirmation at action time',
+                )
+                self.assertNotEqual(unsafe, text)
+                self.copies[page].write_text(unsafe, encoding='utf-8')
+                self.assertNotEqual(self.run_contract(contract).returncode, 0)
+                self.restore(page)
+
 
 if __name__ == '__main__':
     unittest.main()

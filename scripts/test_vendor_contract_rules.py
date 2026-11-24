@@ -523,6 +523,40 @@ class VendorContractRules(unittest.TestCase):
         self.assertNotEqual(self.gate(GATE_OPTIONS['private_function'], self.copies[PRIVATE]), 0)
         self.restore(PRIVATE)
 
+    def test_each_huawei_grid_card_cites_source_or_withholds_writes(self):
+        """Each grid-code card cites its source edition or withholds writes.
+
+        A catalog file name is not applicability. Replacing a verified limit
+        or an unsupported mark with a blanket qualified write fails the card
+        statement.
+        """
+        page = 'protocols/huawei/grid-code-settings-v1.md'
+        text = self.page_text(page)
+        lines = text.split('\n')
+        headings = [rule for rule in ENGINE.load_rules(RULES)
+                    if rule['contract'] == 'huawei_grid_code' and rule['kind'] == 'heading']
+        self.assertEqual(len(headings), 34)
+        for rule in headings:
+            start, end = ENGINE.section_bounds(lines, rule['value'])
+            section = '\n'.join(lines[start:end])
+            self.assertIn('Source edition:', section)
+            self.assertTrue(
+                'Writable support: verified only for' in section
+                or 'Writable support: unsupported.' in section,
+                rule['value'])
+        verified = ('Writable support: verified only for device models of the SUN2000L family '
+                    'at that firmware floor.')
+        unsafe = text.replace(verified, 'Writable support: qualified for every device.', 1)
+        self.assertNotEqual(unsafe, text)
+        self.write(page, unsafe)
+        self.assert_contract_fails('huawei_grid_code', 'statement')
+        self.restore(page)
+        unsafe = text.replace('Writable support: unsupported.', 'Writable support: qualified.', 1)
+        self.assertNotEqual(unsafe, text)
+        self.write(page, unsafe)
+        self.assert_contract_fails('huawei_grid_code', 'statement')
+        self.restore(page)
+
 
 if __name__ == '__main__':
     unittest.main()

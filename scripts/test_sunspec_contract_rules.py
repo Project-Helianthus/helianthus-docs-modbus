@@ -548,6 +548,36 @@ class SunSpecContractRules(unittest.TestCase):
                     failures = ENGINE.check_page(group, lines)
                     self.assertIn(caught_by, [item['kind'] for item, _ in failures])
 
+    def test_model_124_discharge_uses_wdischamax_or_withholds(self):
+        """OutWRte discharge conversion divides by WDisChaMax.
+
+        Using WChaMax when the discharge denominator is unknown fails the
+        discharge row and the withhold statement.
+        """
+        page = 'protocols/sunspec/controls-v1.md'
+        text = self.page_text(page)
+        self.assertIn('percent of `WDisChaMax`', text)
+        self.assertIn(
+            'When the discharge denominator is unknown, the discharge setter is withheld.',
+            text)
+        self.assertNotIn('percent of `WChaMax`, or of the maximum discharge rate', text)
+        unsafe_row = text.replace(
+            'percent of `WDisChaMax`; `WChaMax` only with explicit evidence it equals `WDisChaMax`; otherwise withheld',
+            'percent of `WChaMax`, or of the maximum discharge rate where the device reports one',
+        )
+        self.assertNotEqual(unsafe_row, text)
+        self.write(page, unsafe_row)
+        self.assert_contract_fails('sunspec_controls', 'row')
+        self.restore(page)
+        unsafe_statement = text.replace(
+            'When the discharge denominator is unknown, the discharge setter is withheld.',
+            'When `WDisChaMax` is absent, discharge uses percent of `WChaMax`.',
+        )
+        self.assertNotEqual(unsafe_statement, text)
+        self.write(page, unsafe_statement)
+        self.assert_contract_fails('sunspec_controls', 'statement')
+        self.restore(page)
+
 
 if __name__ == '__main__':
     unittest.main()

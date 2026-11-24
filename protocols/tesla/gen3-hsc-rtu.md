@@ -140,7 +140,7 @@ The projection does not define a setter, must not infer a watt limit, and does n
 
 ## Safety boundary
 
-Offline codecs, request construction, and fake or replay dispatch may represent documented read and mutation operations. This contract does not authorize a live transmission, hardware action, deployment, or credential use. An explicitly called provisional set or withdrawal whose capability is independently qualified needs no live operator confirmation. Separate operator approval stays only for an agent or test acting on a real installation.
+Offline codecs, request construction, and fake or replay dispatch may represent documented read and mutation operations. This contract does not authorize a live transmission, hardware action, deployment, or credential use. An explicitly called provisional set or withdrawal whose capability is independently qualified still requires explicit operator confirmation at action time. Profile, version, generation, and dispatch checks are additional conditions, and an ordinary live caller, including a gateway or MCP caller, is not exempt.
 
 ## Compatibility
 

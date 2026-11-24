@@ -2270,8 +2270,8 @@
       "page": "protocols/sunspec/controls-v1.md",
       "section": "## SemReg setters",
       "kind": "row",
-      "value": "| `storage.operation.set_discharge_limit` | `storage.limit.discharge_power` (W) | 124 | `OutWRte`, optional `InOutWRte_RvrtTms`, then `StorCtl_Mod` | percent of `WChaMax`, or of the maximum discharge rate where the device reports one | clears the matching bit | re-read |",
-      "reason": "Model 124 discharge setter row."
+      "value": "| `storage.operation.set_discharge_limit` | `storage.limit.discharge_power` (W) | 124 | `OutWRte`, optional `InOutWRte_RvrtTms`, then `StorCtl_Mod` | percent of `WDisChaMax`; `WChaMax` only with explicit evidence it equals `WDisChaMax`; otherwise withheld | clears the matching bit | re-read |",
+      "reason": "Model 124 discharge setter uses WDisChaMax and withholds an unknown denominator."
     },
     {
       "contract": "sunspec_controls",
@@ -2368,6 +2368,14 @@
       "kind": "statement",
       "value": "For 3,333 W with an 8,000 W applicable rating and scale -1, write raw 416.",
       "reason": "Model 124 raw 416 example."
+    },
+    {
+      "contract": "sunspec_controls",
+      "page": "protocols/sunspec/controls-v1.md",
+      "section": "## SemReg setters",
+      "kind": "statement",
+      "value": "Discharge uses percent of `WDisChaMax`. `WChaMax` is the discharge denominator only when explicit evidence shows it equals `WDisChaMax`. When the discharge denominator is unknown, the discharge setter is withheld.",
+      "reason": "Model 124 OutWRte discharge conversion uses WDisChaMax or withholds the setter."
     },
     {
       "contract": "sunspec_controls",
