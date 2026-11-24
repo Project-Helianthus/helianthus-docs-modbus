@@ -583,6 +583,32 @@ class VendorContractRules(unittest.TestCase):
         self.assert_contract_fails('huawei_grid_code', 'statement')
         self.restore(page)
 
+    def test_battery_groups_name_packs_and_keep_map0_native(self):
+        text = (ROOT / 'protocols/huawei/monitoring-readonly-v1.md').read_text(encoding='utf-8')
+        required = (
+            '## Battery groups',
+            'offsets 37000 through 37068',
+            'offsets 37741 through 37786',
+            'Packs 1 to 3',
+            "A pack's identity anchor is its native position under the configured battery",
+            'pack 1, pack 2, and pack 3 stay the same start after start',
+            'including MAP0, the words stay native and named',
+            'A zero word on an inverter without a battery is not a value.',
+            '| 37000 | 1 | U16, gain 1 |',
+            '| 37741 | 1 | U16, gain 1 |',
+            '| 37786 | 2 | U32, gain 100 |',
+            '38200 + 126*(u-1) + 42*(n-1)',
+        )
+        for phrase in required:
+            self.assertIn(phrase, text)
+        start = text.index('## Battery groups\n')
+        end = text.index('## Derived notes\n')
+        self.assertLess(start, end)
+        removed = text[:start] + text[end:]
+        self.assertNotEqual(removed, text)
+        for phrase in required:
+            self.assertNotIn(phrase, removed)
+
 
 if __name__ == '__main__':
     unittest.main()

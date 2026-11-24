@@ -478,8 +478,8 @@
       "page": "protocols/growatt/bms-rs485-1xsxxp-v202.md",
       "section": "## Typed read-only fields",
       "kind": "statement",
-      "value": "Control and calibration words at offset 0x010C and offsets 0x010F through 0x0161 stay outside the admitted read plan and stay unpublished.",
-      "reason": "Control and calibration words outside the admitted read plan are not a publication requirement."
+      "value": "The control and calibration words the document defines are read and published natively.",
+      "reason": "Defined control and calibration words are read and published natively."
     },
     {
       "contract": "bms_contract",
@@ -598,8 +598,8 @@
       "page": "protocols/growatt/bms-rs485-1xsxxp-v202.md",
       "section": null,
       "kind": "forbidden",
-      "value": "The control and calibration words the document defines are read and published natively\\.",
-      "reason": "A blanket publication of control and calibration words is outside the admitted read plan."
+      "value": "Control and calibration words at offset 0x010C and offsets 0x010F through 0x0161 stay outside the admitted read plan and stay unpublished\\.",
+      "reason": "Withdrawing the defined control and calibration words from publication is outside this contract."
     },
     {
       "contract": "bms_contract",

@@ -10,7 +10,7 @@ Six amperes is the lowest charging current a charger can signal, so 1 A through 
 
 The upper limit is the configured current of the latest t28 in the same lifecycle generation. A value refused before a read is needed sends nothing. Where the generation has no t28, the t27 to t28 limit read may run first, and a value above the limit then read sends no t25 and has no mutation retry. The t25 mutation is never retried. The t27 to t28 read keeps the bounded read acquisition rules of the [read acquisition contract](gen3-read-acquisition-v1.md). A recovered read cannot replay t25 or complete a mutation from a superseded generation.
 
-An explicitly called set or withdrawal whose capability is independently qualified and whose profile, version, generation and dispatch checks pass still requires explicit operator confirmation at action time. Those checks are additional conditions, and an ordinary live caller, including a gateway or MCP caller, is not exempt. The operations are also decoded and callable by hand through MCP and GraphQL in the modbusreg namespace. Consumers write the SemReg elements through the semantic operation route.
+An explicitly called set or withdrawal whose capability is independently qualified and whose profile, version, generation and dispatch checks pass is admitted without explicit operator confirmation at action time. Separate operator approval stays only for an agent or test acting on a real installation. The operations are also decoded and callable by hand through MCP and GraphQL in the modbusreg namespace. Consumers write the SemReg elements through the semantic operation route.
 
 ## Field rules
 

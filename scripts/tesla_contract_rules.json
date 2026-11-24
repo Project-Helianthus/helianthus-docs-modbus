@@ -414,8 +414,8 @@
       "page": "protocols/tesla/gen3-hsc-rtu.md",
       "section": "## Safety boundary",
       "kind": "statement",
-      "value": "An explicitly called provisional set or withdrawal whose capability is independently qualified still requires explicit operator confirmation at action time. Profile, version, generation, and dispatch checks are additional conditions, and an ordinary live caller, including a gateway or MCP caller, is not exempt.",
-      "reason": "The HSC safety boundary requires action-time confirmation for a live provisional set or withdrawal."
+      "value": "An explicitly called provisional set or withdrawal whose capability is independently qualified is admitted without explicit operator confirmation at action time. Profile, version, generation, and dispatch checks remain admission conditions. Separate operator approval stays only for an agent or test acting on a real installation.",
+      "reason": "A qualified provisional set or withdrawal is admitted without action-time confirmation. Separate approval stays only for an agent or test on a real installation."
     },
     {
       "contract": "generation",
@@ -982,8 +982,8 @@
       "page": "protocols/tesla/gen3-current-limit-operation-v1.md",
       "section": "## Scope and evidence status",
       "kind": "statement",
-      "value": "An explicitly called provisional set or withdrawal whose capability is independently qualified and whose profile, version, generation, and dispatch checks pass still requires explicit operator confirmation at action time. Those checks are additional conditions, and an ordinary live caller, including a gateway or MCP caller, is not exempt.",
-      "reason": "A live provisional set or withdrawal requires action-time operator confirmation."
+      "value": "An explicitly called provisional set or withdrawal whose capability is independently qualified and whose profile, version, generation, and dispatch checks pass is admitted without explicit operator confirmation at action time. Separate operator approval stays only for an agent or test acting on a real installation.",
+      "reason": "A qualified provisional set or withdrawal is admitted without action-time confirmation. Separate approval stays only for an agent or test on a real installation."
     },
     {
       "contract": "current_limit_operation",
@@ -1070,8 +1070,8 @@
       "page": "protocols/tesla/gen3-current-limit-operation-v1.md",
       "section": "## Admission preconditions",
       "kind": "statement",
-      "value": "Live authority binds the route target, operation, values and validity interval; a cached read, configured endpoint, or document is insufficient. A live-device write requires explicit operator confirmation at action time. Profile, version, generation, and dispatch checks are additional conditions, and an ordinary live caller, including a gateway or MCP caller, is not exempt.",
-      "reason": "Live authority still requires action-time operator confirmation, and an ordinary caller is not exempt."
+      "value": "Live authority binds the route target, operation, values and validity interval; a cached read, configured endpoint, or document is insufficient. A qualified explicit provisional set or withdrawal is admitted without explicit operator confirmation at action time. Separate operator approval stays only for an agent or test acting on a real installation. Profile, version, generation, and dispatch checks remain admission conditions.",
+      "reason": "Live authority admits a qualified set or withdrawal without action-time confirmation. Separate approval stays only for an agent or test on a real installation."
     },
     {
       "contract": "current_limit_operation",
@@ -2238,8 +2238,8 @@
       "page": "protocols/tesla/gen3-semreg-mapping-v1.md",
       "section": "## Operations",
       "kind": "statement",
-      "value": "An explicitly called set or withdrawal whose capability is independently qualified and whose profile, version, generation and dispatch checks pass still requires explicit operator confirmation at action time. Those checks are additional conditions, and an ordinary live caller, including a gateway or MCP caller, is not exempt.",
-      "reason": "A mapped live set or withdrawal requires action-time operator confirmation."
+      "value": "An explicitly called set or withdrawal whose capability is independently qualified and whose profile, version, generation and dispatch checks pass is admitted without explicit operator confirmation at action time. Separate operator approval stays only for an agent or test acting on a real installation.",
+      "reason": "A mapped qualified set or withdrawal is admitted without action-time confirmation. Separate approval stays only for an agent or test on a real installation."
     },
     {
       "contract": "gen3_semreg_mapping",
