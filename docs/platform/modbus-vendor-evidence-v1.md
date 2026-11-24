@@ -60,10 +60,15 @@ later node may reinterpret this evidence as a support claim.
 ## Mixed-Catalog Selection Contract
 
 FMV3-M7-05 requires exclusive selection whenever independent family detectors
-feed one mixed primary catalog. Eligibility is evaluated before selection: a
-candidate must be qualified, active, default-enabled, and enabled by its
-detector declaration. Revoked, superseded, unqualified, default-off, disabled,
-or non-admitted candidates cannot participate in a positive match.
+feed one mixed primary catalog. Eligibility is evaluated before matching: a candidate must have an active
+profile and an enabled detector declaration, and satisfy any fixture-only
+opt-in. Profile maturity and `DefaultEnabled` remain recorded metadata;
+neither is a detector veto. Revoked, superseded, disabled, and fixture-only
+without opt-in candidates cannot participate. An eligible candidate matches
+only after the declared manufacturer, model, and firmware identity checks pass;
+an identity mismatch is a no-match result. This 0.7 detector behavior is introduced by
+[`helianthus-modbusreg` PR #465](https://github.com/Project-Helianthus/helianthus-modbusreg/pull/465);
+it does not itself establish live hardware support.
 
 With exclusive matching enabled, two or more positive candidates produce
 `INSUFFICIENT_EVIDENCE` before score ranking, regardless of candidate score,
