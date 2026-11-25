@@ -2,7 +2,7 @@
 
 ## Scope and evidence status
 
-This contract governs Helianthus acquisition on the Tesla Wall Connector Gen 3
+This contract governs driver acquisition on the Tesla Wall Connector Gen 3
 Home Site Controller (HSC) profile over Modbus RTU. Endpoint ownership,
 qualification, dispatch, budgets, freshness and retention are driver policy.
 The [RS-485 site-controller protocol specification](rs485-site-controller-protocol.md#15-firmware-versions-and-applicability)
