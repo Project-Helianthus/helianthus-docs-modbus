@@ -1,59 +1,45 @@
 # Tesla activation observation hook V1
 
-## Status and native sources
+## Scope
 
-This proposed transport-to-registry contract defines bounded, passive,
-pre-exchange byte observation for the Tesla Wall Connector Gen3 HSC family.
-It specifies a seam, not an implemented production witness, a new activation
-protocol, or permission to acquire from a device. The historical V1 name is a
-contract identifier; nothing is stable before Helianthus 1.0.
+This transport-to-registry contract defines an optional, receive-only
+byte window for the Wall Connector Gen 3 HSC family. V1 identifies the
+interface; it does not assert production availability.
+The interface is not stable before Helianthus 1.0.
 
-Read the public native contracts first:
+The [RS-485 site-controller protocol specification](rs485-site-controller-protocol.md#3-start-up-exchange)
+defines the port's start-up conditions, tokens, transitions and firmware
+applicability. The station sends a probe, the peer echoes it, and the station
+sends a pass or fail token as specified for that firmware. These tokens are
+separate from addressed RTU traffic. The hook neither sends the echo nor
+runs the state machine. A receive window may contain all, part or none of a
+token. Neither matching bytes (including a pass token) nor silence establish
+the port's state or driver readiness. The hook's deadline, byte count and
+segment cap do not define any protocol timing or attempt limit.
+
+Related interfaces:
 
 - [HSC transport and activation](https://github.com/Project-Helianthus/helianthus-docs-modbus/blob/main/protocols/tesla/gen3-hsc-rtu.md)
-  owns family selection, serial configuration, native framing and qualification.
+  describes driver support and its separate admission checks.
 - [Private-function transport](https://github.com/Project-Helianthus/helianthus-docs-modbus/blob/main/protocols/modbus/private-function-codes.md)
   owns stream lifecycle, generation fencing, correlation and recovery.
 - [Read-acquisition lifecycle](https://github.com/Project-Helianthus/helianthus-docs-modbus/blob/main/protocols/tesla/gen3-read-acquisition-v1.md)
-  owns readiness, activation timeout, operation admission, epochs and retention.
+  owns driver readiness, activation timeout, operation admission, epochs and retention.
 - [Activation evidence worksheet](https://github.com/Project-Helianthus/helianthus-docs-modbus/blob/main/protocols/tesla/activation-evidence-worksheet.md)
-  owns the independent evidence intake and negative controls (K33).
+  is a compatibility landing for the start-up rules, not a prerequisite.
 
-| Claim | Evidence grade | Separate disposition |
-| --- | --- | --- |
-| Existing pages specify native transport bounds and a driven activation exchange | Proven as published contract requirements, not as device observations | No new implementation or qualification evidence here |
-| Observed greeting, host echo, and confirmation or failure | Recorded on the HSC page. This hook does not transmit the echo | A silent listener never sees the confirmation, so the confirmation is not this hook's success witness |
-| Echo window, retry count, relationship to RTU framing, and repetition after reset | Unknown; docs-modbus #158 remains unresolved | No duration, tick count, or retry count |
-| Proposed hook below | Proposed interface requirements, not an observed fact | Acquisition/admission and live qualification remain independently gated |
+## Ownership
 
-The HSC page records the observed exchange: the device greeting, the host echo
-of the same six bytes, then the device confirmation or a failure and a new
-greeting. The exchange happens once after the charger gets power. This hook
-stays a listener. It has no transmit path, echo responder, or retry loop, and
-a silent listener's bytes are not a success witness for the confirmation. The
-echo window and the retry count are not established and must be measured.
-Matching bytes alone cannot establish live qualification.
+The read-acquisition lifecycle assigns any active start-up exchange on its
+endpoint to the activation driver. The hook returns native diagnostics; it
+is not the activation driver and is not called to obtain a readiness result.
+An absent, failed or successful diagnostic window does not alter the driver's
+readiness or admission rules.
 
-## Ownership and current versus proposed behavior
-
-The published read lifecycle drives the activation exchange through an
-injected activation driver on the endpoint it owns. This hook is not that
-driver. It stays a listener with no transmit path, echo responder, or retry
-loop. The host answer belongs to the transport section of the private-function
-page and to a registry-supplied driver, not to this hook. The proposal is for
-this hook to observe and return native evidence; the registry interprets that
-evidence against the selected public profile and the existing lifecycle rules.
-
-This hook must not contain a Tesla token comparator, select a profile from
-bytes, label a match as activation, construct a handshake, transmit a host
-answer, or admit an exchange. The host answer belongs to the transport section
-of the private-function page and to a registry-supplied driver, not to this
-hook. That exchange is the opt-in activation echo of the production endpoint,
-not a handshake constructed by this hook.
+The hook must not compare bytes against Tesla tokens, select a profile from
+bytes, label a match as activation, or construct or admit an exchange. It has
+no transmit path, echo responder, reset, flush, discovery, retry or fallback.
 The registry must not obtain an independent reader or raw serial handle.
-Observation has no transmit, reset, flush, discovery, retry or fallback action.
-No witness implementation, dependency pin or gateway composition is required
-to review this contract. No new authorization gate is introduced.
 
 ## Input and detached result
 
@@ -66,7 +52,7 @@ inputs fail before observation; a busy endpoint fails fast without queueing.
 | Endpoint label and endpoint instance | Explicit configured label plus opaque local instance identity; label equality cannot substitute for the owned instance. Never expose a local path or hardware identity. |
 | Expected generation | Nonzero current unfenced transport generation of that instance, checked under endpoint synchronization before observation begins. Never infer it from bytes. |
 | Observation identity | Transport-allocated local identity unique within the instance/generation; distinguishes attempts without inventing a wire transaction ID. |
-| Caller context and absolute deadline | Cancellation plus a finite deadline, no later than the lifecycle activation deadline and any enclosing acquisition deadline. Deadline is sampled before observation; it never slides when bytes arrive. |
+| Caller context and absolute deadline | Cancellation plus a finite deadline, no later than any applicable lifecycle activation or enclosing acquisition deadline. Deadline is sampled before observation; it never slides when bytes arrive. |
 | Clock epoch | Identifies the monotonic clock domain for start, byte and return offsets; incomparable clocks cannot establish timeliness. |
 | Requested byte count and segment cap | Explicit finite allocation/read bounds. Completion means exactly the requested byte count was captured; it does not mean an activation exchange was complete. Segment-cap exhaustion before that count is incomplete. |
 
@@ -81,7 +67,7 @@ Later reads or mutations of a returned value cannot change retained evidence.
 | Segments | Ordered exact bytes, receive direction, segment boundaries, offsets and completeness; fragmentation is not a wire-frame boundary. Sender attribution remains Unknown unless independently supported. |
 | Termination | `captured`, `deadline`, `canceled`, `closed`, `generation_lost`, `read_error`, or `segment_bound`, with bounded cause and available partial evidence |
 | Coverage | Requested and captured byte counts, segment count, timing resolution, known loss/truncation and any unavailable diagnostics; absent bytes stay absent |
-| Framing/integrity | Only actually supported diagnostics, otherwise Unknown; activation bytes are not assumed RTU frames and no CRC is invented |
+| Framing/integrity | Only actually supported diagnostics, otherwise Unknown; start-up tokens are not interpreted as RTU frames and no CRC is invented |
 
 `captured` describes a complete requested byte window only. Reads request no
 more than the remaining byte budget, so a large underlying read cannot silently
@@ -102,92 +88,74 @@ still interrupt a blocked read within the supplied deadline. A platform unable
 to provide interruptible bounded reads cannot implement this seam by leaving a
 background reader alive after return.
 
-| State/event | Observation result and currentness | Admission consequence |
-| --- | --- | --- |
-| Idle, current instance/generation, valid bounds | Reserve one observation; begin a fresh window, excluding buffered evidence from previous observations/generations | No exchange while observing |
-| Exact requested count before deadline | Return detached `captured` evidence and release reader ownership | Candidate evidence only; no transport readiness decision |
-| Partial/empty bytes, read error or segment exhaustion | Return partial/empty evidence with cause; invalidate that observation | Readiness remains unavailable; no implicit retry |
-| Cancellation or return at/after deadline, even with matching bytes | Invalidate observation and retain bytes as history; timer callback scheduling cannot extend the deadline | Reject readiness; no recovery after a spent acquisition budget |
-| Close, endpoint loss/replacement, fencing or recovery begins | Invalidate active and previously returned observations for that instance/generation; interrupt active reader before any successor consumes bytes | No successor use of old evidence; closed remains terminal |
-| Recovery succeeds or Restart replaces endpoint | Existing lifecycle obtains a successor generation/instance. A later recovery does not repeat the activation, and this hook does not transmit | Never rebind history and never echo |
-| Concurrent caller or invalid input | Refuse without consuming stream bytes | No send, no queued observation |
+| State/event | Observation result and currentness |
+| --- | --- |
+| Idle, current instance/generation, valid bounds | Reserve one observation; begin a fresh window, excluding buffered evidence from previous observations/generations |
+| Exact requested count before deadline | Return detached `captured` evidence and release reader ownership |
+| Partial/empty bytes, read error or segment exhaustion | Return partial/empty evidence with cause; invalidate that observation; no implicit retry |
+| Cancellation or return at/after deadline, even with matching bytes | Invalidate observation and retain bytes as history; timer callback scheduling cannot extend the deadline |
+| Close, endpoint loss/replacement, fencing or recovery begins | Invalidate active and previously returned observations for that instance/generation; interrupt active reader before any successor consumes bytes; closed remains terminal |
+| Recovery succeeds or Restart replaces endpoint | Associate new windows only with the live instance and generation; never rebind history to a successor |
+| Concurrent caller or invalid input | Refuse without consuming stream bytes; no queued observation |
 
 The start boundary must distinguish newly received bytes from stale buffered
-bytes without silently flushing evidence. If provenance of queued bytes is
-unknown, fail closed and retain that limitation. Observation failure does not
-invent an exchange failure or a send; any required endpoint fencing/recovery
-uses the existing transport boundary, not a new reset procedure.
+bytes without silently flushing evidence. If the origin of queued bytes is
+unknown, withhold a current observation and retain that limitation.
+Observation failure does not count as exchange failure or initiate recovery.
+Any independently required fencing or recovery belongs to the transport.
+Replacing a host endpoint or transport generation does not determine whether
+the station has restarted its start-up state machine.
 
-A returned result cannot certify its own continuing validity. Before readiness
-is committed, the registry must recheck the actual instance, generation,
-observation identity, clock domain, deadline, cancellation and endpoint state
-against the transport owner. That validation and the readiness commit must be
-serialized with Close, fencing and recovery so they cannot be overtaken by a
-late result. An adapter must document how it provides this atomic boundary;
-a detached snapshot or an unlocked check followed by a commit is insufficient.
-This requirement does not prescribe a witness implementation or a second
-activation. The lifecycle pins one unfenced generation for the epoch: the
-first admitted exchange pins it, a later recovery replaces a fenced generation
-with a successor in the same epoch, and dispatch rejects a fenced or older
-generation.
-
-No result is usable twice for separate activation attempts. The registry binds
-the observation identity to its current activation attempt. An invalidated
-observation cannot regain validity if a label is reused or bytes later match.
-After readiness, existing dispatch admission continues to enforce the owned
-endpoint and generation; the observation grants no bypass or lasting send right.
+A detached result cannot certify its own continuing validity. Before the
+registry associates a result with a current diagnostic request, it must recheck
+the endpoint label and instance, generation, observation identity, clock epoch,
+deadline, cancellation and endpoint state against the transport owner. That
+check and association must be serialized with Close, fencing and recovery. A
+late or invalidated result may be retained as history but cannot regain
+currentness. An observation belongs only to its original request, even when a
+label is reused or later bytes match. These checks govern the diagnostic result,
+not activation or exchange admission.
 
 ## Synthetic examples and independent expected outcomes
 
-These are constructed offline examples, not captures or firmware evidence.
 All offsets are relative synthetic milliseconds in clock domain C. Baseline:
 label E, instance I, generation 7, observation A, deadline 50, requested count
 6 and segment cap 8. These offsets are not an echo window or a retry count.
-The listener records received bytes only. Capturing the greeting `TESLA`
-followed by NUL is not the confirmation. A silent listener never treats `PASS`
-followed by NUL as a success witness. No example instructs transmission, an
-echo responder, or a retry loop.
+The hook records received bytes only; the examples do not require a sender.
 
-| Case; minimal evidence | Expected transport result | Registry/lifecycle expectation |
+| Case; minimal evidence | Expected transport result | Diagnostic use |
 | --- | --- | --- |
-| Fragmented greeting: `TE` at 1, `SLA\0` at 2; return 3, no invalidation | `captured`, two segments, 6 bytes, original offsets retained | Greeting evidence only. Not a confirmation and not a silent success witness; physical activation/qualification remains Unknown |
-| Late: same bytes at 1 through 2, return exactly 50 | Historical bytes; deadline invalidation regardless of timer delivery | No readiness, even though the greeting bytes match |
-| Wrong generation: result is generation 7; owner has advanced to 8 before commit | Detached result keeps generation 7 | Reject; no relabeling or successor admission |
-| Canceled: complete greeting bytes at 2; cancellation before readiness commit | Retain bytes; observation invalidated even if capture had returned | No readiness; matching data cannot overtake cancellation |
-| Partial: only `TES` before deadline | `deadline`, three bytes; no fabricated suffix | No readiness; keep partial evidence |
-| Leading unrelated byte: requested window starts `X` followed by the first five greeting bytes | `captured` window with unexpected bytes, not a token search | Exact comparison fails; do not trim or extend window to find a match |
-| Close/recovery race: complete result returns at 3; Close or recovery wins before commit | Original result remains detached historical evidence | No readiness; history is not rebound, and recovery does not transmit an echo |
-| Segment exhaustion: cap 4, four one-byte segments, still short of 6 | `segment_bound`, four exact bytes | No readiness; no automatic retry |
+| Fragmented greeting: `TE` at 1, `SLA\0` at 2; return 3, no invalidation | `captured`, two segments, 6 bytes, original offsets retained | A complete diagnostic window, not a confirmation or readiness result |
+| Late: same bytes at 1 through 2, return exactly 50 | Historical bytes; deadline invalidation regardless of timer delivery | No current observation, even though the bytes match |
+| Wrong generation: result is generation 7; owner has advanced to 8 before association | Detached result keeps generation 7 | Reject current association; no relabeling to the successor |
+| Canceled: complete greeting bytes at 2; cancellation before association | Retain bytes; observation invalidated even if capture had returned | No current observation; matching bytes cannot overtake cancellation |
+| Partial: only `TES` before deadline | `deadline`, three bytes; no fabricated suffix | Incomplete; keep partial evidence |
+| Leading unrelated byte: requested window starts `X` followed by the first five greeting bytes | `captured` window with unexpected bytes, not a token search | Keep all six bytes; do not trim or extend the window |
+| Close/recovery race: complete result returns at 3; Close or recovery wins before association | Original result remains detached historical evidence | No current observation; history is not rebound |
+| Segment exhaustion: cap 4, four one-byte segments, still short of 6 | `segment_bound`, four exact bytes | Incomplete; no automatic retry |
 
-The following are reasoned falsifiers for future implementation review, not
-executed mutation tests. Each changes one field of the otherwise unchanged
-fragmented baseline: changing endpoint label, instance, generation or observation
-identity alone must fail binding; changing clock epoch alone must fail time
-comparison; moving return to the deadline must fail timeliness; canceling the
-context alone must fail readiness. Removing each corresponding check would
-incorrectly accept that case. Reordering a segment or changing one native byte
-must fail exact comparison; dropping byte-copy isolation would let later buffer
-reuse change evidence. Releasing stream ownership while a reader survives
-would allow competing consumption and violates the ownership contract.
+Starting from the fragmented example, change one result field at a time and
+leave the owning request unchanged: label E to F, instance I to J, generation
+7 to 8, or observation identity A to B. Each mismatch prevents current
+association. Changing clock epoch C to D alone prevents time comparison.
+Returning at the deadline or canceling the context invalidates the result.
+Reordering segments or changing a byte does not preserve the native record.
+Reusing the transport buffer must not change a detached result, and releasing
+ownership must not leave a reader that can consume later bytes.
 
-## Retention, compatibility and remaining acceptance
+## Retention and compatibility
 
-Preserve native segments, partial evidence, Unknown diagnostics and provenance
-independently of interpretation. A public projection that omits native bytes
-or timing must state that loss and cannot prove exact byte agreement or timely
-arrival. Failed observation never replaces a qualified sibling or partial
+Preserve native segments, partial evidence and Unknown diagnostics separately
+from interpretation. A public projection that omits native bytes or timing
+must state that loss and cannot establish byte agreement or timely arrival.
+Failed observation never replaces a qualified sibling or partial
 last-known-good read state with invented values. Historical read records keep
-their original provenance/freshness; they are not made current by token matches.
+their original identity and freshness; a token match does not make them current.
 
-This seam changes no existing profile qualification, trust/admission predicate,
-read-only consumer envelope, consumer compatibility, parity, or semantic
-projection. It defines no receipt system, idempotency journal, principal boundary,
-or recovery redesign. Gateway composition remains outside this contract.
-
-This is a partial contract slice for docs-modbus #174, modbus #38, modbusreg
-#200 and docs-modbus #158. Remaining acceptance includes transport implementation
-and race/boundary proof, a conforming registry adapter, independent publishable
-activation clarification and qualification evidence. K33 worksheet completion,
-existing read-lifecycle acceptance and parent closure are separate. No open
-implementation PR, predecessor or witness implementation is a prerequisite for
-this proposed page. No runtime, hardware, live-smoke or release success follows.
+A transport implementation must provide bounded, interruptible reads, and its
+registry adapter must enforce the ownership and lifetime rules before using the
+result as current diagnostics. Neither implementation nor diagnostic output is
+a prerequisite for start-up or read-lifecycle readiness. The hook changes no
+profile qualification, trust or admission checks, read-only consumer envelope,
+consumer compatibility, parity or semantic projection. It grants no operation
+or action-time authorization.
