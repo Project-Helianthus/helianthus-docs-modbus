@@ -14,6 +14,8 @@ The same operation takes boolean `false` for `evse.limit.allocated_current_enabl
 
 The driver sets 6 A as its minimum nonzero set: 1 A through 5 A is refused and 0 A requests a pause. The t25 native scalar is integer amperes. Require an exactly representable whole-ampere value with no truncation or rounding, and reject 6.5 A before any read or mutation. The pause encodes 6 A with inhibit and therefore needs a usable same-generation t28 configured bound of at least 6 A before t25. A cached 5 A bound yields no request, and a bound of 5 A first learned by the prerequisite t27 sends no t25.
 
+The 6 A floor and the 0 A pause follow IEC 61851-1 Annex A, where 6 A is the lowest charging current a charger can signal.
+
 The upper limit is the configured current of the latest t28 in the same lifecycle generation. A value refused before a read is needed sends nothing. Where the generation has no t28, the t27 to t28 limit read may run first, and a value above the limit then read sends no t25 and has no mutation retry. The t25 mutation is never retried. The t27 to t28 read keeps the bounded read acquisition rules of the [read acquisition contract](gen3-read-acquisition-v1.md). A recovered read cannot replay t25 or complete a mutation from a superseded generation.
 
 An explicitly called set or withdrawal whose capability is independently qualified and whose profile, version, generation and dispatch checks pass is admitted without explicit operator confirmation at action time. Separate operator approval stays only for an agent or test acting on a real installation. The operations are also decoded and callable by hand through MCP and GraphQL in the modbusreg namespace. Consumers write the SemReg elements through the semantic operation route.
