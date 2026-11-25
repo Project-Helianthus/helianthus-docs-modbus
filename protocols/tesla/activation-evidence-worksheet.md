@@ -19,7 +19,9 @@ and [unspecified behavior (§12)](rs485-site-controller-protocol.md#12-not-speci
   The station starts another attempt after each of the first nine failures.
   On the tenth failure it still sends the fail token but makes no further
   attempt. The pass and fail transitions are not specified for 24.28.3.
-  The watchdog runs separately from the port state machine (§3.5).
+  On 24.44.3 and 26.34.0, the watchdog runs separately from the port state
+  machine and does not change the port mode (§3.5). This relationship is not
+  specified for other builds.
 - **Tokens and timing.** For 24.28.3, 24.44.3, MID 25.2.2, 26.18.0 and 26.34.0,
   the tokens are `TESLA` for the probe and echo, `PASS` for pass and `FAIL`
   for fail, each followed by NUL. A peer must echo the six probe bytes
@@ -30,8 +32,9 @@ and [unspecified behavior (§12)](rs485-site-controller-protocol.md#12-not-speci
   echo byte is present when the probe finishes, the station waits at most a
   nominal 2 ms before evaluating the received bytes. This is not a latest
   accepted arrival time. On 26.34.0 a late echo can count in a later attempt.
-  Addressed traffic follows the routed-mode and half-duplex rules, not
-  the token exchange.
+  On 24.44.3 and 26.34.0, addressed traffic follows the routed-mode and
+  half-duplex rules, not the token exchange. This separation is not specified
+  for other builds.
 - **Attempt bounds and restart.** The station makes up to ten attempts on
   24.44.3, MID 25.2.2, 26.18.0 and 26.34.0. On 24.28.3 there is no attempt
   limit. On 24.44.3 the station

@@ -10,12 +10,15 @@ The interface is not stable before Helianthus 1.0.
 The [RS-485 site-controller protocol specification](rs485-site-controller-protocol.md#3-start-up-exchange)
 defines the port's start-up conditions, tokens, transitions and firmware
 applicability. The station sends a probe, the peer echoes it, and the station
-sends a pass or fail token as specified for that firmware. These tokens are
-separate from addressed RTU traffic. The hook neither sends the echo nor
-runs the state machine. A receive window may contain all, part or none of a
-token. Neither matching bytes (including a pass token) nor silence establish
-the port's state or driver readiness. The hook's deadline, byte count and
-segment cap do not define any protocol timing or attempt limit.
+sends a pass or fail token as specified for that firmware. On 24.44.3 and
+26.34.0, start-up tokens are separate from addressed RTU traffic. This
+separation is not specified for other builds.
+
+The hook neither sends the echo nor runs the state machine. A receive window
+may contain all, part or none of a token. Neither matching bytes (including a
+pass token) nor silence establish the port's state or driver readiness. The
+hook's deadline, byte count and segment cap do not define any protocol timing
+or attempt limit.
 
 Related interfaces:
 
@@ -67,7 +70,7 @@ Later reads or mutations of a returned value cannot change retained evidence.
 | Segments | Ordered exact bytes, receive direction, segment boundaries, offsets and completeness; fragmentation is not a wire-frame boundary. Sender attribution remains Unknown unless independently supported. |
 | Termination | `captured`, `deadline`, `canceled`, `closed`, `generation_lost`, `read_error`, or `segment_bound`, with bounded cause and available partial evidence |
 | Coverage | Requested and captured byte counts, segment count, timing resolution, known loss/truncation and any unavailable diagnostics; absent bytes stay absent |
-| Framing/integrity | Only actually supported diagnostics, otherwise Unknown; start-up tokens are not interpreted as RTU frames and no CRC is invented |
+| Framing/integrity | Only actually supported diagnostics, otherwise Unknown; the hook does not interpret start-up tokens as RTU frames or invent a CRC |
 
 `captured` describes a complete requested byte window only. Reads request no
 more than the remaining byte budget, so a large underlying read cannot silently
