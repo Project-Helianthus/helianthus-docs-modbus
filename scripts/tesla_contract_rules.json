@@ -78,8 +78,8 @@
       "page": "protocols/tesla/legacy-wall-connector-rs485.md",
       "section": "## Scope and identification",
       "kind": "statement",
-      "value": "The legacy profile is a pre-Gen3 candidate and is not an assertion that every Wall Connector Gen2 implements this protocol.",
-      "reason": "Candidate status: the profile claims no universal Gen2 coverage."
+      "value": "The legacy profile is a pre-Gen3 candidate and is not an assertion that every Wall Connector Gen2 implements this protocol. An implementation identifies this flavor explicitly; it does not infer it from a Tesla name, a serial setting, a frame prefix, or a Gen3 profile. This is a monitoring profile only.",
+      "reason": "Bound the legacy profile to explicitly selected pre-Gen3 monitoring."
     },
     {
       "contract": "generation",
@@ -142,8 +142,8 @@
       "page": "protocols/tesla/legacy-wall-connector-rs485.md",
       "section": "## Qualification",
       "kind": "statement",
-      "value": "The family-compatible tier accepts a locally declared legacy protocol family without claiming a firmware build.",
-      "reason": "The family-compatible tier never claims a firmware build."
+      "value": "This profile is selected only by explicit local configuration and a compatible legacy Wall Connector identity. It has two compatibility tiers: - `build_confirmed` records the exact known compatibility label `legacy_cc_4_5_10`. - `family_compatible` records a locally declared legacy protocol family when its framing and command-family evidence matches, without claiming a firmware build or an exclusive hardware generation. The family-compatible tier accepts a locally declared legacy protocol family without claiming a firmware build.",
+      "reason": "Keep exact build and family compatibility distinct."
     },
     {
       "contract": "generation",
@@ -174,24 +174,24 @@
       "page": "protocols/tesla/legacy-wall-connector-rs485.md",
       "section": "## EVSE dynamic-current records",
       "kind": "statement",
-      "value": "This candidate legacy-family contract retains the `FBE0` request and `FDE0` state records for EVSE energy-management current allocation.",
-      "reason": "Admitted legacy dynamic-current record pair."
+      "value": "This candidate legacy-family contract retains the `FBE0` request and `FDE0` state records for monitoring EVSE energy-management current allocation.",
+      "reason": "Keep the two legacy records in the monitoring profile only."
     },
     {
       "contract": "legacy_evse_current",
       "page": "protocols/tesla/legacy-wall-connector-rs485.md",
       "section": "## EVSE dynamic-current records",
       "kind": "statement",
-      "value": "It is not an assertion that every Gen2 unit implements these records.",
-      "reason": "Candidate status: no universal Gen2 coverage."
+      "value": "It is not an assertion that every Gen2 unit implements these records. `FDE0` retains the reported state byte, the current allocation, and the actual measured current as separate native values.",
+      "reason": "Do not infer wider applicability or conflate measured and allocated current."
     },
     {
       "contract": "legacy_evse_current",
       "page": "protocols/tesla/legacy-wall-connector-rs485.md",
       "section": "## EVSE dynamic-current records",
       "kind": "statement",
-      "value": "The allocation is not the actual current and neither value is a power setpoint.",
-      "reason": "Allocation, actual current and power remain distinct values."
+      "value": "The allocation is not the actual current and neither value is a power setpoint. ### Bounded payload layout The post-command payload retained by this contract includes the two-byte source ID and two-byte destination ID. The heartbeat data after those IDs is seven bytes in protocol 1 or nine bytes in protocol 2. Therefore a typed decoder accepts only an eleven-byte or thirteen-byte post-command payload, after the complete frame has passed delimiter, escape, size, and checksum validation.",
+      "reason": "Keep both accepted lengths and frame validation in the legacy monitoring contract."
     },
     {
       "contract": "legacy_evse_current",
@@ -398,7 +398,7 @@
       "page": "protocols/tesla/gen3-current-limit-operation-v1.md",
       "section": null,
       "kind": "heading",
-      "value": "## Bench verification",
+      "value": "## Bench verification boundary",
       "reason": "Bench verification rows for the current-limit operation."
     },
     {
@@ -422,24 +422,24 @@
       "page": "protocols/tesla/gen3-current-limit-operation-v1.md",
       "section": "## Scope and evidence status",
       "kind": "statement",
-      "value": "Body interpretation is limited to `wc3_24_44_3`.",
-      "reason": "The operation is bound to one exact operation version."
+      "value": "Driver admission is limited to `wc3_24_44_3`. A known HSC version, `compatible_candidate`, successful parsing, or a read-only capability does not qualify a current-limit operation. An unknown terminal or field interpretation refuses dispatch.",
+      "reason": "Do not substitute parsing or a version label for exact mutation qualification."
     },
     {
       "contract": "current_limit_operation",
       "page": "protocols/tesla/gen3-current-limit-operation-v1.md",
       "section": "## Scope and evidence status",
       "kind": "statement",
-      "value": "For `wc3_24_44_3`, the provisional path (t25 to t26, readback t27 to t28) is the qualified setter of the semantic `evse.limit.allocated_current`, declared from the public field layout.",
-      "reason": "The provisional path is the qualified setter of allocated current."
+      "value": "Firmware `26.34.0` and `26.42.0` have a same-tag t25 RS-485 reply, not a specified t26 ACK; neither is admitted by this driver setter. The specifications do not establish the provisional setter's t26 terminal or its time and value semantics on `24.44.3`.",
+      "reason": "Keep wire applicability separate from exact driver admission."
     },
     {
       "contract": "current_limit_operation",
       "page": "protocols/tesla/gen3-current-limit-operation-v1.md",
       "section": "## Scope and evidence status",
       "kind": "statement",
-      "value": "The persistent settings write (t7 to t8) is not a setter.",
-      "reason": "The persistent settings write is not the allocated-current setter."
+      "value": "The driver's only setter of `evse.limit.allocated_current` is the independently qualified provisional operation on the exact operation version `wc3_24_44_3`. The persistent settings write (t7 to t8) is not a setter.",
+      "reason": "Require exact independently qualified provisional support and exclude the persistent setter."
     },
     {
       "contract": "current_limit_operation",
@@ -534,8 +534,8 @@
       "page": "protocols/tesla/gen3-current-limit-operation-v1.md",
       "section": "## Admission preconditions",
       "kind": "statement",
-      "value": "The upper bound is the configured-current value of the latest t28 in the same lifecycle generation; a request above it is refused before send.",
-      "reason": "The latest t28 configured current is the upper bound."
+      "value": "The driver uses the configured-current value of the latest t28 in the same lifecycle generation as its bound; the encoded current, including 6 A for a pause, must not exceed it. Non-integer requests are refused before any read or mutation.",
+      "reason": "Compare the actual encoded current to the same-generation bound and reject fractional inputs before I/O."
     },
     {
       "contract": "current_limit_operation",
@@ -574,16 +574,16 @@
       "page": "protocols/tesla/gen3-current-limit-operation-v1.md",
       "section": "## Outcomes and confirmation limits",
       "kind": "statement",
-      "value": "| `ACK` |",
-      "reason": "Outcome class value table entry."
+      "value": "| `ACK` | Valid correlated family-6 t26 in the exact qualified operation; no error status | Acknowledgement received; no applied-value confirmation.",
+      "reason": "An empty body and a correlated error cannot serve as acknowledgement."
     },
     {
       "contract": "current_limit_operation",
       "page": "protocols/tesla/gen3-current-limit-operation-v1.md",
       "section": "## Outcomes and confirmation limits",
       "kind": "statement",
-      "value": "| `READBACK` |",
-      "reason": "Outcome class value table entry."
+      "value": "| `READBACK` | Valid correlated t8, or t28 linked to retained t25/t26/t27 | Returned settings/provisional state. Retain requested and returned values separately; compare only qualified comparable fields as match, mismatch or unknown. Mismatch is not confirmation.",
+      "reason": "Require linked readback and compare only like values."
     },
     {
       "contract": "current_limit_operation",
@@ -638,8 +638,8 @@
       "page": "protocols/tesla/gen3-current-limit-operation-v1.md",
       "section": "## Outcomes and confirmation limits",
       "kind": "statement",
-      "value": "Even a matching readback reports returned values; it cannot prove causal application or exclusion of an intervening actor.",
-      "reason": "Readback is not proof of causal application."
+      "value": "On 26.34.0 `limitTimeoutS` in t28 is remaining seconds, not an echo of the requested duration. Do not compare the two as an equality test. A reply with no timeout on that build does not report an active timed limit; do not treat absence as an explicit zero or synthesize a deadline. The specification does not define t28 reporting of the flag as confirmation of an ordinary timed inhibit; the post-reset inhibit indication is not such confirmation. The t28 schema carries no nonce, timestamp or generation counter. Even a matching readback reports returned values; it cannot prove causal application or exclusion of an intervening actor.",
+      "reason": "Do not infer a duration echo, a fresh deadline, or causal application from readback."
     },
     {
       "contract": "current_limit_operation",
@@ -710,8 +710,8 @@
       "page": "protocols/tesla/gen3-current-limit-operation-v1.md",
       "section": "## Idempotency and retry boundary",
       "kind": "statement",
-      "value": "Release is t25 with the configured current, a timeout of 900 seconds, and inhibit false, after which renewal stops.",
-      "reason": "Release restores the configured current and stops renewal."
+      "value": "Release is t25 with the configured current, a timeout of 900 seconds, and inhibit false, after which renewal stops. Missing, zero or invalid configured current prevents release dispatch. Confirm release only with the matching t28 in the same lifecycle generation. This is driver withdrawal policy, not a general wire command to remove a limit.",
+      "reason": "Retain the positive timeout, stop renewal and require a current matching readback without treating withdrawal as wire removal."
     },
     {
       "contract": "current_limit_operation",
@@ -724,23 +724,23 @@
     {
       "contract": "current_limit_operation",
       "page": "protocols/tesla/gen3-current-limit-operation-v1.md",
-      "section": "## Bench verification",
+      "section": "## Registry-owned request and response framing",
       "kind": "statement",
-      "value": "Each row is a verification run on a bench and recorded with a level: not verified on hardware, or verified on hardware.",
-      "reason": "Each bench row carries a verification level."
+      "value": "| Intent / phase | Request and terminal | Meaning and boundary | | --- | --- | --- | | Persistent installation settings | Family 6, t7 ConfigureSettings → t8 returned settings | `settings` field 1 carries `WCSettings`, whose `maxOutputCurrentAmps` field 1 is signed int32 amperes. t8 returns settings, not an empty ACK. This is not a driver mutation. | | Provisional mutation | Family 6, t25 SetProvisional; schema response t26 | t25 field 1 carries `provOpParams`: `limitCurrentMaxAmps` (uint32 A), `limitTimeoutS` (uint32 s), and `inhibitCharging` (bool), in fields 1–3. The t26 schema body is empty; it is not a guarantee of a t26 terminal on RS-485. | | Provisional readback | Family 6, t27 GetProvisional → t28 returned state | t27 has an empty body. t28 field 1 carries the provisional parameters and field 2 carries `configuredCurrentLimitAmps` (uint32 A). It does not return effective or pilot current. | On 26.34.0 and 26.42.0 a successful t25 reply carries the request tag and its parameters in canonical form, omitting members encoded with default values. It does not establish the applied state; read t27/t28. A correlated family 4, tag 1 terminal carries a numeric TEDAPI status and is rejection, not an ACK; a Modbus exception is separate (TEDAPI §5; RS-485 §11.2).",
+      "reason": "Require the three message pairs, body geometry and terminal/status distinction in the framing section."
     },
     {
       "contract": "current_limit_operation",
       "page": "protocols/tesla/gen3-current-limit-operation-v1.md",
-      "section": "## Bench verification",
+      "section": "## Idempotency and retry boundary",
       "kind": "statement",
-      "value": "No implementation, publication, promotion or operation waits for a row.",
-      "reason": "Nothing waits for a bench row."
+      "value": "On 26.34.0 the station counts down once per second and returns to its hardware variant's default limit on expiry. A valid renewed request reloads the timer. Zero current or zero timeout removes the limit on that build; neither value authorizes a zero-timeout send in this driver.",
+      "reason": "Pin the named build countdown and keep the zero-timeout refusal."
     },
     {
       "contract": "current_limit_operation",
       "page": "protocols/tesla/gen3-current-limit-operation-v1.md",
-      "section": "## Bench verification",
+      "section": "## Bench verification boundary",
       "kind": "statement",
       "value": "A recorded result that contradicts this page is a defect report against this page.",
       "reason": "A contradicting bench result is a defect report against this page."
@@ -748,15 +748,15 @@
     {
       "contract": "current_limit_operation",
       "page": "protocols/tesla/gen3-current-limit-operation-v1.md",
-      "section": "## Bench verification",
+      "section": "## Bench verification boundary",
       "kind": "statement",
-      "value": "Enable and disable are outside this contract.",
-      "reason": "Enable and disable stay outside this contract."
+      "value": "Keep a current-only settings body outside driver admission: omitted-field handling and safe updates to existing settings are not specified. Do not infer a live setter from the t26 schema or equate a same-tag reply with readback. Enable and disable are outside this contract.",
+      "reason": "Do not admit writes on unknown persistent or provisional behavior or add generic controls."
     },
     {
       "contract": "current_limit_operation",
       "page": "protocols/tesla/gen3-current-limit-operation-v1.md",
-      "section": "## Bench verification",
+      "section": "## Bench verification boundary",
       "kind": "statement",
       "value": "This page still refuses a universal maximum.",
       "reason": "The page refuses a universal maximum."
@@ -918,24 +918,24 @@
       "page": "protocols/tesla/gen3-read-acquisition-v1.md",
       "section": "## Scope and evidence status",
       "kind": "statement",
-      "value": "The read observations are bound to the documented version their identification names and, as this documentation defines, apply to every later build of that same Gen3 version line, with level `not_tested_on_hardware`.",
-      "reason": "Read observations apply to later builds of the documented line at the read floor."
+      "value": "FC100 support alone does not establish support for any particular TEDAPI tag. The same capability checks apply to the floor build and to every later build of that same Gen3 version line. This is an admission filter, not protocol coverage.",
+      "reason": "Keep the driver version filter separate from exact firmware applicability."
     },
     {
       "contract": "read_acquisition",
       "page": "protocols/tesla/gen3-read-acquisition-v1.md",
       "section": "## Operations in scope",
       "kind": "statement",
-      "value": "The lifecycle admits family 6, tags 27 → 28, as a selectable observation and as the on-demand read of the separately admitted native mutation even when tag 27 is absent from periodic Operations, and family 6, tags 25 → 26, as its only mutation, issued through the same single-flight owner and generation, and that mutation is never retried.",
-      "reason": "The lifecycle admits the provisional readback and one mutation, never retried."
+      "value": "The driver selects six read paths, each with an empty request body and the family and terminal tag shown below. TEDAPI §§6.2.1, 6.4.1–6.4.2, 6.4.5–6.4.6 and 6.4.11 specify these FC100 paths for 26.34.0 and 26.42.0. Applicability of those individual reads on `24.44.3` and later `wc3_24_44` builds is not specified by those sections. Missing or unknown compatibility is not admission. | Operation | Family | Request tag → terminal tag | |---|---|---| | Common system information | 4 | 2 → 3 | | WC vitals | 6 | 1 → 2 | | WC lifetime statistics | 6 | 3 → 4 | | WC system information | 6 | 9 → 10 | | WC load-sharing state | 6 | 11 → 12 | | Provisional readback | 6 | 27 → 28 | A deployment configures an ordered, non-empty, duplicate-free subset of these operations as its polling set. Where the configured build establishes t27/t28 compatibility, t27 can be selected alone or beside other supported reads. The lifecycle admits family 6, tags 27 → 28, as a selectable observation and as the on-demand read of the separately admitted native mutation even when tag 27 is absent from periodic Operations. The existing explicit t27 window supplies freshness and retention to that on-demand path without scheduling it. A missing or invalid window prevents only the dependent mutation from sending; it does not stop other reads with valid windows. The only driver mutation is the provisional current-limit operation of the [current-limit operation contract V1](gen3-current-limit-operation-v1.md). It uses the same single-flight owner and current generation; that mutation is never retried. The persistent settings write (6/7 → 6/8) is a distinct TEDAPI operation (§§6.4.4, 7.8), not a driver setter or acquisition mapping. The configuration read (6/5 → 6/6, §6.4.3) and all other wire-defined operations remain outside this lifecycle: any unselected family/tag pair is `NO_SEND`.",
+      "reason": "Preserve selectable and on-demand reads, the off-poll window, and one non-retried provisional mutation without a persistent setter."
     },
     {
       "contract": "read_acquisition",
       "page": "protocols/tesla/gen3-read-acquisition-v1.md",
       "section": "## Lifecycle states and transitions",
       "kind": "statement",
-      "value": "The lifecycle is in exactly one externally visible state: `stopped`, `activating`, `ready`, `recovering`, `unavailable`, or `closed`.",
-      "reason": "Value table of the lifecycle states."
+      "value": "The lifecycle is in exactly one externally visible state: `stopped`, `activating`, `ready`, `recovering`, `unavailable`, or `closed`. | From | Trigger | To | |---|---|---| | `stopped` | Start | `activating` | | `activating` | driver reports the confirmation after a host echo of the immediately preceding greeting, in time | `ready` | | `activating` | configured readiness probe: silence for the whole activation timeout, then an acknowledged first configured read | `ready` | | `activating` | activation failure, refusal, reset error, unexpected bytes, an echo that differs from its greeting, any other order, or an expired activation context | `unavailable` | | `activating` | silence for the whole activation timeout without a configured readiness probe, or a readiness probe that is not acknowledged | `unavailable` | | `ready` | Acquire or PollOnce ending `ack`, `rejected`, or `no_send` | `ready` | | `ready` | transport timeout or other transport failure after possible transmission | `recovering` | | `ready` | success receipt that the operation decoder rejects | `unavailable` (endpoint retired) | | `recovering` | transport recovery succeeds | `ready` | | `recovering` | recovery fails, or the acquisition budget is already spent | `unavailable` | | `ready` or `recovering` | station reset or loss of routed mode invalidates readiness | `unavailable` | | `unavailable` | Local Restart with retained readiness for an unchanged station epoch | `ready` | | `unavailable` | Restart without current station readiness, including after station reset | `activating` | | any state | Close | `closed` |",
+      "reason": "Pin lifecycle states and transitions, including station readiness loss and Restart."
     },
     {
       "contract": "read_acquisition",
@@ -943,23 +943,23 @@
       "section": "## Lifecycle states and transitions",
       "kind": "statement",
       "value": "while a repeated Close returns success",
-      "reason": "Close is idempotent."
+      "reason": "Close is terminal and repeated Close succeeds without dispatch."
     },
     {
       "contract": "read_acquisition",
       "page": "protocols/tesla/gen3-read-acquisition-v1.md",
       "section": "## Lifecycle states and transitions",
       "kind": "statement",
-      "value": "Every successful activation opens a new lifecycle epoch, numbered in increasing order. An epoch pins one generation of the current endpoint instance at a time. The first admitted exchange of an epoch pins that generation, and it must be strictly greater than the generation pinned by any earlier epoch of the same endpoint instance. A later recovery keeps that epoch and does not repeat the activation. It replaces a fenced generation with a successor generation in the same epoch, strictly greater than the fenced generation, and that successor belongs to the same endpoint instance. Admission then requires that successor, so a retry is not left on the fenced generation. A record acquired on the fenced generation is historical and is not current. A record is current only when its epoch, its endpoint instance, and its generation are the live ones. A Restart after an observed activation opens a successor endpoint instance in the same epoch, with empty admission, and enters `ready` on the activation already observed. That Restart sends no echo and does not wait for a second exchange. A Restart before any successful activation enters `activating`, and its driver waits for the documented exchange. An old generation never serves a new epoch.",
-      "reason": "One successful activation opens the epoch; the pin and record currency are instance-scoped."
+      "value": "Every successful activation opens a new lifecycle epoch, numbered in increasing order. An epoch pins one generation of the current endpoint instance at a time. The first admitted exchange of an epoch pins that generation, and it must be strictly greater than the generation pinned by any earlier epoch of the same endpoint instance. Recovery keeps that epoch and does not repeat activation while the station epoch is unchanged. It replaces a fenced generation with a successor generation in the same epoch and endpoint instance. The successor must be strictly greater than the fenced generation, which is no longer admitted. A record is current only when its epoch, endpoint instance and generation are the live ones. A station epoch is the station's continuous period of routed operation. A local endpoint or transport change does not establish that the station has restarted. A local Restart with retained readiness for an unchanged station epoch opens a successor endpoint instance in the same lifecycle epoch, with empty admission. It sends no echo and does not wait for a second exchange. A station reset or loss of routed mode invalidates readiness and fences the current generation before further dispatch. Prior activation and acquisition records are historical. Without current station readiness, Restart enters `activating`; a new readiness result opens a new lifecycle epoch. An old generation never serves a new epoch.",
+      "reason": "Pin current generations and allow a local Restart to reuse readiness only in the same station epoch."
     },
     {
       "contract": "read_acquisition",
       "page": "protocols/tesla/gen3-read-acquisition-v1.md",
       "section": "## Admission rules",
       "kind": "statement",
-      "value": "A retired or replaced endpoint instance refuses every candidate. - The candidate carries the configured endpoint label and the configured node and function FC100. - The candidate carries the transport generation the current epoch pins for the current endpoint instance. For the first exchange of an epoch on that instance, the generation is newer than every earlier epoch of the same endpoint instance. After recovery replaces a fenced generation of that instance, the epoch pins the successor generation of that instance, and a candidate that still carries the replaced generation is refused. A Restart after an observed activation opens a successor endpoint instance in the same epoch, and a candidate that names the replaced instance is refused.",
-      "reason": "Retired endpoints admit nothing, and generation pins stay on the current endpoint instance."
+      "value": "- The lifecycle is `ready`, station readiness is current, and the endpoint is not closed. - The request is exactly the planned request payload for the selected operation: the planned exact FC100 payload for a selected read or the independently qualified provisional current-limit mutation, byte for byte. No caller-supplied bytes reach the endpoint. - The candidate names the endpoint instance the lifecycle currently owns. A retired or replaced endpoint instance refuses every candidate. - The candidate carries the configured endpoint label and the configured node and function FC100. - The candidate carries the transport generation the current epoch pins for the current endpoint instance. For the first exchange of an epoch on that instance, the generation is newer than every earlier epoch of the same endpoint instance. After recovery replaces a fenced generation of that instance, the epoch pins the successor generation of that instance, and a candidate that still carries the replaced generation is refused. A local Restart under an unchanged station epoch can replace the instance in the same lifecycle epoch; a candidate naming the replaced instance is refused.",
+      "reason": "Bind dispatch to the exact planned payload, the owned endpoint and node, FC100 and the live generation."
     },
     {
       "contract": "read_acquisition",
@@ -1070,8 +1070,8 @@
       "page": "protocols/tesla/gen3-read-acquisition-v1.md",
       "section": "## Retry, deadline, and recovery budgets",
       "kind": "statement",
-      "value": "A later recovery does not repeat the activation. Recovery success returns to `ready` with the successor generation pinned in the same epoch. This contract defines no separate cleanup budget: a cancelled or expired acquisition does not start recovery, leaves the endpoint fenced, and leaves the lifecycle `unavailable`. Restart, with its own caller-supplied deadline, is the bounded way back. When the one post-power activation has already been observed, the retained activation report is that observed activation: Restart sends no echo and does not wait for a second exchange, and enters `ready` on the successor endpoint instance. When no activation has been observed, Restart enters `activating` and the driver reports the documented exchange within the activation timeout, or that timeout leaves the lifecycle `unavailable`.",
-      "reason": "Recovery does not repeat activation; Restart after an observed activation sends no echo."
+      "value": "A later recovery does not repeat the activation. This recovery path requires current station readiness. Recovery success returns to `ready` with the successor generation pinned in the same epoch. A cancelled or expired acquisition does not start recovery. It leaves the endpoint fenced and the lifecycle `unavailable`. Restart has its own caller-supplied deadline. It may reuse readiness only in an unchanged station epoch; otherwise it must obtain a new readiness result within its activation timeout. Restart after a station reset never reuses the previous activation report. This contract supplies no separate cleanup budget; recovery must finish within the acquisition deadline. A separate cleanup budget must be finite and published before an implementation relies on it.",
+      "reason": "Bound recovery by the acquisition deadline and refuse readiness reuse after station reset."
     },
     {
       "contract": "read_acquisition",
@@ -1158,8 +1158,8 @@
       "page": "protocols/tesla/gen3-read-acquisition-v1.md",
       "section": "## Activation prerequisite and the current NO_SEND gate",
       "kind": "statement",
-      "value": "The lifecycle drives the exchange through an injected activation driver on the endpoint it owns. The driver reports ordered events: the device greeting; the host echo, which is the same bytes as the greeting just received; then either the device confirmation, or a device refusal followed by a new greeting. Readiness requires a report that ends with the confirmation after a host echo of the immediately preceding greeting. A confirmation with no host echo, a refusal, a greeting without a confirmation, an echo that differs from its greeting, any other bytes, or any other order never admits readiness. The tokens are `TESLA`, `PASS` and `FAIL`, each followed by NUL, compared exactly. The activation deadline is taken from the lifecycle clock before the driver is called.",
-      "reason": "Readiness requires the confirmation after a host echo of the immediately preceding greeting, and the deadline is sampled first."
+      "value": "The lifecycle drives the exchange through an injected activation driver on the endpoint it owns. The driver reports ordered events: the device greeting; the host echo, which is the same bytes as the greeting just received; then either the device confirmation or a refusal (with a new greeting only if the station makes another attempt). Readiness requires a report that ends with the confirmation after a host echo of the immediately preceding greeting. A confirmation with no host echo, a refusal, a greeting without a confirmation, an echo that differs from its greeting, any other bytes, or any other order never admits readiness. The tokens are `TESLA`, `PASS` and `FAIL`, each followed by NUL, compared exactly. The activation deadline is taken from the lifecycle clock before the driver is called.",
+      "reason": "Keep exact report ordering and the driver activation deadline separate from station retries."
     },
     {
       "contract": "read_acquisition",
@@ -1198,7 +1198,7 @@
       "page": "protocols/tesla/gen3-read-acquisition-v1.md",
       "section": "## Activation prerequisite and the current NO_SEND gate",
       "kind": "statement",
-      "value": "The lifecycle retains the report of the activation that opened the current epoch: the events with their host-side monotonic offsets and, for each echo, the host-side interval from receipt of the last greeting byte to the start of the write, and the write duration. These are host-side values, not wire timing. This page publishes no measured duration or count for that report.",
+      "value": "The lifecycle retains the report of the activation that opened the current epoch: the events with their host-side monotonic offsets and, for each echo, the host-side interval from receipt of the last greeting byte to the start of the write, and the write duration. These are host-side values, not wire timing.",
       "reason": "The activation report keeps host-side offsets and echo intervals and publishes no measured number."
     },
     {
@@ -1206,16 +1206,16 @@
       "page": "protocols/tesla/gen3-read-acquisition-v1.md",
       "section": "## Activation prerequisite and the current NO_SEND gate",
       "kind": "statement",
-      "value": "An optional readiness probe is an explicitly configured use of the first configured read operation. It applies only when the driver reports silence for the whole activation timeout, meaning no event at all. An acknowledged result opens the epoch. Any other result leaves the lifecycle `unavailable`. It is never used after any event was reported. It is a transmission and it is off unless configured.",
-      "reason": "The readiness probe is an explicit transmission used only after silence."
+      "value": "An optional readiness probe is an explicitly configured use of the first configured read operation. It applies only when the driver reports silence for the whole activation timeout, meaning no event at all. On 26.34.0 and 26.42.0 a station can answer addressed requests even when the peer did not receive the pass token (RS-485 §3.3). The probe is a driver read, not a substitute for a station activation. Only an acknowledgement current to the probe can open the lifecycle epoch. Any other result leaves the lifecycle `unavailable`. The probe is never used after any event was reported. It is a transmission and it is off unless configured.",
+      "reason": "Keep the optional no-event probe read-only and require a current acknowledgement, never inherited readiness."
     },
     {
       "contract": "read_acquisition",
       "page": "protocols/tesla/gen3-read-acquisition-v1.md",
       "section": "## Activation prerequisite and the current NO_SEND gate",
       "kind": "statement",
-      "value": "The only bytes the lifecycle causes to be transmitted are the planned read requests, the one provisional current-limit mutation, and the host echo of a greeting. The echo is sent only by a driver whose configuration selects the responder explicitly. A Restart after an observed activation sends no echo and does not wait for a second exchange.",
-      "reason": "The lifecycle transmits planned reads, the one provisional mutation, and an explicitly selected host echo."
+      "value": "The only bytes the lifecycle causes to be transmitted are the planned read requests, the one provisional current-limit mutation, and the host echo of a greeting. The echo is sent only by a driver whose configuration selects the responder explicitly. A local Restart under an unchanged station epoch sends no echo and does not wait for a second exchange. A station reset invalidates that exception.",
+      "reason": "Bound all transmissions and distinguish local Restart from a station reset."
     },
     {
       "contract": "read_acquisition",
@@ -1244,18 +1244,18 @@
     {
       "contract": "read_acquisition",
       "page": "protocols/tesla/gen3-read-acquisition-v1.md",
-      "section": "## What this contract does not claim",
+      "section": "## Activation prerequisite and the current NO_SEND gate",
       "kind": "statement",
-      "value": "The only mutation is the provisional current limit, and it is never retried.",
-      "reason": "The lifecycle has one mutation, and that mutation is never retried."
+      "value": "(§§3.2–3.6) defines the station exchange. On 24.44.3 and 26.34.0 the tokens are plain bytes with no RTU address, function code or CRC. The peer echoes the `TESLA` probe and its trailing NUL unchanged. On a match the station sends `PASS` and NUL before entering routed mode. On failure it sends `FAIL` and NUL, and probes again only if attempts remain. The peer waits for the complete pass token before sending an addressed request. The required quiet time after the token is not specified. On 24.44.3 and 26.34.0, if no echo byte has arrived at the end of the probe, the station waits at most a nominal 2 ms before evaluating the echo. This is not a latest accepted arrival time. The latest accepted echo arrival, the interval between attempts and the time from station start to the first probe are not specified. The station allows ten attempts on 24.44.3, MID 25.2.2, 26.18.0 and 26.34.0; 24.28.3 has no attempt limit. For 26.42.0, the start-up attempt count and echo evaluation timing are not specified. On 24.44.3, a single exchange with unchanged conditions is Provisional: an internal station restart request can start another exchange, and its trigger is not specified. Whether the port answers addressed requests after start-up without an echoed probe is not specified. The site-controller watchdog is separate from activation and does not change the port mode on 24.44.3 or 26.34.0 (§3.5).",
+      "reason": "Pin the unframed tokens, firmware-specific attempt counts, nominal evaluation, unknown timing, and separate watchdog."
     },
     {
       "contract": "read_acquisition",
       "page": "protocols/tesla/gen3-read-acquisition-v1.md",
       "section": "## What this contract does not claim",
       "kind": "statement",
-      "value": "Documented support is distinct from a hardware test level and from live qualification.",
-      "reason": "Explicit non-claim: no qualification."
+      "value": "The persistent settings write, enable, and disable stay outside. - Driver admission does not establish firmware support, and read qualification grants no control authority.",
+      "reason": "Separate read-only qualification from control and keep out-of-scope commands excluded."
     },
     {
       "contract": "read_acquisition",
@@ -1302,8 +1302,8 @@
       "page": "protocols/tesla/gen3-semreg-mapping-v1.md",
       "section": "## Operations",
       "kind": "statement",
-      "value": "A numeric set at the configured maximum is still a renewed set and 0 A still pauses.",
-      "reason": "Maximum set stays a renewed set and 0 A pauses."
+      "value": "`evse.operation.set_allocated_current` has capability `evse.capability.set_allocated_current` on `evse.service.connector` and effect `evse.effect.set_allocated_current` on the connector subject for the quantity case. The [driver route](gen3-current-limit-operation-v1.md) requires qualified t25 to t26 correlation on the exact operation version `wc3_24_44_3`, followed by t27 to t28 readback. A same-tag t25 wire reply on 26.34.0 or 26.42.0 is not that driver terminal and does not qualify either build. The same operation takes boolean `false` for `evse.limit.allocated_current_enabled` without a numeric argument on release, with `evse.effect.release_allocated_current` on the same connector. Release sends only the documented triple with a valid nonzero configured current, then stops renewal and requires the matching release t28 before publishing false. Missing, zero or invalid configured current sends no release t25 and yields no confirmed release. A numeric set at the configured maximum is still a renewed set and 0 A still pauses.",
+      "reason": "Keep connector operation identities, exact admission, and the matching release readback."
     },
     {
       "contract": "gen3_semreg_mapping",
@@ -1342,48 +1342,48 @@
       "page": "protocols/tesla/gen3-semreg-mapping-v1.md",
       "section": "## Field rules",
       "kind": "statement",
-      "value": "A t28 received 70 s after a 60 s provisional set withholds the current allocation and retains the expiry fact.",
-      "reason": "Ack-anchored expiry withholds the allocation at 70 s."
+      "value": "Persistent `MaxOutputCurrentAmps` maps to `evse.limit.configured_current` on the charger. Provisional `LimitCurrentMaxAmps` maps to `evse.limit.allocated_current` on the connector. The native provisional triple is retained as the device reports it, also while charging is inhibited. An inhibited readback is mapped to 0 A at the connector, never to the 6 A the native triple carries in a pause. With inhibit false, a present nonzero current maps as reported while it has a current native allocation. A default limit without an active allocation is not a provisional allocation. For a qualified managed mutation with a known nonzero timeout, use the actual t25 to t26 set acknowledgement plus the requested duration as a conservative driver cutoff. This is not a station timing guarantee. A later t28 can qualify the value without renewing that lifetime. On 26.34.0 a t28 timeout is remaining seconds, not the requested duration (TEDAPI §7.1.1). Do not start a fresh timeout when remaining seconds arrive or qualify that build for the setter. A t28 received 70 s after a 60 s provisional set withholds the current allocation and retains the expiry fact. At or after expiry withhold the current allocation, retain the expiry fact, and preserve the native evidence.",
+      "reason": "Pin the native-to-semantic fields and subjects and the ACK-anchored publication cutoff."
     },
     {
       "contract": "gen3_semreg_mapping",
       "page": "protocols/tesla/gen3-semreg-mapping-v1.md",
       "section": "## Field rules",
       "kind": "statement",
-      "value": "A newer t28 with field 2 explicitly zero supersedes an earlier persistent t8 as unknown and retains the raw zero and evidence without publishing a numeric limit.",
-      "reason": "Explicit zero configured current clears the numeric limit."
+      "value": "A known nonzero current with an unresolved zero timeout retains the native unresolved-expiry disposition without inventing a deadline. A returned zero current with inhibit false leaves `evse.limit.allocated_current` unknown and keeps the zero in native evidence. These zero dispositions apply when the exact profile has no qualified zero semantics; they do not reinterpret the specified 26.34.0 removal behavior or authorize a zero-timeout send. Configured current is read wherever the exact qualified profile gives that field the required meaning. The t28 configured-current field contributes by its receipt in the same epoch. A present nonzero configured-current field supplies amperes. A newer t28 with field 2 explicitly zero supersedes an earlier persistent t8 as unknown and retains the raw zero and evidence without publishing a numeric limit.",
+      "reason": "Keep unresolved expiry and raw zero and do not promote zero to a numeric limit."
     },
     {
       "contract": "gen3_semreg_mapping",
       "page": "protocols/tesla/gen3-semreg-mapping-v1.md",
       "section": "## Field rules",
       "kind": "statement",
-      "value": "A t28 omitting field 2 supplies no update and the earlier still-current t8 remains the candidate.",
-      "reason": "An omitted configured-current field leaves the t8 candidate."
+      "value": "A t28 omitting field 2 supplies no update and the earlier still-current t8 remains the candidate. Units are ampere. The injected read-only projection is the non-sending getter. The operations above are separate from it.",
+      "reason": "Preserve omission, ampere units, and the non-sending getter boundary."
     },
     {
       "contract": "gen3_semreg_mapping",
       "page": "protocols/tesla/gen3-semreg-mapping-v1.md",
       "section": "## Operations",
       "kind": "statement",
-      "value": "An explicitly called set or withdrawal whose capability is independently qualified and whose profile, version, generation and dispatch checks pass is admitted without explicit operator confirmation at action time. Separate operator approval stays only for an agent or test acting on a real installation.",
-      "reason": "A mapped qualified set or withdrawal is admitted without action-time confirmation. Separate approval stays only for an agent or test on a real installation."
+      "value": "An explicitly called set or withdrawal whose capability is independently qualified and whose profile, version, generation and dispatch checks pass is admitted without explicit operator confirmation at action time. Separate operator approval stays only for an agent or test acting on a real installation. The operations are also decoded and callable by hand through MCP and GraphQL in the modbusreg namespace. Consumers write the SemReg elements through the semantic operation route.",
+      "reason": "Retain MCP and GraphQL parity, qualified intent, and the semantic route."
     },
     {
       "contract": "gen3_semreg_mapping",
       "page": "protocols/tesla/gen3-semreg-mapping-v1.md",
       "section": "## Relations",
       "kind": "statement",
-      "value": "`evse.relation.connector_phase` is a gate rule where the pages document per-phase values, `evse.relation.connector_session` is a gate rule where the pages document a session per connector, and `evse.relation.evse_meter` is configuration for the charger's own energy counter.",
-      "reason": "Charger relations and their bases."
+      "value": "`evse.relation.connector_phase` is a gate rule where the pages document per-phase values, `evse.relation.connector_session` is a gate rule where the pages document a session per connector, and `evse.relation.evse_meter` is configuration for the charger's own energy counter. Phase values are phase dimensions of the connector. A session episode requires a documented native session start. The TEDAPI message specification (§6.6.1) does not assign per-phase connector measurements or a session start to `WCVitals`. Without those native facts the phase and session relations are unknown, not absent. The meter relation requires configuration of the charger’s own energy counter, not identification of a separate meter from an energy value. A relation the pages do not support is unknown with a reason naming the missing statement.",
+      "reason": "Keep conditional relations and unknown rather than unsupported phase or session mappings."
     },
     {
       "contract": "read_acquisition",
       "page": "protocols/tesla/gen3-read-acquisition-v1.md",
       "section": "## Scope and evidence status",
       "kind": "statement",
-      "value": "The version label has the form `wc3_` followed by three underscore-separated integers. Builds of one line share the first two integers, so the read line is `wc3_24_44`, and the third integer orders builds of that line. The read floor is the identified, capability-compatible label `wc3_24_44_3`: a build on that line whose third integer is at least 3, and whose activation, private-function, and operation capabilities are compatible. An unidentified build, including an ambiguous or missing version and a build that is not on the `wc3_24_44` line, is refused with that reason and nothing is sent. A build on that line whose third integer is below 3 is refused as below-floor and nothing is sent. A build whose activation, private function, or operation schema is incompatible is refused as capability-incompatible and nothing is sent. The level stays `not_tested_on_hardware` unless an operator-owned public observation records `tested_on_hardware`, and neither level conditions admission. The independently qualified provisional current-limit mutation stays bound to the exact operation version `wc3_24_44_3`.",
-      "reason": "Read admission uses one identified, capability-compatible floor and names the three refusals."
+      "value": "The driver's version label has the form `wc3_` followed by three underscore-separated integers. The first two select the read line `wc3_24_44`; the third orders builds on that line. The read floor is `wc3_24_44_3`. The independently qualified provisional current-limit mutation stays bound to the exact operation version `wc3_24_44_3`.",
+      "reason": "Keep the local version-label format, read line and floor, and exact mutation version."
     },
     {
       "contract": "read_acquisition",
@@ -1398,16 +1398,16 @@
       "page": "protocols/tesla/gen3-read-acquisition-v1.md",
       "section": "## Compatibility and versioning",
       "kind": "statement",
-      "value": "The read build floor is the identified, capability-compatible label `wc3_24_44_3` on the `wc3_24_44` line.",
-      "reason": "A published revision keeps authority over the operation numbers and states the read floor."
+      "value": "The driver read build floor is `wc3_24_44_3` on the `wc3_24_44` line, subject to per-build capability compatibility; it is not the firmware coverage of FC100 or TEDAPI.",
+      "reason": "Keep the product floor separate from firmware coverage."
     },
     {
       "contract": "read_acquisition",
       "page": "protocols/tesla/gen3-read-acquisition-v1.md",
       "section": "## Falsifiers",
       "kind": "statement",
-      "value": "Read acquisition at an unidentified, below-floor, or capability-incompatible build constructs a request,",
-      "reason": "Read acquisition at an unidentified, below-floor, or incompatible build is a falsifier."
+      "value": "Read acquisition at an unidentified, below-floor, or capability-incompatible build constructs a request, or an operation outside the six selected read paths and the one provisional mutation is acquired.",
+      "reason": "Reject unsafe sends and unselected operations."
     },
     {
       "contract": "generation",
