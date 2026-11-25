@@ -2,28 +2,32 @@
 
 ## Scope and evidence status
 
-This is the offline operation contract for the Tesla Wall Connector Gen3 FC100
-current-limit path selected by gateway issue #965 option 1. It specifies
-admission, native evidence, and outcome requirements for downstream
-implementations. For `wc3_24_44_3`, the provisional path (t25 to t26, readback
-t27 to t28) is the qualified setter of the semantic `evse.limit.allocated_current`,
-declared from the public field layout. The persistent settings write (t7 to t8)
-is not a setter. FC101, FC102, enable, and disable stay outside. This contract
-does not authorize installation, deployment, or credential use. An explicitly called provisional set or withdrawal whose capability is independently qualified and whose profile, version, generation, and dispatch checks pass is admitted without explicit operator confirmation at action time. Separate operator approval stays only for an agent or test acting on a real installation. The readback alone is also a read observation of the read lifecycle.
+This contract defines driver admission, native records and outcomes for the
+Tesla Wall Connector Gen 3 FC100 current-limit path. The driver's only setter
+of `evse.limit.allocated_current` is the independently qualified provisional
+operation on the exact operation version `wc3_24_44_3`.
+The persistent settings write (t7 to t8) is not a setter.
+FC101, FC102, enable, and disable stay outside. An explicitly called
+provisional set or withdrawal whose capability is independently qualified and
+whose profile, version, generation, and dispatch checks pass is admitted
+without explicit operator confirmation at action time. Separate operator
+approval stays only for an agent or test acting on a real installation. The
+standalone t27 read is also a read observation of the acquisition lifecycle.
 
-The publishable wire and body basis is the existing
-[Gen3 HSC contract](gen3-hsc-rtu.md#exact-24443-body-and-evidence-contract),
-including its bounded static evidence for `wc3_24_44_3`. The
-[TEDAPI contract](tedapi.md) and
-[private-function transport contract](../modbus/private-function-codes.md)
-define the surrounding boundaries. The rules below are operation
-requirements, not additional observations of firmware behavior. No new
-register map or device qualification is asserted.
+The [TEDAPI message specification](tedapi-specification.md#64-family-6-wall-connector)
+(§§6.4.4, 6.4.10–6.4.11, 6.6.2, 7.1, 7.8 and 9.3) defines the message schema
+and behavior. The [RS-485 site-controller protocol specification](rs485-site-controller-protocol.md#5-function-code-100-tedapitunnel)
+(§§2.5, 5 and 11.2) defines the FC100 framing and terminal envelopes. Firmware
+`26.34.0` and `26.42.0` have a same-tag t25 RS-485 reply, not a specified t26
+ACK; neither is admitted by this driver setter. The specifications do not
+establish the provisional setter's t26 terminal or its time and value
+semantics on `24.44.3`. The driver's t26 contract requires independent
+qualification of that exact operation; it is not a wire coverage claim.
 
-Body interpretation is limited to `wc3_24_44_3`. A known HSC version,
+Driver admission is limited to `wc3_24_44_3`. A known HSC version,
 `compatible_candidate`, successful parsing, or a read-only capability does not
-qualify a current-limit operation. Legacy Wall Connector RS-485, FC101, FC102,
-enable/disable controls, and unrelated settings are outside this contract.
+qualify a current-limit operation. An unknown terminal or field interpretation
+refuses dispatch. Legacy Wall Connector RS-485 is outside this contract.
 
 ## Ownership and consumers
 
@@ -53,19 +57,19 @@ the reason retained. Admission is scoped to exactly one
 | Profile and version | Explicit Gen3 identity, exact HSC profile compatibility, `wc3_24_44_3` operation schema, and independently qualified capability for the selected operation. Unknown, conflicting, legacy, or unenumerated operation versions deny dispatch. |
 | Endpoint and generation | Explicit unicast node and configured endpoint, current nonzero lifecycle generation, compatible HSC activation state, and no fence/quarantine. No discovery, broadcast, profile fallback, or inferred default target. |
 | Single-flight ownership | One serialized initiator and one in-flight exchange per endpoint. The mutation and its readback remain bound to one operation identity and the same lifecycle generation; no competing local mutation may interleave. This does not exclude an external actor. |
-| Values and scope | Allocated current of at least 6 A sends t25 with that current, a timeout of 900 seconds, and inhibit false. Allocated current 0 A pauses: t25 carries current 6 A, a timeout of 900 seconds, and inhibit true. Allocated current from 1 A through 5 A is refused before send. The upper bound is the configured-current value of the latest t28 in the same lifecycle generation; a request above it is refused before send. With no t28 yet in the generation, the owner reads t27 to t28 first. Absent current or unsupported field semantics deny dispatch. |
+| Values and scope | Allocated current of at least 6 A sends t25 with that current, a timeout of 900 seconds, and inhibit false. Allocated current 0 A pauses: t25 carries current 6 A, a timeout of 900 seconds, and inhibit true. Allocated current from 1 A through 5 A is refused before send. The driver uses the configured-current value of the latest t28 in the same lifecycle generation as its bound; the encoded current, including 6 A for a pause, must not exceed it. Non-integer requests are refused before any read or mutation. With no t28 yet in the generation, the owner reads t27 to t28 first. Absent current or unsupported field semantics deny dispatch. |
 | Interlocks | The interlocks are the semantic guard recheck (epoch, generation, binding, and capability revisions) and the station's own protections. No further interlock policy applies; a caller may add a precondition on a published status fact. This contract supplies no fault register, bit mask, or charging-state inference. |
 | Timing and response policy | A finite monotonic operation deadline covers mutation and any required readback. Each exchange has an explicit positive timeout, finite response-count/byte bound, and recovery budget. Remaining time must cover the next admitted phase. Mutation retries are zero; read retries require an explicit read-only allowlist and finite budget. |
 | Evidence and duplicate guard | The retained-record owner can freeze the admitted intent and correlate every phase. A local idempotency identity and bounded duplicate-retention policy are supplied before transmission. Missing retention capacity or duplicate ambiguity denies dispatch. |
 
-The provisional timeout field is a device request value, not the host exchange
-deadline. Wire integer capacity is not a safe device maximum. This contract
-does not establish a universal maximum amperage or a settling delay. The
-qualified provisional setter uses a timeout of 900 seconds and the inhibit
-values above. The owning registry must require qualified inputs for those
-gaps; it must not fill them from names or successful decoding. Discovery and
-qualification reads require explicit read-only allowlists, bounded retries,
-and version-aware evidence.
+The provisional timeout is a station request value, not the host deadline.
+The 900-second timeout, whole-ampere admission and minimum nonzero set of
+6 A are driver requirements, not general firmware limits. Wire integer
+capacity is not a safe device maximum. This contract defines no universal
+maximum amperage or settling delay. The owning registry must require qualified
+inputs for those gaps; it must not fill them from names or successful decoding.
+Discovery and qualification reads require explicit read-only allowlists,
+bounded retries and version-aware evidence.
 
 ## Registry-owned request and response framing
 
@@ -80,26 +84,36 @@ generation fence, per-frame bounds, caller classifier, and separate immutable
 raw evidence. FC100 is within its user-defined function-code range; that
 transport eligibility supplies no operation or write authority.
 
-The existing Gen3 frame is `node | function | payload | crc-low | crc-high`.
-FC100 payload is `length:u8 | message[length]`, with exact length equality.
-Payload is at most 252 bytes, so the length-delimited message is at most 251
-bytes and the complete RTU frame is at most 256 bytes. The registry's exact
-version-scoped codec constructs the family-6 request envelope and validates
-the corresponding terminal. This is a framing contract, not a sender recipe.
+For 24.44.3, FC100 requests use `length:u8 | message[length]` with exact
+length equality and at most 252 payload bytes including length. The driver
+requires that framing and a maximum 256-byte ADU in both directions. It
+validates the terminal envelope
+before decoding the body. The station's reply encoding limit does not specify
+whether the length byte is included (RS-485 §2.5).
 
 | Intent / phase | Request and terminal | Meaning and boundary |
 | --- | --- | --- |
-| Persistent mutation | Family 6, t7 ConfigureSettings → t8 returned settings | Request carries `settings.maxOutputCurrentAmps` as signed int32 integer amperes. t8 returns persistent settings state; it is not an ACK. The exact current-only mutation scope must be qualified so unrelated settings are not changed. It is not the setter of `evse.limit.allocated_current`. |
-| Provisional mutation | Family 6, t25 SetProvisional → t26 ACK | Request carries `limitCurrentMaxAmps` (uint32), `limitTimeoutS` (uint32), and `inhibitCharging` (bool). t26 has an empty body and acknowledges only. |
-| Provisional readback | Family 6, t27 GetProvisional → t28 returned state | t27 has an empty body. t28 returns the provisional triple and a separate configured-current value. It does not return effective/pilot current. |
+| Persistent installation settings | Family 6, t7 ConfigureSettings → t8 returned settings | `settings` field 1 carries `WCSettings`, whose `maxOutputCurrentAmps` field 1 is signed int32 amperes. t8 returns settings, not an empty ACK. This is not a driver mutation. |
+| Provisional mutation | Family 6, t25 SetProvisional; schema response t26 | t25 field 1 carries `provOpParams`: `limitCurrentMaxAmps` (uint32 A), `limitTimeoutS` (uint32 s), and `inhibitCharging` (bool), in fields 1–3. The t26 schema body is empty; it is not a guarantee of a t26 terminal on RS-485. |
+| Provisional readback | Family 6, t27 GetProvisional → t28 returned state | t27 has an empty body. t28 field 1 carries the provisional parameters and field 2 carries `configuredCurrentLimitAmps` (uint32 A). It does not return effective or pilot current. |
 
-The linked exact body contract is the field-metadata authority. A generic
-opaque-body builder is not a qualified setter. Required request values must
-be explicit; malformed encodings, wrong documented wire types, or duplicate
-documented singular fields reject typed interpretation. Unknown response
-members remain in the native evidence. Unknown request members may not acquire
-write authority merely because a decoder can preserve them. Missing evidence
-for a safe current-only persistent settings body is `NO_SEND`.
+On 26.34.0 and 26.42.0 a successful t25 reply carries the request tag and its
+parameters in canonical form, omitting members encoded with default values. It does
+not establish the applied state; read t27/t28. A correlated family 4, tag 1
+terminal carries a numeric TEDAPI status and is rejection, not an ACK; a
+Modbus exception is separate (TEDAPI §5; RS-485 §11.2).
+
+On 26.34.0 and 26.42.0 t7 can store installation settings in factory state;
+acceptance with settings already stored and the effect of omitting settings
+members are not specified (TEDAPI §7.8). No current-only t7 send is admitted.
+On 26.34.0 the t28 field 2 reports 32 A independently of the installation
+setting or provisional limit. Its meaning is not specified, so the field
+alone does not establish the stored capacity or qualify as a driver bound.
+
+Required request values must be explicit. Malformed encodings, wrong wire
+types and duplicate documented singular fields reject typed interpretation.
+Unknown response members stay native and unknown request members confer no
+write authority.
 
 Only an integrity-valid, transport-correlated normal response in the active
 generation may enter the selected operation decoder. A request echo or
@@ -117,8 +131,8 @@ success flag. Earlier ACK evidence remains available if a later readback fails.
 
 | Class | Required evidence | Permitted conclusion |
 | --- | --- | --- |
-| `ACK` | Valid correlated t26 after t25 | Acknowledgement received; no applied-value confirmation. This may be an intermediate phase while required readback is pending. |
-| `READBACK` | Valid correlated t8, or t28 linked to retained t25/t26/t27 | Returned settings/provisional state, with requested and returned values separate and explicit match/mismatch/unknown comparison. A mismatch remains readback evidence and is not confirmed requested state. |
+| `ACK` | Valid correlated family-6 t26 in the exact qualified operation; no error status | Acknowledgement received; no applied-value confirmation. This may be an intermediate phase while required readback is pending. |
+| `READBACK` | Valid correlated t8, or t28 linked to retained t25/t26/t27 | Returned settings/provisional state. Retain requested and returned values separately; compare only qualified comparable fields as match, mismatch or unknown. Mismatch is not confirmation. |
 | `TIMEOUT` | An admitted exchange timeout or the operation deadline expired without the required terminal/readback; available send/receipt evidence retained | No completion within the applicable time bound. If the mutation may have been sent, effect is indeterminate even if no response arrived. |
 | `INDETERMINATE` | Possible mutation transmission plus cancellation, short write, endpoint loss, invalid correlation, or other failure preventing reliable completion | The device may have changed state. No success, safe rollback, or automatic resend follows. |
 | `REJECTED` | Failed admission before send, or a valid correlated exception/application-error terminal | Record rejection source and numeric status where present. Only a proven pre-send rejection establishes that this attempt did not transmit. An error terminal does not by itself prove absence of side effects. |
@@ -129,15 +143,20 @@ excluded, record possible transmission and indeterminate effect. A readback
 timeout after ACK is `TIMEOUT` with the ACK retained; a readback transport
 failure is `INDETERMINATE` with the ACK retained.
 
-Implementers must apply these operation rules; they are requirements, not
-validated runtime results:
+Apply these driver outcome rules:
 
 - A readback exception or application error after ACK is overall `INDETERMINATE`, with readback-phase `REJECTED` evidence and the ACK retained. It does not reject the preceding mutation or prove absence of its effect.
 - An exchange timeout before the operation deadline is `TIMEOUT`, not the `INDETERMINATE` outcome class; preserve the earlier timeout cause and any ACK. Effect remains indeterminate if mutation transmission cannot be excluded.
 - Mutation and confirmation readback must use the same lifecycle generation. The retained owner must reject cross-generation completion; reads after recovery are reconciliation evidence and cannot complete the original operation.
 
-t28 has no nonce, timestamp, or generation counter. Even a matching readback
-reports returned values; it cannot prove causal application or exclusion of an
+On 26.34.0 `limitTimeoutS` in t28 is remaining seconds, not an echo of the
+requested duration. Do not compare the two as an equality test. A reply with
+no timeout on that build does not report an active timed limit; do not treat
+absence as an explicit zero or synthesize a deadline. The specification does
+not define t28 reporting of the flag as confirmation of an ordinary timed
+inhibit; the post-reset inhibit indication is not such confirmation. The t28
+schema carries no nonce, timestamp or generation counter. Even a matching
+readback reports returned values; it cannot prove causal application or exclusion of an
 intervening actor. Persistent, provisional, configured, and effective/pilot
 current remain distinct. Neither ACK nor matching t8/t28 establishes charging
 current, watt limit, hardware qualification, or protocol-neutral promotion.
@@ -173,8 +192,7 @@ replaced, or fenced generations remain historical and cannot authorize new I/O.
 Runtime evidence may contain sensitive native data and needs access-controlled
 retention. Public examples must be self-contained and synthetic; publication
 must exclude credentials, personal data, serials, network coordinates, device
-fingerprints, restricted source material, and installation captures. This page
-requires no private artifact or laboratory access to interpret its contract.
+fingerprints, restricted material, and installation captures.
 
 ## Quarantine and recovery
 
@@ -219,9 +237,22 @@ here. While a limit other than the release is in force, the owner re-sends
 the same triple every 300 seconds. A renewal is the same native request,
 never a new semantic operation, and it is not a mutation retry. Release is
 t25 with the configured current, a timeout of 900 seconds, and inhibit false,
-after which renewal stops. Device-side deduplication, exactly-once execution,
-and expiry behavior beyond this renewal are unknown. A retry of an allowlisted
-read cannot replay a mutation or acquire control authority.
+after which renewal stops. Missing, zero or invalid configured current
+prevents release dispatch. Confirm release only with the matching t28 in the
+same lifecycle generation. This is driver withdrawal policy, not a general
+wire command to remove a limit. A retry of an allowlisted read cannot replay
+a mutation or acquire control authority.
+
+On 26.34.0 the station counts down once per second and returns to its hardware
+variant's default limit on expiry. A valid renewed request reloads the timer.
+Zero current or zero timeout removes the limit on that build; neither value
+authorizes a zero-timeout send in this driver. A timed inhibit ends when its
+time runs out. These behaviors are not specified for 26.42.0, and the electrical
+response to an active inhibit is not specified by TEDAPI §7.1.3. Do not extend
+these rules to `wc3_24_44_3` without qualification. Device-side deduplication
+and exactly-once execution are not specified. For managed operations the
+[semantic mapping](gen3-semreg-mapping-v1.md#field-rules) defines a conservative
+publication cutoff, not an exact station deadline.
 
 ## Read-only and state-changing boundary
 
@@ -237,49 +268,20 @@ builder, a readback match, nor a gateway option decision grants live authority.
 Offline conformance must cover missing authority/interlocks/upper limits,
 wrong versions/generations, ACK-only, readback match/mismatch, pre/post-send
 timeouts, cancellation/short write, exceptions, duplicate identities, and
-late-frame recovery without automatic mutation retry. These are required
-downstream checks, not results reported by this documentation change.
+late-frame recovery without automatic mutation retry.
 
-## Bench verification
+## Bench verification boundary
 
-Each row is a verification run on a bench and recorded with a level: not
-verified on hardware, or verified on hardware. No implementation,
-publication, promotion or operation waits for a row.
+Record a bench verification level separately from admission and live
+qualification. It does not gate implementation, publication, promotion or
+operation.
 A recorded result that contradicts this page is a defect report against this page.
 A bench run is a state-changing action performed by a person who confirms it
 at action time.
 
-1. Level: not verified on hardware. A t7 body that changes only
-   `maxOutputCurrentAmps`, the t8 settings that come back, and proof that
-   every other settings member matches the settings read immediately before.
-   If t8 carries a member the request did not carry, record the before and
-   the after. A body that changes any other member is not a current-only
-   setter. Record requested amperes against returned amperes as match,
-   mismatch, or absent.
-2. Level: not verified on hardware. A t25 triple with explicit
-   `inhibitCharging`, a finite `limitTimeoutS` inside the range this page
-   already states (1 through 86399 seconds), and explicit
-   `limitCurrentMaxAmps`; the empty-body t26 ACK; the t27 and t28 readback
-   of the provisional triple and of the separate configured-current value.
-   Record that t28 is not effective or pilot current. Any extra member is
-   evidence, not a new fact.
-3. Level: not verified on hardware. Device behavior after `inhibitCharging`
-   true and after false: whether charging current falls and stays at zero,
-   whether it resumes when the flag is false or when the timeout elapses,
-   and what expiry does. Whether any control other than `inhibitCharging`
-   pauses charging. If one is seen, its request and its response are
-   recorded. Enable and disable are outside this contract.
-4. Level: not verified on hardware. The unit's own reported maximum, taken
-   from a field the public pages already name (a t8 settings member, or a
-   member of an observation the read lifecycle already admits), set beside
-   the installation limit the operator supplies. A missing reported maximum
-   stays unknown. This page still refuses a universal maximum.
-5. Level: not verified on hardware. Which already-named read fields, if any,
-   report fault, interlock, and charging state, and which of their values
-   would permit a limit or a pause. Record absence when none of the five
-   observation operations, t8, or t28 carries such a member. Invent no
-   register and assign no meaning that is not in the response.
-6. Level: not verified on hardware. The host-side interval from the start of
-   the t7 or t25 write to the correlated terminal, and the host-side
-   interval from t26 to a stable t28. These are host-side observations, not
-   wire timing. Publish no number.
+Keep a current-only settings body outside driver admission: omitted-field
+handling and safe updates to existing settings are not specified. Do not infer
+a live setter from the t26 schema or equate a same-tag reply with readback.
+Enable and disable are outside this contract. A reported or configured limit
+is not an effective charging current; do not infer fault, interlock or
+charging-state semantics without a defined field. This page still refuses a universal maximum.

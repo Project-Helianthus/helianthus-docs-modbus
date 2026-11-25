@@ -2,35 +2,33 @@
 
 ## Scope and evidence status
 
-This is the operation contract for the driver-owned read-path acquisition
-lifecycle of the Tesla Wall Connector Gen3 Home Site Controller (HSC) profile
-over Modbus RTU. It specifies endpoint ownership, activation gating, admission,
-scheduling, retry and deadline budgets, recovery, freshness and retention, and
-the evidence record for the five retained observation operations. It is the
-public contract that an implementing registry must satisfy; it is not a
-protocol observation and it adds no wire fact.
+This contract governs Helianthus acquisition on the Tesla Wall Connector Gen 3
+Home Site Controller (HSC) profile over Modbus RTU. Endpoint ownership,
+qualification, dispatch, budgets, freshness and retention are driver policy.
+The [RS-485 site-controller protocol specification](rs485-site-controller-protocol.md#15-firmware-versions-and-applicability)
+(§§1.5, 4.2) and the [TEDAPI message specification](tedapi-specification.md#13-certainty-and-applicability)
+(§1.3) define firmware applicability by named version, not by a version floor.
+FC100 support alone does not establish support for any particular TEDAPI tag.
+The same capability checks apply to the floor build and to
+every later build of that same Gen3 version line. This is an admission filter,
+not protocol coverage.
 
-The wire format, activation sequence, qualification predicates, and operation
-numbers are owned by the existing pages: the
-[Gen3 HSC contract](gen3-hsc-rtu.md), the
-[TEDAPI contract](tedapi.md#fc100-evse-operation-numbers), and the
-[private-function transport contract](../modbus/private-function-codes.md#configured-production-read-and-private-function-endpoint).
-The retry, outcome-class, and recovery rules reuse the read-side rules of the
-[current-limit operation contract V1](gen3-current-limit-operation-v1.md).
-The rules below are lifecycle requirements, not additional
-observations of firmware behavior.
-
-The read observations are bound to the documented version their identification names and, as this documentation defines, apply to every later build of that same Gen3 version line, with level `not_tested_on_hardware`. A version label by itself proves nothing. An ambiguous or missing version is refused with a reason. The version label has the form `wc3_` followed by three underscore-separated integers. Builds of one line share the first two integers, so the read line is `wc3_24_44`, and the third integer orders builds of that line. The read floor is the identified, capability-compatible label `wc3_24_44_3`: a build on that line whose third integer is at least 3, and whose activation, private-function, and operation capabilities are compatible. An unidentified build, including an ambiguous or missing version and a build that is not on the `wc3_24_44` line, is refused with that reason and nothing is sent. A build on that line whose third integer is below 3 is refused as below-floor and nothing is sent. A build whose activation, private function, or operation schema is incompatible is refused as capability-incompatible and nothing is sent. The level stays `not_tested_on_hardware` unless an operator-owned public observation records `tested_on_hardware`, and neither level conditions admission. The independently qualified provisional current-limit mutation stays bound to the exact operation version `wc3_24_44_3`. The legacy Wall Connector RS-485 profile is a separate,
-non-Modbus flow that this lifecycle never reaches and never falls back to; the
-two profiles are never substituted for each other.
+The driver's version label has the form `wc3_` followed by three
+underscore-separated integers. The first two select the read line `wc3_24_44`;
+the third orders builds on that line. The read floor is `wc3_24_44_3`.
+The independently qualified provisional current-limit mutation stays bound to
+the exact operation version `wc3_24_44_3`. Neither a hardware test level nor
+this version filter establishes live qualification. The legacy Wall Connector
+RS-485 profile is separate, non-Modbus, and never a fallback.
 
 ## Operations in scope
 
-The lifecycle acquires the six observation operations below, and it admits
-one mutation. Each observation is
-one FC100 family number with one request tag paired with one terminal tag, as
-listed by the [TEDAPI operation numbers](tedapi.md#fc100-evse-operation-numbers).
-Every observation request body is exact empty.
+The driver selects six read paths, each with an empty request body and the
+family and terminal tag shown below. TEDAPI §§6.2.1, 6.4.1–6.4.2,
+6.4.5–6.4.6 and 6.4.11 specify these FC100 paths for 26.34.0 and 26.42.0.
+Applicability of those individual reads on `24.44.3` and later `wc3_24_44`
+builds is not specified by those sections. Missing or unknown compatibility
+is not admission.
 
 | Operation | Family | Request tag → terminal tag |
 |---|---|---|
@@ -42,10 +40,22 @@ Every observation request body is exact empty.
 | Provisional readback | 6 | 27 → 28 |
 
 A deployment configures an ordered, non-empty, duplicate-free subset of these
-operations as its polling set. Where the configured build establishes the t27 and t28 operation and body compatibility, a selection can include t27 alone or beside the other supported observations. The lifecycle admits family 6, tags 27 → 28, as a selectable observation and as the on-demand read of the separately admitted native mutation even when tag 27 is absent from periodic Operations, and family 6, tags 25 → 26, as its only mutation, issued through the same single-flight owner and generation, and that mutation is never retried. The existing explicit t27 window supplies freshness and retention to that on-demand path without scheduling it. A missing or invalid window prevents only the dependent mutation from sending and does not stop the configured five reads. Values for that mutation and for that readback follow the
+operations as its polling set. Where the configured build establishes t27/t28
+compatibility, t27 can be selected alone or beside other supported reads.
+The lifecycle admits family 6, tags 27 → 28, as a selectable observation and
+as the on-demand read of the separately admitted native mutation even when tag 27 is absent from periodic Operations.
+The existing explicit t27 window supplies freshness and retention to that
+on-demand path without scheduling it. A missing or invalid window prevents
+only the dependent mutation from sending; it does not stop other reads
+with valid windows.
+
+The only driver mutation is the provisional current-limit operation of the
 [current-limit operation contract V1](gen3-current-limit-operation-v1.md).
-The persistent settings write (family 6, tags 7 → 8) has no acquisition
-mapping. Any other family/tag pair has no acquisition mapping and is `NO_SEND`.
+It uses the same single-flight owner and current generation; that mutation is never retried.
+The persistent settings write (6/7 → 6/8) is a distinct TEDAPI operation
+(§§6.4.4, 7.8), not a driver setter or acquisition mapping. The configuration
+read (6/5 → 6/6, §6.4.3) and all other wire-defined operations remain outside
+this lifecycle: any unselected family/tag pair is `NO_SEND`.
 
 ## Lifecycle states and transitions
 
@@ -64,8 +74,9 @@ The lifecycle is in exactly one externally visible state: `stopped`,
 | `ready` | success receipt that the operation decoder rejects | `unavailable` (endpoint retired) |
 | `recovering` | transport recovery succeeds | `ready` |
 | `recovering` | recovery fails, or the acquisition budget is already spent | `unavailable` |
-| `unavailable` | Restart after the one post-power activation has been observed | `ready` |
-| `unavailable` | Restart before that activation has been observed | `activating` |
+| `ready` or `recovering` | station reset or loss of routed mode invalidates readiness | `unavailable` |
+| `unavailable` | Local Restart with retained readiness for an unchanged station epoch | `ready` |
+| `unavailable` | Restart without current station readiness, including after station reset | `activating` |
 | any state | Close | `closed` |
 
 Start is valid only from `stopped`; Restart is the way out of `unavailable`.
@@ -81,30 +92,35 @@ Every successful activation opens a new lifecycle epoch, numbered in
 increasing order. An epoch pins one generation of the current endpoint
 instance at a time. The first admitted exchange of an epoch pins that
 generation, and it must be strictly greater than the generation pinned by any
-earlier epoch of the same endpoint instance. A later recovery keeps that
-epoch and does not repeat the activation.
-It replaces a fenced generation with a successor generation in the same epoch, strictly greater than the fenced generation, and that successor belongs to the same endpoint instance.
-Admission then requires that successor, so a retry is not left on the fenced
-generation. A record acquired on the fenced generation is historical and is
-not current. A record is current only when its epoch, its endpoint instance,
-and its generation are the live ones. A Restart after an observed activation
-opens a successor endpoint instance in the same epoch, with empty admission,
-and enters `ready` on the activation already observed. That Restart sends no
-echo and does not wait for a second exchange. A Restart before any successful
-activation enters `activating`, and its driver waits for the documented
-exchange. An old generation never serves a new epoch.
+earlier epoch of the same endpoint instance. Recovery keeps that epoch and
+does not repeat activation while the station epoch is unchanged.
+It replaces a fenced generation with a successor generation in the same
+epoch and endpoint instance. The successor must be strictly greater than the
+fenced generation, which is no longer admitted. A record is current only
+when its epoch, endpoint instance and generation are the live ones.
+
+A station epoch is the station's continuous period of routed operation. A
+local endpoint or transport change does not establish that the station has
+restarted. A local Restart with retained readiness for an unchanged station
+epoch opens a successor endpoint instance in the same lifecycle epoch, with
+empty admission. It sends no echo and does not wait for a second exchange.
+A station reset or loss of routed mode invalidates readiness and fences the
+current generation before further dispatch. Prior activation and acquisition
+records are historical. Without current
+station readiness, Restart enters `activating`; a new readiness result opens
+a new lifecycle epoch. An old generation never serves a new epoch.
 
 ## Admission rules
 
 Admission is fail-closed and evaluated at dispatch, outside the transport
 lock, for each exchange. A candidate is admitted only when all hold:
 
-- The lifecycle is `ready` and not closed.
+- The lifecycle is `ready`, station readiness is current, and the endpoint
+  is not closed.
 - The request is exactly the planned request payload for the selected
-  operation: the planned exact FC100 payload for one of the five observation
-  operations, for the provisional readback, or for the one provisional
-  current-limit mutation, byte for byte. No caller-supplied bytes reach the
-  endpoint.
+  operation: the planned exact FC100 payload for a selected read or the
+  independently qualified provisional current-limit mutation, byte for byte.
+  No caller-supplied bytes reach the endpoint.
 - The candidate names the endpoint instance the lifecycle currently owns.
   A retired or replaced endpoint instance refuses every candidate.
 - The candidate carries the configured endpoint label and the configured node
@@ -114,9 +130,9 @@ lock, for each exchange. A candidate is admitted only when all hold:
   instance, the generation is newer than every earlier epoch of the same
   endpoint instance. After recovery replaces a fenced generation of that
   instance, the epoch pins the successor generation of that instance, and a
-  candidate that still carries the replaced generation is refused. A Restart
-  after an observed activation opens a successor endpoint instance in the same
-  epoch, and a candidate that names the replaced instance is refused.
+  candidate that still carries the replaced generation is refused. A local
+  Restart under an unchanged station epoch can replace the instance in the
+  same lifecycle epoch; a candidate naming the replaced instance is refused.
 
 The standard register-read admission of the owned endpoint (FC03 and FC04)
 admits nothing; this lifecycle never reads registers. The configuration itself
@@ -125,13 +141,26 @@ path, a qualified Gen3 profile, an identified build at or above the read floor
 on the `wc3_24_44` line whose activation, private-function, and operation
 capabilities are compatible, an activation driver, valid time bounds, an
 attempt bound of 1 through 3, and a valid freshness and retention window for
-every configured operation. The read floor is the identified, capability-compatible label `wc3_24_44_3` on the `wc3_24_44` line. A `compatible_candidate` is admitted for these reads only when it is identified on that line at or above the floor and those capabilities are compatible. An unidentified build, including an ambiguous or missing version and a build that is not on the `wc3_24_44` line, is refused with that reason and nothing is sent. A build on that line whose third integer is below 3 is refused as below-floor and nothing is sent. A build whose activation, private function, or operation schema is incompatible is refused as capability-incompatible and nothing is sent. A version label alone grants no operation. The independently qualified provisional current-limit mutation stays bound to the exact operation version `wc3_24_44_3`.
+every configured operation.
+The read floor is the identified, capability-compatible label `wc3_24_44_3`
+on the `wc3_24_44` line. A `compatible_candidate` is admitted for these reads
+only when it is identified on that line at or above the floor and those
+capabilities are compatible. An unidentified build, including an ambiguous
+or missing version and a build that is not on the `wc3_24_44` line, is refused
+with that reason and nothing is sent. A build on that line whose third integer
+is below 3 is refused as below-floor and nothing is sent. A build whose
+activation, private function, or operation schema is incompatible is refused
+as capability-incompatible and nothing is sent. A version label alone grants
+no operation. The mutation requires its own exact operation version and
+qualification; read admission cannot authorize it.
 
-The lifecycle owns one production endpoint at a time and builds its
-configuration: 115200 baud, eight data bits, no parity, one stop bit, the
-configured endpoint label, and a bounded response count per exchange. The local
-path is given only to the endpoint opener and never appears in an evidence
-record.
+The lifecycle owns one configured production endpoint, with 115200 baud,
+eight data bits, no parity and one stop bit (RS-485 §2.1), an explicit endpoint
+label, and a bounded response count. It gives the local path only to the
+endpoint opener, not to the record. FC100 on 24.44.3 and 26.34.0 replies
+asynchronously (RS-485 §§2.7, 5). The host must wait for the reply or timeout
+before sending the next request. The specification gives no minimum or maximum
+reply time; the budgets below are driver policy, not station timing.
 
 ## Scheduling and single-flight
 
@@ -181,19 +210,16 @@ not a terminal: it is a classifier fault that fences the transport generation
 and follows the recovery path, so it can never satisfy this or a later request
 and is never retried inside the same generation.
 
-A later recovery does not repeat the activation. Recovery success returns
-to `ready` with the successor generation pinned in the same epoch. This contract
-defines no separate cleanup budget: a cancelled or expired acquisition does not
-start recovery, leaves the endpoint fenced, and leaves the lifecycle
-`unavailable`. Restart, with its own caller-supplied deadline, is the bounded
-way back. When the one post-power activation has already been observed, the
-retained activation report is that observed activation: Restart sends no echo
-and does not wait for a second exchange, and enters `ready` on the successor
-endpoint instance. When no activation has been observed, Restart enters
-`activating` and the driver reports the documented exchange within the
-activation timeout, or that timeout leaves the lifecycle `unavailable`.
-An implementation that adds a cleanup budget
-must document it as a finite, separately published bound before relying on it.
+A later recovery does not repeat the activation. This recovery path requires
+current station readiness. Recovery success returns to `ready` with the
+successor generation pinned in the same epoch. A cancelled or expired acquisition does not start
+recovery. It leaves the endpoint fenced and the lifecycle `unavailable`.
+Restart has its own caller-supplied deadline. It may reuse readiness only in
+an unchanged station epoch; otherwise it must obtain a new readiness result
+within its activation timeout. Restart after a station reset never reuses the
+previous activation report. This contract supplies no separate cleanup budget;
+recovery must finish within the acquisition deadline. A separate cleanup
+budget must be finite and published before an implementation relies on it.
 
 A success receipt that the transport reports but the operation decoder rejects
 is not retried. The endpoint is not fenced by the transport in that case, so
@@ -269,22 +295,34 @@ invented or zero-filled for a missing value.
 
 ## Activation prerequisite and the current NO_SEND gate
 
-An exchange is admitted only after the activation exchange of the
-[Gen3 HSC contract](gen3-hsc-rtu.md#serial-and-activation) has completed
-for the endpoint the lifecycle owns. The device sends the greeting `TESLA`
-followed by NUL. The host echo is those same bytes. The device then sends the
-confirmation `PASS` followed by NUL, or the refusal `FAIL` followed by NUL
-and a new greeting. The exchange happens once after the charger gets power.
-A greeting the host sends at any other time is ignored. The echo window, the
-retry count, and the host-side turnaround are not established and must be
-measured.
+The [RS-485 site-controller protocol specification](rs485-site-controller-protocol.md#3-start-up-exchange)
+(§§3.2–3.6) defines the station exchange. On 24.44.3 and 26.34.0 the tokens are
+plain bytes with no RTU address, function code or CRC. The peer echoes the
+`TESLA` probe and its trailing NUL unchanged. On a match the station sends
+`PASS` and NUL before entering routed mode. On failure it sends `FAIL` and
+NUL, and probes again only if attempts remain. The peer waits for the complete
+pass token before sending an addressed request. The required quiet time
+after the token is not specified.
+
+On 24.44.3 and 26.34.0, if no echo byte has arrived at the end of the probe,
+the station waits at most a nominal 2 ms before evaluating the echo. This is
+not a latest accepted arrival time. The latest accepted echo arrival, the interval between attempts and the time
+from station start to the first probe are not specified. The station allows ten attempts
+on 24.44.3, MID 25.2.2, 26.18.0 and 26.34.0; 24.28.3 has no attempt limit.
+For 26.42.0, the start-up attempt count and echo evaluation timing are not
+specified. On 24.44.3, a single exchange with unchanged conditions is
+Provisional: an internal station restart request can start another exchange,
+and its trigger is not specified. Whether the port answers addressed requests
+after start-up without an echoed probe is not specified. The site-controller
+watchdog is separate from activation and does not change the port mode on
+24.44.3 or 26.34.0 (§3.5).
 
 The lifecycle drives the exchange through an injected activation driver on
 the endpoint it owns. The driver reports ordered events: the device greeting;
 the host echo, which is the same bytes as the greeting just received; then
-either the device confirmation, or a device refusal followed by a new
-greeting. Readiness requires a report that ends with the confirmation after a
-host echo of the immediately preceding greeting. A confirmation with no host
+either the device confirmation or a refusal (with a new greeting only if
+the station makes another attempt). Readiness requires a report that ends
+with the confirmation after a host echo of the immediately preceding greeting. A confirmation with no host
 echo, a refusal, a greeting without a confirmation, an echo that differs from
 its greeting, any other bytes, or any other order never admits readiness. The
 tokens are `TESLA`, `PASS` and `FAIL`, each followed by NUL, compared exactly.
@@ -301,24 +339,24 @@ epoch: the events with their host-side monotonic offsets and, for each echo,
 the host-side interval from receipt of the last greeting byte to the start of
 the write, and the write duration.
 These are host-side values, not wire timing.
-This page publishes no measured duration or count for that report.
 
 An optional readiness probe is an explicitly configured use of the first
 configured read operation. It applies only when the driver reports silence for
-the whole activation timeout, meaning no event at all. An acknowledged result
-opens the epoch. Any other result leaves the lifecycle `unavailable`. It is
-never used after any event was reported.
+the whole activation timeout, meaning no event at all. On 26.34.0 and 26.42.0 a station can
+answer addressed requests even when the peer did not receive the pass token
+(RS-485 §3.3). The probe is a driver read, not a substitute for a station
+activation. Only an acknowledgement current to the probe can open the
+lifecycle epoch. Any other result leaves the lifecycle `unavailable`. The
+probe is never used after any event was reported.
 It is a transmission and it is off unless configured.
 
 The only bytes the lifecycle causes to be transmitted are the planned read
 requests, the one provisional current-limit mutation, and the host echo of a
-greeting. The echo is sent only by a driver whose configuration selects the responder explicitly. A Restart after an observed activation sends no echo and does not wait for a second exchange.
+greeting. The echo is sent only by a driver whose configuration selects the responder explicitly.
+A local Restart under an unchanged station epoch sends no echo and does not
+wait for a second exchange. A station reset invalidates that exception.
 The driver never admits an exchange by itself; it only gates readiness.
-A configuration without a driver is `NO_SEND`. helianthus-docs-modbus issue 158 remains open.
-The echo window, the retry count, and the host-side turnaround are not
-established and must be measured, and the relation of the exchange to RTU
-framing is not established on this page. Until that measurement is published,
-those durations and that count stay unknown.
+A configuration without a driver is `NO_SEND`.
 
 ## What this contract does not claim
 
@@ -326,9 +364,8 @@ those durations and that count stay unknown.
   The provisional readback is a planned read of this lifecycle. Both follow the
   [current-limit operation contract V1](gen3-current-limit-operation-v1.md).
   The persistent settings write, enable, and disable stay outside.
-- Documented support is distinct from a hardware test level and from live qualification. The implementation has no
-  live device or real serial stream in its evidence; its tests run against a
-  fake endpoint that mirrors this contract.
+- Driver admission does not establish firmware support, and read qualification
+  grants no control authority.
 - No new register, field, unit, scale, or range semantics. Terminal bodies stay
   native.
 - No discovery, broadcast, profile fallback, or inferred default endpoint or
@@ -336,8 +373,6 @@ those durations and that count stay unknown.
 - No Gen2 or legacy Wall Connector coverage, and no dispatch by function-code
   byte alone.
 - No promotion to a protocol-neutral model and no consumer binding.
-- No measured echo window, retry count, or host-side turnaround. Each is not
-  established and must be measured.
 
 ## Compatibility and versioning
 
@@ -347,7 +382,10 @@ family/tag pair and operation contract; additional evidence fields; or new
 bounded diagnostics. A change that removes or reinterprets a state, a
 transition, an admission rule, an evidence state, the budgets, or the
 no-value rule for `timeout` and `indeterminate` requires a new contract
-version. The operation numbers change only through a published revision. The read build floor is the identified, capability-compatible label `wc3_24_44_3` on the `wc3_24_44` line.
+version. The operation numbers change only through a published revision.
+The driver read build floor is `wc3_24_44_3` on the `wc3_24_44` line, subject
+to per-build capability compatibility; it is not the firmware coverage of
+FC100 or TEDAPI.
 
 ## Falsifiers
 
@@ -363,7 +401,9 @@ is observed:
   or is followed by a retry in the same transport generation.
 - A request other than the planned exact payload, or for a retired endpoint
   instance or another generation, is admitted; or FC03 or FC04 is admitted.
-- Read acquisition at an unidentified, below-floor, or capability-incompatible build constructs a request, or an operation outside the five observation pairs, the provisional readback, and the one provisional mutation is acquired.
+- Read acquisition at an unidentified, below-floor, or capability-incompatible
+  build constructs a request, or an operation outside the six selected read
+  paths and the one provisional mutation is acquired.
 - More than three attempts, an attempt after the acquisition deadline expired,
   a retry without recovery, a retry that repeats the activation, a retry
   admitted on a fenced generation, or a retry after an exception or
@@ -373,24 +413,12 @@ is observed:
 - Readiness from a confirmation with no host echo, a refusal, a greeting without a confirmation, an echo that differs from its greeting, any other bytes, or any other order.
 - A readiness probe used after any event was reported, or without explicit configuration.
 - A record from another endpoint instance counted as current.
-- Restart after the observed activation waits for a second exchange, or sends
-  an echo.
+- A local Restart with unchanged station readiness waits for a second
+  exchange or sends an echo; or a Restart uses a previous station activation
+  after a reset or loss of routed mode.
 - Readiness from a driver error, or from a report delivered after its context
   expired.
 - Two lifecycle calls hold the in-flight slot, or a concurrent caller waits
   instead of failing fast.
 - A mutation other than the one provisional current-limit request is
   constructed or sent, or that mutation is retried.
-
-## Implementation evidence
-
-The reference implementation is the `TeslaGen3ReadAcquisition` lifecycle in
-helianthus-modbusreg, pull request 209 (issue 208, plan item M3), at revision
-`51db865a` of its branch. That revision contains the five points this page
-states explicitly: exact-tag correlation that fences on a wrong-tag response,
-binding to the exact version `wc3_24_44_3`, no promotion of a retired receipt,
-recovery inside the acquisition deadline, and no readiness from an expired
-activation context. The
-revision is a pre-merge citation; it is replaced by the merged revision when
-the pull request merges. The implementation is evidence of one conforming
-design, not an observation of device behavior.
