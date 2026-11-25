@@ -2,7 +2,7 @@
 set -euo pipefail
 
 repo_root=$(cd "$(dirname "$0")/.." && pwd)
-fixture_root=$(mktemp -d)
+fixture_root=$(mktemp -d "${TMPDIR:-/tmp}/check-docs.XXXXXXXX")
 trap 'rm -rf "$fixture_root"' EXIT
 
 license_fixture="$fixture_root/licensing"
@@ -62,6 +62,7 @@ dynamic_structural_selection_document="$repo_root/protocols/sunspec/dynamic-stru
 dynamic_structural_selection_fixture="$fixture_root/sunspec-dynamic-structural-selection-v2.md"
 private_function_document="$repo_root/protocols/modbus/private-function-codes.md"
 private_function_fixture="$fixture_root/private-function-codes.md"
+synthetic_digest=$(printf %s publication-test | shasum -a 256 | cut -d ' ' -f 1)
 tesla_current_limit_document="$repo_root/protocols/tesla/gen3-current-limit-operation-v1.md"
 tesla_current_limit_fixture="$fixture_root/tesla-current-limit.md"
 
@@ -95,7 +96,7 @@ for leak in \
   '/Users/example/installation-capture' \
   '192.0.2.1' \
   'gateway.example.internal:1502' \
-  '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef'; do
+  "$synthetic_digest"; do
   cp "$tesla_current_limit_document" "$tesla_current_limit_fixture"
   printf '\n%s\n' "$leak" >> "$tesla_current_limit_fixture"
   if "$repo_root/scripts/check_docs.sh" --check-tesla-current-limit-operation "$tesla_current_limit_fixture"; then
@@ -127,7 +128,6 @@ for mutation in \
   's/never carry a value, even when response frames were received\./carry a value when response frames were received./' \
   's/never establishes readiness/establishes readiness/' \
   's/A configuration without a driver is `NO_SEND`\./A configuration without a driver is accepted./' \
-  's/helianthus-docs-modbus issue 158/an unrelated issue/' \
   's/It is a transmission and it is off unless configured\./It is not a transmission and it is on by default./' \
   's/These are host-side values, not wire timing\./These are wire timing./' \
   's/selects the responder explicitly\./selects no responder./' \
@@ -149,7 +149,6 @@ for mutation in \
   's/returns a closed error, while a repeated Close returns/returns a closed error, while a repeated Close fails/' \
   's/per loop iteration\./per interval, exactly./' \
   's/Buffered ticks do not guarantee/Buffered ticks guarantee/' \
-  's/`51db865a`/`50090dc4`/' \
   's/returned at or after that deadline is rejected regardless of whether the/returned at or after that deadline is accepted when the/' \
   's/from the lifecycle clock before the driver is called\. A driver report/from the context timer after the driver is called. A driver report/' \
   's/^Cancellation is re-checked inside/Cancellation is not re-checked inside/' \
@@ -166,7 +165,7 @@ for leak in \
   '/Users/example/installation-capture' \
   '192.0.2.1' \
   'gateway.example.internal:1502' \
-  '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef'; do
+  "$synthetic_digest"; do
   cp "$tesla_read_acquisition_document" "$tesla_read_acquisition_fixture"
   printf '\n%s\n' "$leak" >> "$tesla_read_acquisition_fixture"
   if "$repo_root/scripts/check_docs.sh" --check-tesla-read-acquisition "$tesla_read_acquisition_fixture"; then
@@ -220,277 +219,13 @@ cp "$source_document" "$fixture_document"
 python3 "$repo_root/scripts/check_vendor_contract.py" "$repo_root/scripts/vendor_contract_rules.json" \
   sdongle_page "architecture/sdongle-qualification-disposition-v1.md=$fixture_document"
 
-tesla_document="$repo_root/protocols/tesla/tedapi.md"
-tesla_fixture="$fixture_root/tesla-tedapi.md"
-"$repo_root/scripts/check_docs.sh" --check-tesla-tedapi-contract "$tesla_document"
-
+tesla_document="$repo_root/protocols/tesla/tedapi-specification.md"
+tesla_rs485_document="$repo_root/protocols/tesla/rs485-site-controller-protocol.md"
 tesla_legacy_document="$repo_root/protocols/tesla/legacy-wall-connector-rs485.md"
-tesla_legacy_fixture="$fixture_root/tesla-legacy-wall-connector-rs485.md"
 tesla_gen3_document="$repo_root/protocols/tesla/gen3-hsc-rtu.md"
-tesla_gen3_fixture="$fixture_root/tesla-gen3-hsc-rtu.md"
-"$repo_root/scripts/check_docs.sh" --check-tesla-generation-contracts "$tesla_legacy_document" "$tesla_gen3_document"
-for locator in \
-  'https://github.com/dracoventions/TWCManager/blob/7fb019a6838c9d15ba3b27f27458fa76c5e482d2/TWCManager.py#L1690-L1706' \
-  'https://github.com/dracoventions/TWCManager/blob/7fb019a6838c9d15ba3b27f27458fa76c5e482d2/TWCManager.py#L3207-L3213' \
-  'https://github.com/dracoventions/TWCManager/blob/7fb019a6838c9d15ba3b27f27458fa76c5e482d2/TWCManager.py#L3344-L3351' \
-  'https://github.com/craigpeacock/TWC/blob/593b722c117e310076572b4c5ff644c3f2e56865/TWC.c#L114-L157'; do
-  sed "s|$locator||" "$tesla_legacy_document" > "$tesla_legacy_fixture"
-  if "$repo_root/scripts/check_docs.sh" --check-tesla-generation-contracts "$tesla_legacy_fixture" "$tesla_gen3_document"; then
-    echo "Tesla legacy required source locator was accepted when removed: $locator" >&2
-    exit 1
-  fi
-done
-"$repo_root/scripts/check_docs.sh" --check-tesla-gen3-evse-current-limit-contract "$tesla_gen3_document"
-"$repo_root/scripts/check_docs.sh" --check-tesla-gen3-evse-current-limit-wire-evidence "$tesla_gen3_document"
-for mutation in \
-  's/signed int32 amperes/unsigned int32 amperes/' \
-  's/t28 additionally carries distinct singular field 2/t28 omits distinct singular field 2/' \
-  's/t26 and t27 have empty bodies/t26 carries a value body/' \
-  's/t8 is getter-populated returned persistent settings state, not an acknowledgement/t8 is an acknowledgement only/' \
-  's/t26 is an acknowledgement only and cannot confirm an applied provisional value/t26 confirms an applied provisional value/' \
-  's/no nonce, timestamp, or generation counter/transaction nonce and generation counter/' \
-  's/duplicate documented singular members are rejected/duplicate documented singular members are accepted/' \
-  's/Zero current and zero timeout remain unknown/Zero current and zero timeout mean unlimited/' \
-  's/No sender, dispatcher, transport activation, operation authorization, or live-device claim follows/A sender and live-device claim follows/'; do
-  sed "$mutation" "$tesla_gen3_document" > "$tesla_gen3_fixture"
-  if "$repo_root/scripts/check_docs.sh" --check-tesla-gen3-evse-current-limit-wire-evidence "$tesla_gen3_fixture"; then
-    echo "Tesla Gen3 wire-evidence mutation was accepted: $mutation" >&2
-    exit 1
-  fi
-done
-cp "$tesla_gen3_document" "$tesla_gen3_fixture"
-printf '\n`0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef`\n' >> "$tesla_gen3_fixture"
-if "$repo_root/scripts/check_docs.sh" --check-tesla-generation-contracts "$tesla_legacy_document" "$tesla_gen3_fixture"; then
-  echo 'Tesla Gen3 arbitrary evidence hash was accepted' >&2
-  exit 1
-fi
-"$repo_root/scripts/check_docs.sh" --check-tesla-gen3-evse-current-limit-mcp-projection "$tesla_gen3_document"
-for mutation in \
-  's/A read-only projection reports/A setter projection reports/' \
-  's/only already-injected records for `wc3_24_44_3`/all Gen3 versions/' \
-  's/`READ_ONLY`/`MUTATE`/' \
-  's/`outbound_allowed` as `false`/`outbound_allowed` as `true`/' \
-  's/constructs no request/constructs a request/' \
-  's/Persistent and provisional limits remain distinct\./Persistent and provisional limits may be combined./' \
-  's/Its optional persistent object/Its required persistent object/' \
-  's/Its optional provisional object/Its required provisional object/' \
-  's/all four bounded payloads/only the terminal payload/' \
-  's/Each object is validated independently\./Each object is validated collectively./' \
-  's/An invalid object is not projected, but a complete qualified sibling remains available even when the provider reports an error\./An invalid object is projected and suppresses its sibling./' \
-  's/If neither object qualifies, the projection returns no projected data with a structured error\./If neither object qualifies, the projection returns successful projected data./' \
-  's/does not define a setter/defines a setter/' \
-  's/must not infer a watt limit/may infer a watt limit/' \
-  's/does not make zero timeout interoperable/makes zero timeout interoperable/' \
-  's/assign semantics to FC101 or FC102/assigns semantics to FC101 and FC102/'; do
-  sed "$mutation" "$tesla_gen3_document" > "$tesla_gen3_fixture"
-  if "$repo_root/scripts/check_docs.sh" --check-tesla-gen3-evse-current-limit-mcp-projection "$tesla_gen3_fixture"; then
-    echo "Tesla Gen3 current-limit MCP mutation was accepted: $mutation" >&2
-    exit 1
-  fi
-done
-for mutation in \
-  's/`wc3_24_44_3`/`wc3_24_28_3`/' \
-  's/FC100 family `6`, request tag `7`, terminal tag `8`/FC100 family `5`, request tag `7`, terminal tag `8`/' \
-  's/request tag `7`, terminal tag `8`/request tag `8`, terminal tag `7`/' \
-  's/integer number of amperes/integer number of watts/' \
-  's/request tag `25`, terminal tag `26`/request tag `25`, terminal tag `27`/' \
-  's/tag-`27` to tag-`28` readback/tag-`27` to tag-`29` readback/' \
-  's/current floor is 6 A/current floor is 5 A/' \
-  's/1 through 86399 seconds/0 through 86400 seconds/' \
-  's/Zero timeout remains unresolved/Zero timeout is interoperable/' \
-  's/without inferring a watt limit or a result for another version/with a watt limit for another version/'; do
-  sed "$mutation" "$tesla_gen3_document" > "$tesla_gen3_fixture"
-  if "$repo_root/scripts/check_docs.sh" --check-tesla-gen3-evse-current-limit-contract "$tesla_gen3_fixture"; then
-    echo "Tesla Gen3 EVSE current-limit mutation was accepted: $mutation" >&2
-    exit 1
-  fi
-done
-"$repo_root/scripts/check_docs.sh" --check-tesla-legacy-evse-current-contract "$tesla_legacy_document"
-for mutation in \
-  's/A legacy command byte `FC` is not a Modbus function code./A legacy command byte `FC` is a Modbus function code./' \
-  's/FC100, FC101, and FC102 are not part of this contract./FC100, FC101, and FC102 are part of this contract./' \
-  's/without claiming a firmware build/with a universal firmware build/'; do
-  sed "$mutation" "$tesla_legacy_document" > "$tesla_legacy_fixture"
-  if "$repo_root/scripts/check_docs.sh" --check-tesla-generation-contracts "$tesla_legacy_fixture" "$tesla_gen3_document"; then
-    echo "Tesla legacy generation-contract mutation was accepted: $mutation" >&2
-    exit 1
-  fi
-done
-for mutation in \
-  's/A frame addressed to another node does not disable the exchange state./A frame addressed to another node disables the exchange state./'; do
-  sed "$mutation" "$tesla_gen3_document" > "$tesla_gen3_fixture"
-  if "$repo_root/scripts/check_docs.sh" --check-tesla-generation-contracts "$tesla_legacy_document" "$tesla_gen3_fixture"; then
-    echo "Tesla Gen3 activation-state mutation was accepted: $mutation" >&2
-    exit 1
-  fi
-done
-# Superseded general-TEDAPI mutation suite. The EVSE-only suite below is
-# unconditional because its document intentionally omits these legacy clauses.
-if false; then
-for mutation in \
-  's/It must not use the legacy SLIP framing/It may use the legacy SLIP framing/' \
-  's/known HSC observations, not a version whitelist/only qualified HSC versions/' \
-  's/No numeric minimum version is asserted by this contract./A numeric minimum version is 24.28.3./' \
-  's/otherwise it is `unknown`./otherwise it is `compatible`./' \
-  's/The version label alone does not grant a HSC operation or live exchange./The version label alone grants a HSC operation and live exchange./'; do
-  sed "$mutation" "$tesla_gen3_document" > "$tesla_gen3_fixture"
-  if "$repo_root/scripts/check_docs.sh" --check-tesla-generation-contracts "$tesla_legacy_document" "$tesla_gen3_fixture"; then
-    echo "Tesla Gen3 generation-contract mutation was accepted: $mutation" >&2
-    exit 1
-  fi
-done
-for mutation in \
-  's/complete bounded native payload for each retained request or response./digest only for each retained request or response./' \
-  's/FC100 catalog applies only to the Gen3 profile/FC100 catalog applies to the legacy profile/' \
-  's/normal payloads remain opaque unless a separate version-scoped operation contract assigns a named/normal payloads are named without a version-scoped operation contract/'; do
-  sed "$mutation" "$tesla_gen3_document" > "$tesla_gen3_fixture"
-  if "$repo_root/scripts/check_docs.sh" --check-tesla-generation-contracts "$tesla_legacy_document" "$tesla_gen3_fixture"; then
-    echo "Tesla Gen3 native-operation mutation was accepted: $mutation" >&2
-    exit 1
-  fi
-done
-awk '
-  { print }
-  /No numeric minimum version is asserted by this contract\./ {
-    print "Minimum version 24.28.3 qualifies this profile."
-  }
-' "$tesla_gen3_document" > "$tesla_gen3_fixture"
-if "$repo_root/scripts/check_docs.sh" --check-tesla-generation-contracts "$tesla_legacy_document" "$tesla_gen3_fixture"; then
-  echo 'Tesla Gen3 additive numeric threshold was accepted' >&2
-  exit 1
-fi
-for mutation in \
-  's/Records retain complete native EVSE payload with version, function, direction, and outcome./Records retain only a digest./'; do
-  sed "$mutation" "$tesla_document" > "$tesla_fixture"
-  if "$repo_root/scripts/check_docs.sh" --check-tesla-tedapi-contract "$tesla_fixture"; then
-    echo "Tesla native-record boundary mutation was accepted: $mutation" >&2
-    exit 1
-  fi
-done
-for forbidden_addition in \
-  'AuthenticateInstaller is a service authentication operation.' \
-  'PerformReset is a service operation.' \
-  'Wi-Fi provisioning is available.' \
-  'OCPP activation is available.' \
-  'Firmware update is available.' \
-  'Pairing is available.' \
-  'eCAN mailbox debug is available.'; do
-  cp "$tesla_document" "$tesla_fixture"
-  printf '\n%s\n' "$forbidden_addition" >> "$tesla_fixture"
-  if "$repo_root/scripts/check_docs.sh" --check-tesla-tedapi-contract "$tesla_fixture"; then
-    echo "Tesla EVSE scope mutation was accepted: $forbidden_addition" >&2
-    exit 1
-  fi
-done
-for mutation in \
-  's/1 through 536870911/1 through 536870912/' \
-  's/wire type is 0 through 5/wire type is 0 through 6/' \
-  's/Invalid, truncated, overflowed, or out-of-range keys are rejected/Invalid keys are retained/' \
-  's/at most 64 entries/at most 65 entries/' \
-  's/total FC100 envelope length/total FC100 envelope bytes and values/' \
-  's/Values are consumed only to validate wire boundaries and/Values are retained while validating wire boundaries and/' \
-  's/group boundaries with the same field number/group boundaries without matching field numbers/' \
-  's/oversized, unpaired, or over-count summary is rejected/oversized summaries are retained/' \
-  's/only from an injected, locally/without an injected provider/' \
-  's/qualification (`framing_only` or/qualification (`unbounded` or/' \
-  's/`qualified_read_only`), total envelope length/`qualified_read_only`), total envelope bytes and values/' \
-  's/count, ordered numeric field-number and wire-type entries, and payload digest/count and field names/' \
-  's/`outbound_allowed` value is always `false`/`outbound_allowed` value may be `true`/' \
-  's/an unavailable result with no summary data/a successful summary result/' \
-  's/exposes raw bytes, values, field names/exposes raw bytes and values/' \
-  's/a qualified operation/an unqualified operation/' \
-  's/`wc3_24_44_3` operation version/any operation version/' \
-  's/missing replay-safe declaration, or unknown response shape must cause no send/missing replay-safe declaration may send/' \
-  's/exactly `04 32 02 0a 00`/any FC100 PDU/' \
-  's/is an FC100 intermediate/is a successful terminal/' \
-  's/tag-`2` body is a bounded opaque terminal body/contains a required inner member/' \
-  's/This version defines no member,/This version defines a member,/' \
-  's/zero, an empty repeated value, or an empty nested member./zero is always available./' \
-  's/does not claim that the responder has no/claims that the responder has no/' \
-  's/only by an injected provider/through an unqualified generic provider/' \
-  's/`wc3_24_44_3`\. It exposes only the operation/any operation version. It exposes only the operation/' \
-  's/always `false`/may be `true`/' \
-  's/produces no data/produces successful data/' \
-  's/The compact view never creates a request/The compact view creates a request/' \
-  's/falls back to FC101 or FC102/falls back to FC100/' \
-  's/This version defines a qualified operation/This version defines no qualified operation/' \
-  's/terminal body. This version defines no member/terminal body. This version defines an inner member/' \
-  's/unknown response shape must cause no send/unknown response shape may send/' \
-  's/An echoed PDU exactly equal to this request PDU is an FC100 intermediate/An echoed PDU exactly equal to this request PDU is a terminal result/' \
-  's/field-presence contract within that body/field-presence contract is defined within that body/'; do
-  sed "$mutation" "$tesla_document" > "$tesla_fixture"
-  if "$repo_root/scripts/check_docs.sh" --check-tesla-tedapi-contract "$tesla_fixture"; then
-    echo "Tesla replay metadata mutation was accepted: $mutation" >&2
-    exit 1
-  fi
-done
+tesla_landing_document="$repo_root/protocols/tesla/tedapi.md"
+tesla_fixture="$fixture_root/tesla-mutation.md"
 
-fi
-
-for mutation in \
-  's/Records retain complete native EVSE payload with version, function, direction, and outcome./Records retain only a digest./'; do
-  sed "$mutation" "$tesla_document" > "$tesla_fixture"
-  if "$repo_root/scripts/check_docs.sh" --check-tesla-tedapi-contract "$tesla_fixture"; then
-    echo "Tesla native-record boundary mutation was accepted: $mutation" >&2
-    exit 1
-  fi
-done
-for mutation in \
-  's/| 4 | 2 → 3 |/| 4 | 2 → 4 |/' \
-  's/| 6 | 1 → 2 |/| 6 | 1 → 3 |/' \
-  's/| 6 | 3 → 4 |/| 6 | 3 → 5 |/' \
-  's/| 6 | 9 → 10 |/| 6 | 9 → 11 |/' \
-  's/| 6 | 11 → 12 |/| 6 | 11 → 13 |/' \
-  's/| 6 | 7 → 8 |/| 4 | 7 → 8 |/' \
-  's/| 6 | 25 → 26 |/| 6 | 25 → 27 |/' \
-  's/| 6 | 27 → 28 |/| 6 | 27 → 29 |/' \
-  '/^| Common system information |/s/| exact empty |/| arbitrary bytes |/' \
-  '/^| WC vitals /s/| exact empty |/| arbitrary bytes |/' \
-  '/^| WC lifetime statistics /s/| exact empty |/| arbitrary bytes |/' \
-  '/^| WC system information /s/| exact empty |/| arbitrary bytes |/' \
-  '/^| WC load-sharing state /s/| exact empty |/| arbitrary bytes |/' \
-  '/^| WC persistent settings/s/| structurally validated |/| exact empty |/' \
-  '/^| WC provisional current limit/s/| structurally validated |/| exact empty |/' \
-  '/^| WC provisional readback/s/| exact empty |/| structurally validated |/' \
-  's/| registry fact, see below |/| observed firmware behavior |/' \
-  's/commit `9fa7cd8`/the current revision/' \
-  's/They carry no independent body qualification/They carry independent body qualification/' \
-  's/The six observation and readback requests have exact empty bodies./The observation requests carry caller bodies./' \
-  's/WC provisional current limit/WC temporary current limit/' \
-  's/are recovered labels/are vendor-published names/' \
-  's/### FC100 EVSE operation numbers/### FC100 operation numbers/'; do
-  sed "$mutation" "$tesla_document" > "$tesla_fixture"
-  if cmp -s "$tesla_document" "$tesla_fixture"; then
-    echo "Tesla EVSE operation-number mutation did not change the document: $mutation" >&2
-    exit 1
-  fi
-  if "$repo_root/scripts/check_docs.sh" --check-tesla-tedapi-contract "$tesla_fixture"; then
-    echo "Tesla EVSE operation-number mutation was accepted: $mutation" >&2
-    exit 1
-  fi
-done
-for forbidden_addition in \
-  'AuthenticateInstaller is a service authentication operation.' \
-  'PerformReset is an EVSE operation.' \
-  'Reset is an EVSE operation.' \
-  'Wi-Fi provisioning is available.' \
-  'Network provisioning is available.' \
-  'A provisional mode is available.' \
-  'Provisional credentials are available.' \
-  'OCPP activation is available.' \
-  'Firmware update is available.' \
-  'Pairing is available.' \
-  'eCAN mailbox debug is available.'; do
-  cp "$tesla_document" "$tesla_fixture"
-  printf '\n%s\n' "$forbidden_addition" >> "$tesla_fixture"
-  if "$repo_root/scripts/check_docs.sh" --check-tesla-tedapi-contract "$tesla_fixture"; then
-    echo "Tesla EVSE scope mutation was accepted: $forbidden_addition" >&2
-    exit 1
-  fi
-done
-
-# One passing and one failing case per Tesla rule kind. The failing run must
-# name the rule kind it violated, so an unrelated failure cannot mask a gap.
 expect_tesla_rule_failure() {
   local kind="$1"
   shift
@@ -505,182 +240,140 @@ expect_tesla_rule_failure() {
   fi
 }
 
-# heading: the exact heading line must stay in place.
-"$repo_root/scripts/check_docs.sh" --check-tesla-tedapi-contract "$tesla_document"
-sed 's/^## Terminology$/## Glossary/' "$tesla_document" > "$tesla_fixture"
-expect_tesla_rule_failure heading --check-tesla-tedapi-contract "$tesla_fixture"
+mutate_tesla_page() {
+  local document="$1" mutation="$2"
+  sed "$mutation" "$document" > "$tesla_fixture"
+  if cmp -s "$document" "$tesla_fixture"; then
+    echo "Tesla mutation did not change the document: $mutation" >&2
+    exit 1
+  fi
+}
 
-# row: the exact table row must stay inside its section.
-"$repo_root/scripts/check_docs.sh" --check-tesla-read-acquisition "$tesla_read_acquisition_document"
-sed 's/^| WC lifetime statistics | 6 | 3 → 4 |$/| WC lifetime statistics | 6 | 3 → 5 |/' \
-  "$tesla_read_acquisition_document" > "$tesla_read_acquisition_fixture"
-expect_tesla_rule_failure row --check-tesla-read-acquisition "$tesla_read_acquisition_fixture"
-
-# statement: a statement moved out of the section it governs is missing.
-"$repo_root/scripts/check_docs.sh" --check-tesla-legacy-evse-current-contract "$tesla_legacy_document"
-sed 's/ `0x08` remains unknown and unmapped\.//' "$tesla_legacy_document" > "$tesla_legacy_fixture"
-printf '\n`0x08` remains unknown and unmapped.\n' >> "$tesla_legacy_fixture"
-expect_tesla_rule_failure statement --check-tesla-legacy-evse-current-contract "$tesla_legacy_fixture"
-
-# statement pin: a cited revision that no longer matches its commitment.
-sed 's/^`\([0-9a-f]\{7,\}\)` of its branch/`\1f` of its branch/' \
-  "$tesla_read_acquisition_document" > "$tesla_read_acquisition_fixture"
-if cmp -s "$tesla_read_acquisition_document" "$tesla_read_acquisition_fixture"; then
-  echo 'Tesla statement pin mutation did not change the document' >&2
-  exit 1
-fi
-expect_tesla_rule_failure statement --check-tesla-read-acquisition "$tesla_read_acquisition_fixture"
-
-# forbidden: an added numeric version threshold.
 "$repo_root/scripts/check_docs.sh" --check-tesla-generation-contracts "$tesla_legacy_document" "$tesla_gen3_document"
-cp "$tesla_gen3_document" "$tesla_gen3_fixture"
-printf '\nMinimum version 24.28.3 qualifies this profile.\n' >> "$tesla_gen3_fixture"
-expect_tesla_rule_failure forbidden --check-tesla-generation-contracts "$tesla_legacy_document" "$tesla_gen3_fixture"
-
-# allowed_digest: a 64-digit hexadecimal value without a commitment.
-synthetic_digest=$(printf 'e%.0s' $(seq 64))
-cp "$tesla_gen3_document" "$tesla_gen3_fixture"
-printf '\nSynthetic SHA-256: `%s`.\n' "$synthetic_digest" >> "$tesla_gen3_fixture"
-expect_tesla_rule_failure allowed_digest --check-tesla-generation-contracts "$tesla_legacy_document" "$tesla_gen3_fixture"
-
-# source_locator: an added locator outside the committed set.
-cp "$tesla_legacy_document" "$tesla_legacy_fixture"
-printf '\n[synthetic](https://example.invalid/legacy)\n' >> "$tesla_legacy_fixture"
-expect_tesla_rule_failure source_locator --check-tesla-generation-contracts "$tesla_legacy_fixture" "$tesla_gen3_document"
-
-# The following legacy mutations apply only while the superseded general
-# TEDAPI catalog is present. The EVSE-only contract has its own guard above.
-if grep -Fq '### Qualified WC vitals operation' "$tesla_document"; then
-
 for mutation in \
-  's/qualified Common system-information operation/unqualified Common system-information operation/' \
-  's/`tesla.hsc.fc100.common_system_info.v1`/`tesla.hsc.fc100.any_common_operation.v1`/' \
-  's/exactly `04 22 02 12 00`/any FC100 PDU/' \
-  's/tag-`3` body is a bounded opaque terminal body/contains a required inner member/' \
-  's/unknown response shape must cause no send/unknown response shape may send/'; do
-  sed "$mutation" "$tesla_document" > "$tesla_fixture"
-  if "$repo_root/scripts/check_docs.sh" --check-tesla-tedapi-contract "$tesla_fixture"; then
-    echo "Tesla common system-information mutation was accepted: $mutation" >&2
-    exit 1
-  fi
+  's/A legacy command byte `FC` is not a Modbus function code./A legacy command byte `FC` is a Modbus function code./' \
+  's/FC100, FC101, and FC102 are not part of this contract./FC100, FC101, and FC102 are part of this contract./' \
+  's/without claiming a firmware build/with a universal firmware build/'; do
+  mutate_tesla_page "$tesla_legacy_document" "$mutation"
+  expect_tesla_rule_failure statement --check-tesla-generation-contracts "$tesla_fixture" "$tesla_gen3_document"
 done
 
+# The driver read floor must not replace the separate exact mutation admission.
 for mutation in \
-  's/qualified WC lifetime operation/unqualified WC lifetime operation/' \
-  's/`tesla.hsc.fc100.wc_lifetime.v1`/`tesla.hsc.fc100.any_wc_operation.v1`/' \
-  's/exactly `04 32 02 1a 00`/any FC100 PDU/' \
-  's/may occur no more than once/may occur without bound/' \
-  's/must be quarantined and fail this operation/may remain in flight/' \
-  's/WC family `6` and one response tag `4`/WC family `4` and one response tag `4`/' \
-  's/tag-`4` body is a bounded opaque terminal body/contains a required inner member/' \
-  's/Common family `4` and error tag `1`/Common family `6` and error tag `4`/' \
-  's/unknown response shape must cause no send/unknown response shape may send/'; do
-  sed "$mutation" "$tesla_document" > "$tesla_fixture"
-  if "$repo_root/scripts/check_docs.sh" --check-tesla-tedapi-contract "$tesla_fixture"; then
-    echo "Tesla WC lifetime mutation was accepted: $mutation" >&2
-    exit 1
-  fi
+  's/can qualify a later build on the/can only qualify the exact build on the/' \
+  's/line at or above `wc3_24_44_3` only when/line without a minimum build only when/' \
+  's/nothing is sent/an unqualified request is sent/' \
+  's/explicit operator confirmation at action time/cached permission at action time/'; do
+  mutate_tesla_page "$tesla_gen3_document" "$mutation"
+  expect_tesla_rule_failure statement --check-tesla-generation-contracts "$tesla_legacy_document" "$tesla_fixture"
+  "$repo_root/scripts/check_docs.sh" --check-tesla-gen3-evse-current-limit-contract "$tesla_fixture"
+done
+cp "$tesla_gen3_document" "$tesla_fixture"
+printf '\nMinimum version 24.28.3 qualifies this profile.\n' >> "$tesla_fixture"
+expect_tesla_rule_failure forbidden --check-tesla-generation-contracts "$tesla_legacy_document" "$tesla_fixture"
+
+"$repo_root/scripts/check_docs.sh" --check-tesla-legacy-evse-current-contract "$tesla_legacy_document"
+mutate_tesla_page "$tesla_legacy_document" 's/ `0x08` remains unknown and unmapped\.//'
+printf '\n`0x08` remains unknown and unmapped.\n' >> "$tesla_fixture"
+expect_tesla_rule_failure statement --check-tesla-legacy-evse-current-contract "$tesla_fixture"
+
+"$repo_root/scripts/check_docs.sh" --check-tesla-gen3-evse-current-limit-contract "$tesla_gen3_document"
+for mutation in \
+  's/id="exact-24443-body-and-evidence-contract"/id="current-limit"/' \
+  's/zero timeout removes the provisional/zero timeout keeps the provisional/' \
+  's/mutation on the exact operation version `wc3_24_44_3`/mutation on every later build/' \
+  's/correlated readback rather than acknowledgement alone/acknowledgement alone/' \
+  's/persistent settings are not a driver setter/persistent settings are a driver setter/' \
+  's/encodings and duplicate documented singular members while retaining unknown/encodings but accepts duplicate documented singular members while retaining unknown/' \
+  's/A readback alone does not establish/A readback alone establishes/'; do
+  mutate_tesla_page "$tesla_gen3_document" "$mutation"
+  expect_tesla_rule_failure statement --check-tesla-gen3-evse-current-limit-contract "$tesla_fixture"
 done
 
+"$repo_root/scripts/check_docs.sh" --check-tesla-gen3-evse-current-limit-mcp-projection "$tesla_gen3_document"
 for mutation in \
-  's/qualified WC system-information operation/unqualified WC system-information operation/' \
-  's/`tesla.hsc.fc100.wc_system_info.v1`/`tesla.hsc.fc100.any_wc_operation.v1`/' \
-  's/exactly `04 32 02 4a 00`/any FC100 PDU/' \
-  '/^### Qualified WC system-information operation$/,/^### Qualified Common system-information operation$/s/`wc3_24_44_3` operation version/any operation version/' \
-  '/^### Qualified WC system-information operation$/,/^### Qualified Common system-information operation$/s/unknown response shape must cause no send/unknown response shape may send/' \
-  '/^### Qualified WC system-information operation$/,/^### Qualified Common system-information operation$/s/may occur no more than once/may occur without bound/' \
-  '/^### Qualified WC system-information operation$/,/^### Qualified Common system-information operation$/s/must be quarantined and fail this operation/may remain in flight/' \
-  '/^### Qualified WC system-information operation$/,/^### Qualified Common system-information operation$/s/WC family `6` and one response tag `10`/WC family `6` and one response tag `9`/' \
-  '/^### Qualified WC system-information operation$/,/^### Qualified Common system-information operation$/s/tag-`10` body is a bounded opaque terminal body/contains a required inner member/' \
-  '/^### Qualified WC system-information operation$/,/^### Qualified Common system-information operation$/s/Common family `4` and error tag `1`/Common family `6` and error tag `10`/'; do
-  sed "$mutation" "$tesla_document" > "$tesla_fixture"
-  if "$repo_root/scripts/check_docs.sh" --check-tesla-tedapi-contract "$tesla_fixture"; then
-    echo "Tesla WC system-information mutation was accepted: $mutation" >&2
-    exit 1
-  fi
+  's/A read-only projection reports/A setter projection reports/' \
+  's/only already-injected records for `wc3_24_44_3`/all Gen3 versions/' \
+  's/`READ_ONLY`/`MUTATE`/' \
+  's/`outbound_allowed` as `false`/`outbound_allowed` as `true`/' \
+  's/constructs no request/constructs a request/' \
+  's/Persistent and provisional limits remain distinct\./Persistent and provisional limits may be combined./' \
+  's/Its optional persistent object/Its required persistent object/' \
+  's/Its optional/Its required/' \
+  's/all four bounded payloads/only the terminal payload/' \
+  's/available only when that complete correlated sequence is retained/available even when no correlated sequence is retained/' \
+  's/Each object is validated independently\./Each object is validated collectively./' \
+  's/a complete qualified sibling remains available/a complete qualified sibling is lost/' \
+  's/the projection returns no projected data/the projection returns successful projected data/' \
+  's/does not define a setter/defines a setter/' \
+  's/must not infer a watt limit/may infer a watt limit/' \
+  's/not make zero timeout interoperable/make zero timeout interoperable/' \
+  's/interpret function-101 or function-102 payloads/interpret all private functions/'; do
+  mutate_tesla_page "$tesla_gen3_document" "$mutation"
+  expect_tesla_rule_failure statement --check-tesla-gen3-evse-current-limit-mcp-projection "$tesla_fixture"
 done
 
+"$repo_root/scripts/check_docs.sh" --check-tesla-rs485-specification "$tesla_rs485_document"
 for mutation in \
-  's/qualified WC load-sharing-state operation/unqualified WC load-sharing-state operation/' \
-  's/`tesla.hsc.fc100.wc_load_sharing_state.v1`/`tesla.hsc.fc100.any_wc_operation.v1`/' \
-  's/exactly `04 32 02 5a 00`/any FC100 PDU/' \
-  '/^### Qualified WC load-sharing-state operation$/,/^### Qualified WC system-information operation$/s/`wc3_24_44_3` operation version/any operation version/' \
-  '/^### Qualified WC load-sharing-state operation$/,/^### Qualified WC system-information operation$/s/unknown response shape must cause no send/unknown response shape may send/' \
-  '/^### Qualified WC load-sharing-state operation$/,/^### Qualified WC system-information operation$/s/may occur no more than once/may occur without bound/' \
-  '/^### Qualified WC load-sharing-state operation$/,/^### Qualified WC system-information operation$/s/must be quarantined and fail this operation/may remain in flight/' \
-  '/^### Qualified WC load-sharing-state operation$/,/^### Qualified WC system-information operation$/s/WC family `6` and one response tag `12`/WC family `6` and one response tag `11`/' \
-  '/^### Qualified WC load-sharing-state operation$/,/^### Qualified WC system-information operation$/s/tag-`12` body is a bounded opaque terminal body/contains a required inner member/' \
-  '/^### Qualified WC load-sharing-state operation$/,/^### Qualified WC system-information operation$/s/Common family `4` and error tag `1`/Common family `6` and error tag `12`/'; do
-  sed "$mutation" "$tesla_document" > "$tesla_fixture"
-  if "$repo_root/scripts/check_docs.sh" --check-tesla-tedapi-contract "$tesla_fixture"; then
-    echo "Tesla WC load-sharing-state mutation was accepted: $mutation" >&2
-    exit 1
-  fi
+  '/^| 7 | Probing |/s/tenth failure/first failure/' \
+  '/^| 10 | Routed |/s/Drop it; send no reply/Drop it and stop the port/' \
+  '/^| 12 | Any |/s/also after a successful one/only before a successful one/' \
+  '/^| Change of a condition |/s/An unchanged state triggers nothing/An unchanged state restarts the exchange/' \
+  '/^| 105 | Not supported |/s/| Supported | Supported |/| Not supported | Not supported |/' \
+  '/^| Fields of the status record |/s/20 (fields 1 to 20)/Opaque/g' \
+  '/^| Field numbers and names |/s/Section 7.3/Opaque/g'; do
+  mutate_tesla_page "$tesla_rs485_document" "$mutation"
+  expect_tesla_rule_failure row --check-tesla-rs485-specification "$tesla_fixture"
 done
 
+"$repo_root/scripts/check_docs.sh" --check-tesla-tedapi-contract "$tesla_document"
+mutate_tesla_page "$tesla_document" 's/^## 3\. Access control$/## 3. Overview/'
+expect_tesla_rule_failure heading --check-tesla-tedapi-contract "$tesla_fixture"
 for mutation in \
-  's/qualified WC PPU settings operation/unqualified WC PPU settings operation/' \
-  's/`tesla.hsc.fc100.wc_ppu_settings.v1`/`tesla.hsc.fc100.any_wc_operation.v1`/' \
-  's/read-only configuration operation/mutating configuration operation/' \
-  's/exactly `05 32 03 ba 01 00`/any FC100 PDU/' \
-  '/^### Qualified WC PPU settings operation$/,/^### Qualified WC system-information operation$/s/`wc3_24_44_3` operation version/any operation version/' \
-  '/^### Qualified WC PPU settings operation$/,/^### Qualified WC system-information operation$/s/unknown response shape must cause no send/unknown response shape may send/' \
-  '/^### Qualified WC PPU settings operation$/,/^### Qualified WC system-information operation$/s/may occur no more than once/may occur without bound/' \
-  '/^### Qualified WC PPU settings operation$/,/^### Qualified WC system-information operation$/s/must be quarantined and fail this operation/may remain in flight/' \
-  '/^### Qualified WC PPU settings operation$/,/^### Qualified WC system-information operation$/s/exactly one WC family `6` member and exactly one response tag `24`, with no additional terminal member/one WC family `6` member and one response tag `23`/' \
-  '/^### Qualified WC PPU settings operation$/,/^### Qualified WC system-information operation$/s/tag-`24` body is a bounded opaque terminal body/contains a required inner member/' \
-  '/^### Qualified WC PPU settings operation$/,/^### Qualified WC system-information operation$/s/no field, identifier, configuration value, or field-presence contract within that body/a configuration value is projected from that body/' \
-  '/^### Qualified WC PPU settings operation$/,/^### Qualified WC system-information operation$/s|The native HSC record projection may retain this terminal body without creating|The native HSC record projection creates gateway automatic dispatch|' \
-  '/^### Qualified WC PPU settings operation$/,/^### Qualified WC system-information operation$/s/A real device exchange requires separate action-time laboratory confirmation/A real device exchange is automatically enabled/' \
-  '/^### Qualified WC PPU settings operation$/,/^### Qualified WC system-information operation$/s/Common family `4` and error tag `1`/Common family `6` and error tag `24`/'; do
-  sed "$mutation" "$tesla_document" > "$tesla_fixture"
-  if "$repo_root/scripts/check_docs.sh" --check-tesla-tedapi-contract "$tesla_fixture"; then
-    echo "Tesla WC PPU settings mutation was accepted: $mutation" >&2
-    exit 1
-  fi
+  '/^| Authentication type evaluated |/s/yes | yes | no/yes | yes | yes/' \
+  '/^| Family\/tag | Request |/s/Service access point/Other/' \
+  '/^- \*\*Request\.\*\* No fields\.$/s/No fields/Arbitrary bytes/' \
+  's/does not mean that the Wall Connector supports/means that the Wall Connector supports/'; do
+  mutate_tesla_page "$tesla_document" "$mutation"
+  case "$mutation" in
+    '/^|'*) kind=row ;;
+    *) kind=statement ;;
+  esac
+  expect_tesla_rule_failure "$kind" --check-tesla-tedapi-contract "$tesla_fixture"
 done
 
-awk '
-  /^### Qualified WC PPU settings operation$/ { in_ppu = 1 }
-  /^### Qualified WC system-information operation$/ { in_ppu = 0 }
-  { print }
-  in_ppu && /A real device exchange requires separate action-time laboratory confirmation\./ {
-    print "This operation exposes configuration values, enables a setter, may fall back to FC101 or FC102, and creates gateway automatic dispatch."
-  }
-' "$tesla_document" > "$tesla_fixture"
-if "$repo_root/scripts/check_docs.sh" --check-tesla-tedapi-contract "$tesla_fixture"; then
-  echo 'Tesla WC PPU settings additive scope expansion was accepted' >&2
-  exit 1
-fi
+"$repo_root/scripts/check_docs.sh" --check-tesla-gen3-evse-current-limit-wire-evidence "$tesla_document"
+for mutation in \
+  '/^| P2 |/s/removes the limit/keeps the limit/' \
+  '/^| 2 | `configuredCurrentLimitAmps` |/s/`uint32`/`int32`/' \
+  '/^| 1 | `maxOutputCurrentAmps` |/s/`int32`/`uint32`/' \
+  '/^| 2 | `limitTimeoutS` |/s/0 to 86399/0 to 86400/'; do
+  mutate_tesla_page "$tesla_document" "$mutation"
+  expect_tesla_rule_failure row --check-tesla-gen3-evse-current-limit-wire-evidence "$tesla_fixture"
+done
+mutate_tesla_page "$tesla_document" '/^- \*\*Response\.\*\* `WCAPISetProvisionalOperationalParamsResponse`/s/carries tag 25/carries tag 26/'
+expect_tesla_rule_failure statement --check-tesla-gen3-evse-current-limit-wire-evidence "$tesla_fixture"
 
-awk '
-  /^### Qualified WC PPU settings operation$/ { in_ppu = 1 }
-  /^### Qualified WC system-information operation$/ { in_ppu = 0 }
-  { print }
-  in_ppu && /A real device exchange requires separate action-time laboratory confirmation\./ {
-    print "This operation may fall back to FC101 or FC102."
-  }
-' "$tesla_document" > "$tesla_fixture"
-if "$repo_root/scripts/check_docs.sh" --check-tesla-tedapi-contract "$tesla_fixture"; then
-  echo 'Tesla WC PPU settings fallback expansion was accepted' >&2
-  exit 1
-fi
+"$repo_root/scripts/check_docs.sh" --check-tesla-tedapi-landing "$tesla_landing_document"
+mutate_tesla_page "$tesla_landing_document" 's/installation settings are a defined TEDAPI operation, not a driver setter/installation settings are a driver setter/'
+# Change the clause on its own line, preserving the rest of the paragraph.
+expect_tesla_rule_failure statement --check-tesla-tedapi-landing "$tesla_fixture"
 
-awk '
-  /^### Qualified WC PPU settings operation$/ { in_ppu = 1 }
-  /^### Qualified WC system-information operation$/ { in_ppu = 0 }
-  { print }
-  in_ppu && /A real device exchange requires separate action-time laboratory confirmation\./ {
-    print "An additional terminal member of response tag 25 is permitted."
-    print "A second WC family 6 member is permitted."
-  }
-' "$tesla_document" > "$tesla_fixture"
-if "$repo_root/scripts/check_docs.sh" --check-tesla-tedapi-contract "$tesla_fixture"; then
-  echo 'Tesla WC PPU settings terminal-shape expansion was accepted' >&2
-  exit 1
-fi
+# Locators, fingerprints, workstation paths and method statements are not protocol text.
+for leak in \
+  "Synthetic fingerprint: $synthetic_digest" \
+  '[example](https://example.invalid/specimen)' \
+  '/Users/example/work/specimen' \
+  'The message was reconstructed by disassembly.'; do
+  cp "$tesla_document" "$tesla_fixture"
+  printf '\n%s\n' "$leak" >> "$tesla_fixture"
+  expect_tesla_rule_failure forbidden --check-tesla-tedapi-contract "$tesla_fixture"
+done
 
-fi
+# A changed row still must be rejected by the unchanged read-acquisition contract.
+"$repo_root/scripts/check_docs.sh" --check-tesla-read-acquisition "$tesla_read_acquisition_document"
+mutate_tesla_page "$tesla_read_acquisition_document" 's/^| WC lifetime statistics | 6 | 3 → 4 |$/| WC lifetime statistics | 6 | 3 → 5 |/'
+expect_tesla_rule_failure row --check-tesla-read-acquisition "$tesla_fixture"
 
 "$repo_root/scripts/check_docs.sh" --check-private-function-contract "$private_function_document"
 for mutation in \
@@ -1223,7 +916,7 @@ for contradiction in \
 done
 
 protocol_ii_document="$repo_root/protocols/growatt/protocol-ii-readonly-v1.md"
-protocol_ii_fixture="$(mktemp)"
+protocol_ii_fixture="$(mktemp "$fixture_root/protocol-ii.XXXXXXXX")"
 for mutation in \
   's/offsets 23 through 27, five words/offsets 23 through 27, four words/' \
   's/## Native identity capability/## Sanitized identity projection/' \
@@ -1239,7 +932,7 @@ for mutation in \
 done
 rm -f "$protocol_ii_fixture"
 
-protocol_ii_fc04_fixture="$(mktemp)"
+protocol_ii_fc04_fixture="$(mktemp "$fixture_root/protocol-ii.XXXXXXXX")"
 "$repo_root/scripts/check_docs.sh" --check-growatt-protocol-ii-fc04-contract "$protocol_ii_document"
 for mutation in \
   's/offsets 0 through 58 inclusive (59 words)/offsets 0 through 57 inclusive (58 words)/' \
@@ -1266,7 +959,7 @@ done
 rm -f "$protocol_ii_fc04_fixture"
 
 protocol_ii_matrix="$repo_root/protocols/growatt/protocol-ii-source-profile-matrix-v1.md"
-protocol_ii_matrix_fixture="$(mktemp)"
+protocol_ii_matrix_fixture="$(mktemp "$fixture_root/protocol-ii.XXXXXXXX")"
 "$repo_root/scripts/check_docs.sh" --check-growatt-protocol-ii-source-matrix "$protocol_ii_matrix"
 for mutation in \
   's/growatt-rtu-v1\.24/growatt-rtu-v1.25/' \
@@ -1784,37 +1477,6 @@ if ! grep -Fq 'The existing explicit t27 window supplies freshness' "$tesla_read
 fi
 if "$repo_root/scripts/check_docs.sh" --check-tesla-read-acquisition "$tesla_read_acquisition_fixture"; then
   echo 'Read acquisition accepted periodic t27 as required for the on-demand path' >&2
-  exit 1
-fi
-
-# HSC generation: restoring the unscoped no-minimum sentence, or exact-only qualification, fails.
-for mutation in \
-  's/An identified later build of the `wc3_24_44_3` line can qualify for these read observations when its activation, private function and operation schema agree./No numeric minimum version is asserted by this contract./' \
-  's/An identified later build of the `wc3_24_44_3` line can qualify for these read observations when its activation, private function and operation schema agree./The contract covers only the exact `wc3_24_44_3` operation version./'; do
-  sed "$mutation" "$tesla_gen3_document" > "$tesla_gen3_fixture"
-  if cmp -s "$tesla_gen3_document" "$tesla_gen3_fixture"; then
-    echo "HSC generation mutation did not change the document: $mutation" >&2
-    exit 1
-  fi
-  if "$repo_root/scripts/check_docs.sh" --check-tesla-generation-contracts "$tesla_legacy_document" "$tesla_gen3_fixture"; then
-    echo "HSC generation mutation was accepted: $mutation" >&2
-    exit 1
-  fi
-  if ! "$repo_root/scripts/check_docs.sh" --check-tesla-gen3-evse-current-limit-contract "$tesla_gen3_fixture"; then
-    echo 'HSC generation mutation changed exact current-limit qualification' >&2
-    exit 1
-  fi
-done
-
-# HSC safety: dropping action-time confirmation for a live provisional set fails.
-sed 's/explicit operator confirmation at action time/cached permission at action time/' \
-  "$tesla_gen3_document" > "$tesla_gen3_fixture"
-if cmp -s "$tesla_gen3_document" "$tesla_gen3_fixture"; then
-  echo 'HSC confirmation mutation did not change the document' >&2
-  exit 1
-fi
-if "$repo_root/scripts/check_docs.sh" --check-tesla-generation-contracts "$tesla_legacy_document" "$tesla_gen3_fixture"; then
-  echo 'HSC confirmation mutation was accepted' >&2
   exit 1
 fi
 

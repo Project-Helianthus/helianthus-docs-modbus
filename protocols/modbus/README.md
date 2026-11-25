@@ -12,3 +12,7 @@ They are covered by [`protocols/LICENSE`](../LICENSE), CC0-1.0.
   profile admission.
 - [`huawei-gateway-candidate-evidence-v1.md`](./huawei-gateway-candidate-evidence-v1.md)
   records Huawei documentary wire facts.
+- [Wall Connector Gen 3 RS-485 site-controller protocol](../tesla/rs485-site-controller-protocol.md)
+  specifies the external port, start-up exchange, and functions 100–105.
+- [Wall Connector Gen 3 TEDAPI specification](../tesla/tedapi-specification.md)
+  specifies HTTP and function-100 transport, access control, messages, and schemas.

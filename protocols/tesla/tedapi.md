@@ -1,128 +1,27 @@
-# Tesla Gen3 HSC EVSE over Modbus RTU
+# Wall Connector Gen 3 TEDAPI — compatibility landing
 
-## Scope and non-goals
-
-This profile is limited to EVSE interoperability for energy management. It retains serial identity, model, firmware version, charging state, current capability, electrical observations, faults/interlocks, and capability/version provenance. It also defines only explicitly qualified EVSE enable, disable, and charging-current-limit controls. Non-EVSE operations are out of scope.
-
-## Terminology
-
-Native data is the complete bounded payload with profile and transaction context. An EVSE limit is a charging-current limit.
-
-## Endpoint roles
-
-The initiator owns serialization, deadlines, correlation, and native retention. Offline replay does not open a serial endpoint.
-
-## Serial settings
-
-Gen3 HSC uses 115200 baud, eight data bits, no parity, and one stop bit.
-
-## Frame structure
-
-`node | function | payload | CRC16-Modbus`; FC100 through FC102 are selected only by this Gen3 profile.
-
-## Byte order and CRC
-
-CRC16-Modbus is low byte first.
-
-## Frame and payload limits
-
-A frame is 4 through 256 bytes and a payload is 0 through 252 bytes.
-
-## Node addressing and configuration
-
-Node `0x10` is common but configured explicitly.
-
-## Function 100
-
-An FC100 PDU is `length:u8 | message[length]`, with exact length equality.
-
-### FC100 EVSE operation registry
-
-| Operation | EVSE use | request | terminal |
-|---|---|---|---|
-| GetVitals | charging state and aggregate electrical observations | exact empty | bounded native terminal |
-| GetLifetimeStats | energy observations | exact empty | bounded native terminal |
-| GetLoadSharingNetworkState | current capability and limits | exact empty | bounded native terminal |
-| GetSystemInfo | serial/model/firmware identity, capability and version provenance | exact empty | bounded native terminal |
-
-Terminals retain their complete bounded native body and unknown fields. Per-phase values remain native when present.
+The [TEDAPI message specification](tedapi-specification.md) is normative for
+HTTP and function-100 transports, access control, messages, behaviour and
+schemas. The [RS-485 site-controller protocol specification](rs485-site-controller-protocol.md)
+defines the serial link and functions 100–105. TEDAPI is not limited to EVSE
+operations; the transport, firmware and access rules determine applicability.
 
 ### FC100 EVSE operation numbers
 
-Each retained operation is one FC100 family number and one request tag paired with one terminal tag. The numbers apply to the `wc3_24_44_3` operation version only.
+See the TEDAPI specification's [message catalogue](tedapi-specification.md#6-message-catalogue)
+for operation numbers, bodies and units. A defined field does not establish a
+meaning for an unspecified member, and a schema definition does not establish
+device support.
 
-| Operation | Family | Request tag → terminal tag | Request body | Basis |
-|---|---|---|---|---|
-| Common system information | 4 | 2 → 3 | exact empty | registry fact, see below |
-| WC vitals (GetVitals) | 6 | 1 → 2 | exact empty | registry fact, see below |
-| WC lifetime statistics (GetLifetimeStats) | 6 | 3 → 4 | exact empty | registry fact, see below |
-| WC system information (GetSystemInfo) | 6 | 9 → 10 | exact empty | registry fact, see below |
-| WC load-sharing state (GetLoadSharingNetworkState) | 6 | 11 → 12 | exact empty | registry fact, see below |
-| WC persistent settings, current limit only | 6 | 7 → 8 | structurally validated | [exact 24.44.3 body and evidence contract](gen3-hsc-rtu.md#exact-24443-body-and-evidence-contract) |
-| WC provisional current limit | 6 | 25 → 26 | structurally validated | [exact 24.44.3 body and evidence contract](gen3-hsc-rtu.md#exact-24443-body-and-evidence-contract) |
-| WC provisional readback | 6 | 27 → 28 | exact empty | [exact 24.44.3 body and evidence contract](gen3-hsc-rtu.md#exact-24443-body-and-evidence-contract) |
+## Driver support
 
-Common system information carries identity and firmware/version provenance and is distinct from WC system information, which carries hardware identity and capability provenance. Neither establishes new field semantics.
+The [read-acquisition contract](gen3-read-acquisition-v1.md) selects the
+supported EVSE reads. Defined per-phase fields can remain native without a
+semantic projection. Driver records retain complete bounded native payloads
+with version, function, direction and outcome.
 
-The six observation and readback requests have exact empty bodies. The two mutation requests keep only the structural validation documented in the [Gen3 HSC contract](gen3-hsc-rtu.md#evse-current-limit-records); a structurally valid body or a generic request builder is not a qualified setter, and the [current-limit operation contract V1](gen3-current-limit-operation-v1.md) governs admission.
-
-Basis for the current-limit pairs is the bounded static evidence for `wc3_24_44_3` published in the linked Gen3 HSC contract. For the five other pairs this page publishes no artifact hash, descriptor record, or body evidence. They are recorded as operation-registry facts for the `wc3_24_44_3` operation version, restored from the named operation registry published in this page at commit `9fa7cd8` (section "FC100 named operation registry for WC3 24.44.3", first added in commit `d9352f2`), and are not additional observations of firmware behavior. They carry no independent body qualification, and a family/tag match grants no live capability or control.
-
-Terminal field labels, for example `device_id`, `din`, `firmware_version`, `device_type`, `uptime_s`, and `contactor_cycles`, are recovered labels. They are not vendor-published names, and no unit, scale, range, or other semantic qualification is implied by a label. Unknown terminal members stay in the complete bounded native body.
-
-EVSE charging-current limit control, enable, and disable require an independently qualified request shape, unit and range where applicable, acknowledgement, and post-command confirmation. The provisional current limit is the qualified setter of this version under the current-limit operation contract V1, and enable, disable, and the persistent settings write are not.
-
-The [current-limit operation contract V1](gen3-current-limit-operation-v1.md)
-states the admission, values, and outcome requirements of that setter.
-
-## Functions 101 and 102
-
-FC101 and FC102 use bounded native payloads but have no EVSE operation mapping in this version.
-
-## Exception responses
-
-An exception has `function | 0x80` and exactly one status byte.
-
-## Timing, deadlines, and frame separation
-
-Frame separation is 3.5 character times; timeout and partial frames are quarantined.
-
-## Concurrency and arbitration
-
-One locally serialized initiator is required.
-
-## Request and response state machine
-
-`idle -> validated -> waiting -> terminal | exception | deadline -> idle`.
-
-## Fail-closed validation rules
-
-Require endpoint/node, profile/version, bounds, correlation, and an EVSE operation contract. Unknown data grants no control.
-
-## Unknown payload and field retention
-
-Retain bounded native payloads exactly with function, direction, profile, version, and outcome.
-
-## Runtime provenance
-
-Records retain complete native EVSE payload with version, function, direction, and outcome.
-
-## Security, privacy, and redaction
-
-Runtime native EVSE data is retained; public examples use synthetic values.
-
-## Capability and version gates
-
-Version alone does not admit an operation.
-
-## Conformance vectors and sanitized examples
-
-`10 64 00 5a c5` is a valid empty FC100 envelope.
-
-## Interoperability levels
-
-Framing; native EVSE observation; qualified EVSE state/measurement; qualified provisional current-limit control.
-
-## Compatibility and versioning
-
-This Gen3 profile is separate from legacy Wall Connector RS-485.
+The [current-limit operation contract](gen3-current-limit-operation-v1.md)
+governs the separately admitted provisional current-limit mutation. Persistent
+installation settings are a defined TEDAPI operation, not a driver setter.
+The specification does not enable additional driver operations or grant
+operation authority, including generic enable or disable.
