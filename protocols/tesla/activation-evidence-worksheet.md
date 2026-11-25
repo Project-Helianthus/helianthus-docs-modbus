@@ -9,14 +9,20 @@ and [unspecified behavior (§12)](rs485-site-controller-protocol.md#12-not-speci
   conditions are met. On 24.44.3 and 26.34.0 the state machine distinguishes
   Stopped, Probing, ProbeExhausted and Routed. On those builds the exchange
   does not require a stored site-controller configuration, and enabling dry
-  contact mode stops the port. On a matching echo the station sends a pass
-  token before switching to routed reception; the token alone does not
-  establish that reception is active. A failed evaluation produces a fail
-  token and another attempt if the build has attempts left. The watchdog runs
-  separately from the port state machine (§3.5).
-- **Tokens and timing.** The station sends `TESLA` followed by NUL. The peer
-  echoes the same six bytes. The station answers with `PASS` or `FAIL`, each
-  followed by NUL. On 24.44.3 and 26.34.0 these are plain bytes, not RTU frames:
+  contact mode stops the port. On 24.44.3, MID 25.2.2, 26.18.0 and 26.34.0,
+  a matching echo prompts the station to send the pass token and then switch
+  to routed mode. The token alone does not establish that routed reception is
+  active. On those four builds, every failed evaluation sends the fail token.
+  The station starts another attempt after each of the first nine failures.
+  On the tenth failure it still sends the fail token but makes no further
+  attempt. The pass and fail transitions are not specified for 24.28.3.
+  The watchdog runs separately from the port state machine (§3.5).
+- **Tokens and timing.** For 24.28.3, 24.44.3, MID 25.2.2, 26.18.0 and 26.34.0,
+  the tokens are `TESLA` for the probe and echo, `PASS` for pass and `FAIL`
+  for fail, each followed by NUL. A peer must echo the six probe bytes
+  unchanged. The probe token is also specified for 26.42.0; a `PASS` or
+  `FAIL` answer is not specified for that build.
+  On 24.44.3 and 26.34.0 these are plain bytes, not RTU frames:
   the tokens carry no address, function code or CRC. On those builds, if no
   echo byte is present when the probe finishes, the station waits at most a
   nominal 2 ms before evaluating the received bytes. This is not a latest
