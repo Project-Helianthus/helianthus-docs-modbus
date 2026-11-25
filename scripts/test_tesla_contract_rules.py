@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 """Prove that every Tesla contract rule is load-bearing and that bad rule tables fail closed."""
+import hashlib
 import importlib.util
 import json
-import re
-import string
 from pathlib import Path
 import subprocess
 import sys
@@ -15,6 +14,9 @@ ROOT = Path(__file__).resolve().parent.parent
 RULES = ROOT / 'scripts/tesla_contract_rules.json'
 CHECKER = ROOT / 'scripts/check_tesla_contract.py'
 GATE = ROOT / 'scripts/check_docs.sh'
+TESLA = 'protocols/tesla/'
+TEDAPI = TESLA + 'tedapi-specification.md'
+RS485 = TESLA + 'rs485-site-controller-protocol.md'
 
 sys.dont_write_bytecode = True
 SPEC = importlib.util.spec_from_file_location('check_tesla_contract', CHECKER)
@@ -24,11 +26,9 @@ SPEC.loader.exec_module(ENGINE)
 # One synthetic line per contract that carries forbidden rules.
 PROBES = {
     'legacy_public_protocol': 'These canonical facts are synthetic.',
-    'gen3_public_protocol': 'A private capture is synthetic.',
     'generation': 'Minimum version 24.28.3 qualifies this profile.',
     'current_limit_operation': 'gateway.example.internal:1502',
     'read_acquisition': '192.0.2.1',
-    'evse_scope': 'Pairing is available.',
 }
 
 
@@ -132,68 +132,60 @@ class TeslaContractRules(unittest.TestCase):
                 self.assertNotEqual(self.run_contract(rule['contract']).returncode, 0)
                 self.restore(rule['page'])
 
-    def test_each_pin_binds_its_exact_token(self):
-        pinned = [rule for rule in ENGINE.load_rules(RULES) if rule.get('pins')]
-        self.assertEqual(len(pinned), 4)
-        digits = string.hexdigits[:16]
-        swap = str.maketrans(digits, digits[1:] + digits[0])
-        for rule in pinned:
-            with self.subTest(contract=rule['contract'], value=rule['value'][:40]):
-                path = self.copies[rule['page']]
-                original = path.read_text(encoding='utf-8')
-                match = rule['pattern'].search(original)
-                tokens = match.groups()
-                for index in range(len(tokens)):
-                    altered = match.group(0)
-                    start = match.start(index + 1) - match.start(0)
-                    end = match.end(index + 1) - match.start(0)
-                    altered = altered[:start] + tokens[index].translate(swap) + altered[end:]
-                    path.write_text(original.replace(match.group(0), altered), encoding='utf-8')
-                    self.assertNotEqual(self.run_contract(rule['contract']).returncode, 0)
-                self.restore(rule['page'])
-
     def test_each_forbidden_rule_rejects_its_probe(self):
         for rule in ENGINE.load_rules(RULES):
             if rule['kind'] != 'forbidden':
                 continue
-            with self.subTest(contract=rule['contract']):
-                probe = PROBES[rule['contract']]
+            with self.subTest(contract=rule['contract'], page=rule['page']):
+                if rule['value'].startswith('(?:https?|ftp)'):
+                    probe = 'A private capture is synthetic.'
+                else:
+                    probe = PROBES[rule['contract']]
                 self.assertTrue(rule['pattern'].search(probe))
                 path = self.copies[rule['page']]
                 path.write_text(path.read_text(encoding='utf-8') + '\n' + probe + '\n',
                                 encoding='utf-8')
-                self.assertNotEqual(self.run_contract(rule['contract']).returncode, 0)
+                result = self.run_contract(rule['contract'])
+                self.assertEqual(result.returncode, 1)
+                self.assertIn(' forbidden ', result.stderr)
                 self.restore(rule['page'])
 
-    def test_evse_scope_exempts_only_the_lowercase_current_limit_phrases(self):
-        rule = next(r for r in ENGINE.load_rules(RULES)
-                    if r['contract'] == 'evse_scope' and r['kind'] == 'forbidden')
-        self.assertIsNone(rule['pattern'].search('| WC provisional current limit |'))
-        self.assertIsNone(rule['pattern'].search('| WC provisional readback |'))
-        for line in ('A provisional mode is available.', 'Provisional current is available.',
-                     'Network provisioning is available.'):
-            self.assertTrue(rule['pattern'].search(line), line)
+    def test_publication_rejects_non_protocol_material(self):
+        digest = hashlib.sha256(b'synthetic publication fixture').hexdigest()
+        probes = (
+            '[fixture](https://example.invalid/specimen)',
+            digest,
+            '/Users/example/work/specimen',
+            r'C:\Users\example\work\specimen',
+            'The field was derived by disassembly.',
+            'Reproduced from a firmware dump.',
+        )
+        pages = ((RS485, 'rs485_specification'), (TEDAPI, 'tedapi'),
+                 (TESLA + 'gen3-hsc-rtu.md', 'generation'), (TESLA + 'tedapi.md', 'tedapi_landing'))
+        for page, contract in pages:
+            document = self.copies[page]
+            original = document.read_text(encoding='utf-8')
+            for probe in probes:
+                with self.subTest(page=page, probe=probe):
+                    document.write_text(original + '\n' + probe + '\n', encoding='utf-8')
+                    result = self.run_contract(contract)
+                    self.assertEqual(result.returncode, 1)
+                    self.assertIn(' forbidden ', result.stderr)
+            self.restore(page)
 
-    def test_allowed_digests_admit_only_committed_values(self):
-        page = self.copies['protocols/tesla/gen3-hsc-rtu.md']
-        original = page.read_text(encoding='utf-8')
-        known = re.search(r'[0-9a-f]{64}', original).group(0)
-        page.write_text(original + '\nRepeated: `' + known + '`.\n', encoding='utf-8')
-        self.assertEqual(self.run_contract('gen3_public_protocol').returncode, 0)
-        page.write_text(original + '\nSynthetic: `' + 'd' * 64 + '`.\n', encoding='utf-8')
-        self.assertNotEqual(self.run_contract('gen3_public_protocol').returncode, 0)
+    def test_schema_and_access_vocabulary_is_permitted(self):
+        path = self.copies[TEDAPI]
+        with path.open('a', encoding='utf-8') as page:
+            page.write('\nHTTP, service access point, installation settings, Wi-Fi configuration, '
+                       'authentication, protobuf schema and SHA256_ECDSA_ASN1.\n')
+        result = self.run_contract('tedapi')
+        self.assertEqual(result.returncode, 0, result.stderr)
 
-    def test_source_locators_are_exactly_the_committed_set(self):
-        page = self.copies['protocols/tesla/legacy-wall-connector-rs485.md']
-        original = page.read_text(encoding='utf-8')
-        locators = re.findall(r'https://[^)\n]+', original)
-        self.assertEqual(len(set(locators)), 4)
-        for locator in locators:
-            with self.subTest(locator=ENGINE.commitment(locator)):
-                page.write_text(original.replace(locator, ''), encoding='utf-8')
-                self.assertNotEqual(self.run_contract('legacy_public_protocol').returncode, 0)
-        page.write_text(original + '\n[synthetic](https://example.invalid/legacy)\n', encoding='utf-8')
-        self.assertNotEqual(self.run_contract('legacy_public_protocol').returncode, 0)
+    def test_default_invocation_checks_all_pages_from_another_directory(self):
+        result = subprocess.run(['python3', '-B', str(CHECKER)], cwd=self.work,
+                                capture_output=True, text=True, timeout=30)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(ENGINE.pages_for(ENGINE.CONTRACTS), set(self.pages))
 
     def test_missing_empty_and_malformed_tables_fail_closed(self):
         missing = self.run_contract('tedapi', self.work / 'missing.json')
@@ -214,7 +206,7 @@ class TeslaContractRules(unittest.TestCase):
             'extra field': lambda d: d['rules'][0].update(note='x'),
             'duplicate key': None,
             'unknown kind': lambda d: d['rules'][0].update(kind='unknown'),
-            'kind outside contract': lambda d: d['rules'][0].update(kind='allowed_digest'),
+            'kind outside contract': lambda d: d['rules'][0].update(kind='heading'),
             'unknown contract': lambda d: d['rules'][0].update(contract='unknown'),
             'other known contract': lambda d: d['rules'][0].update(contract='read_acquisition'),
             'page outside the family': lambda d: d['rules'][0].update(page='protocols/other.md'),
@@ -239,51 +231,44 @@ class TeslaContractRules(unittest.TestCase):
         def first(data, contract, kind):
             return next(r for r in data['rules'] if r['contract'] == contract and r['kind'] == kind)
         cases = {
-            ('evse_scope', 'heading'): 'FC100 EVSE operation registry',
-            ('evse_scope', 'row'): 'Common system information | 4',
-            ('evse_scope', 'statement'): '| GetVitals  |',
-            ('evse_scope', 'forbidden'): 'wifi|(',
-            ('gen3_public_protocol', 'allowed_digest'): 'not-a-commitment',
-            ('legacy_public_protocol', 'source_locator'): 'https://example.invalid/',
+            ('tedapi', 'heading'): 'Transports and envelopes',
+            ('tedapi', 'row'): 'Family/tag | Request',
+            ('tedapi', 'statement'): 'The  request',
+            ('tedapi', 'forbidden'): 'example|(',
         }
         for (contract, kind), value in cases.items():
             with self.subTest(kind=kind):
                 data = self.edited(lambda d: first(d, contract, kind).update(value=value))
                 self.assertNotEqual(self.run_table(data, contract), 0)
-        for value in ('at revision `<pin:short>` of its branch.',
-                      'at revision `<pin:' + 'A' * 42 + '>` of its branch.',
-                      'at revision `<pin:` of its branch.'):
-            with self.subTest(pin=value):
-                data = self.edited(lambda d: next(
-                    r for r in d['rules'] if '<pin:' in r['value']).update(value=value))
-                self.assertNotEqual(self.run_table(data, 'read_acquisition'), 0)
-        data = self.edited(lambda d: first(d, 'gen3_public_protocol', 'allowed_digest').update(
-            section='## Qualification'))
-        self.assertNotEqual(self.run_table(data, 'gen3_public_protocol'), 0)
+        data = self.edited(lambda d: first(d, 'tedapi', 'row').update(section=None))
+        self.assertNotEqual(self.run_table(data, 'tedapi'), 0)
 
     def test_loader_rejects_bad_rules_even_when_the_counts_would_match(self):
-        """Isolate the loader checks that the count table would otherwise mask."""
         path = self.work / 'rules.json'
         first = self.rules[0]
-        cases = {
-            'unknown kind': ({(first['contract'], 'unknown'): 1},
-                             lambda d: d['rules'].append(dict(
-                                 first, kind='unknown', section=None,
-                                 value=ENGINE.commitment('synthetic')))),
-            'duplicate rule': ({(first['contract'], first['kind']): 2},
-                               lambda d: d['rules'].append(dict(first))),
-            'non-normalized statement': ({}, lambda d: next(
-                r for r in d['rules'] if r['kind'] == 'statement').update(value='No  mutation path.')),
-        }
-        for name, (extra, mutate) in cases.items():
-            with self.subTest(case=name):
-                path.write_text(json.dumps(self.edited(mutate)), encoding='utf-8')
-                expected = dict(ENGINE.EXPECTED)
-                expected.update(extra)
-                with mock.patch.object(ENGINE, 'EXPECTED', expected), \
-                        mock.patch.object(ENGINE, 'CONTRACTS', frozenset(c for c, _ in expected)):
-                    with self.assertRaises(ENGINE.RuleError):
+        contract = first['contract']
+        for kind in ('unknown', 'allowed_digest', 'source_locator'):
+            with self.subTest(kind=kind):
+                changed = self.edited(lambda d: d['rules'].append(dict(first, kind=kind)))
+                path.write_text(json.dumps(changed), encoding='utf-8')
+                with mock.patch.dict(ENGINE.EXPECTED, {(contract, kind): 1}):
+                    with self.assertRaisesRegex(ENGINE.RuleError, 'unknown rule kind'):
                         ENGINE.load_rules(path)
+
+    def test_loader_requires_both_generation_pages_even_with_matching_counts(self):
+        path = self.work / 'rules.json'
+        for name in (ENGINE.LEGACY, ENGINE.HSC):
+            with self.subTest(page=name):
+                data = self.edited(lambda d: d.update(rules=[
+                    dict(rule, page=TESLA + name, value=rule['value'] + ' Alternate')
+                    if rule['contract'] == 'generation' and rule['page'] != TESLA + name
+                    and rule['kind'] != 'heading' else rule for rule in d['rules']]))
+                for i, rule in enumerate(data['rules']):
+                    if (rule['contract'], rule['kind']) == ('generation', 'heading'):
+                        rule.update(page=TESLA + name, value=f'## Synthetic heading {i}')
+                path.write_text(json.dumps(data), encoding='utf-8')
+                with self.assertRaisesRegex(ENGINE.RuleError, 'every required contract page'):
+                    ENGINE.load_rules(path)
 
     def test_heading_rules_require_a_real_heading(self):
         sections = {rule['section'] for rule in self.rules}
@@ -326,24 +311,35 @@ class TeslaContractRules(unittest.TestCase):
                                   for line in lines), encoding='utf-8')
         self.assertNotEqual(self.run_contract(rule['contract']).returncode, 0)
 
-    def test_each_rule_key_field_changes_the_outcome(self):
-        """Vary contract, page, section, kind and value of one rule; each must fail."""
-        target = next(i for i, r in enumerate(self.rules)
-                      if r['contract'] == 'legacy_evse_current' and r['kind'] == 'statement')
-        variations = {
-            'contract': 'gen3_evse_current_limit',
-            'page': 'protocols/tesla/gen3-hsc-rtu.md',
-            'section': '## Compatibility',
-            'kind': 'row',
-            'value': self.rules[target]['value'] + ' Synthetic.',
-        }
-        for field, value in variations.items():
+    def test_duplicate_identity_uses_each_key_field_but_not_reason(self):
+        path = self.work / 'rules.json'
+        first = dict(contract='generation', page=TESLA + ENGINE.LEGACY, section='## One',
+                     kind='statement', value='## Synthetic', reason='Test rule identity.')
+        changes = dict(contract='legacy_evse_current', page=TESLA + ENGINE.HSC,
+                       section='## Two', kind='heading', value='## Different',
+                       reason='A different explanation is not a distinct rule.')
+        for field, value in changes.items():
             with self.subTest(field=field):
-                data = self.edited(lambda d, f=field, v=value: d['rules'][target].update({f: v}))
-                self.assertNotEqual(self.run_table(data, 'legacy_evse_current'), 0)
+                second = dict(first, **{field: value})
+                rules = [first, second]
+                # Keep mandatory pages present, independently of the two rule keys.
+                if field != 'page':
+                    rules.append(dict(first, page=TESLA + ENGINE.HSC, value='Unique filler.'))
+                expected = {}
+                for rule in rules:
+                    key = rule['contract'], rule['kind']
+                    expected[key] = expected.get(key, 0) + 1
+                path.write_text(json.dumps(dict(version=1, rules=rules)), encoding='utf-8')
+                with mock.patch.object(ENGINE, 'EXPECTED', expected), mock.patch.object(
+                        ENGINE, 'CONTRACTS', frozenset(c for c, _ in expected)):
+                    if field == 'reason':
+                        with self.assertRaisesRegex(ENGINE.RuleError, 'duplicate rule'):
+                            ENGINE.load_rules(path)
+                    else:
+                        self.assertEqual(len(ENGINE.load_rules(path)), len(rules))
 
     def test_command_line_selection_fails_closed(self):
-        tedapi = {'protocols/tesla/tedapi.md': self.copies['protocols/tesla/tedapi.md']}
+        tedapi = {TEDAPI: self.copies[TEDAPI]}
         self.assertEqual(self.run_checker(['tedapi'], tedapi).returncode, 0)
         self.assertNotEqual(self.run_checker(['unknown'], tedapi).returncode, 0)
         self.assertNotEqual(self.run_checker(['tedapi', 'tedapi'], tedapi).returncode, 0)
@@ -352,9 +348,9 @@ class TeslaContractRules(unittest.TestCase):
         extra['protocols/tesla/gen3-hsc-rtu.md'] = self.copies['protocols/tesla/gen3-hsc-rtu.md']
         self.assertNotEqual(self.run_checker(['tedapi'], extra).returncode, 0)
         malformed = subprocess.run(['python3', '-B', str(CHECKER), str(RULES), 'tedapi',
-                                    'protocols/tesla/tedapi.md'], capture_output=True, timeout=30)
+                                    TEDAPI], capture_output=True, timeout=30)
         self.assertNotEqual(malformed.returncode, 0)
-        missing = {'protocols/tesla/tedapi.md': self.work / 'absent.md'}
+        missing = {TEDAPI: self.work / 'absent.md'}
         self.assertNotEqual(self.run_checker(['tedapi'], missing).returncode, 0)
 
     def test_gate_options_keep_their_contract_scope(self):
@@ -369,9 +365,12 @@ class TeslaContractRules(unittest.TestCase):
         gen3.write_text(original.replace('Each object is validated independently.', ''),
                         encoding='utf-8')
         self.assertNotEqual(gate('--check-tesla-gen3-evse-current-limit-mcp-projection', gen3), 0)
-        self.assertEqual(gate('--check-tesla-gen3-evse-current-limit-wire-evidence', gen3), 0)
+        self.assertEqual(gate('--check-tesla-gen3-evse-current-limit-wire-evidence', self.copies[TEDAPI]), 0)
         self.assertEqual(gate('--check-tesla-gen3-evse-current-limit-contract', gen3), 0)
         self.assertEqual(gate('--check-tesla-generation-contracts', legacy, gen3), 0)
+        self.assertEqual(gate('--check-tesla-rs485-specification', self.copies[RS485]), 0)
+        self.assertEqual(gate('--check-tesla-tedapi-contract', self.copies[TEDAPI]), 0)
+        self.assertEqual(gate('--check-tesla-tedapi-landing', self.copies[TESLA + 'tedapi.md']), 0)
         self.assertNotEqual(gate('--check-tesla-generation-contracts', legacy), 0)
 
     def test_qualified_provisional_set_needs_no_action_time_confirmation(self):
@@ -394,14 +393,13 @@ class TeslaContractRules(unittest.TestCase):
         for page, contract in cases:
             with self.subTest(page=page):
                 text = self.copies[page].read_text(encoding='utf-8')
-                self.assertIn('admitted without explicit operator confirmation at action time', text)
-                self.assertIn('only for an agent or test acting on a real installation', text)
+                normalized = ' '.join(text.split())
+                self.assertIn('admitted without explicit operator confirmation at action time', normalized)
+                self.assertIn('only for an agent or test acting on a real installation', normalized)
                 for phrase in blocked:
                     self.assertNotIn(phrase, text)
-                unsafe = text.replace(
-                    'admitted without explicit operator confirmation at action time',
-                    'still requires explicit operator confirmation at action time',
-                )
+                unsafe = text.replace('explicit operator confirmation at action time',
+                                      'cached permission at action time')
                 self.assertNotEqual(unsafe, text)
                 self.copies[page].write_text(unsafe, encoding='utf-8')
                 self.assertNotEqual(self.run_contract(contract).returncode, 0)

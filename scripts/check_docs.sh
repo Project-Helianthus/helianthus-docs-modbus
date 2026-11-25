@@ -46,7 +46,9 @@ check_public_protocol() {
   fi
 }
 
-tesla_tedapi_page='protocols/tesla/tedapi.md'
+tesla_tedapi_landing='protocols/tesla/tedapi.md'
+tesla_tedapi_page='protocols/tesla/tedapi-specification.md'
+tesla_rs485_page='protocols/tesla/rs485-site-controller-protocol.md'
 tesla_legacy_page='protocols/tesla/legacy-wall-connector-rs485.md'
 tesla_gen3_page='protocols/tesla/gen3-hsc-rtu.md'
 tesla_current_limit_page='protocols/tesla/gen3-current-limit-operation-v1.md'
@@ -308,7 +310,7 @@ if [[ $# -gt 0 ]]; then
     exit $?
   fi
   if [[ $# -ne 2 ]] && [[ "$1" != '--check-tesla-generation-contracts' || $# -ne 3 ]]; then
-    echo 'usage: check_docs.sh [--check-tesla-current-limit-operation|--check-tesla-read-acquisition|--check-sdongle-admission|--check-public-protocol|--check-tesla-tedapi-contract|--check-tesla-generation-contracts|--check-private-function-contract|--check-sunspec-v1-model-families-contract|--check-fronius-qualification-readiness|--check-huawei-qualification-readiness|--check-huawei-inverter-battery-disposition|--check-sunspec-nested-layout-contract|--check-sunspec-der-trip-lv-template-v2|--check-sunspec-der-trip-lv-typed-fact-projection-v2|--check-sunspec-dynamic-structural-selection-v2|--check-sunspec-v2-contract|--check-sunspec-v2-licensing|--check-x2-publication|--check-x2-contract|--check-bms-contract|--check-growatt-protocol-ii-identity-projection|--check-growatt-protocol-ii-fc04-contract|--check-growatt-protocol-ii-source-matrix|--check-wit-matrix-contract|--check-modbus-register-write|--check-sunspec-controls|--check-sunspec-grid-code-settings|--check-huawei-grid-code-settings|--check-huawei-sun2000-semreg-relations|--check-tesla-gen3-semreg-mapping document]' >&2
+    echo 'usage: check_docs.sh [--check-tesla-current-limit-operation|--check-tesla-read-acquisition|--check-sdongle-admission|--check-public-protocol|--check-tesla-tedapi-contract|--check-tesla-tedapi-landing|--check-tesla-rs485-specification|--check-tesla-generation-contracts|--check-private-function-contract|--check-sunspec-v1-model-families-contract|--check-fronius-qualification-readiness|--check-huawei-qualification-readiness|--check-huawei-inverter-battery-disposition|--check-sunspec-nested-layout-contract|--check-sunspec-der-trip-lv-template-v2|--check-sunspec-der-trip-lv-typed-fact-projection-v2|--check-sunspec-dynamic-structural-selection-v2|--check-sunspec-v2-contract|--check-sunspec-v2-licensing|--check-x2-publication|--check-x2-contract|--check-bms-contract|--check-growatt-protocol-ii-identity-projection|--check-growatt-protocol-ii-fc04-contract|--check-growatt-protocol-ii-source-matrix|--check-wit-matrix-contract|--check-modbus-register-write|--check-sunspec-controls|--check-sunspec-grid-code-settings|--check-huawei-grid-code-settings|--check-huawei-sun2000-semreg-relations|--check-tesla-gen3-semreg-mapping document]' >&2
     exit 2
   fi
   case "$1" in
@@ -316,12 +318,14 @@ if [[ $# -gt 0 ]]; then
     --check-tesla-read-acquisition) check_tesla_read_acquisition "$2" ;;
     --check-sdongle-admission) check_sdongle_admission "$2" ;;
     --check-public-protocol) check_public_protocol "$2" ;;
-    --check-tesla-tedapi-contract) check_tesla_contract tedapi,evse_scope "$tesla_tedapi_page=$2" ;;
+    --check-tesla-tedapi-contract) check_tesla_contract tedapi,gen3_wire_messages "$tesla_tedapi_page=$2" ;;
+    --check-tesla-tedapi-landing) check_tesla_contract tedapi_landing "$tesla_tedapi_landing=$2" ;;
+    --check-tesla-rs485-specification) check_tesla_contract rs485_specification "$tesla_rs485_page=$2" ;;
     --check-tesla-generation-contracts)
       if [[ $# -ne 3 ]]; then
         exit 2
       fi
-      check_tesla_contract legacy_public_protocol,gen3_public_protocol,generation \
+      check_tesla_contract legacy_public_protocol,generation \
         "$tesla_legacy_page=$2" "$tesla_gen3_page=$3"
       ;;
 		--check-tesla-legacy-evse-current-contract)
@@ -331,7 +335,7 @@ if [[ $# -gt 0 ]]; then
 			check_tesla_contract gen3_evse_current_limit "$tesla_gen3_page=$2"
 			;;
 		--check-tesla-gen3-evse-current-limit-wire-evidence)
-			check_tesla_contract gen3_wire_evidence "$tesla_gen3_page=$2"
+			check_tesla_contract gen3_wire_messages "$tesla_tedapi_page=$2"
 			;;
 		--check-tesla-gen3-evse-current-limit-mcp-projection)
 			check_tesla_contract gen3_mcp_projection "$tesla_gen3_page=$2"
@@ -371,8 +375,6 @@ fi
 
 check_license_texts '.'
 
-spec='protocols/tesla/tedapi.md'
-test -f "$spec"
 tesla_legacy_spec='protocols/tesla/legacy-wall-connector-rs485.md'
 tesla_gen3_spec='protocols/tesla/gen3-hsc-rtu.md'
 tesla_current_limit_spec='protocols/tesla/gen3-current-limit-operation-v1.md'
@@ -444,8 +446,9 @@ for multivendor_spec in "${multivendor_specs[@]}"; do
 done
 
 check_tesla_contract \
-  tedapi,evse_scope,legacy_public_protocol,gen3_public_protocol,generation,legacy_evse_current,gen3_evse_current_limit,gen3_wire_evidence,gen3_mcp_projection \
-  "$tesla_tedapi_page=$spec" "$tesla_legacy_page=$tesla_legacy_spec" "$tesla_gen3_page=$tesla_gen3_spec"
+  tedapi,gen3_wire_messages,rs485_specification,tedapi_landing,legacy_public_protocol,generation,legacy_evse_current,gen3_evse_current_limit,gen3_mcp_projection \
+  "$tesla_tedapi_page=$tesla_tedapi_page" "$tesla_rs485_page=$tesla_rs485_page" \
+  "$tesla_tedapi_landing=$tesla_tedapi_landing" "$tesla_legacy_page=$tesla_legacy_spec" "$tesla_gen3_page=$tesla_gen3_spec"
 check_tesla_current_limit_operation "$tesla_current_limit_spec"
 check_tesla_read_acquisition "$tesla_read_acquisition_spec"
 check_tesla_gen3_semreg_mapping "$tesla_gen3_semreg_mapping_page"
