@@ -5,8 +5,11 @@ Use the RS-485 site-controller protocol specification for the
 [start-up state machine and firmware applicability (§3)](rs485-site-controller-protocol.md#3-start-up-exchange),
 and [unspecified behavior (§12)](rs485-site-controller-protocol.md#12-not-specified-in-this-revision).
 
-- **Entry and transitions.** The port starts probing when the applicable
-  conditions are met. On 24.44.3 and 26.34.0 the state machine distinguishes
+- **Entry and transitions.** On 24.44.3, MID 25.2.2, 26.18.0 and 26.34.0,
+  the port starts probing when its applicable conditions are met.
+  On 24.28.3, probing starts at port initialization. The start condition
+  for 26.42.0 is not specified.
+  On 24.44.3 and 26.34.0 the state machine distinguishes
   Stopped, Probing, ProbeExhausted and Routed. On those builds the exchange
   does not require a stored site-controller configuration, and enabling dry
   contact mode stops the port. On 24.44.3, MID 25.2.2, 26.18.0 and 26.34.0,
@@ -30,8 +33,8 @@ and [unspecified behavior (§12)](rs485-site-controller-protocol.md#12-not-speci
   Addressed traffic follows the routed-mode and half-duplex rules, not
   the token exchange.
 - **Attempt bounds and restart.** The station makes up to ten attempts on
-  24.44.3, MID 25.2.2, 26.18.0 and 26.34.0. On 24.28.3 it starts probing at
-  port initialization and has no attempt limit. On 24.44.3 the station
+  24.44.3, MID 25.2.2, 26.18.0 and 26.34.0. On 24.28.3 there is no attempt
+  limit. On 24.44.3 the station
   evaluates conditions at start-up and on changes; an internal restart can
   start probing again even after success. Provisional on 24.44.3: with
   unchanged conditions, a peer that connects after the exchange finds no new
