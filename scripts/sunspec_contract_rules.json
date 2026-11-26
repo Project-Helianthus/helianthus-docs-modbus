@@ -2326,8 +2326,8 @@
       "page": "protocols/sunspec/controls-v1.md",
       "section": "## Model 124 compound setting",
       "kind": "statement",
-      "value": "No clear `storage.status.interlock` candidate produces zero FC16 writes.",
-      "reason": "Model 124 no clear interlock produces no send."
+      "value": "A Model 124 storage limit requires no status candidate before any send.",
+      "reason": "Model 124 names no status that a host reads before a storage limit."
     },
     {
       "contract": "sunspec_controls",
