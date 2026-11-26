@@ -1331,7 +1331,7 @@ controls_fixture="$fixture_root/sunspec-controls.md"
 "$repo_root/scripts/check_docs.sh" --check-sunspec-controls "$controls_document"
 for mutation in \
   's/The enable-only release writes `WMaxLim_Ena` = 0 only in its own request and re-reads only `WMaxLim_Ena`./The enable-only release writes the percent and re-reads every timing point./' \
-  's/No clear `storage.status.interlock` candidate produces zero FC16 writes./No clear interlock still sends the rate./' \
+  's/A Model 124 storage limit requires no status candidate before any send./A Model 124 storage limit requires a clear status candidate before any send./' \
   's/An unsupported or unencodable duration produces no write even when the rate is encodable./An unencodable duration still writes the rate./' \
   's/A later runtime rejection after the rate is attempted reports partially executed or uncertain and distinguishes the unattempted steps./A later runtime rejection is the same no-send as prevalidation./' \
   's/Cancellation between spans stops later writes./Cancellation between spans continues later writes./' \
